@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Full Stack Code Assessment — Java · Spring Boot · Vue.js</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0c0e14; --surface: #111827; --surface2: #151a27; --border: #1e293b;
+    --text: #e2e8f0; --muted: #64748b; --dim: #475569; --accent: #6366f1;
+    --green: #22c55e; --red: #ef4444; --yellow: #f59e0b;
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; }
+  button { font-family: inherit; cursor: pointer; border: none; }
+  button:hover { filter: brightness(1.12); }
+  ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: var(--bg); } ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  .landing { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 40px 24px; text-align: center; }
+  .landing-icon { width: 72px; height: 72px; border-radius: 20px; background: linear-gradient(135deg, #f97316, #ef4444); display: flex; align-items: center; justify-content: center; font-size: 32px; margin-bottom: 24px; box-shadow: 0 0 60px #f9731640; }
+  .landing h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 8px; }
+  .landing p { color: var(--muted); font-size: 15px; max-width: 480px; line-height: 1.6; margin-bottom: 32px; }
+  .landing-stats { display: flex; gap: 24px; margin-bottom: 40px; }
+  .landing-stat { text-align: center; }
+  .landing-stat .num { font-size: 28px; font-weight: 800; color: #f97316; }
+  .landing-stat .label { font-size: 11px; color: var(--dim); text-transform: uppercase; letter-spacing: 0.08em; }
+  .start-btn { padding: 14px 48px; border-radius: 12px; background: linear-gradient(135deg, #f97316, #ef4444); color: #fff; font-weight: 700; font-size: 16px; box-shadow: 0 0 40px #f9731630; transition: all 0.3s; }
+  .rules { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 28px; text-align: left; max-width: 520px; margin-bottom: 32px; }
+  .rules h3 { font-size: 13px; color: #f97316; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
+  .rules li { color: var(--muted); font-size: 13px; line-height: 1.8; margin-left: 16px; }
+  .tech-tags { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 24px; }
+  .tech-tag { padding: 4px 12px; border-radius: 6px; font-size: 11px; font-weight: 600; background: var(--surface); border: 1px solid var(--border); color: var(--muted); }
+
+  .header { background: var(--surface2); border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; }
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  .header-icon { width: 34px; height: 34px; border-radius: 10px; background: linear-gradient(135deg, #f97316, #ef4444); display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .header-title { font-weight: 800; font-size: 15px; letter-spacing: -0.02em; }
+  .header-sub { font-size: 11px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+  .score-pills { display: flex; gap: 8px; }
+  .pill { padding: 5px 14px; border-radius: 8px; font-weight: 600; font-size: 13px; font-family: 'JetBrains Mono', monospace; }
+  .pill-green { background: #0b2e1a; border: 1px solid #166534; color: #4ade80; }
+  .pill-red { background: #2a0f10; border: 1px solid #991b1b; color: #f87171; }
+  .pill-total { background: var(--border); color: #94a3b8; }
+
+  .tabs { display: flex; gap: 6px; padding: 12px 24px; background: #0f1219; overflow-x: auto; }
+  .tab { padding: 10px 18px; border-radius: 10px; border: 1px solid transparent; background: transparent; color: var(--muted); font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 8px; white-space: nowrap; transition: all 0.2s; }
+  .tab.active { border-color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); color: var(--tab-color); }
+  .tab-badge { padding: 2px 8px; border-radius: 6px; font-size: 11px; background: var(--border); color: var(--dim); }
+  .tab.active .tab-badge { background: color-mix(in srgb, var(--tab-color) 15%, transparent); color: var(--tab-color); }
+
+  .main { padding: 16px 24px; max-width: 860px; margin: 0 auto; }
+  .q-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .q-header-left { display: flex; align-items: center; gap: 10px; }
+  .q-num { font-weight: 700; font-size: 14px; }
+  .diff-badge { font-size: 11px; padding: 3px 10px; border-radius: 6px; font-weight: 600; }
+  .q-prompt { font-size: 11px; color: var(--dim); }
+  .nav-btns { display: flex; gap: 6px; }
+  .nav-btn { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface2); color: #94a3b8; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .nav-btn:disabled { color: #334155; cursor: default; }
+
+  .editor { border-radius: 12px; overflow: hidden; border: 1px solid var(--border); margin-bottom: 12px; }
+  .editor-bar { background: var(--surface2); padding: 8px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
+  .dots { display: flex; gap: 6px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .filename { font-size: 11px; color: var(--dim); margin-left: 10px; font-family: 'JetBrains Mono', monospace; }
+  .lang-badge { font-size: 10px; padding: 2px 8px; border-radius: 4px; font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+  .code-body { background: var(--bg); padding: 16px 20px; font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.7; overflow-x: auto; }
+  .code-line { display: flex; }
+  .line-no { color: #334155; width: 32px; text-align: right; margin-right: 16px; user-select: none; font-size: 12px; }
+
+  .answer-section { margin-bottom: 12px; }
+  .answer-box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; }
+  .answer-label { font-size: 12px; color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+  .answer-input { width: 100%; background: #06080d; border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 13px; resize: vertical; min-height: 60px; outline: none; transition: border-color 0.3s; }
+  .answer-input:focus { border-color: var(--accent); }
+  .answer-input::placeholder { color: #334155; }
+  .submit-row { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; }
+  .submit-btn { padding: 10px 32px; border-radius: 10px; background: linear-gradient(135deg, var(--accent), #8b5cf6); color: #fff; font-weight: 700; font-size: 14px; box-shadow: 0 0 24px #6366f120; transition: all 0.3s; }
+  .submit-btn:disabled { background: var(--border); color: var(--dim); box-shadow: none; cursor: default; }
+  .skip-btn { padding: 10px 20px; border-radius: 10px; background: transparent; border: 1px solid var(--border); color: var(--muted); font-weight: 600; font-size: 13px; }
+
+  .terminal { border-radius: 12px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 12px; transition: border-color 0.5s; }
+  .terminal.revealed { border-color: #16a34a30; }
+  .terminal-bar { background: #0a0c10; padding: 6px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+  .terminal-bar span { font-size: 11px; color: var(--dim); font-family: 'JetBrains Mono', monospace; }
+  .terminal-body { background: #06080d; padding: 14px 20px; min-height: 60px; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+  .terminal-output { color: #4ade80; font-weight: 500; }
+  .terminal-cmd { color: var(--dim); font-size: 11px; margin-bottom: 6px; }
+  .terminal-waiting { color: #334155; display: flex; align-items: center; gap: 8px; }
+  .cursor-blink { animation: blink 1s infinite; color: var(--accent); }
+
+  .result-card { border-radius: 12px; overflow: hidden; margin-bottom: 12px; animation: fadeSlideIn 0.4s ease-out; }
+  .result-correct { background: #071a0e; border: 1px solid #166534; }
+  .result-wrong { background: #1a0b0b; border: 1px solid #991b1b; }
+  .result-skipped { background: var(--surface); border: 1px solid var(--border); }
+  .result-header { padding: 14px 20px; display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 14px; }
+  .result-correct .result-header { color: #4ade80; }
+  .result-wrong .result-header { color: #f87171; }
+  .result-skipped .result-header { color: var(--yellow); }
+  .result-body { padding: 0 20px 16px; }
+  .result-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .result-col label { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--dim); margin-bottom: 6px; font-weight: 600; }
+  .result-col pre { background: #06080d; border-radius: 8px; padding: 10px 14px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text); white-space: pre-wrap; border: 1px solid var(--border); }
+  .explanation { font-size: 13px; color: #cbd5e1; line-height: 1.6; }
+  .explanation strong { color: var(--accent); }
+
+  .progress-dots { display: flex; gap: 4px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
+  .progress-dot { height: 8px; border-radius: 4px; border: none; transition: all 0.3s; }
+  .progress-dot.current { width: 24px; background: var(--accent); }
+  .progress-dot.done-correct { width: 8px; background: var(--green); }
+  .progress-dot.done-wrong { width: 8px; background: var(--red); }
+  .progress-dot.done-skip { width: 8px; background: var(--yellow); }
+  .progress-dot.pending { width: 8px; background: var(--border); }
+
+  .completion { text-align: center; padding: 60px 24px; animation: fadeSlideIn 0.6s ease-out; }
+  .completion h2 { font-size: 28px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.03em; }
+  .completion p { color: var(--muted); margin-bottom: 32px; }
+  .score-circle { width: 140px; height: 140px; border-radius: 50%; margin: 0 auto 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .score-circle .pct { font-size: 40px; font-weight: 800; }
+  .score-circle .lbl { font-size: 12px; color: var(--muted); }
+  .score-breakdown { display: flex; gap: 32px; justify-content: center; margin-bottom: 40px; }
+  .score-breakdown .item { text-align: center; }
+  .score-breakdown .val { font-size: 24px; font-weight: 800; }
+  .score-breakdown .desc { font-size: 11px; color: var(--dim); text-transform: uppercase; letter-spacing: 0.06em; }
+  .restart-btn { padding: 12px 36px; border-radius: 10px; background: var(--surface); border: 1px solid var(--border); color: var(--text); font-weight: 600; font-size: 14px; }
+
+  @keyframes blink { 0%,50% { opacity: 1; } 51%,100% { opacity: 0; } }
+  @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  @media (max-width: 600px) {
+    .result-compare { grid-template-columns: 1fr; }
+    .landing-stats { gap: 16px; }
+    .score-pills { gap: 4px; }
+    .tabs { padding: 10px 12px; }
+    .main { padding: 12px 14px; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+const questions = [
+  // Part A: Java Core
+  {part:"A",cat:"Java Core",lang:"java",diff:"Easy",
+   code:'String s1 = "hello";\nString s2 = "hello";\nString s3 = new String("hello");\nSystem.out.println(s1 == s2);\nSystem.out.println(s1 == s3);\nSystem.out.println(s1.equals(s3));',
+   output:'true\nfalse\ntrue',
+   why:'String literals go to the String Pool, so s1 == s2 is true (same reference). "new String()" creates a new object on the heap, so s1 == s3 is false. .equals() compares content, so true.'},
+
+  {part:"A",cat:"Java Core",lang:"java",diff:"Easy",
+   code:'int[] arr = {1, 2, 3, 4, 5};\nSystem.out.println(arr.length);\n\nString str = "hello";\nSystem.out.println(str.length());',
+   output:'5\n5',
+   why:'Arrays use .length (property, no parentheses). Strings use .length() (method, with parentheses). Common interview trick question.'},
+
+  {part:"A",cat:"Java Core",lang:"java",diff:"Medium",
+   code:'Integer a = 127;\nInteger b = 127;\nInteger c = 128;\nInteger d = 128;\nSystem.out.println(a == b);\nSystem.out.println(c == d);',
+   output:'true\nfalse',
+   why:'Java caches Integer objects for values -128 to 127 (IntegerCache). Within this range, == returns true. Outside (128), new objects are created, so == compares references and returns false.'},
+
+  {part:"A",cat:"Java Core",lang:"java",diff:"Medium",
+   code:'try {\n    System.out.println("try");\n    return;\n} finally {\n    System.out.println("finally");\n}',
+   output:'try\nfinally',
+   why:'The finally block ALWAYS executes, even after a return statement in try. "try" prints first, then before the method actually returns, "finally" executes.'},
+
+  {part:"A",cat:"Java Core",lang:"java",diff:"Medium",
+   code:'List<String> list = new ArrayList<>(\n    Arrays.asList("a", "b", "c")\n);\nlist.remove(1);\nSystem.out.println(list);\nSystem.out.println(list.size());',
+   output:'[a, c]\n2',
+   why:'list.remove(1) removes element at index 1, which is "b". The list becomes ["a", "c"] with size 2. Note: remove(int) removes by index, remove(Object) removes by value.'},
+
+  {part:"A",cat:"Java Core",lang:"java",diff:"Hard",
+   code:'HashMap<String, Integer> map = new HashMap<>();\nmap.put("a", 1);\nmap.put("b", 2);\nmap.put("a", 3);\nSystem.out.println(map.size());\nSystem.out.println(map.get("a"));',
+   output:'2\n3',
+   why:'HashMap does not allow duplicate keys. Putting "a" again overwrites the previous value (1 → 3). Size remains 2 because only 2 unique keys exist.'},
+
+  {part:"A",cat:"Java Core",lang:"java",diff:"Hard",
+   code:'String s = "Java";\ns.concat(" Spring");\nSystem.out.println(s);\n\ns = s.concat(" Boot");\nSystem.out.println(s);',
+   output:'Java\nJava Boot',
+   why:'Strings in Java are immutable. s.concat(" Spring") creates a new String but the result is not assigned back to s, so s remains "Java". The second concat assigns the result back, so s becomes "Java Boot".'},
+
+  {part:"A",cat:"Java Core",lang:"java",diff:"Hard",
+   code:'int x = 5;\nSystem.out.println(x++ + ++x);',
+   output:'12',
+   why:'x++ is post-increment: uses 5, then x becomes 6. ++x is pre-increment: x becomes 7, then uses 7. So 5 + 7 = 12.'},
+
+  // Part B: Spring Boot & Microservices
+  {part:"B",cat:"Spring Boot",lang:"java",diff:"Easy",
+   code:'@RestController\npublic class HelloController {\n    @GetMapping("/hello")\n    public String hello() {\n        return "Hello World";\n    }\n}\n// GET /hello returns?',
+   output:'"Hello World"\n(HTTP 200, Content-Type: text/plain)',
+   why:'@RestController = @Controller + @ResponseBody. The return value is written directly to the HTTP response body. Spring returns 200 OK by default with the string as plain text.'},
+
+  {part:"B",cat:"Spring Boot",lang:"java",diff:"Medium",
+   code:'@Service\npublic class UserService {\n    @Autowired\n    private UserRepository repo;\n}\n\n@Service\npublic class UserService {\n    private final UserRepository repo;\n    \n    public UserService(UserRepository repo) {\n        this.repo = repo;\n    }\n}\n// Which is preferred and why?',
+   output:'Constructor injection (second one) is preferred',
+   why:'Constructor injection ensures all dependencies are set at creation time (immutable, testable, fail-fast). Field injection (@Autowired on fields) allows null dependencies, breaks in unit tests without Spring context, and hides dependencies.'},
+
+  {part:"B",cat:"Spring Boot",lang:"java",diff:"Medium",
+   code:'@Transactional\npublic void transferMoney(Long from, Long to, BigDecimal amt) {\n    accountRepo.debit(from, amt);\n    if (amt.compareTo(new BigDecimal("10000")) > 0)\n        throw new RuntimeException("Limit exceeded");\n    accountRepo.credit(to, amt);\n}\n// What happens if amount is 15000?',
+   output:'Both debit and credit are ROLLED BACK.\nNo money is moved.',
+   why:'@Transactional rolls back on RuntimeException by default. When the exception is thrown after debit(), the entire transaction rolls back — the debit is undone. This is ACID atomicity in action.'},
+
+  {part:"B",cat:"Spring Boot",lang:"java",diff:"Hard",
+   code:'@Component\n@Scope("prototype")\npublic class PrototypeBean { }\n\n@Component\npublic class SingletonBean {\n    @Autowired\n    private PrototypeBean proto;\n}\n\n// singletonBean.getProto() == singletonBean.getProto()?',
+   output:'true (same instance!)',
+   why:'Trap! Even though PrototypeBean is @Scope("prototype"), it is injected once into SingletonBean at creation time. Every access returns the SAME instance. Fix: use ObjectFactory<PrototypeBean>, Provider, or @Lookup.'},
+
+  // Part C: SQL & Database
+  {part:"C",cat:"SQL & Database",lang:"sql",diff:"Easy",
+   code:'-- users table: id, name, dept\n-- 5 rows, 2 with dept = NULL\n\nSELECT COUNT(*) FROM users;\nSELECT COUNT(dept) FROM users;',
+   output:'5\n3',
+   why:'COUNT(*) counts all rows including NULLs. COUNT(column) counts only non-NULL values in that column. 5 total rows - 2 NULL dept = 3.'},
+
+  {part:"C",cat:"SQL & Database",lang:"sql",diff:"Medium",
+   code:'SELECT * FROM orders\nWHERE amount > 100\nAND (status = \'pending\'\n     OR status = \'processing\');\n\n-- vs\n\nSELECT * FROM orders\nWHERE amount > 100\nAND status = \'pending\'\nOR status = \'processing\';',
+   output:'Different results!\nQuery 2 returns ALL processing orders\nregardless of amount.',
+   why:'AND has higher precedence than OR. Query 2 is parsed as: (amount > 100 AND status = "pending") OR (status = "processing"). The parentheses in Query 1 ensure both status conditions require amount > 100.'},
+
+  {part:"C",cat:"SQL & Database",lang:"sql",diff:"Medium",
+   code:'-- employees: id, name, salary\n\nSELECT name, salary,\n  RANK() OVER (ORDER BY salary DESC) as rnk,\n  DENSE_RANK() OVER (ORDER BY salary DESC) as drnk\nFROM employees;\n\n-- salaries: 5000, 5000, 3000\n-- What are the ranks?',
+   output:'5000 → RANK=1, DENSE_RANK=1\n5000 → RANK=1, DENSE_RANK=1\n3000 → RANK=3, DENSE_RANK=2',
+   why:'RANK() leaves gaps after ties (1,1,3). DENSE_RANK() does not leave gaps (1,1,2). Both assign the same rank to tied values.'},
+
+  {part:"C",cat:"SQL & Database",lang:"sql",diff:"Hard",
+   code:'DELETE FROM users WHERE id = 5;\nTRUNCATE TABLE users;\nDROP TABLE users;\n\n-- Which can be rolled back?',
+   output:'DELETE — YES (can rollback)\nTRUNCATE — NO (auto-commit, DDL)\nDROP — NO (auto-commit, DDL)',
+   why:'DELETE is DML — it logs each row deletion and can be rolled back within a transaction. TRUNCATE and DROP are DDL — they auto-commit and cannot be rolled back. TRUNCATE is faster than DELETE for clearing all rows.'},
+
+  // Part D: JavaScript/TypeScript (Vue.js context)
+  {part:"D",cat:"JS & TypeScript",lang:"javascript",diff:"Easy",
+   code:'console.log(typeof null);\nconsole.log(typeof undefined);\nconsole.log(null == undefined);\nconsole.log(null === undefined);',
+   output:'"object"\n"undefined"\ntrue\nfalse',
+   why:'typeof null is "object" (famous JS bug). null == undefined is true (loose equality). null === undefined is false (different types).'},
+
+  {part:"D",cat:"JS & TypeScript",lang:"javascript",diff:"Medium",
+   code:'const user = { name: "Shubham", age: 25 };\nconst { name, age, city = "Pune" } = user;\nconsole.log(name);\nconsole.log(city);',
+   output:'"Shubham"\n"Pune"',
+   why:'Destructuring with default values. "name" extracts from object. "city" is not in the object, so the default value "Pune" is used.'},
+
+  {part:"D",cat:"JS & TypeScript",lang:"javascript",diff:"Medium",
+   code:'const promise1 = Promise.resolve("A");\nconst promise2 = Promise.reject("B");\nconst promise3 = Promise.resolve("C");\n\nPromise.all([promise1, promise2, promise3])\n  .then(r => console.log("then:", r))\n  .catch(e => console.log("catch:", e));',
+   output:'catch: B',
+   why:'Promise.all() fails fast — if ANY promise rejects, the entire result rejects immediately with that error. promise2 rejects with "B", so .catch() fires. Use Promise.allSettled() to get all results regardless.'},
+
+  {part:"D",cat:"JS & TypeScript",lang:"javascript",diff:"Hard",
+   code:'console.log("start");\nsetTimeout(() => console.log("timeout"), 0);\nPromise.resolve().then(() => console.log("promise"));\nconsole.log("end");',
+   output:'"start"\n"end"\n"promise"\n"timeout"',
+   why:'Sync code first (start, end). Microtasks (Promise.then) execute before macrotasks (setTimeout). Even 0ms setTimeout waits for the microtask queue to drain.'},
+
+  {part:"D",cat:"JS & TypeScript",lang:"typescript",diff:"Hard",
+   code:'interface User {\n  name: string;\n  age: number;\n}\n\nconst user: Partial<User> = { name: "Shubham" };\nconst user2: Required<User> = { name: "Shubham" };\nconst user3: Readonly<User> = { name: "S", age: 25 };\nuser3.name = "New";\n\n// Which lines cause compile errors?',
+   output:'Line: Required<User> → ERROR (age is missing)\nLine: user3.name = → ERROR (readonly)',
+   why:'Partial<T> makes all fields optional. Required<T> makes all fields mandatory — missing "age" fails. Readonly<T> prevents reassignment — user3.name = "New" fails at compile time.'},
+
+  // Part E: Redis, RabbitMQ, Microservices
+  {part:"E",cat:"Infra & Patterns",lang:"java",diff:"Easy",
+   code:'// Redis cache behavior\nredisTemplate.opsForValue()\n    .set("user:1", user, 30, TimeUnit.MINUTES);\n\n// After 31 minutes:\nObject result = redisTemplate.opsForValue()\n    .get("user:1");\nSystem.out.println(result);',
+   output:'null',
+   why:'The key was set with a 30-minute TTL (Time To Live). After 31 minutes, Redis automatically evicts the key. get() returns null for expired/non-existent keys.'},
+
+  {part:"E",cat:"Infra & Patterns",lang:"java",diff:"Medium",
+   code:'// RabbitMQ — what happens?\n\n// Producer sends: "order.created"\n// Exchange type: TOPIC\n// Queue A binding: "order.*"\n// Queue B binding: "order.#"\n// Queue C binding: "payment.*"\n\n// Which queues receive the message?',
+   output:'Queue A — YES ("order.*" matches "order.created")\nQueue B — YES ("order.#" matches "order.created")\nQueue C — NO ("payment.*" ≠ "order.created")',
+   why:'In topic exchanges: * matches exactly one word, # matches zero or more words. "order.*" and "order.#" both match "order.created". "payment.*" doesn\'t match because the first word differs.'},
+
+  {part:"E",cat:"Infra & Patterns",lang:"java",diff:"Medium",
+   code:'// Circuit Breaker pattern\n// Threshold: 5 failures\n// Timeout: 30 seconds\n\n// Call 1: SUCCESS\n// Call 2: FAILURE\n// Call 3: FAILURE\n// Call 4: FAILURE\n// Call 5: FAILURE\n// Call 6: FAILURE → Circuit state?\n// Call 7 (immediately after): ?',
+   output:'After Call 6: Circuit is OPEN\nCall 7: Rejected immediately\n(no actual call made, fails fast)',
+   why:'After 5 failures, the circuit breaker trips to OPEN state. In OPEN state, calls are rejected immediately without executing — this protects the failing downstream service from being overwhelmed. After the timeout (30s), it moves to HALF-OPEN to test.'},
+
+  {part:"E",cat:"Infra & Patterns",lang:"java",diff:"Hard",
+   code:'// Distributed system scenario:\n// Service A → Service B → Database\n\n// Service A starts transaction\n// Service A calls Service B (REST)\n// Service B writes to DB\n// Service B returns 200 OK\n// Network drops AFTER response sent\n// Service A never receives 200\n// Service A retries the call\n\n// What problem occurs?',
+   output:'DUPLICATE WRITE — Service B processes\nthe same request twice.\nData inconsistency.',
+   why:'This is the classic "at-least-once delivery" problem. The operation succeeded but the acknowledgment was lost. Fix: idempotency keys. Service B should check if this request_id was already processed before executing again.'},
+
+  // Part F: Scala
+  {part:"F",cat:"Scala",lang:"scala",diff:"Easy",
+   code:'val x = 10\nvar y = 20\ny = 30\n// x = 15  // uncomment?\nprintln(s"x=$x, y=$y")',
+   output:'x=10, y=30\n// x = 15 would cause COMPILE ERROR',
+   why:'val is immutable (like final in Java) — cannot be reassigned. var is mutable — can be reassigned. Uncommenting x = 15 would fail at compile time. Scala encourages val by default.'},
+
+  {part:"F",cat:"Scala",lang:"scala",diff:"Medium",
+   code:'val nums = List(1, 2, 3, 4, 5)\nval result = nums\n  .filter(_ > 2)\n  .map(_ * 10)\n  .reduce(_ + _)\nprintln(result)',
+   output:'120',
+   why:'filter(_ > 2) → List(3,4,5). map(_ * 10) → List(30,40,50). reduce(_ + _) → 30+40+50 = 120. Underscore _ is Scala shorthand for lambda parameters.'},
+
+  {part:"F",cat:"Scala",lang:"scala",diff:"Medium",
+   code:'val opt1: Option[String] = Some("hello")\nval opt2: Option[String] = None\n\nprintln(opt1.getOrElse("default"))\nprintln(opt2.getOrElse("default"))\nprintln(opt1.map(_.toUpperCase))',
+   output:'hello\ndefault\nSome(HELLO)',
+   why:'Option is Scala\'s null-safe wrapper. Some("hello").getOrElse returns "hello". None.getOrElse returns the default. map on Some transforms the value inside, returning Some(HELLO). No NullPointerException risk.'},
+
+  {part:"F",cat:"Scala",lang:"scala",diff:"Hard",
+   code:'case class User(name: String, age: Int)\n\nval u1 = User("Shubham", 25)\nval u2 = User("Shubham", 25)\nval u3 = u1.copy(age = 26)\n\nprintln(u1 == u2)\nprintln(u1 eq u2)\nprintln(u3)',
+   output:'true\nfalse\nUser(Shubham,26)',
+   why:'Case classes auto-generate equals() based on field values, so == (structural equality) is true. "eq" checks reference identity — false (different objects). copy() creates a new instance with modified fields.'},
+];
+
+const PARTS = [
+  { key:"A", label:"Java Core", icon:"\u2615", color:"#f97316" },
+  { key:"B", label:"Spring Boot", icon:"\ud83c\udf31", color:"#22c55e" },
+  { key:"C", label:"SQL & Database", icon:"\ud83d\uddc4\ufe0f", color:"#3b82f6" },
+  { key:"D", label:"JS & TypeScript", icon:"\u26a1", color:"#f59e0b" },
+  { key:"E", label:"Infra & Patterns", icon:"\ud83d\udd27", color:"#8b5cf6" },
+  { key:"F", label:"Scala", icon:"\ud83d\udd34", color:"#ef4444" },
+];
+const diffColor = { Easy:"#22c55e", Medium:"#f59e0b", Hard:"#ef4444" };
+const langExt = { java:".java", sql:".sql", javascript:".js", typescript:".ts", scala:".scala" };
+const langColor = { java:"#f97316", sql:"#3b82f6", javascript:"#f59e0b", typescript:"#3b82f6", scala:"#ef4444" };
+
+function colorize(line, lang) {
+  const javaKw = ["public","private","protected","class","interface","extends","implements","new","return","if","else","try","catch","finally","throw","throws","void","int","long","boolean","String","static","final","import","package","this","super","abstract","enum","for","while","do","switch","case","break","default","continue","null","true","false","val","var","println","def","object","case","trait","sealed","match","override","lazy","implicit","yield","with"];
+  const sqlKw = ["SELECT","FROM","WHERE","AND","OR","NOT","INSERT","UPDATE","DELETE","CREATE","DROP","ALTER","TABLE","INTO","VALUES","SET","JOIN","LEFT","RIGHT","INNER","OUTER","ON","AS","ORDER","BY","GROUP","HAVING","LIMIT","OFFSET","COUNT","SUM","AVG","MIN","MAX","DISTINCT","IN","BETWEEN","LIKE","IS","NULL","EXISTS","UNION","ALL","RANK","OVER","PARTITION","DENSE_RANK","TRUNCATE"];
+  const jsKw = ["const","let","var","function","return","if","else","new","typeof","import","export","class","extends","async","await","try","catch","throw","interface","type","readonly"];
+  const builtins = ["System","out","String","Integer","Arrays","ArrayList","List","HashMap","Map","BigDecimal","TimeUnit","Promise","console","Option","Some","None"];
+  const methods = ["println","print","equals","length","size","get","put","remove","asList","concat","compareTo","resolve","reject","all","then","catch","log","set","filter","map","reduce","getOrElse","copy","toUpperCase"];
+  const annotations = /@\w+/g;
+
+  const kws = lang === "sql" ? sqlKw : lang === "javascript" || lang === "typescript" ? jsKw : javaKw;
+
+  const parts = [];
+  const re = /(@\w+(?:\([^)]*\))?|"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|\/\/.*$|--.*$|\b\d+\.?\d*\b|true|false|null|undefined|None|Some|\b[a-zA-Z_$][\w$]*\b|[^\s\w"'`]|\s+)/g;
+  let m, k=0;
+  while ((m = re.exec(line)) !== null) {
+    const t = m[0]; let c = "#e2e8f0";
+    if (/^@/.test(t)) c = "#c792ea";
+    else if (/^["']/.test(t)) c = "#a5d6a7";
+    else if (/^\/\/|^--/.test(t)) c = "#546e7a";
+    else if (/^\d/.test(t)) c = "#f48fb1";
+    else if (t==="true"||t==="false"||t==="null"||t==="undefined"||t==="None") c = "#f48fb1";
+    else if (t==="Some") c = "#82aaff";
+    else if (kws.map(k=>k.toLowerCase()).includes(t.toLowerCase()) && (lang==="sql" || kws.includes(t))) c = "#c792ea";
+    else if (builtins.includes(t)) c = "#82aaff";
+    else if (methods.includes(t)) c = "#ffcb6b";
+    else if (/^[(){}[\];,=<>!+\-*/%&|^~?:.]/.test(t)) c = "#89ddff";
+    parts.push(React.createElement("span",{key:k++,style:{color:c}},t));
+  }
+  return parts.length ? parts : line;
+}
+
+function App() {
+  const [started, setStarted] = useState(false);
+  const [candidateName, setCandidateName] = useState("");
+  const [activePart, setActivePart] = useState("A");
+  const [currentIdx, setCurrentIdx] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [submitted, setSubmitted] = useState({});
+  const [inputVal, setInputVal] = useState("");
+  const [typing, setTyping] = useState(null);
+  const [typedText, setTypedText] = useState("");
+  const [finished, setFinished] = useState(false);
+  const [elapsed, setElapsed] = useState(0);
+  const [startTime] = useState(Date.now());
+  const inputRef = useRef(null);
+
+  const filtered = questions.filter(q => q.part === activePart);
+  const q = filtered[currentIdx];
+  const globalIdx = questions.indexOf(q);
+  const isSubmitted = submitted[globalIdx] !== undefined;
+
+  useEffect(() => { setCurrentIdx(0); }, [activePart]);
+  useEffect(() => {
+    if (!started || finished) return;
+    const t = setInterval(() => setElapsed(Math.floor((Date.now() - startTime)/1000)), 1000);
+    return () => clearInterval(t);
+  }, [started, finished]);
+  useEffect(() => {
+    if (typing === null) return;
+    const out = q.output; let i = 0;
+    setTypedText("");
+    const iv = setInterval(() => { i++; setTypedText(out.slice(0,i)); if(i>=out.length) clearInterval(iv); }, 18);
+    return () => clearInterval(iv);
+  }, [typing]);
+  useEffect(() => {
+    if (!isSubmitted && inputRef.current) inputRef.current.focus();
+  }, [currentIdx, activePart, isSubmitted]);
+
+  const handleSubmit = (skipped) => {
+    const userAns = skipped ? "(skipped)" : inputVal.trim();
+    setAnswers(a => ({...a, [globalIdx]: userAns}));
+    const correct = !skipped && normalize(userAns) === normalize(q.output);
+    setSubmitted(s => ({...s, [globalIdx]: skipped ? "skip" : correct ? "correct" : "wrong"}));
+    setTyping(Date.now());
+    setInputVal("");
+  };
+  const normalize = (s) => s.replace(/[\s"'`()]/g,"").toLowerCase().replace(/[^\w,.\-:=<>!&|+*/]/g,"");
+
+  const handleNext = () => {
+    if (currentIdx < filtered.length - 1) { setCurrentIdx(i=>i+1); setTyping(null); setTypedText(""); }
+    else {
+      const nextPart = PARTS.findIndex(p => p.key === activePart);
+      if (nextPart < PARTS.length - 1) { setActivePart(PARTS[nextPart+1].key); setTyping(null); setTypedText(""); }
+      else { setFinished(true); }
+    }
+  };
+  const handlePrev = () => { if(currentIdx > 0) { setCurrentIdx(i=>i-1); setTyping(null); setTypedText(""); } };
+
+  const totalAnswered = Object.keys(submitted).length;
+  const totalCorrect = Object.values(submitted).filter(v => v==="correct").length;
+  const totalWrong = Object.values(submitted).filter(v => v==="wrong").length;
+  const totalSkipped = Object.values(submitted).filter(v => v==="skip").length;
+  const formatTime = (s) => `${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`;
+
+  if (!started) {
+    return (
+      <div className="landing">
+        <div className="landing-icon">{"\u2615"}</div>
+        <h1>Full Stack Code Assessment</h1>
+        <p>Java · Spring Boot · Scala · SQL · Vue.js/TypeScript</p>
+        <div className="tech-tags">
+          {["Java","Spring Boot","Scala","PostgreSQL","Redis","RabbitMQ","Vue.js","TypeScript","Microservices","Docker"].map(t =>
+            <span key={t} className="tech-tag">{t}</span>
+          )}
+        </div>
+        <div className="landing-stats">
+          <div className="landing-stat"><div className="num">30</div><div className="label">Questions</div></div>
+          <div className="landing-stat"><div className="num">6</div><div className="label">Sections</div></div>
+          <div className="landing-stat"><div className="num">~25</div><div className="label">Minutes</div></div>
+        </div>
+        <div className="rules">
+          <h3>How it works</h3>
+          <ol>
+            <li>Read the code snippet carefully</li>
+            <li>Type what the output or result will be</li>
+            <li>Click <strong>Submit</strong> to see if you're right</li>
+            <li>Review the explanation and move to next</li>
+            <li>Use <strong>Skip</strong> if unsure — no penalty</li>
+          </ol>
+        </div>
+        <input value={candidateName} onChange={e => setCandidateName(e.target.value)} placeholder="Enter your name..." style={{ padding: "12px 20px", borderRadius: 10, border: "1px solid #1e293b", background: "#111827", color: "#e2e8f0", fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: 14, width: 280, textAlign: "center", marginBottom: 16, outline: "none" }} />
+        <br/>
+        <button className="start-btn" onClick={() => setStarted(true)} disabled={!candidateName.trim()}>Start Assessment →</button>
+      </div>
+    );
+  }
+
+  if (finished) {
+    const pct = Math.round((totalCorrect / questions.length) * 100);
+    const grade = pct >= 83 ? "Strong" : pct >= 60 ? "Decent" : pct >= 40 ? "Needs Improvement" : "Below Expectations";
+    const gradeColor = pct >= 83 ? "#22c55e" : pct >= 60 ? "#f59e0b" : pct >= 40 ? "#fb923c" : "#ef4444";
+    return (
+      <div className="completion">
+        <div className="score-circle" style={{ border: `4px solid ${gradeColor}`, boxShadow: `0 0 40px ${gradeColor}20` }}>
+          <div className="pct" style={{ color: gradeColor }}>{pct}%</div>
+          <div className="lbl">Score</div>
+        </div>
+        <h2>Assessment Complete!</h2>
+        <p>{candidateName} · Time: {formatTime(elapsed)}</p>
+        <div style={{ display: "inline-block", padding: "8px 24px", borderRadius: 10, background: `${gradeColor}18`, border: `1px solid ${gradeColor}40`, color: gradeColor, fontWeight: 700, fontSize: 16, marginBottom: 24 }}>{grade}</div>
+        <div className="score-breakdown">
+          <div className="item"><div className="val" style={{color:"#4ade80"}}>{totalCorrect}</div><div className="desc">Correct</div></div>
+          <div className="item"><div className="val" style={{color:"#f87171"}}>{totalWrong}</div><div className="desc">Wrong</div></div>
+          <div className="item"><div className="val" style={{color:"#fbbf24"}}>{totalSkipped}</div><div className="desc">Skipped</div></div>
+        </div>
+        <button className="restart-btn" onClick={() => { setStarted(false); setActivePart("A"); setCurrentIdx(0); setAnswers({}); setSubmitted({}); setFinished(false); setTyping(null); setTypedText(""); setCandidateName(""); }}>Restart</button>
+      </div>
+    );
+  }
+
+  const runCmd = q.lang === "java" ? `javac Q${currentIdx+1}.java && java Q${currentIdx+1}` : q.lang === "sql" ? `psql -c "..."` : q.lang === "scala" ? `scala Q${currentIdx+1}.scala` : `node Q${currentIdx+1}.${q.lang === "typescript" ? "ts" : "js"}`;
+
+  return (
+    <div>
+      <div className="header">
+        <div className="header-left">
+          <div className="header-icon">{"\u2615"}</div>
+          <div>
+            <div className="header-title">Code Assessment</div>
+            <div className="header-sub">{candidateName} · {formatTime(elapsed)}</div>
+          </div>
+        </div>
+        <div className="score-pills">
+          <div className="pill pill-green">✓ {totalCorrect}</div>
+          <div className="pill pill-red">✗ {totalWrong}</div>
+          <div className="pill pill-total">{totalAnswered}/{questions.length}</div>
+        </div>
+      </div>
+
+      <div className="tabs">
+        {PARTS.map(p => {
+          const count = questions.filter(q2=>q2.part===p.key).length;
+          const done = questions.filter(q2=>q2.part===p.key).filter(q2=> submitted[questions.indexOf(q2)] !== undefined).length;
+          return (
+            <button key={p.key} className={`tab ${activePart===p.key?"active":""}`} style={{"--tab-color":p.color}} onClick={() => setActivePart(p.key)}>
+              <span>{p.icon}</span> {p.label}
+              <span className="tab-badge">{done}/{count}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="main">
+        <div className="q-header">
+          <div className="q-header-left">
+            <span className="q-num">Q{currentIdx+1}/{filtered.length}</span>
+            <span className="diff-badge" style={{ color: diffColor[q.diff], background: `${diffColor[q.diff]}18`, border: `1px solid ${diffColor[q.diff]}30` }}>{q.diff}</span>
+            <span className="q-prompt">Predict the output</span>
+          </div>
+          <div className="nav-btns">
+            <button className="nav-btn" onClick={handlePrev} disabled={currentIdx===0}>←</button>
+            <button className="nav-btn" onClick={handleNext} disabled={!isSubmitted}>→</button>
+          </div>
+        </div>
+
+        <div className="editor">
+          <div className="editor-bar">
+            <div style={{display:"flex",alignItems:"center",gap:8}}>
+              <div className="dots">
+                <div className="dot" style={{background:"#ef4444"}}/>
+                <div className="dot" style={{background:"#f59e0b"}}/>
+                <div className="dot" style={{background:"#22c55e"}}/>
+              </div>
+              <span className="filename">question_{currentIdx+1}{langExt[q.lang]||".java"}</span>
+            </div>
+            <span className="lang-badge" style={{color:langColor[q.lang]||"#94a3b8",background:`${langColor[q.lang]||"#94a3b8"}15`,border:`1px solid ${langColor[q.lang]||"#94a3b8"}30`}}>{q.lang.toUpperCase()}</span>
+          </div>
+          <div className="code-body">
+            {q.code.split("\n").map((line,i) => (
+              <div className="code-line" key={i}>
+                <span className="line-no">{i+1}</span>
+                <span>{colorize(line, q.lang)}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {!isSubmitted && (
+          <div className="answer-section">
+            <div className="answer-box">
+              <div className="answer-label">Your Answer</div>
+              <textarea ref={inputRef} className="answer-input" value={inputVal} onChange={e => setInputVal(e.target.value)} placeholder={q.lang==="sql"?"Type the query result or behavior...":"Type the expected output here..."} onKeyDown={e => { if (e.key==="Enter" && !e.shiftKey && inputVal.trim()) { e.preventDefault(); handleSubmit(false); }}} />
+              <div className="submit-row">
+                <button className="skip-btn" onClick={() => handleSubmit(true)}>Skip →</button>
+                <button className="submit-btn" onClick={() => handleSubmit(false)} disabled={!inputVal.trim()}>Submit Answer</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {isSubmitted && (
+          <>
+            <div className="terminal revealed">
+              <div className="terminal-bar">
+                <span>⬢ Output</span>
+                <span style={{color:"#22c55e"}}>● exit(0)</span>
+              </div>
+              <div className="terminal-body">
+                <div className="terminal-cmd">$ {runCmd}</div>
+                {typedText.split("\n").map((line,i) => (
+                  <div className="terminal-output" key={i}>{line}</div>
+                ))}
+              </div>
+            </div>
+
+            <div className={`result-card ${submitted[globalIdx]==="correct"?"result-correct":submitted[globalIdx]==="wrong"?"result-wrong":"result-skipped"}`}>
+              <div className="result-header">
+                {submitted[globalIdx]==="correct" && "✓ Correct!"}
+                {submitted[globalIdx]==="wrong" && "✗ Incorrect"}
+                {submitted[globalIdx]==="skip" && "⏭ Skipped"}
+              </div>
+              <div className="result-body">
+                {submitted[globalIdx] !== "skip" && (
+                  <div className="result-compare">
+                    <div className="result-col">
+                      <label>Your Answer</label>
+                      <pre>{answers[globalIdx]}</pre>
+                    </div>
+                    <div className="result-col">
+                      <label>Correct Output</label>
+                      <pre style={{borderColor:"#166534"}}>{q.output}</pre>
+                    </div>
+                  </div>
+                )}
+                {submitted[globalIdx] === "skip" && (
+                  <div className="result-compare" style={{gridTemplateColumns:"1fr"}}>
+                    <div className="result-col">
+                      <label>Correct Output</label>
+                      <pre>{q.output}</pre>
+                    </div>
+                  </div>
+                )}
+                <div className="explanation"><strong>Why: </strong>{q.why}</div>
+              </div>
+            </div>
+
+            <div style={{textAlign:"center",marginTop:12}}>
+              <button onClick={handleNext} style={{ padding: "10px 32px", borderRadius: 10, background: "linear-gradient(135deg, #6366f1, #8b5cf6)", color: "#fff", fontWeight: 700, fontSize: 14, border: "none", boxShadow: "0 0 20px #6366f120" }}>
+                {currentIdx < filtered.length - 1 ? "Next Question →" : PARTS.findIndex(p=>p.key===activePart) < PARTS.length -1 ? "Next Section →" : "Finish Assessment →"}
+              </button>
+            </div>
+          </>
+        )}
+
+        <div className="progress-dots">
+          {filtered.map((fq,i) => {
+            const gi = questions.indexOf(fq);
+            const st = submitted[gi];
+            let cls = "progress-dot ";
+            if (i===currentIdx) cls += "current";
+            else if (st==="correct") cls += "done-correct";
+            else if (st==="wrong") cls += "done-wrong";
+            else if (st==="skip") cls += "done-skip";
+            else cls += "pending";
+            return <button key={i} className={cls} onClick={() => { setCurrentIdx(i); setTyping(null); setTypedText(""); }} />;
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>
