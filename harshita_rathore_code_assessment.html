@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Full Stack Code Assessment — Java · Spring Boot · React · Next.js</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{--bg:#0c0e14;--surface:#111827;--surface2:#151a27;--border:#1e293b;--text:#e2e8f0;--muted:#64748b;--dim:#475569;--accent:#8b5cf6;--green:#22c55e;--red:#ef4444;--yellow:#f59e0b}
+  body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh}
+  button{font-family:inherit;cursor:pointer;border:none}button:hover{filter:brightness(1.12)}
+  ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+  .landing{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 24px;text-align:center}
+  .landing-icon{width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,#8b5cf6,#ec4899);display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:24px;box-shadow:0 0 60px #8b5cf640}
+  .landing h1{font-size:28px;font-weight:800;letter-spacing:-0.03em;margin-bottom:8px}
+  .landing p{color:var(--muted);font-size:15px;max-width:480px;line-height:1.6;margin-bottom:32px}
+  .landing-stats{display:flex;gap:24px;margin-bottom:40px}
+  .landing-stat{text-align:center}.landing-stat .num{font-size:28px;font-weight:800;color:#8b5cf6}.landing-stat .label{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:0.08em}
+  .start-btn{padding:14px 48px;border-radius:12px;background:linear-gradient(135deg,#8b5cf6,#ec4899);color:#fff;font-weight:700;font-size:16px;box-shadow:0 0 40px #8b5cf630;transition:all 0.3s}
+  .tech-tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:24px}
+  .tech-tag{padding:4px 12px;border-radius:6px;font-size:11px;font-weight:600;background:var(--surface);border:1px solid var(--border);color:var(--muted)}
+  .rules{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 28px;text-align:left;max-width:520px;margin-bottom:32px}
+  .rules h3{font-size:13px;color:#8b5cf6;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px}
+  .rules li{color:var(--muted);font-size:13px;line-height:1.8;margin-left:16px}
+
+  .header{background:var(--surface2);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
+  .header-left{display:flex;align-items:center;gap:12px}
+  .header-icon{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#8b5cf6,#ec4899);display:flex;align-items:center;justify-content:center;font-size:16px}
+  .header-title{font-weight:800;font-size:15px;letter-spacing:-0.02em}
+  .header-sub{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+  .score-pills{display:flex;gap:8px}
+  .pill{padding:5px 14px;border-radius:8px;font-weight:600;font-size:13px;font-family:'JetBrains Mono',monospace}
+  .pill-green{background:#0b2e1a;border:1px solid #166534;color:#4ade80}
+  .pill-red{background:#2a0f10;border:1px solid #991b1b;color:#f87171}
+  .pill-total{background:var(--border);color:#94a3b8}
+
+  .tabs{display:flex;gap:6px;padding:12px 24px;background:#0f1219;overflow-x:auto}
+  .tab{padding:10px 18px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--muted);font-weight:600;font-size:13px;display:flex;align-items:center;gap:8px;white-space:nowrap;transition:all 0.2s}
+  .tab.active{border-color:var(--tab-color);background:color-mix(in srgb,var(--tab-color) 10%,transparent);color:var(--tab-color)}
+  .tab-badge{padding:2px 8px;border-radius:6px;font-size:11px;background:var(--border);color:var(--dim)}
+  .tab.active .tab-badge{background:color-mix(in srgb,var(--tab-color) 15%,transparent);color:var(--tab-color)}
+
+  .main{padding:16px 24px;max-width:860px;margin:0 auto}
+  .q-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  .q-header-left{display:flex;align-items:center;gap:10px}
+  .q-num{font-weight:700;font-size:14px}
+  .diff-badge{font-size:11px;padding:3px 10px;border-radius:6px;font-weight:600}
+  .q-prompt{font-size:11px;color:var(--dim)}
+  .nav-btns{display:flex;gap:6px}
+  .nav-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:#94a3b8;display:flex;align-items:center;justify-content:center;font-size:14px}
+  .nav-btn:disabled{color:#334155;cursor:default}
+
+  .editor{border-radius:12px;overflow:hidden;border:1px solid var(--border);margin-bottom:12px}
+  .editor-bar{background:var(--surface2);padding:8px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
+  .dots{display:flex;gap:6px}.dot{width:10px;height:10px;border-radius:50%}
+  .filename{font-size:11px;color:var(--dim);margin-left:10px;font-family:'JetBrains Mono',monospace}
+  .lang-badge{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:600;font-family:'JetBrains Mono',monospace}
+  .code-body{background:var(--bg);padding:16px 20px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.7;overflow-x:auto}
+  .code-line{display:flex}.line-no{color:#334155;width:32px;text-align:right;margin-right:16px;user-select:none;font-size:12px}
+
+  .answer-section{margin-bottom:12px}
+  .answer-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 20px}
+  .answer-label{font-size:12px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px}
+  .answer-input{width:100%;background:#06080d;border:1px solid var(--border);border-radius:8px;padding:12px 16px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;resize:vertical;min-height:60px;outline:none;transition:border-color 0.3s}
+  .answer-input:focus{border-color:var(--accent)}.answer-input::placeholder{color:#334155}
+  .submit-row{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+  .submit-btn{padding:10px 32px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#ec4899);color:#fff;font-weight:700;font-size:14px;box-shadow:0 0 24px #8b5cf620;transition:all 0.3s}
+  .submit-btn:disabled{background:var(--border);color:var(--dim);box-shadow:none;cursor:default}
+  .skip-btn{padding:10px 20px;border-radius:10px;background:transparent;border:1px solid var(--border);color:var(--muted);font-weight:600;font-size:13px}
+
+  .terminal{border-radius:12px;border:1px solid var(--border);overflow:hidden;margin-bottom:12px;transition:border-color 0.5s}
+  .terminal.revealed{border-color:#16a34a30}
+  .terminal-bar{background:#0a0c10;padding:6px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+  .terminal-bar span{font-size:11px;color:var(--dim);font-family:'JetBrains Mono',monospace}
+  .terminal-body{background:#06080d;padding:14px 20px;min-height:60px;font-family:'JetBrains Mono',monospace;font-size:13px}
+  .terminal-output{color:#4ade80;font-weight:500}
+  .terminal-cmd{color:var(--dim);font-size:11px;margin-bottom:6px}
+
+  .result-card{border-radius:12px;overflow:hidden;margin-bottom:12px;animation:fadeSlideIn 0.4s ease-out}
+  .result-correct{background:#071a0e;border:1px solid #166534}
+  .result-wrong{background:#1a0b0b;border:1px solid #991b1b}
+  .result-skipped{background:var(--surface);border:1px solid var(--border)}
+  .result-header{padding:14px 20px;display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px}
+  .result-correct .result-header{color:#4ade80}.result-wrong .result-header{color:#f87171}.result-skipped .result-header{color:var(--yellow)}
+  .result-body{padding:0 20px 16px}
+  .result-compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+  .result-col label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--dim);margin-bottom:6px;font-weight:600}
+  .result-col pre{background:#06080d;border-radius:8px;padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text);white-space:pre-wrap;border:1px solid var(--border)}
+  .explanation{font-size:13px;color:#cbd5e1;line-height:1.6}.explanation strong{color:var(--accent)}
+
+  .progress-dots{display:flex;gap:4px;justify-content:center;margin-top:20px;flex-wrap:wrap}
+  .progress-dot{height:8px;border-radius:4px;border:none;transition:all 0.3s}
+  .progress-dot.current{width:24px;background:var(--accent)}
+  .progress-dot.done-correct{width:8px;background:var(--green)}
+  .progress-dot.done-wrong{width:8px;background:var(--red)}
+  .progress-dot.done-skip{width:8px;background:var(--yellow)}
+  .progress-dot.pending{width:8px;background:var(--border)}
+
+  .completion{text-align:center;padding:60px 24px;animation:fadeSlideIn 0.6s ease-out}
+  .completion h2{font-size:28px;font-weight:800;margin-bottom:8px;letter-spacing:-0.03em}
+  .completion p{color:var(--muted);margin-bottom:32px}
+  .score-circle{width:140px;height:140px;border-radius:50%;margin:0 auto 24px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .score-circle .pct{font-size:40px;font-weight:800}.score-circle .lbl{font-size:12px;color:var(--muted)}
+  .score-breakdown{display:flex;gap:32px;justify-content:center;margin-bottom:40px}
+  .score-breakdown .item{text-align:center}.score-breakdown .val{font-size:24px;font-weight:800}.score-breakdown .desc{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:0.06em}
+  .restart-btn{padding:12px 36px;border-radius:10px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-weight:600;font-size:14px}
+
+  @keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}
+  @keyframes fadeSlideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  @media(max-width:600px){.result-compare{grid-template-columns:1fr}.landing-stats{gap:16px}.score-pills{gap:4px}.tabs{padding:10px 12px}.main{padding:12px 14px}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+const questions = [
+  // Part A: Java Core (8)
+  {part:"A",cat:"Java Core",lang:"java",diff:"Easy",
+   code:'String s1 = "hello";\nString s2 = "hello";\nString s3 = new String("hello");\nSystem.out.println(s1 == s2);\nSystem.out.println(s1 == s3);\nSystem.out.println(s1.equals(s3));',
+   output:'true\nfalse\ntrue',
+   why:'String literals go to the String Pool (s1 == s2 is same reference). new String() creates a separate heap object (s1 == s3 is false). .equals() compares content \u2014 always true.'},
+
+  {part:"A",cat:"Java Core",lang:"java",diff:"Easy",
+   code:'List<String> list = Arrays.asList("a", "b", "c");\nlist.add("d");\nSystem.out.println(list);',
+   output:'UnsupportedOperationException!',
+   why:'Arrays.asList() returns a fixed-size list backed by the array. add/remove operations throw UnsupportedOperationException. Fix: new ArrayList<>(Arrays.asList(...)).'},
+
+  {part:"A",cat:"Java Core",lang:"java",diff:"Medium",
+   code:'Integer a = 127;\nInteger b = 127;\nInteger c = 200;\nInteger d = 200;\nSystem.out.println(a == b);\nSystem.out.println(c == d);',
+   output:'true\nfalse',
+   why:'Java caches Integer objects for -128 to 127 (IntegerCache). Within this range == returns true (same cached object). Outside (200), new objects are created so == compares references \u2192 false.'},
+
+  {part:"A",cat:"Java Core",lang:"java",diff:"Medium",
+   code:'Map<String, Integer> map = new HashMap<>();\nmap.put("x", 1);\nmap.put("y", 2);\nmap.put("x", 3);\nSystem.out.println(map);\nSystem.out.println(map.size());',
+   output:'{x=3, y=2}\n2',
+   why:'HashMap does not allow duplicate keys. Putting "x" again overwrites the value (1 \u2192 3). Size is 2 because only 2 unique keys exist.'},
+
+  {part:"A",cat:"Java Core",lang:"java",diff:"Medium",
+   code:'try {\n    System.out.println("try");\n    throw new RuntimeException("error");\n} catch (Exception e) {\n    System.out.println("catch");\n} finally {\n    System.out.println("finally");\n}',
+   output:'try\ncatch\nfinally',
+   why:'"try" prints first, then exception is thrown, caught by catch block ("catch" prints), finally ALWAYS runs regardless ("finally" prints). Order: try \u2192 catch \u2192 finally.'},
+
+  {part:"A",cat:"Java Core",lang:"java",diff:"Hard",
+   code:'String s = "Java";\ns.concat(" Spring");\nSystem.out.println(s);\n\ns = s.concat(" Boot");\nSystem.out.println(s);',
+   output:'Java\nJava Boot',
+   why:'Strings are immutable in Java. s.concat(" Spring") creates a new String but the result is not assigned back to s. The second line assigns the result back, so s becomes "Java Boot".'},
+
+  {part:"A",cat:"Java Core",lang:"java",diff:"Hard",
+   code:'List<Integer> nums = new ArrayList<>(\n    Arrays.asList(1, 2, 3, 4, 5)\n);\nnums.removeIf(n -> n % 2 == 0);\nSystem.out.println(nums);',
+   output:'[1, 3, 5]',
+   why:'removeIf() takes a Predicate and removes elements where the condition is true. n % 2 == 0 matches even numbers (2, 4), so they are removed. This is a Java 8 lambda/functional feature.'},
+
+  {part:"A",cat:"Java Core",lang:"java",diff:"Hard",
+   code:'Optional<String> opt1 = Optional.of("hello");\nOptional<String> opt2 = Optional.empty();\n\nSystem.out.println(opt1.isPresent());\nSystem.out.println(opt2.orElse("default"));\nSystem.out.println(opt1.map(String::toUpperCase).get());',
+   output:'true\ndefault\nHELLO',
+   why:'Optional.of("hello").isPresent() is true. Optional.empty().orElse("default") returns the fallback. .map() transforms the value inside Optional \u2014 toUpperCase gives "HELLO".'},
+
+  // Part B: Spring Boot (6)
+  {part:"B",cat:"Spring Boot",lang:"java",diff:"Easy",
+   code:'@RestController\npublic class ItemController {\n    @GetMapping("/items/{id}")\n    public ResponseEntity<Item> getItem(@PathVariable Long id) {\n        Item item = service.findById(id);\n        if (item == null)\n            return ResponseEntity.notFound().build();\n        return ResponseEntity.ok(item);\n    }\n}\n// GET /items/99 (id 99 does not exist)',
+   output:'HTTP 404 Not Found\n(empty body)',
+   why:'When item is null, ResponseEntity.notFound().build() returns a 404 response with no body. .ok(item) would return 200 with the item as JSON.'},
+
+  {part:"B",cat:"Spring Boot",lang:"java",diff:"Easy",
+   code:'@GetMapping("/items")\npublic List<Item> getItems(\n    @RequestParam(defaultValue = "0") int page,\n    @RequestParam(defaultValue = "10") int size) {\n    return service.getItems(page, size);\n}\n\n// GET /items\n// GET /items?page=2\n// GET /items?page=1&size=5',
+   output:'Call 1: page=0, size=10 (defaults)\nCall 2: page=2, size=10\nCall 3: page=1, size=5',
+   why:'@RequestParam with defaultValue provides fallback values when query params are missing. Only explicitly provided params override the defaults.'},
+
+  {part:"B",cat:"Spring Boot",lang:"java",diff:"Medium",
+   code:'@Transactional\npublic void updateInventory(Long id, int qty) {\n    Item item = repo.findById(id).orElseThrow();\n    item.setQuantity(item.getQuantity() - qty);\n    if (item.getQuantity() < 0)\n        throw new InsufficientStockException();\n    repo.save(item);\n}\n// Called with qty larger than available stock:',
+   output:'InsufficientStockException is thrown.\nQuantity change is ROLLED BACK.\nOriginal stock is preserved.',
+   why:'@Transactional rolls back on RuntimeException by default. InsufficientStockException (extends RuntimeException) triggers rollback \u2014 the setQuantity change is undone. This is ACID atomicity.'},
+
+  {part:"B",cat:"Spring Boot",lang:"java",diff:"Medium",
+   code:'@RestControllerAdvice\npublic class GlobalExceptionHandler {\n    @ExceptionHandler(ItemNotFoundException.class)\n    public ResponseEntity<Map<String, String>> handleNotFound(\n            ItemNotFoundException ex) {\n        return ResponseEntity.status(404).body(\n            Map.of("error", ex.getMessage())\n        );\n    }\n}\n// When ItemNotFoundException("Item 42 not found") is thrown:',
+   output:'HTTP 404\n{"error": "Item 42 not found"}',
+   why:'@RestControllerAdvice provides centralized exception handling across all controllers. @ExceptionHandler catches the specific exception type and returns a custom JSON response with the appropriate HTTP status.'},
+
+  {part:"B",cat:"Spring Boot",lang:"java",diff:"Hard",
+   code:'@Service\npublic class InventoryService {\n    @Autowired\n    private ItemRepository repo;\n}\n\n// vs\n\n@Service\npublic class InventoryService {\n    private final ItemRepository repo;\n    \n    public InventoryService(ItemRepository repo) {\n        this.repo = repo;\n    }\n}\n// Which is better and why?',
+   output:'Constructor injection (second) is preferred.',
+   why:'Constructor injection: immutable (final), fail-fast at startup, easily testable without Spring context. Field injection (@Autowired): allows null deps, hidden dependencies, harder to test. Spring itself recommends constructor injection.'},
+
+  {part:"B",cat:"Spring Boot",lang:"java",diff:"Hard",
+   code:'@Component\npublic class AuditFilter implements Filter {\n    @Override\n    public void doFilter(ServletRequest req,\n            ServletResponse res, FilterChain chain)\n            throws IOException, ServletException {\n        System.out.println("BEFORE");\n        chain.doFilter(req, res);\n        System.out.println("AFTER");\n    }\n}\n// On any API request:',
+   output:'BEFORE\n(controller executes)\nAFTER',
+   why:'Servlet Filters wrap around the controller execution. doFilter() runs before, chain.doFilter() passes to the next filter/controller, then code after chain.doFilter() runs on the way back. Used for logging, auth, CORS.'},
+
+  // Part C: React (6)
+  {part:"C",cat:"React.js",lang:"javascript",diff:"Easy",
+   code:'function App() {\n  const [count, setCount] = useState(0);\n  const handleClick = () => {\n    setCount(count + 1);\n    setCount(count + 1);\n    setCount(count + 1);\n  };\n  return <p>{count}</p>;\n  // After one click?\n}',
+   output:'1 (not 3)',
+   why:'React batches state updates. All three setCount calls see the same stale closure value (count=0). Each sets 0+1=1. Fix: use functional updater setCount(c => c+1) to chain properly.'},
+
+  {part:"C",cat:"React.js",lang:"javascript",diff:"Easy",
+   code:'function App() {\n  const [count, setCount] = useState(0);\n  useEffect(() => {\n    console.log("effect:", count);\n  });\n  console.log("render:", count);\n  return <p>{count}</p>;\n}\n// On initial render:',
+   output:'"render: 0"\n"effect: 0"',
+   why:'Component body (render) executes synchronously first. useEffect runs asynchronously AFTER the browser paints. So render log always comes before effect log.'},
+
+  {part:"C",cat:"React.js",lang:"javascript",diff:"Medium",
+   code:'function App() {\n  const [count, setCount] = useState(0);\n  useEffect(() => {\n    console.log("mount");\n    return () => console.log("cleanup");\n  }, [count]);\n  // Logs when count changes 0 \u2192 1?\n}',
+   output:'"cleanup"\n"mount"',
+   why:'When a useEffect dependency changes, React first runs the cleanup function from the previous effect, then runs the new effect. This prevents stale closures and memory leaks.'},
+
+  {part:"C",cat:"React.js",lang:"javascript",diff:"Medium",
+   code:'function Parent() {\n  const [items, setItems] = useState(["a", "b", "c"]);\n  return (\n    <ul>\n      {items.map(item => (\n        <li key={item}>{item}</li>\n      ))}\n    </ul>\n  );\n}\n// Why is the key prop important?\n// What if we use index as key?',
+   output:'key helps React identify which items changed.\nUsing index as key causes bugs when\nlist is reordered or items are removed.',
+   why:'React uses keys to match old vs new virtual DOM elements. Stable, unique keys (like item IDs) ensure correct re-rendering. Index-based keys break when the list order changes \u2014 React reuses wrong DOM nodes.'},
+
+  {part:"C",cat:"React.js",lang:"javascript",diff:"Hard",
+   code:'function App() {\n  const [text, setText] = useState("");\n  \n  const handleChange = (e) => {\n    setText(e.target.value);\n  };\n  \n  // User types "abc" fast:\n  console.log(text);\n  // What renders after each keystroke?\n}',
+   output:'"a" then "ab" then "abc"\n(each keystroke triggers re-render\nwith the new value)',
+   why:'This is a controlled component. Every keystroke fires onChange \u2192 setText updates state \u2192 React re-renders \u2192 input shows new value. The component is the single source of truth for the input value.'},
+
+  {part:"C",cat:"React.js",lang:"javascript",diff:"Hard",
+   code:'const MemoChild = React.memo(function Child({ name }) {\n  console.log("Child render");\n  return <p>{name}</p>;\n});\n\nfunction Parent() {\n  const [count, setCount] = useState(0);\n  return (\n    <>\n      <MemoChild name="Harshita" />\n      <button onClick={() => setCount(c=>c+1)}>\n        Count: {count}\n      </button>\n    </>\n  );\n}\n// After clicking button 3 times:',
+   output:'"Child render" logs only ONCE (initial).\nButton clicks do NOT re-render Child.',
+   why:'React.memo is a higher-order component that skips re-render if props haven\'t changed. "name" is always "Harshita" (same string), so MemoChild is never re-rendered when parent state (count) changes.'},
+
+  // Part D: Next.js & Auth (4)
+  {part:"D",cat:"Next.js & Auth",lang:"javascript",diff:"Easy",
+   code:'// pages/items/[id].js (Next.js)\nexport default function ItemPage({ params }) {\n  return <h1>Item: {params.id}</h1>;\n}\n\n// URL: /items/42\n// URL: /items/abc',
+   output:'/items/42 \u2192 renders "Item: 42"\n/items/abc \u2192 renders "Item: abc"',
+   why:'[id].js is a dynamic route in Next.js. The segment value is captured in params.id. Next.js treats all URL segments as strings \u2014 "42" and "abc" are both valid. Type validation is your responsibility.'},
+
+  {part:"D",cat:"Next.js & Auth",lang:"javascript",diff:"Medium",
+   code:'// Next.js API route: pages/api/items.js\nexport default function handler(req, res) {\n  if (req.method === "GET") {\n    res.status(200).json({ items: [] });\n  } else if (req.method === "POST") {\n    const { name } = req.body;\n    res.status(201).json({ created: name });\n  } else {\n    res.status(405).end();\n  }\n}\n// DELETE /api/items returns?',
+   output:'HTTP 405 (Method Not Allowed)\nEmpty body',
+   why:'The handler only handles GET and POST. Any other method (DELETE, PUT, PATCH) falls to the else block which returns 405 \u2014 the standard HTTP status for "method not allowed."'},
+
+  {part:"D",cat:"Next.js & Auth",lang:"javascript",diff:"Medium",
+   code:'// Next.js with Okta auth\nimport { useSession } from "next-auth/react";\n\nexport default function Dashboard() {\n  const { data: session, status } = useSession();\n  \n  if (status === "loading") return <p>Loading...</p>;\n  if (!session) return <p>Access Denied</p>;\n  \n  return <h1>Welcome {session.user.name}</h1>;\n}\n// What renders for:\n// 1. Authenticated user "Harshita"\n// 2. Unauthenticated user\n// 3. Page still loading',
+   output:'1. "Welcome Harshita"\n2. "Access Denied"\n3. "Loading..."',
+   why:'useSession() returns status ("loading", "authenticated", "unauthenticated") and session data. The component handles all three states. This is the standard auth-guard pattern with NextAuth/Okta.'},
+
+  {part:"D",cat:"Next.js & Auth",lang:"javascript",diff:"Hard",
+   code:'// Next.js middleware (middleware.js)\nimport { NextResponse } from "next/server";\n\nexport function middleware(request) {\n  const token = request.cookies.get("auth_token");\n  \n  if (!token && request.nextUrl.pathname.startsWith("/dashboard")) {\n    return NextResponse.redirect(\n      new URL("/login", request.url)\n    );\n  }\n  return NextResponse.next();\n}\n\nexport const config = {\n  matcher: ["/dashboard/:path*"]\n};\n// User without cookie visits /dashboard/inventory:',
+   output:'Redirected to /login\n(302 redirect, never reaches the page)',
+   why:'Next.js middleware runs BEFORE the page renders (at the edge). matcher limits it to /dashboard/* routes. No auth_token cookie + /dashboard path \u2192 redirect to /login. The dashboard page component never executes.'},
+
+  // Part E: JavaScript Core (4)
+  {part:"E",cat:"JavaScript",lang:"javascript",diff:"Easy",
+   code:'console.log(typeof null);\nconsole.log(typeof undefined);\nconsole.log(null == undefined);\nconsole.log(null === undefined);',
+   output:'"object"\n"undefined"\ntrue\nfalse',
+   why:'typeof null is "object" (famous JS bug). null == undefined is true (loose equality, both are "empty"). null === undefined is false (different types: object vs undefined).'},
+
+  {part:"E",cat:"JavaScript",lang:"javascript",diff:"Medium",
+   code:'const user = { name: "Harshita", role: "dev" };\nconst { name, role, team = "Platform" } = user;\nconsole.log(name);\nconsole.log(team);',
+   output:'"Harshita"\n"Platform"',
+   why:'Destructuring with default values. name extracts "Harshita" from user. team is not in the object, so the default "Platform" is used.'},
+
+  {part:"E",cat:"JavaScript",lang:"javascript",diff:"Medium",
+   code:'console.log("start");\nsetTimeout(() => console.log("timeout"), 0);\nPromise.resolve().then(() => console.log("promise"));\nconsole.log("end");',
+   output:'"start"\n"end"\n"promise"\n"timeout"',
+   why:'Sync code first (start, end). Microtasks (Promise.then) execute before macrotasks (setTimeout). Even 0ms setTimeout waits for the microtask queue to drain.'},
+
+  {part:"E",cat:"JavaScript",lang:"javascript",diff:"Hard",
+   code:'const arr = [1, 2, 3, 4, 5];\n\nconst result = arr\n  .filter(n => n > 2)\n  .map(n => n * 10)\n  .reduce((sum, n) => sum + n, 0);\n\nconsole.log(result);',
+   output:'120',
+   why:'filter(n > 2) \u2192 [3,4,5]. map(n*10) \u2192 [30,40,50]. reduce(sum) \u2192 30+40+50 = 120. Chained array methods are a core functional JS pattern.'},
+
+  // Part F: SQL & REST (4)
+  {part:"F",cat:"SQL & REST API",lang:"sql",diff:"Easy",
+   code:'-- inventory table: id, name, quantity, category\n-- 10 rows, 3 with category = NULL\n\nSELECT COUNT(*) FROM inventory;\nSELECT COUNT(category) FROM inventory;',
+   output:'10\n7',
+   why:'COUNT(*) counts all rows including NULLs. COUNT(column) only counts non-NULL values. 10 total - 3 NULLs = 7.'},
+
+  {part:"F",cat:"SQL & REST API",lang:"sql",diff:"Medium",
+   code:'SELECT category, SUM(quantity) as total\nFROM inventory\nWHERE quantity > 0\nGROUP BY category\nHAVING SUM(quantity) > 100\nORDER BY total DESC;',
+   output:'Categories where total quantity > 100,\nsorted from highest to lowest.\nOnly rows with quantity > 0 are included.',
+   why:'WHERE filters rows BEFORE grouping. GROUP BY groups by category. HAVING filters groups AFTER aggregation (SUM > 100). ORDER BY sorts the final result. This is the correct SQL execution order.'},
+
+  {part:"F",cat:"SQL & REST API",lang:"java",diff:"Medium",
+   code:'// REST API design question:\n// You have an inventory CRUD API.\n// Which HTTP methods map to which operations?\n\n// Create a new item:     ____\n// Read all items:        ____\n// Read item by id:       ____\n// Update existing item:  ____\n// Delete item:           ____',
+   output:'Create  \u2192 POST   /api/items\nReadAll \u2192 GET    /api/items\nReadOne \u2192 GET    /api/items/{id}\nUpdate  \u2192 PUT    /api/items/{id}\nDelete  \u2192 DELETE /api/items/{id}',
+   why:'RESTful convention: POST creates (201), GET reads (200), PUT updates entire resource (200), PATCH partial update, DELETE removes (204). Resource naming is plural nouns, not verbs.'},
+
+  {part:"F",cat:"SQL & REST API",lang:"sql",diff:"Hard",
+   code:'-- Two queries:\n\nSELECT * FROM inventory\nWHERE quantity > 10\nAND (category = \'tools\' OR category = \'parts\');\n\n-- vs\n\nSELECT * FROM inventory\nWHERE quantity > 10\nAND category = \'tools\' OR category = \'parts\';',
+   output:'DIFFERENT results!\nQuery 2 returns ALL "parts" items\nregardless of quantity.',
+   why:'AND has higher precedence than OR. Query 2 is parsed as: (quantity > 10 AND category = "tools") OR (category = "parts"). Parentheses in Query 1 enforce the intended grouping.'},
+];
+
+const PARTS = [
+  {key:"A",label:"Java Core",icon:"\u2615",color:"#f97316"},
+  {key:"B",label:"Spring Boot",icon:"\ud83c\udf31",color:"#22c55e"},
+  {key:"C",label:"React.js",icon:"\u269b\ufe0f",color:"#3b82f6"},
+  {key:"D",label:"Next.js & Auth",icon:"\u25b2",color:"#8b5cf6"},
+  {key:"E",label:"JavaScript",icon:"\u26a1",color:"#f59e0b"},
+  {key:"F",label:"SQL & REST API",icon:"\ud83d\uddc4\ufe0f",color:"#ec4899"},
+];
+const diffColor={Easy:"#22c55e",Medium:"#f59e0b",Hard:"#ef4444"};
+const langExt={java:".java",sql:".sql",javascript:".js"};
+const langColor={java:"#f97316",sql:"#ec4899",javascript:"#f59e0b"};
+
+function colorize(line,lang){
+  const javaKw=["public","private","protected","class","interface","extends","implements","new","return","if","else","try","catch","finally","throw","throws","void","int","long","boolean","String","static","final","import","this","super","default","null","true","false"];
+  const jsKw=["const","let","var","function","return","if","else","new","typeof","import","export","class","extends","async","await","try","catch","throw","from"];
+  const sqlKw=["SELECT","FROM","WHERE","AND","OR","NOT","INSERT","UPDATE","DELETE","CREATE","DROP","TABLE","INTO","VALUES","SET","JOIN","ON","AS","ORDER","BY","GROUP","HAVING","LIMIT","COUNT","SUM","AVG","MIN","MAX","DISTINCT","NULL","DESC","ASC"];
+  const builtins=["System","out","String","Integer","Arrays","ArrayList","List","HashMap","Map","Optional","ResponseEntity","React","useState","useEffect","useSession","console","NextResponse","Promise","setTimeout"];
+  const methods=["println","equals","of","empty","isPresent","orElse","get","map","put","add","asList","removeIf","findById","status","json","body","build","ok","notFound","memo","log","resolve","then","filter","reduce","startsWith","redirect"];
+  const annotations=/@\w+/g;
+  const kws=lang==="sql"?sqlKw:lang==="javascript"?jsKw:javaKw;
+  const parts=[];
+  const re=/(@\w+(?:\([^)]*\))?|"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`|\/\/.*$|--.*$|\b\d+\.?\d*\b|true|false|null|undefined|\b[a-zA-Z_$][\w$]*\b|[^\s\w"'`]|\s+)/g;
+  let m,k=0;
+  while((m=re.exec(line))!==null){
+    const t=m[0];let c="#e2e8f0";
+    if(/^@/.test(t))c="#c792ea";
+    else if(/^["'`]/.test(t))c="#a5d6a7";
+    else if(/^\/\/|^--/.test(t))c="#546e7a";
+    else if(/^\d/.test(t))c="#f48fb1";
+    else if(t==="true"||t==="false"||t==="null"||t==="undefined")c="#f48fb1";
+    else if(kws.map(k=>k.toLowerCase()).includes(t.toLowerCase())&&(lang==="sql"||kws.includes(t)))c="#c792ea";
+    else if(builtins.includes(t))c="#82aaff";
+    else if(methods.includes(t))c="#ffcb6b";
+    else if(/^[(){}[\];,=<>!+\-*/%&|^~?:.]/.test(t))c="#89ddff";
+    parts.push(React.createElement("span",{key:k++,style:{color:c}},t));
+  }
+  return parts.length?parts:line;
+}
+
+function App(){
+  const[started,setStarted]=useState(false);
+  const[candidateName,setCandidateName]=useState("");
+  const[activePart,setActivePart]=useState("A");
+  const[currentIdx,setCurrentIdx]=useState(0);
+  const[answers,setAnswers]=useState({});
+  const[submitted,setSubmitted]=useState({});
+  const[inputVal,setInputVal]=useState("");
+  const[typing,setTyping]=useState(null);
+  const[typedText,setTypedText]=useState("");
+  const[finished,setFinished]=useState(false);
+  const[elapsed,setElapsed]=useState(0);
+  const[startTime]=useState(Date.now());
+  const inputRef=useRef(null);
+
+  const filtered=questions.filter(q=>q.part===activePart);
+  const q=filtered[currentIdx];
+  const globalIdx=questions.indexOf(q);
+  const isSubmitted=submitted[globalIdx]!==undefined;
+
+  useEffect(()=>{setCurrentIdx(0)},[activePart]);
+  useEffect(()=>{
+    if(!started||finished)return;
+    const t=setInterval(()=>setElapsed(Math.floor((Date.now()-startTime)/1000)),1000);
+    return()=>clearInterval(t);
+  },[started,finished]);
+  useEffect(()=>{
+    if(typing===null)return;
+    const out=q.output;let i=0;setTypedText("");
+    const iv=setInterval(()=>{i++;setTypedText(out.slice(0,i));if(i>=out.length)clearInterval(iv)},18);
+    return()=>clearInterval(iv);
+  },[typing]);
+  useEffect(()=>{if(!isSubmitted&&inputRef.current)inputRef.current.focus()},[currentIdx,activePart,isSubmitted]);
+
+  const handleSubmit=(skipped)=>{
+    const userAns=skipped?"(skipped)":inputVal.trim();
+    setAnswers(a=>({...a,[globalIdx]:userAns}));
+    const correct=!skipped&&normalize(userAns)===normalize(q.output);
+    setSubmitted(s=>({...s,[globalIdx]:skipped?"skip":correct?"correct":"wrong"}));
+    setTyping(Date.now());setInputVal("");
+  };
+  const normalize=(s)=>s.replace(/[\s"'`()]/g,"").toLowerCase().replace(/[^\w,.\-:=<>!&|+*/{}[\]]/g,"");
+
+  const handleNext=()=>{
+    if(currentIdx<filtered.length-1){setCurrentIdx(i=>i+1);setTyping(null);setTypedText("")}
+    else{const np=PARTS.findIndex(p=>p.key===activePart);if(np<PARTS.length-1){setActivePart(PARTS[np+1].key);setTyping(null);setTypedText("")}else{setFinished(true)}}
+  };
+  const handlePrev=()=>{if(currentIdx>0){setCurrentIdx(i=>i-1);setTyping(null);setTypedText("")}};
+
+  const totalAnswered=Object.keys(submitted).length;
+  const totalCorrect=Object.values(submitted).filter(v=>v==="correct").length;
+  const totalWrong=Object.values(submitted).filter(v=>v==="wrong").length;
+  const totalSkipped=Object.values(submitted).filter(v=>v==="skip").length;
+  const formatTime=(s)=>`${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`;
+
+  if(!started){
+    return(
+      <div className="landing">
+        <div className="landing-icon">{"\u2615"}</div>
+        <h1>Full Stack Code Assessment</h1>
+        <p>Java 8 \u00b7 Spring Boot \u00b7 React \u00b7 Next.js \u00b7 SQL</p>
+        <div className="tech-tags">
+          {["Java 8","Spring Boot","React","Next.js","REST APIs","JUnit","Okta Auth","SQL","AWS","SonarQube"].map(t=>
+            <span key={t} className="tech-tag">{t}</span>
+          )}
+        </div>
+        <div className="landing-stats">
+          <div className="landing-stat"><div className="num">32</div><div className="label">Questions</div></div>
+          <div className="landing-stat"><div className="num">6</div><div className="label">Sections</div></div>
+          <div className="landing-stat"><div className="num">~25</div><div className="label">Minutes</div></div>
+        </div>
+        <div className="rules">
+          <h3>How it works</h3>
+          <ol>
+            <li>Read the code snippet carefully</li>
+            <li>Type what the output or result will be</li>
+            <li>Click <strong>Submit</strong> to check your answer</li>
+            <li>Review the explanation and move to next</li>
+            <li>Use <strong>Skip</strong> if unsure \u2014 no penalty</li>
+          </ol>
+        </div>
+        <input value={candidateName} onChange={e=>setCandidateName(e.target.value)} placeholder="Enter your name..." style={{padding:"12px 20px",borderRadius:10,border:"1px solid #1e293b",background:"#111827",color:"#e2e8f0",fontFamily:"'Plus Jakarta Sans',sans-serif",fontSize:14,width:280,textAlign:"center",marginBottom:16,outline:"none"}}/>
+        <br/>
+        <button className="start-btn" onClick={()=>setStarted(true)} disabled={!candidateName.trim()}>Start Assessment \u2192</button>
+      </div>
+    );
+  }
+
+  if(finished){
+    const pct=Math.round((totalCorrect/questions.length)*100);
+    const grade=pct>=83?"Strong":pct>=60?"Decent":pct>=40?"Needs Improvement":"Below Expectations";
+    const gradeColor=pct>=83?"#22c55e":pct>=60?"#f59e0b":pct>=40?"#fb923c":"#ef4444";
+    return(
+      <div className="completion">
+        <div className="score-circle" style={{border:`4px solid ${gradeColor}`,boxShadow:`0 0 40px ${gradeColor}20`}}>
+          <div className="pct" style={{color:gradeColor}}>{pct}%</div>
+          <div className="lbl">Score</div>
+        </div>
+        <h2>Assessment Complete!</h2>
+        <p>{candidateName} \u00b7 Time: {formatTime(elapsed)}</p>
+        <div style={{display:"inline-block",padding:"8px 24px",borderRadius:10,background:`${gradeColor}18`,border:`1px solid ${gradeColor}40`,color:gradeColor,fontWeight:700,fontSize:16,marginBottom:24}}>{grade}</div>
+        <div className="score-breakdown">
+          <div className="item"><div className="val" style={{color:"#4ade80"}}>{totalCorrect}</div><div className="desc">Correct</div></div>
+          <div className="item"><div className="val" style={{color:"#f87171"}}>{totalWrong}</div><div className="desc">Wrong</div></div>
+          <div className="item"><div className="val" style={{color:"#fbbf24"}}>{totalSkipped}</div><div className="desc">Skipped</div></div>
+        </div>
+        <button className="restart-btn" onClick={()=>{setStarted(false);setActivePart("A");setCurrentIdx(0);setAnswers({});setSubmitted({});setFinished(false);setTyping(null);setTypedText("");setCandidateName("")}}>Restart</button>
+      </div>
+    );
+  }
+
+  const runCmd=q.lang==="java"?`javac Q${currentIdx+1}.java && java Q${currentIdx+1}`:q.lang==="sql"?`psql -c "...":`:`node Q${currentIdx+1}.js`;
+
+  return(
+    <div>
+      <div className="header">
+        <div className="header-left">
+          <div className="header-icon">{"\u2615"}</div>
+          <div><div className="header-title">Code Assessment</div><div className="header-sub">{candidateName} \u00b7 {formatTime(elapsed)}</div></div>
+        </div>
+        <div className="score-pills">
+          <div className="pill pill-green">\u2713 {totalCorrect}</div>
+          <div className="pill pill-red">\u2717 {totalWrong}</div>
+          <div className="pill pill-total">{totalAnswered}/{questions.length}</div>
+        </div>
+      </div>
+
+      <div className="tabs">
+        {PARTS.map(p=>{
+          const count=questions.filter(q2=>q2.part===p.key).length;
+          const done=questions.filter(q2=>q2.part===p.key).filter(q2=>submitted[questions.indexOf(q2)]!==undefined).length;
+          return(<button key={p.key} className={`tab ${activePart===p.key?"active":""}`} style={{"--tab-color":p.color}} onClick={()=>setActivePart(p.key)}>
+            <span>{p.icon}</span> {p.label}<span className="tab-badge">{done}/{count}</span>
+          </button>);
+        })}
+      </div>
+
+      <div className="main">
+        <div className="q-header">
+          <div className="q-header-left">
+            <span className="q-num">Q{currentIdx+1}/{filtered.length}</span>
+            <span className="diff-badge" style={{color:diffColor[q.diff],background:`${diffColor[q.diff]}18`,border:`1px solid ${diffColor[q.diff]}30`}}>{q.diff}</span>
+            <span className="q-prompt">Predict the output</span>
+          </div>
+          <div className="nav-btns">
+            <button className="nav-btn" onClick={handlePrev} disabled={currentIdx===0}>\u2190</button>
+            <button className="nav-btn" onClick={handleNext} disabled={!isSubmitted}>\u2192</button>
+          </div>
+        </div>
+
+        <div className="editor">
+          <div className="editor-bar">
+            <div style={{display:"flex",alignItems:"center",gap:8}}>
+              <div className="dots"><div className="dot" style={{background:"#ef4444"}}/><div className="dot" style={{background:"#f59e0b"}}/><div className="dot" style={{background:"#22c55e"}}/></div>
+              <span className="filename">question_{currentIdx+1}{langExt[q.lang]||".java"}</span>
+            </div>
+            <span className="lang-badge" style={{color:langColor[q.lang]||"#94a3b8",background:`${langColor[q.lang]||"#94a3b8"}15`,border:`1px solid ${langColor[q.lang]||"#94a3b8"}30`}}>{q.lang.toUpperCase()}</span>
+          </div>
+          <div className="code-body">
+            {q.code.split("\n").map((line,i)=>(
+              <div className="code-line" key={i}><span className="line-no">{i+1}</span><span>{colorize(line,q.lang)}</span></div>
+            ))}
+          </div>
+        </div>
+
+        {!isSubmitted&&(
+          <div className="answer-section"><div className="answer-box">
+            <div className="answer-label">Your Answer</div>
+            <textarea ref={inputRef} className="answer-input" value={inputVal} onChange={e=>setInputVal(e.target.value)} placeholder={q.lang==="sql"?"Type the query result or behavior...":"Type the expected output here..."} onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey&&inputVal.trim()){e.preventDefault();handleSubmit(false)}}}/>
+            <div className="submit-row">
+              <button className="skip-btn" onClick={()=>handleSubmit(true)}>Skip \u2192</button>
+              <button className="submit-btn" onClick={()=>handleSubmit(false)} disabled={!inputVal.trim()}>Submit Answer</button>
+            </div>
+          </div></div>
+        )}
+
+        {isSubmitted&&(
+          <>
+            <div className="terminal revealed">
+              <div className="terminal-bar"><span>\u2b22 Output</span><span style={{color:"#22c55e"}}>\u25cf exit(0)</span></div>
+              <div className="terminal-body">
+                <div className="terminal-cmd">$ {runCmd}</div>
+                {typedText.split("\n").map((line,i)=>(<div className="terminal-output" key={i}>{line}</div>))}
+              </div>
+            </div>
+            <div className={`result-card ${submitted[globalIdx]==="correct"?"result-correct":submitted[globalIdx]==="wrong"?"result-wrong":"result-skipped"}`}>
+              <div className="result-header">
+                {submitted[globalIdx]==="correct"&&"\u2713 Correct!"}
+                {submitted[globalIdx]==="wrong"&&"\u2717 Incorrect"}
+                {submitted[globalIdx]==="skip"&&"\u23ed Skipped"}
+              </div>
+              <div className="result-body">
+                {submitted[globalIdx]!=="skip"&&(
+                  <div className="result-compare">
+                    <div className="result-col"><label>Your Answer</label><pre>{answers[globalIdx]}</pre></div>
+                    <div className="result-col"><label>Correct Output</label><pre style={{borderColor:"#166534"}}>{q.output}</pre></div>
+                  </div>
+                )}
+                {submitted[globalIdx]==="skip"&&(
+                  <div className="result-compare" style={{gridTemplateColumns:"1fr"}}>
+                    <div className="result-col"><label>Correct Output</label><pre>{q.output}</pre></div>
+                  </div>
+                )}
+                <div className="explanation"><strong>Why: </strong>{q.why}</div>
+              </div>
+            </div>
+            <div style={{textAlign:"center",marginTop:12}}>
+              <button onClick={handleNext} style={{padding:"10px 32px",borderRadius:10,background:"linear-gradient(135deg,#8b5cf6,#ec4899)",color:"#fff",fontWeight:700,fontSize:14,border:"none",boxShadow:"0 0 20px #8b5cf620"}}>
+                {currentIdx<filtered.length-1?"Next Question \u2192":PARTS.findIndex(p=>p.key===activePart)<PARTS.length-1?"Next Section \u2192":"Finish Assessment \u2192"}
+              </button>
+            </div>
+          </>
+        )}
+
+        <div className="progress-dots">
+          {filtered.map((fq,i)=>{
+            const gi=questions.indexOf(fq);const st=submitted[gi];
+            let cls="progress-dot ";
+            if(i===currentIdx)cls+="current";else if(st==="correct")cls+="done-correct";else if(st==="wrong")cls+="done-wrong";else if(st==="skip")cls+="done-skip";else cls+="pending";
+            return <button key={i} className={cls} onClick={()=>{setCurrentIdx(i);setTyping(null);setTypedText("")}}/>;
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
