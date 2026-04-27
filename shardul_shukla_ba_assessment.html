@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Business Analyst Assessment — SQL · Product · Data · Agile</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0c0e14;--surface:#111827;--surface2:#151a27;--border:#1e293b;--text:#e2e8f0;--muted:#64748b;--dim:#475569;--accent:#0ea5e9;--green:#22c55e;--red:#ef4444;--yellow:#f59e0b}
+body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh}
+button{font-family:inherit;cursor:pointer;border:none}button:hover{filter:brightness(1.12)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.landing{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 24px;text-align:center}
+.landing-icon{width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,#0ea5e9,#6366f1);display:flex;align-items:center;justify-content:center;font-size:30px;margin-bottom:24px;box-shadow:0 0 60px #0ea5e940}
+.landing h1{font-size:28px;font-weight:800;letter-spacing:-0.03em;margin-bottom:8px}
+.landing p{color:var(--muted);font-size:15px;max-width:500px;line-height:1.6;margin-bottom:32px}
+.landing-stats{display:flex;gap:24px;margin-bottom:40px}
+.landing-stat{text-align:center}.landing-stat .num{font-size:28px;font-weight:800;color:#0ea5e9}.landing-stat .label{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:0.08em}
+.start-btn{padding:14px 48px;border-radius:12px;background:linear-gradient(135deg,#0ea5e9,#6366f1);color:#fff;font-weight:700;font-size:16px;box-shadow:0 0 40px #0ea5e930;transition:all 0.3s}
+.tech-tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:24px}
+.tech-tag{padding:4px 12px;border-radius:6px;font-size:11px;font-weight:600;background:var(--surface);border:1px solid var(--border);color:var(--muted)}
+.rules{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 28px;text-align:left;max-width:520px;margin-bottom:32px}
+.rules h3{font-size:13px;color:#0ea5e9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px}
+.rules li{color:var(--muted);font-size:13px;line-height:1.8;margin-left:16px}
+.header{background:var(--surface2);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
+.header-left{display:flex;align-items:center;gap:12px}
+.header-icon{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#0ea5e9,#6366f1);display:flex;align-items:center;justify-content:center;font-size:16px}
+.header-title{font-weight:800;font-size:15px;letter-spacing:-0.02em}
+.header-sub{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.score-pills{display:flex;gap:8px}
+.pill{padding:5px 14px;border-radius:8px;font-weight:600;font-size:13px;font-family:'JetBrains Mono',monospace}
+.pill-green{background:#0b2e1a;border:1px solid #166534;color:#4ade80}
+.pill-red{background:#2a0f10;border:1px solid #991b1b;color:#f87171}
+.pill-total{background:var(--border);color:#94a3b8}
+.tabs{display:flex;gap:6px;padding:12px 24px;background:#0f1219;overflow-x:auto}
+.tab{padding:10px 18px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--muted);font-weight:600;font-size:13px;display:flex;align-items:center;gap:8px;white-space:nowrap;transition:all 0.2s}
+.tab.active{border-color:var(--tab-color);background:color-mix(in srgb,var(--tab-color) 10%,transparent);color:var(--tab-color)}
+.tab-badge{padding:2px 8px;border-radius:6px;font-size:11px;background:var(--border);color:var(--dim)}
+.tab.active .tab-badge{background:color-mix(in srgb,var(--tab-color) 15%,transparent);color:var(--tab-color)}
+.main{padding:16px 24px;max-width:860px;margin:0 auto}
+.q-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.q-header-left{display:flex;align-items:center;gap:10px}
+.q-num{font-weight:700;font-size:14px}
+.diff-badge{font-size:11px;padding:3px 10px;border-radius:6px;font-weight:600}
+.q-prompt{font-size:11px;color:var(--dim)}
+.nav-btns{display:flex;gap:6px}
+.nav-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:#94a3b8;display:flex;align-items:center;justify-content:center;font-size:14px}
+.nav-btn:disabled{color:#334155;cursor:default}
+.editor{border-radius:12px;overflow:hidden;border:1px solid var(--border);margin-bottom:12px}
+.editor-bar{background:var(--surface2);padding:8px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
+.dots{display:flex;gap:6px}.dot{width:10px;height:10px;border-radius:50%}
+.filename{font-size:11px;color:var(--dim);margin-left:10px;font-family:'JetBrains Mono',monospace}
+.lang-badge{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:600;font-family:'JetBrains Mono',monospace}
+.code-body{background:var(--bg);padding:16px 20px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.7;overflow-x:auto}
+.code-line{display:flex}.line-no{color:#334155;width:32px;text-align:right;margin-right:16px;user-select:none;font-size:12px}
+.answer-section{margin-bottom:12px}
+.answer-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 20px}
+.answer-label{font-size:12px;color:#0ea5e9;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px}
+.answer-input{width:100%;background:#06080d;border:1px solid var(--border);border-radius:8px;padding:12px 16px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;resize:vertical;min-height:60px;outline:none;transition:border-color 0.3s}
+.answer-input:focus{border-color:#0ea5e9}.answer-input::placeholder{color:#334155}
+.submit-row{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+.submit-btn{padding:10px 32px;border-radius:10px;background:linear-gradient(135deg,#0ea5e9,#6366f1);color:#fff;font-weight:700;font-size:14px;box-shadow:0 0 24px #0ea5e920;transition:all 0.3s}
+.submit-btn:disabled{background:var(--border);color:var(--dim);box-shadow:none;cursor:default}
+.skip-btn{padding:10px 20px;border-radius:10px;background:transparent;border:1px solid var(--border);color:var(--muted);font-weight:600;font-size:13px}
+.terminal{border-radius:12px;border:1px solid var(--border);overflow:hidden;margin-bottom:12px;transition:border-color 0.5s}
+.terminal.revealed{border-color:#16a34a30}
+.terminal-bar{background:#0a0c10;padding:6px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.terminal-bar span{font-size:11px;color:var(--dim);font-family:'JetBrains Mono',monospace}
+.terminal-body{background:#06080d;padding:14px 20px;min-height:60px;font-family:'JetBrains Mono',monospace;font-size:13px}
+.terminal-output{color:#4ade80;font-weight:500}
+.terminal-cmd{color:var(--dim);font-size:11px;margin-bottom:6px}
+.result-card{border-radius:12px;overflow:hidden;margin-bottom:12px;animation:fadeSlideIn 0.4s ease-out}
+.result-correct{background:#071a0e;border:1px solid #166534}
+.result-wrong{background:#1a0b0b;border:1px solid #991b1b}
+.result-skipped{background:var(--surface);border:1px solid var(--border)}
+.result-header{padding:14px 20px;display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px}
+.result-correct .result-header{color:#4ade80}.result-wrong .result-header{color:#f87171}.result-skipped .result-header{color:var(--yellow)}
+.result-body{padding:0 20px 16px}
+.result-compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.result-col label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--dim);margin-bottom:6px;font-weight:600}
+.result-col pre{background:#06080d;border-radius:8px;padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text);white-space:pre-wrap;border:1px solid var(--border)}
+.explanation{font-size:13px;color:#cbd5e1;line-height:1.6}.explanation strong{color:#0ea5e9}
+.progress-dots{display:flex;gap:4px;justify-content:center;margin-top:20px;flex-wrap:wrap}
+.progress-dot{height:8px;border-radius:4px;border:none;transition:all 0.3s}
+.progress-dot.current{width:24px;background:#0ea5e9}
+.progress-dot.done-correct{width:8px;background:var(--green)}
+.progress-dot.done-wrong{width:8px;background:var(--red)}
+.progress-dot.done-skip{width:8px;background:var(--yellow)}
+.progress-dot.pending{width:8px;background:var(--border)}
+.completion{text-align:center;padding:60px 24px;animation:fadeSlideIn 0.6s ease-out}
+.completion h2{font-size:28px;font-weight:800;margin-bottom:8px;letter-spacing:-0.03em}
+.completion p{color:var(--muted);margin-bottom:32px}
+.score-circle{width:140px;height:140px;border-radius:50%;margin:0 auto 24px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.score-circle .pct{font-size:40px;font-weight:800}.score-circle .lbl{font-size:12px;color:var(--muted)}
+.score-breakdown{display:flex;gap:32px;justify-content:center;margin-bottom:40px}
+.score-breakdown .item{text-align:center}.score-breakdown .val{font-size:24px;font-weight:800}.score-breakdown .desc{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:0.06em}
+.restart-btn{padding:12px 36px;border-radius:10px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-weight:600;font-size:14px}
+@keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}
+@keyframes fadeSlideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:600px){.result-compare{grid-template-columns:1fr}.landing-stats{gap:16px}.score-pills{gap:4px}.tabs{padding:10px 12px}.main{padding:12px 14px}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<script type="text/babel">
+const{useState,useEffect,useRef}=React;
+
+const questions=[
+// Part A: SQL & Data Analysis (10 Qs — Heavy, core BA skill)
+{part:"A",cat:"SQL & Data",lang:"sql",diff:"Easy",
+code:`-- transactions table: id, card_id, amount, status, created_at\n-- status values: 'approved', 'declined', 'flagged'\n\nSELECT COUNT(*) FROM transactions;\nSELECT COUNT(DISTINCT card_id) FROM transactions;\n\n-- 500 rows, 120 unique card_ids`,
+output:'500\n120',
+why:'COUNT(*) counts all rows. COUNT(DISTINCT card_id) counts unique card holders. This is fundamental for understanding dataset cardinality \u2014 500 transactions from 120 unique cards means ~4.2 transactions per card on average.'},
+
+{part:"A",cat:"SQL & Data",lang:"sql",diff:"Easy",
+code:`SELECT status, COUNT(*) as cnt\nFROM transactions\nGROUP BY status\nORDER BY cnt DESC;\n\n-- Data: 350 approved, 100 declined, 50 flagged`,
+output:'approved  | 350\ndeclined  | 100\nflagged   | 50',
+why:'GROUP BY aggregates rows by status. ORDER BY cnt DESC sorts from highest to lowest. This is the exact type of fraud distribution analysis Shardul would have done at CoreCard.'},
+
+{part:"A",cat:"SQL & Data",lang:"sql",diff:"Medium",
+code:`-- Find cards with more than 5 flagged transactions\n\nSELECT card_id, COUNT(*) as fraud_count\nFROM transactions\nWHERE status = 'flagged'\nGROUP BY card_id\nHAVING COUNT(*) > 5\nORDER BY fraud_count DESC;`,
+output:'Cards with 6+ flagged transactions,\nsorted by highest fraud count first.',
+why:'WHERE filters rows BEFORE grouping (only flagged). GROUP BY groups by card. HAVING filters AFTER aggregation (count > 5). This is a real fraud detection query \u2014 finding repeat offenders.'},
+
+{part:"A",cat:"SQL & Data",lang:"sql",diff:"Medium",
+code:`SELECT\n    DATE_TRUNC('month', created_at) as month,\n    COUNT(*) as total_txns,\n    COUNT(*) FILTER (WHERE status = 'flagged') as flagged,\n    ROUND(\n      COUNT(*) FILTER (WHERE status = 'flagged') * 100.0\n      / COUNT(*), 2\n    ) as fraud_rate_pct\nFROM transactions\nGROUP BY DATE_TRUNC('month', created_at)\nORDER BY month;`,
+output:'Monthly breakdown showing:\ntotal transactions, flagged count,\nand fraud rate percentage per month.',
+why:'DATE_TRUNC groups by month. FILTER(WHERE) is PostgreSQL syntax for conditional aggregation (like COUNTIF). This calculates fraud rate trends over time \u2014 exactly what a fraud operations dashboard would show.'},
+
+{part:"A",cat:"SQL & Data",lang:"sql",diff:"Medium",
+code:`-- customers: id, name, segment\n-- transactions: id, customer_id, amount, created_at\n\nSELECT c.segment,\n    COUNT(DISTINCT c.id) as customers,\n    ROUND(AVG(t.amount), 2) as avg_txn,\n    SUM(t.amount) as total_volume\nFROM customers c\nLEFT JOIN transactions t ON c.id = t.customer_id\nGROUP BY c.segment\nORDER BY total_volume DESC;`,
+output:'Each segment showing: customer count,\naverage transaction amount, total volume.\nSegments with NO transactions show\ncustomers count but NULL/0 for amounts.',
+why:'LEFT JOIN includes ALL customers even those with no transactions. This is a segment performance analysis \u2014 which customer segments drive the most revenue? Key input for product prioritization.'},
+
+{part:"A",cat:"SQL & Data",lang:"sql",diff:"Hard",
+code:`-- Find the top 3 merchants by fraud rate\n-- (only merchants with 50+ transactions)\n\nSELECT merchant_id,\n    COUNT(*) as total,\n    SUM(CASE WHEN status='flagged' THEN 1 ELSE 0 END) as fraud,\n    ROUND(\n      SUM(CASE WHEN status='flagged' THEN 1 ELSE 0 END)*100.0\n      / COUNT(*), 2\n    ) as fraud_rate\nFROM transactions\nGROUP BY merchant_id\nHAVING COUNT(*) >= 50\nORDER BY fraud_rate DESC\nLIMIT 3;`,
+output:'Top 3 merchants with highest fraud %\n(only those with 50+ transactions).\nHAVING ensures statistical significance.',
+why:'CASE WHEN creates a conditional count (fraud = 1, else 0). HAVING >= 50 ensures we only flag merchants with enough data \u2014 a merchant with 2 transactions and 1 fraud (50% rate) is noise, not signal. This is real fraud analytics.'},
+
+{part:"A",cat:"SQL & Data",lang:"sql",diff:"Hard",
+code:`-- Window function: running total of flagged txns per card\n\nSELECT\n    card_id,\n    created_at,\n    amount,\n    status,\n    SUM(CASE WHEN status='flagged' THEN 1 ELSE 0 END)\n        OVER (PARTITION BY card_id ORDER BY created_at) \n        as running_fraud_count\nFROM transactions\nWHERE card_id = 'CARD_001'\nORDER BY created_at;`,
+output:'Each transaction for CARD_001 shows a\nrunning count of how many flagged txns\nhave occurred up to that point in time.',
+why:'Window function with PARTITION BY card_id creates per-card running totals. ORDER BY created_at makes it chronological. This helps identify WHEN a card started showing fraud patterns \u2014 critical for timeline analysis in fraud investigations.'},
+
+{part:"A",cat:"SQL & Data",lang:"sql",diff:"Hard",
+code:`-- Cohort analysis: fraud rate by customer signup month\n\nWITH customer_cohort AS (\n    SELECT id, DATE_TRUNC('month', signup_date) as cohort\n    FROM customers\n),\ntxn_summary AS (\n    SELECT customer_id,\n        COUNT(*) as total,\n        SUM(CASE WHEN status='flagged' THEN 1 ELSE 0 END) as fraud\n    FROM transactions\n    GROUP BY customer_id\n)\nSELECT cc.cohort,\n    COUNT(*) as customers,\n    ROUND(AVG(ts.fraud*100.0/NULLIF(ts.total,0)), 2) as avg_fraud_pct\nFROM customer_cohort cc\nJOIN txn_summary ts ON cc.id = ts.customer_id\nGROUP BY cc.cohort\nORDER BY cc.cohort;`,
+output:'For each signup month cohort:\nnumber of customers and their\naverage fraud rate percentage.\nNULLIF prevents divide-by-zero.',
+why:'CTEs (WITH) break complex logic into readable steps. NULLIF(total, 0) returns NULL instead of dividing by zero. Cohort analysis is a core product analytics technique \u2014 do newer customers have different fraud rates than older ones?'},
+
+{part:"A",cat:"SQL & Data",lang:"sql",diff:"Easy",
+code:`SELECT * FROM transactions\nWHERE amount > 10000\nAND status = 'approved'\nAND created_at >= '2024-01-01'\nORDER BY amount DESC\nLIMIT 10;`,
+output:'Top 10 highest-value approved transactions\nsince Jan 2024, sorted largest first.',
+why:'Simple but important: high-value approved transactions are fraud review candidates. This is a basic screening query a BA runs to spot anomalies \u2014 are there unusually large approved transactions that slipped through?'},
+
+{part:"A",cat:"SQL & Data",lang:"sql",diff:"Medium",
+code:`-- NULL handling\n\nSELECT\n    COALESCE(merchant_name, 'Unknown') as merchant,\n    COUNT(*) as txns\nFROM transactions t\nLEFT JOIN merchants m ON t.merchant_id = m.id\nWHERE t.status = 'flagged'\nGROUP BY COALESCE(merchant_name, 'Unknown')\nORDER BY txns DESC;`,
+output:'Flagged transactions grouped by merchant.\nMerchants without names show as "Unknown"\ninstead of NULL.',
+why:'COALESCE replaces NULL with a default. LEFT JOIN may produce NULL merchant_names for unmatched transactions. In fraud analysis, "Unknown" merchants are often suspicious \u2014 this query surfaces them.'},
+
+// Part B: Product & Business Analysis (6 Qs)
+{part:"B",cat:"Product Thinking",lang:"text",diff:"Easy",
+code:`SCENARIO:\nYou're the BA at CoreCard. The fraud ops team says:\n"We're spending 4 hours daily reviewing alerts\nthat turn out to be legitimate transactions."\n\nWhat metric would you define to measure\nthis problem?\n\nA) Total fraud alerts per day\nB) False positive rate (% alerts that are legit)\nC) Average review time per alert\nD) Number of fraud analysts on the team`,
+output:'B) False positive rate\n= legitimate alerts / total alerts * 100',
+why:'False positive rate directly measures the problem \u2014 what % of alerts are wasting analyst time. Total alerts (A) doesn\'t distinguish real vs false. Review time (C) is a symptom, not the root metric. Headcount (D) is a resource, not a measure of the problem.'},
+
+{part:"B",cat:"Product Thinking",lang:"text",diff:"Medium",
+code:`SCENARIO:\nYou need to write a PRD for an\n"AI-assisted fraud triage" feature.\n\nWhich sections MUST be included?\n\nA) Problem statement, user personas, success metrics,\n   requirements, out of scope, risks\nB) Full technical architecture, database schema,\n   API endpoints, deployment plan\nC) Marketing plan, pricing strategy,\n   competitive analysis, go-to-market\nD) Team org chart, hiring plan,\n   budget allocation, timeline`,
+output:'A) Problem statement, user personas,\nsuccess metrics, requirements,\nout of scope, risks',
+why:'A PRD defines WHAT to build and WHY, not HOW (that\'s engineering\'s job). It must include: the problem being solved, who it\'s for (personas), how we\'ll measure success, functional requirements, what we\'re NOT building, and risks. Technical architecture (B) belongs in a tech design doc. Marketing (C) is a GTM doc.'},
+
+{part:"B",cat:"Product Thinking",lang:"text",diff:"Medium",
+code:`SCENARIO:\nYour fraud dashboard shows:\n- Month 1: 2% fraud rate\n- Month 2: 2.1% fraud rate\n- Month 3: 3.8% fraud rate\n- Month 4: 4.2% fraud rate\n\nStakeholder asks: "Is fraud getting worse?"\n\nWhat's your analysis approach?`,
+output:'Don\'t just say "yes, it\'s increasing."\nInvestigate:\n1. Is the VOLUME of transactions also up?\n2. Did detection rules change (catching more)?\n3. Is one merchant/region driving the spike?\n4. Seasonal pattern? (holiday fraud)\n5. New card type or channel launched?',
+why:'A good BA doesn\'t just report numbers \u2014 they investigate WHY. A rising fraud rate could mean: actual fraud increase, better detection (catching more), a specific merchant compromise, seasonal trends, or a new product launch attracting fraudsters. Context turns data into insight.'},
+
+{part:"B",cat:"Product Thinking",lang:"text",diff:"Hard",
+code:`SCENARIO:\nYou're designing an A/B test for a new\nfraud alert scoring model.\n\nGroup A: Old model (current)\nGroup B: New AI model\n\nWhat is the PRIMARY metric?\nWhat GUARDRAIL metric prevents harm?\nHow long should you run the test?`,
+output:'Primary: False positive rate reduction\n(fewer legitimate txns flagged)\n\nGuardrail: True positive rate must NOT drop\n(don\'t miss real fraud to reduce false alerts)\n\nDuration: At least 2-4 weeks\n(capture weekly patterns + statistical significance)',
+why:'The goal is fewer false alerts (primary) WITHOUT missing real fraud (guardrail). If we just optimize for fewer alerts, we might let real fraud through. Duration needs enough data for statistical significance and to capture weekly transaction patterns (weekday vs weekend behavior differs).'},
+
+{part:"B",cat:"Product Thinking",lang:"text",diff:"Hard",
+code:`SCENARIO:\nThe engineering team says the AI fraud model\nwill take 3 months to build.\n\nYour VP asks: "Can we ship something\nfaster to reduce false positives NOW?"\n\nWhat do you propose as an MVP?`,
+output:'Rule-based quick wins (ship in 2 weeks):\n1. Auto-approve if amount < threshold\n   AND merchant is whitelisted\n2. Add "trusted device" flag to skip review\n3. Batch similar alerts for bulk review\n4. Show analyst more context (history)\n   to speed up manual review\n\nTHEN build AI model as Phase 2.',
+why:'Good BA/PM thinking: don\'t wait for the perfect solution. Ship incremental improvements NOW while the big bet (AI model) is being built. Rule-based filters can reduce false positives immediately. Adding context to the review screen reduces TIME per review even if volume stays the same. This is classic MVP thinking.'},
+
+{part:"B",cat:"Product Thinking",lang:"text",diff:"Medium",
+code:`You're prioritizing the product backlog.\nFour features are requested:\n\nA) Dashboard dark mode (20 user requests)\nB) Export fraud report to PDF (used by VP daily)\nC) Auto-archive resolved alerts (saves 30 min/day)\nD) Integrate new payment channel (revenue driver)\n\nHow do you prioritize? What framework?`,
+output:'Using RICE or Impact/Effort:\n1. D - New payment channel (Revenue impact)\n2. C - Auto-archive (Daily time savings x users)\n3. B - PDF export (Unblocks VP workflow)\n4. A - Dark mode (Nice-to-have, low impact)\n\nFramework: RICE (Reach, Impact, Confidence, Effort)',
+why:'Prioritization should be data-driven, not loudest-voice-wins. RICE scores: D has highest business impact (revenue). C has high daily ROI (30 min * 250 days = 125 hours/year saved). B unblocks a key stakeholder. A is cosmetic \u2014 20 requests doesn\'t mean high impact. A good BA quantifies impact before prioritizing.'},
+
+// Part C: Python & Data (4 Qs)
+{part:"C",cat:"Python & Data",lang:"python",diff:"Easy",
+code:`import pandas as pd\n\ndata = {'name': ['A', 'B', 'C', 'D'],\n        'amount': [100, 200, 150, 300],\n        'status': ['flagged', 'approved', 'flagged', 'approved']}\n\ndf = pd.DataFrame(data)\nprint(df[df['status'] == 'flagged']['amount'].mean())`,
+output:'125.0',
+why:'df[df["status"]=="flagged"] filters to rows A (100) and C (150). .mean() calculates average: (100 + 150) / 2 = 125.0. This is basic pandas filtering \u2014 finding the average flagged transaction amount.'},
+
+{part:"C",cat:"Python & Data",lang:"python",diff:"Medium",
+code:`import pandas as pd\n\ndf = pd.DataFrame({\n    'card_id': ['C1','C1','C1','C2','C2','C3'],\n    'amount': [100, 5000, 200, 150, 8000, 300]\n})\n\nresult = df.groupby('card_id')['amount'].agg(['mean','max','count'])\nprint(result)`,
+output:'        mean   max  count\ncard_id\nC1     1766.67  5000  3\nC2     4075.00  8000  2\nC3      300.00   300  1',
+why:'groupby("card_id") groups by card. .agg(["mean","max","count"]) calculates multiple stats per card. C1 has 3 txns averaging ~1767. C2 has a suspicious max of 8000. This is per-card risk profiling.'},
+
+{part:"C",cat:"Python & Data",lang:"python",diff:"Medium",
+code:`data = [10, 20, 30, 40, 50]\n\nmean = sum(data) / len(data)\nvariance = sum((x - mean)**2 for x in data) / len(data)\nstd_dev = variance ** 0.5\n\nprint(f"Mean: {mean}")\nprint(f"Std Dev: {std_dev}")`,
+output:'Mean: 30.0\nStd Dev: 14.14 (approx)',
+why:'Mean = 150/5 = 30. Variance = average of squared deviations from mean. Std Dev = square root of variance \u2248 14.14. Understanding standard deviation is crucial for fraud detection \u2014 transactions beyond 2-3 std devs from the mean are anomalies.'},
+
+{part:"C",cat:"Python & Data",lang:"python",diff:"Hard",
+code:`# Confusion matrix interpretation\n# Fraud detection model results:\n\n# Predicted:     Fraud    Legit\n# Actual Fraud:   80       20     (TP=80, FN=20)\n# Actual Legit:   50      850     (FP=50, TN=850)\n\nTP, FN, FP, TN = 80, 20, 50, 850\n\nprecision = TP / (TP + FP)\nrecall = TP / (TP + FN)\nf1 = 2 * precision * recall / (precision + recall)\n\nprint(f"Precision: {precision:.2f}")\nprint(f"Recall: {recall:.2f}")\nprint(f"F1: {f1:.2f}")`,
+output:'Precision: 0.62\nRecall: 0.80\nF1: 0.70',
+why:'Precision (62%) = of all predicted fraud, 62% were actually fraud. Recall (80%) = of all actual fraud, we caught 80%. F1 is the harmonic mean. In fraud detection, RECALL is often more important (missing real fraud is worse than false alarms) \u2014 but high false positives (low precision) waste analyst time.'},
+
+// Part D: Agile & Process (4 Qs)
+{part:"D",cat:"Agile & Process",lang:"text",diff:"Easy",
+code:`SCENARIO:\nYou're in a sprint planning meeting.\nThe team has capacity for 20 story points.\n\nBacklog items:\n- Fraud dashboard filter: 5 pts\n- API integration: 8 pts\n- Alert email feature: 3 pts\n- Report export: 8 pts\n- UI bug fix: 2 pts\n\nTotal available: 26 pts\nCapacity: 20 pts\n\nWhat do you pull into the sprint?`,
+output:'Option 1 (priority-based): 5 + 8 + 3 + 2 = 18 pts\n(Skip report export, pull top priority items)\n\nOption 2: 5 + 8 + 3 + 2 = 18 pts\nor 8 + 8 + 3 = 19 pts\n\nNEVER pull 26 pts into a 20-pt sprint.',
+why:'Golden rule: never overcommit. Pull items by priority until you approach capacity. Leaving 2 pts of buffer is better than overcommitting by 6. If the team finishes early, they can pull the next item. Overcommitting leads to missed commitments, burnout, and loss of stakeholder trust.'},
+
+{part:"D",cat:"Agile & Process",lang:"text",diff:"Medium",
+code:`What are the key Agile ceremonies?\nMatch each ceremony to its PURPOSE:\n\n1. Sprint Planning\n2. Daily Standup\n3. Sprint Review\n4. Sprint Retrospective\n\nA) "What did we build? Demo to stakeholders."\nB) "What went well? What to improve?"\nC) "What will we build this sprint?"\nD) "Any blockers? What's the plan for today?"`,
+output:'1-C: Sprint Planning = What to build\n2-D: Standup = Blockers + today\'s plan\n3-A: Review = Demo to stakeholders\n4-B: Retro = Process improvement',
+why:'Planning sets the sprint goal. Standups (15 min max) surface blockers quickly. Review demonstrates working software to stakeholders for feedback. Retro is the team\'s self-improvement loop. A good BA participates actively in all four.'},
+
+{part:"D",cat:"Agile & Process",lang:"text",diff:"Medium",
+code:`A user story should follow the format:\n\n"As a [persona], I want [action],\n so that [benefit]."\n\nWhich is a GOOD user story?\n\nA) "Build fraud alert system"\nB) "As a fraud analyst, I want to filter\n    alerts by risk score, so that I can\n    review high-risk cases first."\nC) "The system should use machine learning"\nD) "Make the dashboard faster"`,
+output:'B is the correct user story.\n\nA = too vague (no persona, no benefit)\nC = solution, not a user need\nD = not specific, no measurable goal',
+why:'Good user stories: specific persona (fraud analyst), clear action (filter by risk score), measurable benefit (review high-risk first). A, C, D are either too vague, solution-focused, or lack the user\'s perspective. The "so that" clause is crucial \u2014 it explains WHY, enabling engineers to find the best HOW.'},
+
+{part:"D",cat:"Agile & Process",lang:"text",diff:"Hard",
+code:`SCENARIO:\nMid-sprint, the VP says:\n"Drop everything. We need a compliance\n report by Friday for the regulator."\n\nThe team is 60% through the current sprint.\n\nWhat do you do?`,
+output:'1. Assess: How much effort is the report?\n2. Negotiate: Can anything be descoped\n   from current sprint to make room?\n3. Communicate: Tell the team + PO about\n   the trade-off transparently\n4. Document: Update Jira, note the scope\n   change and reason (compliance)\n5. Never silently absorb extra work',
+why:'A good BA protects the team from scope creep while being pragmatic about business reality. Compliance is non-negotiable \u2014 but the impact must be visible. If we add the report, something else must move out. Silent absorption leads to burnout and missed sprint goals with no one understanding why.'},
+
+// Part E: AI & ML Concepts (4 Qs)
+{part:"E",cat:"AI & ML Concepts",lang:"text",diff:"Easy",
+code:`You're building a recommendation system.\nA user says: "I want a beach trip under \u20b910,000\nfrom Bhopal for 3 days."\n\nWhat type of filtering approach is this?\n\nA) Collaborative filtering\n   ("users like you also liked...")\nB) Content-based filtering\n   ("matching attributes of items")\nC) Constraint-based filtering\n   ("matching hard requirements")\nD) Popularity-based\n   ("most booked destinations")`,
+output:'C) Constraint-based filtering\n\nHard constraints: budget \u2264 10K,\ntype = beach, origin = Bhopal,\nduration = 3 days.',
+why:'The user specified hard requirements (budget, type, location, duration) that MUST be met. Constraint-based filtering eliminates options that don\'t meet these criteria. Collaborative (A) uses other users\' behavior. Content-based (B) uses item attributes without hard limits. This is exactly what Shardul built in his travel recommendation project.'},
+
+{part:"E",cat:"AI & ML Concepts",lang:"text",diff:"Medium",
+code:`You're evaluating two fraud detection models:\n\nModel A: 95% accuracy\nModel B: 85% accuracy\n\nDataset: 10,000 transactions\n- 9,500 legitimate (95%)\n- 500 fraudulent (5%)\n\nWhich model is actually better?\nIs accuracy the right metric here?`,
+output:'Model A could be USELESS \u2014 it might just\npredict "legitimate" for everything\n(95% accuracy by predicting majority class).\n\nAccuracy is WRONG for imbalanced datasets.\nUse: Precision, Recall, F1-score, AUC-ROC.',
+why:'The accuracy paradox: with 95% legitimate transactions, a model that ALWAYS predicts "legitimate" gets 95% accuracy but catches ZERO fraud. For imbalanced datasets (fraud is rare), you need metrics that evaluate performance on the minority class: recall (did we catch the fraud?) and precision (are our fraud alerts real?).'},
+
+{part:"E",cat:"AI & ML Concepts",lang:"text",diff:"Medium",
+code:`You want to use an LLM (like Claude API)\nto parse free-text fraud analyst notes.\n\nExample input:\n"Customer called, said card was stolen\n yesterday at the mall. Wants to dispute\n charges from Amazon and Uber."\n\nWhat structured data should the LLM extract?`,
+output:'{\n  "event_type": "card_stolen",\n  "reported_date": "yesterday",\n  "location": "mall",\n  "disputed_merchants": ["Amazon", "Uber"],\n  "action_requested": "dispute_charges"\n}',
+why:'LLMs excel at extracting structured data from unstructured text. A good AI product thinker defines the OUTPUT schema first (what fields do we need?), then designs the prompt. This turns messy analyst notes into queryable data \u2014 enabling dashboards, automation, and pattern detection across thousands of cases.'},
+
+{part:"E",cat:"AI & ML Concepts",lang:"text",diff:"Hard",
+code:`SCENARIO:\nYou're proposing an "AI-assisted fraud triage"\nfeature to leadership.\n\nThey ask: "What if the AI gets it wrong\nand approves a fraudulent transaction?"\n\nHow do you address this concern?`,
+output:'1. Human-in-the-loop: AI RECOMMENDS,\n   human DECIDES (no auto-approve initially)\n2. Confidence thresholds: Only auto-triage\n   when confidence > 95%, else send to human\n3. Audit trail: Every AI decision is logged\n   and reviewable\n4. Gradual rollout: Start with low-risk\n   transactions, expand after validation\n5. Fallback: Any disputed decision goes\n   to senior analyst for review',
+why:'Responsible AI product design: never fully automate high-stakes decisions without safeguards. Human-in-the-loop ensures AI augments analysts rather than replacing their judgment. Confidence thresholds create a safety net. Audit trails enable accountability. This shows mature AI product thinking \u2014 not just "throw ML at it."'},
+];
+
+const PARTS=[
+{key:"A",label:"SQL & Data",icon:"\uD83D\uddc4\ufe0f",color:"#0ea5e9"},
+{key:"B",label:"Product Thinking",icon:"\uD83D\uDCA1",color:"#8b5cf6"},
+{key:"C",label:"Python & Data",icon:"\uD83D\uDC0D",color:"#22c55e"},
+{key:"D",label:"Agile & Process",icon:"\uD83D\uDD04",color:"#f97316"},
+{key:"E",label:"AI & ML Concepts",icon:"\uD83E\uDD16",color:"#ec4899"},
+];
+const diffColor={Easy:"#22c55e",Medium:"#f59e0b",Hard:"#ef4444"};
+const langExt={sql:".sql",python:".py",text:".md"};
+const langColor={sql:"#0ea5e9",python:"#22c55e",text:"#94a3b8"};
+
+function colorize(line,lang){
+const sqlKw=["SELECT","FROM","WHERE","AND","OR","NOT","INSERT","UPDATE","DELETE","CREATE","DROP","TABLE","INTO","VALUES","SET","JOIN","LEFT","RIGHT","ON","AS","ORDER","BY","GROUP","HAVING","LIMIT","COUNT","SUM","AVG","MIN","MAX","DISTINCT","NULL","DESC","ASC","CASE","WHEN","THEN","ELSE","END","WITH","ROUND","COALESCE","FILTER","DATE_TRUNC","NULLIF","OVER","PARTITION","BETWEEN"];
+const pyKw=["import","from","def","return","if","else","for","in","print","class","self","True","False","None","as","with","lambda","and","or","not"];
+const builtins=["pd","DataFrame","np","sum","len","mean","max","count","groupby","agg","f"];
+if(lang==="text"){return line}
+const kws=lang==="sql"?sqlKw:pyKw;
+const parts=[];
+const re=/(#.*$|"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|--.*$|\b\d+\.?\d*\b|true|false|null|None|True|False|\b[a-zA-Z_][\w]*\b|[^\s\w"']|\s+)/g;
+let m,k=0;
+while((m=re.exec(line))!==null){const t=m[0];let c="#e2e8f0";
+if(/^#|^--/.test(t))c="#546e7a";
+else if(/^["']/.test(t))c="#a5d6a7";
+else if(/^\d/.test(t))c="#f48fb1";
+else if(t==="True"||t==="False"||t==="None"||t==="null"||t==="true"||t==="false")c="#f48fb1";
+else if(kws.map(k=>k.toLowerCase()).includes(t.toLowerCase())&&(lang==="sql"||kws.includes(t)))c="#c792ea";
+else if(builtins.includes(t))c="#82aaff";
+else if(/^[(){}[\];,=<>!+\-*/%&|^~?:.]/.test(t))c="#89ddff";
+parts.push(React.createElement("span",{key:k++,style:{color:c}},t))}
+return parts.length?parts:line}
+
+function App(){
+const[started,setStarted]=useState(false);const[candidateName,setCandidateName]=useState("");
+const[activePart,setActivePart]=useState("A");const[currentIdx,setCurrentIdx]=useState(0);
+const[answers,setAnswers]=useState({});const[submitted,setSubmitted]=useState({});
+const[inputVal,setInputVal]=useState("");const[typing,setTyping]=useState(null);
+const[typedText,setTypedText]=useState("");const[finished,setFinished]=useState(false);
+const[elapsed,setElapsed]=useState(0);const[startTime]=useState(Date.now());const inputRef=useRef(null);
+const filtered=questions.filter(q=>q.part===activePart);const q=filtered[currentIdx];
+const globalIdx=questions.indexOf(q);const isSubmitted=submitted[globalIdx]!==undefined;
+
+useEffect(()=>{setCurrentIdx(0)},[activePart]);
+useEffect(()=>{if(!started||finished)return;const t=setInterval(()=>setElapsed(Math.floor((Date.now()-startTime)/1000)),1000);return()=>clearInterval(t)},[started,finished]);
+useEffect(()=>{if(typing===null)return;const out=q.output;let i=0;setTypedText("");const iv=setInterval(()=>{i++;setTypedText(out.slice(0,i));if(i>=out.length)clearInterval(iv)},18);return()=>clearInterval(iv)},[typing]);
+useEffect(()=>{if(!isSubmitted&&inputRef.current)inputRef.current.focus()},[currentIdx,activePart,isSubmitted]);
+
+const handleSubmit=(skipped)=>{const userAns=skipped?"(skipped)":inputVal.trim();setAnswers(a=>({...a,[globalIdx]:userAns}));const correct=!skipped&&normalize(userAns)===normalize(q.output);setSubmitted(s=>({...s,[globalIdx]:skipped?"skip":correct?"correct":"wrong"}));setTyping(Date.now());setInputVal("")};
+const normalize=(s)=>s.replace(/[\s"'`()]/g,"").toLowerCase().replace(/[^\w,.\-:=<>!&|+*/{}[\]%\u20b9]/g,"");
+const handleNext=()=>{if(currentIdx<filtered.length-1){setCurrentIdx(i=>i+1);setTyping(null);setTypedText("")}else{const np=PARTS.findIndex(p=>p.key===activePart);if(np<PARTS.length-1){setActivePart(PARTS[np+1].key);setTyping(null);setTypedText("")}else{setFinished(true)}}};
+const handlePrev=()=>{if(currentIdx>0){setCurrentIdx(i=>i-1);setTyping(null);setTypedText("")}};
+const totalAnswered=Object.keys(submitted).length;const totalCorrect=Object.values(submitted).filter(v=>v==="correct").length;const totalWrong=Object.values(submitted).filter(v=>v==="wrong").length;const totalSkipped=Object.values(submitted).filter(v=>v==="skip").length;
+const formatTime=(s)=>`${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`;
+
+if(!started){return(
+<div className="landing">
+<div className="landing-icon">{"\uD83D\uDCCA"}</div>
+<h1>Business Analyst Assessment</h1>
+<p>SQL \u00b7 Product Thinking \u00b7 Python \u00b7 Agile \u00b7 AI/ML Concepts</p>
+<div className="tech-tags">{["SQL","Power BI","Python","Pandas","Product Management","PRD Writing","A/B Testing","Agile/Scrum","Fraud Analytics","AI Product Design"].map(t=><span key={t} className="tech-tag">{t}</span>)}</div>
+<div className="landing-stats">
+<div className="landing-stat"><div className="num">28</div><div className="label">Questions</div></div>
+<div className="landing-stat"><div className="num">5</div><div className="label">Sections</div></div>
+<div className="landing-stat"><div className="num">~25</div><div className="label">Minutes</div></div>
+</div>
+<div className="rules"><h3>How it works</h3><ol>
+<li>Read the question \u2014 it may be SQL, Python, or a scenario</li>
+<li>Type your answer (query result, analysis, or best option)</li>
+<li>Click <strong>Submit</strong> to see the correct answer</li>
+<li>Review the explanation and move to next</li>
+<li>Use <strong>Skip</strong> if unsure \u2014 no penalty</li></ol></div>
+<input value={candidateName} onChange={e=>setCandidateName(e.target.value)} placeholder="Enter your name..." style={{padding:"12px 20px",borderRadius:10,border:"1px solid #1e293b",background:"#111827",color:"#e2e8f0",fontFamily:"'Plus Jakarta Sans',sans-serif",fontSize:14,width:280,textAlign:"center",marginBottom:16,outline:"none"}}/>
+<br/><button className="start-btn" onClick={()=>setStarted(true)} disabled={!candidateName.trim()}>Start Assessment \u2192</button>
+</div>)}
+
+if(finished){const pct=Math.round((totalCorrect/questions.length)*100);const grade=pct>=83?"Strong":pct>=60?"Decent":pct>=40?"Needs Improvement":"Below Expectations";const gradeColor=pct>=83?"#22c55e":pct>=60?"#f59e0b":pct>=40?"#fb923c":"#ef4444";
+return(<div className="completion">
+<div className="score-circle" style={{border:`4px solid ${gradeColor}`,boxShadow:`0 0 40px ${gradeColor}20`}}><div className="pct" style={{color:gradeColor}}>{pct}%</div><div className="lbl">Score</div></div>
+<h2>Assessment Complete!</h2><p>{candidateName} \u00b7 Time: {formatTime(elapsed)}</p>
+<div style={{display:"inline-block",padding:"8px 24px",borderRadius:10,background:`${gradeColor}18`,border:`1px solid ${gradeColor}40`,color:gradeColor,fontWeight:700,fontSize:16,marginBottom:24}}>{grade}</div>
+<div className="score-breakdown">
+<div className="item"><div className="val" style={{color:"#4ade80"}}>{totalCorrect}</div><div className="desc">Correct</div></div>
+<div className="item"><div className="val" style={{color:"#f87171"}}>{totalWrong}</div><div className="desc">Wrong</div></div>
+<div className="item"><div className="val" style={{color:"#fbbf24"}}>{totalSkipped}</div><div className="desc">Skipped</div></div>
+</div>
+<button className="restart-btn" onClick={()=>{setStarted(false);setActivePart("A");setCurrentIdx(0);setAnswers({});setSubmitted({});setFinished(false);setTyping(null);setTypedText("");setCandidateName("")}}>Restart</button>
+</div>)}
+
+const runCmd=q.lang==="sql"?`psql -c "..."`:q.lang==="python"?`python3 Q${currentIdx+1}.py`:`# Scenario analysis`;
+
+return(<div>
+<div className="header"><div className="header-left"><div className="header-icon">{"\uD83D\uDCCA"}</div><div><div className="header-title">BA Assessment</div><div className="header-sub">{candidateName} \u00b7 {formatTime(elapsed)}</div></div></div>
+<div className="score-pills"><div className="pill pill-green">{"\u2713"} {totalCorrect}</div><div className="pill pill-red">{"\u2717"} {totalWrong}</div><div className="pill pill-total">{totalAnswered}/{questions.length}</div></div></div>
+<div className="tabs">{PARTS.map(p=>{const count=questions.filter(q2=>q2.part===p.key).length;const done=questions.filter(q2=>q2.part===p.key).filter(q2=>submitted[questions.indexOf(q2)]!==undefined).length;return(<button key={p.key} className={`tab ${activePart===p.key?"active":""}`} style={{"--tab-color":p.color}} onClick={()=>setActivePart(p.key)}><span>{p.icon}</span> {p.label}<span className="tab-badge">{done}/{count}</span></button>)})}</div>
+<div className="main">
+<div className="q-header"><div className="q-header-left"><span className="q-num">Q{currentIdx+1}/{filtered.length}</span><span className="diff-badge" style={{color:diffColor[q.diff],background:`${diffColor[q.diff]}18`,border:`1px solid ${diffColor[q.diff]}30`}}>{q.diff}</span><span className="q-prompt">{q.lang==="text"?"Choose the best answer":"Predict the output"}</span></div>
+<div className="nav-btns"><button className="nav-btn" onClick={handlePrev} disabled={currentIdx===0}>{"\u2190"}</button><button className="nav-btn" onClick={handleNext} disabled={!isSubmitted}>{"\u2192"}</button></div></div>
+<div className="editor"><div className="editor-bar"><div style={{display:"flex",alignItems:"center",gap:8}}><div className="dots"><div className="dot" style={{background:"#ef4444"}}/><div className="dot" style={{background:"#f59e0b"}}/><div className="dot" style={{background:"#22c55e"}}/></div><span className="filename">question_{currentIdx+1}{langExt[q.lang]||".md"}</span></div>
+<span className="lang-badge" style={{color:langColor[q.lang]||"#94a3b8",background:`${langColor[q.lang]||"#94a3b8"}15`,border:`1px solid ${langColor[q.lang]||"#94a3b8"}30`}}>{q.lang==="text"?"SCENARIO":q.lang.toUpperCase()}</span></div>
+<div className="code-body">{q.code.split("\n").map((line,i)=>(<div className="code-line" key={i}><span className="line-no">{i+1}</span><span>{q.lang==="text"?<span style={{color:"#e2e8f0"}}>{line}</span>:colorize(line,q.lang)}</span></div>))}</div></div>
+{!isSubmitted&&(<div className="answer-section"><div className="answer-box"><div className="answer-label">Your Answer</div>
+<textarea ref={inputRef} className="answer-input" value={inputVal} onChange={e=>setInputVal(e.target.value)} placeholder={q.lang==="text"?"Type your answer or the letter of your choice...":"Type the expected output..."} onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey&&inputVal.trim()){e.preventDefault();handleSubmit(false)}}}/>
+<div className="submit-row"><button className="skip-btn" onClick={()=>handleSubmit(true)}>Skip {"\u2192"}</button><button className="submit-btn" onClick={()=>handleSubmit(false)} disabled={!inputVal.trim()}>Submit Answer</button></div></div></div>)}
+{isSubmitted&&(<>
+<div className="terminal revealed"><div className="terminal-bar"><span>{"\u2b22"} Result</span><span style={{color:"#22c55e"}}>{"\u25cf"} complete</span></div>
+<div className="terminal-body"><div className="terminal-cmd">$ {runCmd}</div>{typedText.split("\n").map((line,i)=>(<div className="terminal-output" key={i}>{line}</div>))}</div></div>
+<div className={`result-card ${submitted[globalIdx]==="correct"?"result-correct":submitted[globalIdx]==="wrong"?"result-wrong":"result-skipped"}`}>
+<div className="result-header">{submitted[globalIdx]==="correct"&&"\u2713 Correct!"}{submitted[globalIdx]==="wrong"&&"\u2717 Incorrect"}{submitted[globalIdx]==="skip"&&"\u23ed Skipped"}</div>
+<div className="result-body">{submitted[globalIdx]!=="skip"&&(<div className="result-compare"><div className="result-col"><label>Your Answer</label><pre>{answers[globalIdx]}</pre></div><div className="result-col"><label>Correct Answer</label><pre style={{borderColor:"#166534"}}>{q.output}</pre></div></div>)}
+{submitted[globalIdx]==="skip"&&(<div className="result-compare" style={{gridTemplateColumns:"1fr"}}><div className="result-col"><label>Correct Answer</label><pre>{q.output}</pre></div></div>)}
+<div className="explanation"><strong>Why: </strong>{q.why}</div></div></div>
+<div style={{textAlign:"center",marginTop:12}}><button onClick={handleNext} style={{padding:"10px 32px",borderRadius:10,background:"linear-gradient(135deg,#0ea5e9,#6366f1)",color:"#fff",fontWeight:700,fontSize:14,border:"none",boxShadow:"0 0 20px #0ea5e920"}}>
+{currentIdx<filtered.length-1?"Next Question \u2192":PARTS.findIndex(p=>p.key===activePart)<PARTS.length-1?"Next Section \u2192":"Finish Assessment \u2192"}</button></div></>)}
+<div className="progress-dots">{filtered.map((fq,i)=>{const gi=questions.indexOf(fq);const st=submitted[gi];let cls="progress-dot ";if(i===currentIdx)cls+="current";else if(st==="correct")cls+="done-correct";else if(st==="wrong")cls+="done-wrong";else if(st==="skip")cls+="done-skip";else cls+="pending";return <button key={i} className={cls} onClick={()=>{setCurrentIdx(i);setTyping(null);setTypedText("")}}/>;})}</div>
+</div></div>)}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
