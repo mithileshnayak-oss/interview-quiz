@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Pratham Chugh — Frontend · AEM · Figma Assessment</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0c0e14;--surface:#111827;--surface2:#151a27;--border:#1e293b;--text:#e2e8f0;--muted:#64748b;--dim:#475569;--accent:#0ea5e9;--green:#22c55e;--red:#ef4444;--yellow:#f59e0b}
+body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh}
+button{font-family:inherit;cursor:pointer;border:none}button:hover{filter:brightness(1.12)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.landing{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 24px;text-align:center}
+.landing-icon{width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,#0ea5e9,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:30px;margin-bottom:24px;box-shadow:0 0 60px #0ea5e940}
+.landing h1{font-size:28px;font-weight:800;letter-spacing:-0.03em;margin-bottom:8px}
+.landing p{color:var(--muted);font-size:15px;max-width:500px;line-height:1.6;margin-bottom:32px}
+.landing-stats{display:flex;gap:24px;margin-bottom:40px}
+.landing-stat{text-align:center}.landing-stat .num{font-size:28px;font-weight:800;color:#0ea5e9}.landing-stat .label{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:0.08em}
+.start-btn{padding:14px 48px;border-radius:12px;background:linear-gradient(135deg,#0ea5e9,#8b5cf6);color:#fff;font-weight:700;font-size:16px;box-shadow:0 0 40px #0ea5e930;transition:all 0.3s}
+.tech-tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:24px}
+.tech-tag{padding:4px 12px;border-radius:6px;font-size:11px;font-weight:600;background:var(--surface);border:1px solid var(--border);color:var(--muted)}
+.rules{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 28px;text-align:left;max-width:520px;margin-bottom:32px}
+.rules h3{font-size:13px;color:#0ea5e9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px}
+.rules li{color:var(--muted);font-size:13px;line-height:1.8;margin-left:16px}
+.header{background:var(--surface2);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
+.header-left{display:flex;align-items:center;gap:12px}
+.header-icon{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#0ea5e9,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:16px}
+.header-title{font-weight:800;font-size:15px;letter-spacing:-0.02em}
+.header-sub{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.score-pills{display:flex;gap:8px}
+.pill{padding:5px 14px;border-radius:8px;font-weight:600;font-size:13px;font-family:'JetBrains Mono',monospace}
+.pill-green{background:#0b2e1a;border:1px solid #166534;color:#4ade80}
+.pill-red{background:#2a0f10;border:1px solid #991b1b;color:#f87171}
+.pill-total{background:var(--border);color:#94a3b8}
+.tabs{display:flex;gap:6px;padding:12px 24px;background:#0f1219;overflow-x:auto}
+.tab{padding:10px 18px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--muted);font-weight:600;font-size:13px;display:flex;align-items:center;gap:8px;white-space:nowrap;transition:all 0.2s}
+.tab.active{border-color:var(--tab-color);background:color-mix(in srgb,var(--tab-color) 10%,transparent);color:var(--tab-color)}
+.tab-badge{padding:2px 8px;border-radius:6px;font-size:11px;background:var(--border);color:var(--dim)}
+.tab.active .tab-badge{background:color-mix(in srgb,var(--tab-color) 15%,transparent);color:var(--tab-color)}
+.main{padding:16px 24px;max-width:860px;margin:0 auto}
+.q-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.q-header-left{display:flex;align-items:center;gap:10px}
+.q-num{font-weight:700;font-size:14px}
+.diff-badge{font-size:11px;padding:3px 10px;border-radius:6px;font-weight:600}
+.q-prompt{font-size:11px;color:var(--dim)}
+.nav-btns{display:flex;gap:6px}
+.nav-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:#94a3b8;display:flex;align-items:center;justify-content:center;font-size:14px}
+.nav-btn:disabled{color:#334155;cursor:default}
+.editor{border-radius:12px;overflow:hidden;border:1px solid var(--border);margin-bottom:12px}
+.editor-bar{background:var(--surface2);padding:8px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
+.dots{display:flex;gap:6px}.dot{width:10px;height:10px;border-radius:50%}
+.filename{font-size:11px;color:var(--dim);margin-left:10px;font-family:'JetBrains Mono',monospace}
+.lang-badge{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:600;font-family:'JetBrains Mono',monospace}
+.code-body{background:var(--bg);padding:16px 20px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.7;overflow-x:auto}
+.code-line{display:flex}.line-no{color:#334155;width:32px;text-align:right;margin-right:16px;user-select:none;font-size:12px}
+.answer-section{margin-bottom:12px}
+.answer-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 20px}
+.answer-label{font-size:12px;color:#0ea5e9;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px}
+.answer-input{width:100%;background:#06080d;border:1px solid var(--border);border-radius:8px;padding:12px 16px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;resize:vertical;min-height:60px;outline:none;transition:border-color 0.3s}
+.answer-input:focus{border-color:#0ea5e9}.answer-input::placeholder{color:#334155}
+.submit-row{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+.submit-btn{padding:10px 32px;border-radius:10px;background:linear-gradient(135deg,#0ea5e9,#8b5cf6);color:#fff;font-weight:700;font-size:14px;box-shadow:0 0 24px #0ea5e920;transition:all 0.3s}
+.submit-btn:disabled{background:var(--border);color:var(--dim);box-shadow:none;cursor:default}
+.skip-btn{padding:10px 20px;border-radius:10px;background:transparent;border:1px solid var(--border);color:var(--muted);font-weight:600;font-size:13px}
+.terminal{border-radius:12px;border:1px solid var(--border);overflow:hidden;margin-bottom:12px;transition:border-color 0.5s}
+.terminal.revealed{border-color:#16a34a30}
+.terminal-bar{background:#0a0c10;padding:6px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.terminal-bar span{font-size:11px;color:var(--dim);font-family:'JetBrains Mono',monospace}
+.terminal-body{background:#06080d;padding:14px 20px;min-height:60px;font-family:'JetBrains Mono',monospace;font-size:13px}
+.terminal-output{color:#4ade80;font-weight:500}
+.terminal-cmd{color:var(--dim);font-size:11px;margin-bottom:6px}
+.result-card{border-radius:12px;overflow:hidden;margin-bottom:12px;animation:fadeSlideIn 0.4s ease-out}
+.result-correct{background:#071a0e;border:1px solid #166534}
+.result-wrong{background:#1a0b0b;border:1px solid #991b1b}
+.result-skipped{background:var(--surface);border:1px solid var(--border)}
+.result-header{padding:14px 20px;display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px}
+.result-correct .result-header{color:#4ade80}.result-wrong .result-header{color:#f87171}.result-skipped .result-header{color:var(--yellow)}
+.result-body{padding:0 20px 16px}
+.result-compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.result-col label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--dim);margin-bottom:6px;font-weight:600}
+.result-col pre{background:#06080d;border-radius:8px;padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text);white-space:pre-wrap;border:1px solid var(--border)}
+.explanation{font-size:13px;color:#cbd5e1;line-height:1.6}.explanation strong{color:#0ea5e9}
+.progress-dots{display:flex;gap:4px;justify-content:center;margin-top:20px;flex-wrap:wrap}
+.progress-dot{height:8px;border-radius:4px;border:none;transition:all 0.3s}
+.progress-dot.current{width:24px;background:#0ea5e9}
+.progress-dot.done-correct{width:8px;background:var(--green)}
+.progress-dot.done-wrong{width:8px;background:var(--red)}
+.progress-dot.done-skip{width:8px;background:var(--yellow)}
+.progress-dot.pending{width:8px;background:var(--border)}
+.completion{text-align:center;padding:60px 24px;animation:fadeSlideIn 0.6s ease-out}
+.completion h2{font-size:28px;font-weight:800;margin-bottom:8px;letter-spacing:-0.03em}
+.completion p{color:var(--muted);margin-bottom:32px}
+.score-circle{width:140px;height:140px;border-radius:50%;margin:0 auto 24px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.score-circle .pct{font-size:40px;font-weight:800}.score-circle .lbl{font-size:12px;color:var(--muted)}
+.score-breakdown{display:flex;gap:32px;justify-content:center;margin-bottom:40px}
+.score-breakdown .item{text-align:center}.score-breakdown .val{font-size:24px;font-weight:800}.score-breakdown .desc{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:0.06em}
+.restart-btn{padding:12px 36px;border-radius:10px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-weight:600;font-size:14px}
+@keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}
+@keyframes fadeSlideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:600px){.result-compare{grid-template-columns:1fr}.landing-stats{gap:16px}.score-pills{gap:4px}.tabs{padding:10px 12px}.main{padding:12px 14px}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<script type="text/babel">
+const{useState,useEffect,useRef}=React;
+
+const questions=[
+
+// ─── PART A: React + TypeScript (8 Qs) ───────────────────────────────────────
+
+{part:"A",cat:"React + TypeScript",lang:"mcq",diff:"Easy",
+code:`// TypeScript generic constraint:
+type Props<T extends { id: string }> = {
+  items: T[];
+  renderItem: (item: T) => React.ReactNode;
+};
+
+// Which call would TypeScript REJECT at compile time?
+
+A) <List items={[{id:"1", name:"Alice"}]} renderItem={i => i.name}/>
+
+B) <List items={[{id:"1"}]} renderItem={i => i.id}/>
+
+C) <List items={[{age:30}]} renderItem={i => i.age}/>
+
+D) <List items={[{id:"2", count:5}]} renderItem={i => i.count}/>`,
+output:`C) — {age:30} is rejected
+T extends { id: string } means every item
+MUST have an id: string property.
+{age:30} has no id — TypeScript compile error.`,
+why:'T extends { id: string } is a generic constraint — every object in items must include an id of type string. A, B, and D all satisfy this: they all have id:"...". C provides {age:30} with no id property, so TypeScript rejects it at compile time with "Property \'id\' is missing in type \'{ age: number }\'".'},
+
+{part:"A",cat:"React + TypeScript",lang:"mcq",diff:"Easy",
+code:`// useEffect with a subscription:
+useEffect(() => {
+  const sub = dataService.subscribe(userId, setData);
+  // ← What MUST go here?
+}, [userId]);
+
+A) return null;
+
+B) return () => sub.unsubscribe();
+
+C) sub.unsubscribe();
+
+D) // Nothing — React handles cleanup automatically`,
+output:`B) return () => sub.unsubscribe();
+
+The cleanup function returned from useEffect
+is called when userId changes OR component unmounts.`,
+why:'useEffect cleanup functions prevent memory leaks and stale subscriptions. React calls the returned function before running the effect again (when userId changes) and on unmount. Option C calls unsubscribe() immediately — killing the subscription right after it starts. Option A returns null which is invalid. Option D is wrong: React never auto-cleans external subscriptions. This is one of the most common React bugs in production.'},
+
+{part:"A",cat:"React + TypeScript",lang:"mcq",diff:"Medium",
+code:`const memoVal  = useMemo(() => expensiveCalc(a, b), [a, b]);
+const memoFn   = useCallback(() => doSomething(a), [a]);
+
+// Which statement is MOST correct?
+
+A) useMemo memoizes a function, useCallback memoizes its result
+
+B) useCallback memoizes a function reference, useMemo memoizes
+   the return value — they solve different problems
+
+C) They are identical — useMemo(() => fn, d) === useCallback(fn, d)
+   always, in every case
+
+D) useCallback only works for event handlers passed as props`,
+output:`B) useCallback = stable fn reference
+   useMemo = stable computed value
+
+They solve different problems even though
+their implementations are similar.`,
+why:'useCallback(fn, deps) returns a memoized function — the same function reference as long as deps don\'t change. useMemo(() => compute(), deps) returns a memoized value — the result of running compute(). Practical rule: useCallback for functions passed as props (prevents unnecessary child re-renders), useMemo for expensive calculations. C is technically true at the implementation level but misleads on intent — the React team recommends using the right hook for the right job.'},
+
+{part:"A",cat:"React + TypeScript",lang:"mcq",diff:"Medium",
+code:`const UserCard = React.memo(({ user, onEdit }) => (
+  <div onClick={() => onEdit(user.id)}>{user.name}</div>
+));
+
+// Parent re-renders every second.
+// Why does UserCard STILL re-render despite React.memo?
+
+A) React.memo doesn't work with onClick handlers
+
+B) onEdit is a new function reference on every parent render —
+   React.memo's shallow comparison sees it as a changed prop
+
+C) user object always causes re-render regardless of memo
+
+D) React.memo only prevents re-renders from state, not parent`,
+output:`B) — onEdit is a new function reference every render
+
+Fix: wrap onEdit in useCallback in the parent
+so the reference stays stable between renders.`,
+why:'React.memo performs a shallow comparison of props. If the parent creates onEdit as an inline arrow function () => handleEdit(id), it\'s a brand-new function object every render — different reference, so React.memo treats it as a changed prop and re-renders. Fix: const onEdit = useCallback((id) => handleEdit(id), [handleEdit]) in the parent. This is one of the most common React.memo "not working" issues developers face.'},
+
+{part:"A",cat:"React + TypeScript",lang:"mcq",diff:"Medium",
+code:`// TypeScript discriminated union:
+type Result<T> =
+  | { status: 'success'; data: T }
+  | { status: 'error';   message: string };
+
+function process(result: Result<User>) {
+  if (result.status === 'success') {
+    console.log(result.data); // ← What does TypeScript know here?
+  }
+}
+
+A) result.data is unknown — needs explicit type assertion
+
+B) result.data is User — TypeScript narrows the type automatically
+   via the discriminant property (status)
+
+C) TypeScript throws an error — data may not exist on all branches
+
+D) result.data is T — you must call process<User>(result) explicitly`,
+output:`B) result.data is typed as User
+   TypeScript narrows inside the if-block
+   using status as the discriminant.`,
+why:'Inside the if (result.status === \'success\') block, TypeScript uses the status property as a discriminant to narrow the union type to { status: \'success\'; data: T }. result.data is fully typed as User — no assertion needed. Outside the block, TypeScript still sees the full union and result.data would cause a type error. Discriminated unions are one of TypeScript\'s most powerful features for modeling API responses, state machines, and async results.'},
+
+{part:"A",cat:"React + TypeScript",lang:"mcq",diff:"Hard",
+code:`// webpack.config.js — Remote App (Micro Frontend)
+new ModuleFederationPlugin({
+  name: 'cartApp',
+  filename: 'remoteEntry.js',
+  exposes: { './Cart': './src/Cart' },
+  shared: { react: { singleton: true } }  // ← Why is this critical?
+})
+
+// Host App consumes:
+const Cart = React.lazy(() => import('cartApp/Cart'));
+
+A) Prevents Cart from rendering more than once on a page
+
+B) Forces all micro-frontends to use the same webpack version
+
+C) Prevents multiple React instances running simultaneously —
+   which breaks hooks with "Invalid hook call" errors
+
+D) Prevents CSS conflicts between host and remote apps`,
+output:`C) singleton: true ensures ONE React instance
+   is shared across all federated modules.
+
+Multiple React instances = broken hooks.
+This is the #1 Module Federation gotcha.`,
+why:'React hooks rely on an internal singleton state registry. If the host runs React 18.2.0 and the remote bundles its own React 18.1.0, you get TWO React instances — hooks throw "Invalid hook call: Hooks can only be called inside a function component." singleton: true in the shared config tells Module Federation to use only one instance of React, shared across all micro-frontends. This is essential in every MFA setup using Module Federation — Pratham would have encountered this at Xelium.'},
+
+{part:"A",cat:"React + TypeScript",lang:"mcq",diff:"Medium",
+code:`// JEST — Testing an async hook:
+it('fetches user data', async () => {
+  jest.spyOn(global, 'fetch').mockResolvedValue({
+    json: () => Promise.resolve({ name: 'Alice', id: 1 })
+  });
+
+  const { result } = renderHook(() => useFetchUser('user-1'));
+
+  // ← Which assertion is CORRECT?
+
+A) expect(result.current.data).toBe({ name:'Alice', id:1 });
+
+B) await waitFor(() =>
+     expect(result.current.data).toEqual({ name:'Alice', id:1 })
+   );
+
+C) setTimeout(() => expect(result.current.data).toBeDefined(), 200);
+
+D) expect(fetch).toHaveBeenCalledWith('/api/user-1');`,
+output:`B) await waitFor(() => expect(...).toEqual(...))
+
+waitFor() polls until assertion passes.
+toEqual() for deep object comparison (not toBe).`,
+why:'Async React state updates must settle before asserting. waitFor() from @testing-library/react retries the assertion until it passes or times out — the correct way to handle async state. toBe() (A) fails: it uses reference equality, and two {name:\'Alice\'} objects are different references. Always use toEqual() for objects. setTimeout (C) is non-deterministic and flaky. D only checks fetch was called but not what data the hook returned. Achieving >90% coverage means writing tests that actually verify behavior — not just that functions were called.'},
+
+{part:"A",cat:"React + TypeScript",lang:"mcq",diff:"Hard",
+code:`// ScrollTracker causes 100+ re-renders per second:
+function ScrollTracker() {
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    window.addEventListener('scroll',
+      () => setScrollY(window.scrollY)
+    );
+    return () => window.removeEventListener('scroll',
+      () => {}  // ← same bug as above?
+    );
+  }, []);
+
+  return <div>Scroll: {scrollY}</div>;
+}
+
+// TWO bugs. Which option correctly identifies BOTH?
+
+A) Missing useCallback + no throttle on setScrollY
+
+B) Cleanup arrow function is a NEW reference (listener never removed)
+   + scroll fires setState 60 times/sec (needs rAF or throttle)
+
+C) useEffect deps should include scrollY + missing React.memo
+
+D) addEventListener needs {passive:true} + setState is synchronous`,
+output:`B) — Both bugs identified:
+1. removeEventListener gets a different fn reference
+   → listener NEVER removed → memory leak
+2. scroll fires 60fps → excessive re-renders
+   → fix: requestAnimationFrame or throttle()`,
+why:'Bug 1: addEventListener and removeEventListener must receive the same function reference to pair correctly. () => {} in the cleanup is a different arrow function than the one added — the scroll listener is never removed, causing a memory leak. Fix: store handler in useRef or useCallback. Bug 2: The scroll event fires on every pixel movement (60+ times/second in smooth scroll). Each call triggers setState → re-render. Fix: wrap in requestAnimationFrame(() => setScrollY(window.scrollY)) or use lodash throttle. Both are production-critical issues.'},
+
+// ─── PART B: AEM & Headless CMS (6 Qs) ──────────────────────────────────────
+
+{part:"B",cat:"AEM & Headless CMS",lang:"mcq",diff:"Easy",
+code:`Your React SPA needs to display product descriptions
+written by content authors. The SAME descriptions are
+reused across website, mobile app, and email campaigns.
+No layout or presentation logic — just structured data.
+
+Which AEM feature is the CORRECT choice?
+
+A) Experience Fragment — for reusable authored layouts
+
+B) Content Fragment — structured content with no layout,
+   delivered headlessly to any channel via GraphQL
+
+C) Page Component — create one AEM page per product
+
+D) Asset Reference — link to binary assets in DAM`,
+output:`B) Content Fragment
+
+Pure structured data, no presentation layer.
+Delivered via GraphQL to React SPA, mobile, email.
+Channel-agnostic = Content Fragment.`,
+why:'Content Fragments are channel-agnostic structured content — title, description, price — with no HTML, no layout, no AEM component rendering. They\'re designed exactly for headless delivery via GraphQL to any consumer. Experience Fragments (A) include layout and AEM components and are meant for reusing rendered UI blocks (like a promotional banner). Since the SPA consumes raw data and handles its own presentation, Content Fragments are the right choice — and what Pratham used at Xelium.'},
+
+{part:"B",cat:"AEM & Headless CMS",lang:"mcq",diff:"Medium",
+code:`// Your Content Fragment Model is named "BlogPost"
+// Fields: title (text), publishedAt (date), tags (text[])
+
+// Which AEM GraphQL query correctly fetches ALL blog posts?
+
+A) query {
+     BlogPost { title publishedAt tags }
+   }
+
+B) query {
+     blogPostList {
+       items { title publishedAt tags }
+     }
+   }
+
+C) query {
+     getAllBlogPosts { title publishedAt tags }
+   }
+
+D) query {
+     fragments(model: "BlogPost") { title publishedAt tags }
+   }`,
+output:`B) blogPostList { items { ... } }
+
+AEM auto-generates: {ModelName camelCase}List
+with an items array containing fragment data.`,
+why:'AEM\'s GraphQL schema is auto-generated from Content Fragment Models following the convention: {ModelNameCamelCase}List { items { ...fields } }. "BlogPost" model → "blogPostList" query. The items array contains the actual fragment data. AEM does not use generic getAllX or model parameter patterns — the schema is model-specific. This is the exact syntax Pratham would have used when building GraphQL-powered components at Xelium.'},
+
+{part:"B",cat:"AEM & Headless CMS",lang:"mcq",diff:"Medium",
+code:`You updated ONLY the CSS and JS for an AEM site theme
+(ui.frontend module). You need to deploy the frontend
+changes WITHOUT triggering a full Maven backend build
+of Java OSGi bundles (~15 min pipeline).
+
+Which Cloud Manager pipeline type do you use?
+
+A) Full Stack Pipeline — always required for any deployment
+
+B) Web Tier Config Pipeline — for Apache/Dispatcher configs
+
+C) Front-End Pipeline — deploys ui.frontend build artifacts
+   to CDN independently of backend
+
+D) Config Pipeline — for environment OSGi configurations`,
+output:`C) Front-End Pipeline
+
+Deploys only CSS/JS artifacts from ui.frontend
+to the CDN layer. No Maven, no Java bundles.
+Introduced by Adobe for rapid UI iteration.`,
+why:'AEM Cloud Manager\'s Front-End Pipeline decouples frontend (CSS/JS theme artifacts) from backend (Java OSGi bundles). The ui.frontend module is built by Node.js (npm run build) and the artifact is deployed directly to the CDN layer via this dedicated pipeline — skipping Maven entirely. This enables frontend developers to iterate independently from backend deployments. Full Stack (A) rebuilds everything. Web Tier (B) is only for Apache/Dispatcher config files. Config (D) is for OSGi env-specific configurations.'},
+
+{part:"B",cat:"AEM & Headless CMS",lang:"mcq",diff:"Medium",
+code:`Your React SPA calls AEM's GraphQL endpoint.
+The security team flags: the endpoint must NOT
+accept arbitrary GraphQL queries from the browser
+(prevents query injection + enables CDN caching).
+
+What is the CORRECT solution?
+
+A) Add CORS headers to block browser requests entirely
+
+B) Use AEM Persisted Queries — store approved queries server-side,
+   expose only a URL like /graphql/execute.json/project/query-name
+
+C) Switch from GraphQL to REST to avoid this entirely
+
+D) Require JWT auth token on every GraphQL request from browser`,
+output:`B) AEM Persisted Queries
+
+Queries stored server-side (like stored procedures).
+Client only calls a URL — no raw query sent from browser.
+Enables GET requests → CDN cacheable.`,
+why:'AEM Persisted Queries store GraphQL queries on the AEM server. The React SPA calls a URL like /graphql/execute.json/my-project/get-products — no raw query is transmitted from the browser. This prevents query injection, enables CDN caching (GET requests with headers), and restricts queryable data to pre-approved queries. AEM as a Cloud Service recommends persisted queries over ad-hoc for all production use cases. Pratham should know this distinction from his Headless CMS work.'},
+
+{part:"B",cat:"AEM & Headless CMS",lang:"mcq",diff:"Hard",
+code:`// Production: SPA fetches from AEM Publish — works fine.
+// Preview environment: needs to show DRAFT content
+// (Content Fragments not yet published/approved).
+
+fetch('https://publish.aem.site/graphql/execute.json/...')
+
+// How do you correctly serve draft content to preview?
+
+A) Same endpoint — add ?draft=true param to Publish
+
+B) Fetch from AEM Author instance using a service account
+   token (IMS technical account / service credentials)
+
+C) Switch to a separate AEM Publish with draft mode enabled
+
+D) Add Authorization: Bearer <user-JWT> from browser session`,
+output:`B) Fetch from AEM Author with service account token
+
+AEM Publish = approved content only.
+AEM Author = all content including drafts.
+Service credentials = server-side only (never browser).`,
+why:'AEM Publish only serves content that has been activated/published. Draft Content Fragments live only on Author. To serve preview, your Next.js/BFF layer calls the AEM Author GraphQL endpoint with a service account token (IMS technical account credentials from AEM as a Cloud Service Developer Console). This token is used server-side (in a Next.js API route or BFF) — never exposed to the browser. The ?draft=true param does not exist in AEM\'s default implementation. Option D exposes credentials to the browser — a security violation.'},
+
+{part:"B",cat:"AEM & Headless CMS",lang:"mcq",diff:"Hard",
+code:`AEM Dispatcher is caching your GraphQL responses.
+After a content author publishes a new Content Fragment,
+the React SPA shows stale content for 10+ minutes.
+
+// Current Dispatcher config:
+/cache {
+  /rules { /0001 { /type "allow" /glob "*" } }
+}
+
+What is the BEST fix?
+
+A) Set Cache-Control: no-cache on all GraphQL responses
+
+B) Configure Dispatcher flush rules to invalidate cached
+   GraphQL paths when Content Fragments are published/activated
+
+C) Increase React polling interval to re-fetch more often
+
+D) Switch to WebSocket push for real-time content updates`,
+output:`B) Dispatcher flush rules on publish/activate
+
+Configure AEM flush agent to invalidate
+/graphql/execute.json/... paths when
+Content Fragments are activated.`,
+why:'Dispatcher flush agents on the AEM Publish instance invalidate specific cache paths when content is activated. For GraphQL persisted queries, configure flush rules targeting /graphql/execute.json/ paths matching the relevant Content Fragment model. On publish/activation, the flush agent clears these cache entries, and the next request fetches fresh data. Disabling cache entirely (A) kills Dispatcher\'s performance benefit and increases AEM Publish load. Option C (polling) wastes bandwidth. This is a Dispatcher configuration issue, not a code problem.'},
+
+// ─── PART C: Figma & Design Handoff (4 Qs) ───────────────────────────────────
+
+{part:"C",cat:"Figma & Design Handoff",lang:"mcq",diff:"Easy",
+code:`A button component in Figma has a fixed width of 120px.
+When the label changes from "OK" to "Cancel subscription",
+the button clips the text.
+
+The button must expand automatically with its label text
+while keeping consistent left/right padding.
+
+Which Figma feature fixes this?
+
+A) Constraints — set the frame to "Scale" horizontally
+
+B) Auto Layout — set width to "Hug contents" with fixed
+   left/right padding values
+
+C) Component Properties — add a text length variant
+
+D) Prototype — add a resize interaction on text change`,
+output:`B) Auto Layout → "Hug contents" width
+
+The frame resizes to fit children (text + padding).
+Equivalent to CSS flexbox with width: fit-content.`,
+why:'Auto Layout with "Hug contents" width makes the frame resize dynamically based on its children. As a React developer, think of it as CSS flexbox + width: fit-content — the container shrinks/grows with content while respecting set padding values. Without Auto Layout, frames have fixed dimensions that clip or overflow. "Hug contents" is the key setting that enables content-driven sizing. Constraints (A) control how elements behave when their parent resizes — not the same problem.'},
+
+{part:"C",cat:"Figma & Design Handoff",lang:"mcq",diff:"Easy",
+code:`A designer hands you a Figma file with a card component.
+You need the EXACT values to implement it in CSS/Tailwind:
+  • border-radius
+  • padding (top/right/bottom/left)
+  • font-size and font-weight
+  • box-shadow
+  • color hex values
+
+Where do you find all of these values efficiently?
+
+A) Right-click → "Copy as SVG" → parse the SVG markup
+
+B) Use Figma's Inspect panel / Dev Mode — it shows CSS-ready
+   property values for every selected layer
+
+C) Ask the designer to export a separate spec PDF
+
+D) Use the ruler tool and color picker to measure manually`,
+output:`B) Figma Inspect panel / Dev Mode
+
+Select any layer → Inspect panel shows:
+border-radius: 8px, padding: 12px 16px,
+font-size: 14px, color: #1A73E8, etc.`,
+why:'Figma\'s Dev Mode (Inspect panel on the right sidebar) shows developer-ready values for every selected element: border-radius, padding, font-size, font-weight, color in hex/rgba, line-height, box-shadow values, and even exported CSS snippets. It\'s the standard handoff workflow — select a layer, copy the value. Parsing SVG (A) is error-prone and doesn\'t show semantic values. Manual measurement (D) is inaccurate and slow. Getting familiar with the Inspect panel is the first Figma skill a frontend developer needs.'},
+
+{part:"C",cat:"Figma & Design Handoff",lang:"mcq",diff:"Medium",
+code:`You maintain React Storybook at Xelium. A designer updates
+the primary brand color in Figma from #0EA5E9 to #0284C7.
+This color is used in 40+ components across the codebase.
+
+What is the MOST SCALABLE workflow to sync this change?
+
+A) Wait for the designer to tell you, then find-and-replace
+   the hex value across all component files manually
+
+B) Use a design token pipeline:
+   Figma Variables → Token Studio → JSON →
+   Style Dictionary → CSS variables → Tailwind config →
+   Storybook picks up the change automatically
+
+C) Export the Figma frame as PNG and use it as background-image
+
+D) Ask the designer to "Copy CSS" from Figma and paste it
+   into your main stylesheet`,
+output:`B) Design token pipeline
+
+Figma Variables → JSON → CSS vars → Tailwind
+One source of truth. Color change in Figma
+propagates to code automatically via CI.`,
+why:'Design token pipelines (Figma Variables → Token Studio plugin → token.json → Style Dictionary → CSS custom properties / Tailwind config) create a single source of truth for design decisions. When the designer updates the Figma Variable, the token export updates the JSON file. CI/CD runs Style Dictionary to regenerate CSS variables. Storybook references these CSS variables — so the component updates with zero manual dev work. Given that Pratham already maintains Storybook, proposing this architecture would be a strong signal of design system maturity.'},
+
+{part:"C",cat:"Figma & Design Handoff",lang:"mcq",diff:"Medium",
+code:`You're building a Tag component in Figma for a design system.
+It has these dimensions:
+  size:    small / medium / large        → 3 options
+  type:    default / success / warning / error  → 4 options
+  hasIcon: true / false                  → 2 options
+
+How many variant combinations? Which Figma feature models it?
+
+A) 12 — use separate Figma components for each combination
+
+B) 24 — use Component Properties:
+        Variant "size" (3) + Variant "type" (4) +
+        Boolean property "hasIcon" (2)
+
+C) 6 — nest icon/no-icon as child components only
+
+D) 24 — create 24 separate Figma components manually`,
+output:`B) 24 combinations (3 × 4 × 2)
+   Component Properties panel:
+   - Variant: size (sm/md/lg)
+   - Variant: type (4 options)
+   - Boolean: hasIcon`,
+why:'3 sizes × 4 types × 2 icon states = 24 combinations. Figma\'s Component Properties handle this with one component: "size" and "type" as Variant properties (enumerated options), "hasIcon" as a Boolean property that toggles the icon child\'s visibility. Designers use the properties panel to configure the exact variant they need — no hunting through 24 named components. Manual separate components (D) creates an unmaintainable design system. This is how production design systems like Material UI and Atlassian Design System are structured in Figma.'},
+
+// ─── PART D: Performance & Architecture (4 Qs) ───────────────────────────────
+
+{part:"D",cat:"Performance & Architecture",lang:"mcq",diff:"Easy",
+code:`// HeavyChart.tsx — 500KB when bundled
+// Only shown when user clicks the "Analytics" tab.
+
+// Currently:
+import HeavyChart from './HeavyChart'; // loaded on page init!
+
+// What is the CORRECT optimization?
+
+A) const HeavyChart = React.lazy(() => import('./HeavyChart'));
+   // Wrap usage in <Suspense fallback={<Spinner/>}>
+
+B) import HeavyChart from './HeavyChart';
+   // Wrap in React.memo() to prevent unnecessary renders
+
+C) const HeavyChart = useDynamicImport('./HeavyChart');
+
+D) Split HeavyChart into 10 smaller components`,
+output:`A) React.lazy + dynamic import()
+
+500KB chunk is downloaded ONLY when
+user clicks Analytics tab — not on page load.
+Suspense shows a fallback while loading.`,
+why:'React.lazy() with dynamic import() enables code splitting — the webpack/Vite bundler creates a separate chunk for HeavyChart.js. This chunk is only downloaded when the component first renders (user opens the Analytics tab). The initial JS bundle is 500KB smaller, improving Time to Interactive. Suspense provides the loading fallback. React.memo (B) only prevents re-renders — it has zero effect on bundle size. useDynamicImport (C) does not exist in React. This is a standard optimization pattern for any heavy library (charts, editors, PDF viewers).'},
+
+{part:"D",cat:"Performance & Architecture",lang:"mcq",diff:"Medium",
+code:`// Your GraphQL query fetches 50 blog posts with authors:
+query {
+  blogPostList {
+    items {
+      title
+      author {    # ← This triggers an extra query per post!
+        name
+        avatar
+      }
+    }
+  }
+}
+// Result: 1 list query + 50 author queries = 51 DB hits
+
+// What is this problem called and what is the fix?
+
+A) Over-fetching — fix by requesting fewer fields (field masking)
+
+B) N+1 problem — fix using DataLoader (batching) on the server:
+   collect all author IDs, fetch in ONE batched query
+
+C) Query depth limit — fix by flattening the Content Fragment model
+
+D) Schema stitching error — fix by separating into two schemas`,
+output:`B) N+1 problem → fix with DataLoader (batching)
+
+1 query for N posts → N queries for authors
+= N+1 total. DataLoader batches all author IDs
+into ONE query. N+1 → 2 total.`,
+why:'The N+1 problem: 1 query returns 50 posts, then 50 separate author queries fire — 51 total DB hits instead of 2. DataLoader (Facebook\'s batching library) solves this: it collects all author IDs requested within the same tick, then fires a single batched query SELECT * FROM authors WHERE id IN (1,2,...50). In AEM\'s context, deeply nested Content Fragment references can trigger this — understanding query performance matters when designing models with multiple nested references.'},
+
+{part:"D",cat:"Performance & Architecture",lang:"mcq",diff:"Hard",
+code:`// Typed API client with generics:
+async function apiGet<T>(endpoint: string): Promise<T> {
+  const res = await fetch(endpoint);
+  return res.json() as Promise<T>; // ← What's the problem?
+}
+
+// Usage:
+const user = await apiGet<User>('/api/users/1');
+console.log(user.name); // TypeScript: no errors ✓
+
+// But API now returns: { userId: 1, firstName: "Alice" }
+// (field names changed in v2)
+
+A) The generic T needs a default: <T = unknown>
+
+B) TypeScript trusts the cast at compile time but does NO
+   runtime validation — if API shape changes, errors are
+   silent until runtime. Data is wrong but TypeScript says "fine"
+
+C) async functions can't return generic types — use overloads
+
+D) fetch() needs explicit Content-Type headers for type inference`,
+output:`B) TypeScript type assertions don't validate at runtime
+
+Compile-time types ≠ runtime guarantees.
+Fix: use zod schema validation:
+UserSchema.parse(await res.json())`,
+why:'This is TypeScript\'s critical blind spot: type assertions (as T or as Promise<T>) tell the compiler "trust me" — they do NOT validate at runtime. If the API returns { userId: 1, firstName: "Alice" } but User expects { id: number, name: string }, TypeScript compiles cleanly but user.name is undefined at runtime with no error thrown. Fix: runtime validation with zod — const user = UserSchema.parse(await res.json()) — this throws a descriptive error if the API response doesn\'t match the schema. Critical for any production API integration.'},
+
+{part:"D",cat:"Performance & Architecture",lang:"mcq",diff:"Medium",
+code:`// Generating Tailwind classes dynamically in React:
+const color = 'red'; // comes from props or API
+
+// Option A — template literal:
+const cls = \`bg-\${color}-500 text-\${color}-900\`;
+
+// Option B — safelist map:
+const colorMap = {
+  red:   'bg-red-500 text-red-900',
+  green: 'bg-green-500 text-green-900',
+  blue:  'bg-blue-500 text-blue-900',
+};
+const cls = colorMap[color];
+
+// Which works correctly in PRODUCTION (purge/content scan on)?
+
+A) Option A — template literals are cleaner and more concise
+
+B) Option B — Tailwind's content scanner requires complete class
+   strings. Dynamic template literals are never detected and
+   get purged from the production CSS bundle
+
+C) Both work identically in production and development
+
+D) Neither works — use inline style={{ backgroundColor }} instead`,
+output:`B) Option B — complete class strings only
+
+Tailwind's content scanner cannot parse
+dynamic template literals like bg-\${color}-500.
+Those classes don't exist in production CSS.`,
+why:'Tailwind\'s content scanner (JIT/PurgeCSS) looks for complete, static class strings in your source files. "bg-red-500" — detects it, includes it. "\`bg-\${color}-500\`" — the scanner sees bg-${color}-500 as a literal string, which matches nothing in Tailwind\'s class list — so it\'s purged. In development (with JIT watching), it may seem to work. In production builds, the class is missing and the style silently fails. Option B\'s safelist map contains complete strings that the scanner detects. Pratham uses Tailwind at Xelium — this is a real production gotcha for dynamic theming.'},
+
+];
+
+const PARTS=[
+{key:"A",label:"React + TypeScript",icon:"⚛",color:"#0ea5e9"},
+{key:"B",label:"AEM & Headless",icon:"🧩",color:"#14b8a6"},
+{key:"C",label:"Figma & Handoff",icon:"🎨",color:"#8b5cf6"},
+{key:"D",label:"Performance",icon:"⚡",color:"#f97316"},
+];
+const diffColor={Easy:"#22c55e",Medium:"#f59e0b",Hard:"#ef4444"};
+
+function App(){
+const[started,setStarted]=useState(false);const[candidateName,setCandidateName]=useState("");
+const[activePart,setActivePart]=useState("A");const[currentIdx,setCurrentIdx]=useState(0);
+const[answers,setAnswers]=useState({});const[submitted,setSubmitted]=useState({});
+const[inputVal,setInputVal]=useState("");const[typing,setTyping]=useState(null);
+const[typedText,setTypedText]=useState("");const[finished,setFinished]=useState(false);
+const[elapsed,setElapsed]=useState(0);const[startTime]=useState(Date.now());const inputRef=useRef(null);
+const filtered=questions.filter(q=>q.part===activePart);const q=filtered[currentIdx];
+const globalIdx=questions.indexOf(q);const isSubmitted=submitted[globalIdx]!==undefined;
+
+useEffect(()=>{setCurrentIdx(0)},[activePart]);
+useEffect(()=>{if(!started||finished)return;const t=setInterval(()=>setElapsed(Math.floor((Date.now()-startTime)/1000)),1000);return()=>clearInterval(t)},[started,finished]);
+useEffect(()=>{if(typing===null)return;const out=q.output;let i=0;setTypedText("");const iv=setInterval(()=>{i++;setTypedText(out.slice(0,i));if(i>=out.length)clearInterval(iv)},18);return()=>clearInterval(iv)},[typing]);
+useEffect(()=>{if(!isSubmitted&&inputRef.current)inputRef.current.focus()},[currentIdx,activePart,isSubmitted]);
+
+const formatTime=(s)=>`${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`;
+
+const checkMCQ=(userAns,correctOutput)=>{
+  const letter=userAns.trim().toLowerCase().replace(/[^a-d].*/,'').charAt(0);
+  const correctLetter=correctOutput.toLowerCase().charAt(0);
+  return letter===correctLetter&&letter!=='';
+};
+
+const handleSubmit=(skipped)=>{
+  const userAns=skipped?"(skipped)":inputVal.trim();
+  setAnswers(a=>({...a,[globalIdx]:userAns}));
+  const correct=!skipped&&checkMCQ(userAns,q.output);
+  setSubmitted(s=>({...s,[globalIdx]:skipped?"skip":correct?"correct":"wrong"}));
+  setTyping(Date.now());setInputVal("")
+};
+
+const handleNext=()=>{if(currentIdx<filtered.length-1){setCurrentIdx(i=>i+1);setTyping(null);setTypedText("")}else{const np=PARTS.findIndex(p=>p.key===activePart);if(np<PARTS.length-1){setActivePart(PARTS[np+1].key);setTyping(null);setTypedText("")}else{setFinished(true)}}};
+const handlePrev=()=>{if(currentIdx>0){setCurrentIdx(i=>i-1);setTyping(null);setTypedText("")}};
+const totalAnswered=Object.keys(submitted).length;
+const totalCorrect=Object.values(submitted).filter(v=>v==="correct").length;
+const totalWrong=Object.values(submitted).filter(v=>v==="wrong").length;
+const totalSkipped=Object.values(submitted).filter(v=>v==="skip").length;
+
+if(!started){return(
+<div className="landing">
+<div className="landing-icon">⚛</div>
+<h1>Frontend Engineer Assessment</h1>
+<p>React · TypeScript · AEM Headless CMS · Figma · Performance</p>
+<div className="tech-tags">{["React.js","TypeScript","Micro Frontend (MFA)","GraphQL","AEM Headless","Content Fragments","Cloud Manager CI/CD","JEST >90%","React Storybook","Tailwind CSS","Figma Dev Mode","Design Tokens"].map(t=><span key={t} className="tech-tag">{t}</span>)}</div>
+<div className="landing-stats">
+<div className="landing-stat"><div className="num">22</div><div className="label">Questions</div></div>
+<div className="landing-stat"><div className="num">4</div><div className="label">Sections</div></div>
+<div className="landing-stat"><div className="num">~20</div><div className="label">Minutes</div></div>
+</div>
+<div className="rules"><h3>How it works</h3><ol>
+<li>Read each scenario or code snippet carefully</li>
+<li>Type the letter of your answer — A, B, C, or D</li>
+<li>Click <strong>Submit</strong> to reveal the correct answer</li>
+<li>Read the explanation to understand the reasoning</li>
+<li>Use <strong>Skip</strong> if unsure — no penalty</li></ol></div>
+<input value={candidateName} onChange={e=>setCandidateName(e.target.value)} placeholder="Enter your name..." style={{padding:"12px 20px",borderRadius:10,border:"1px solid #1e293b",background:"#111827",color:"#e2e8f0",fontFamily:"'Plus Jakarta Sans',sans-serif",fontSize:14,width:280,textAlign:"center",marginBottom:16,outline:"none"}}/>
+<br/><button className="start-btn" onClick={()=>setStarted(true)} disabled={!candidateName.trim()}>Start Assessment →</button>
+</div>)}
+
+if(finished){
+const pct=Math.round((totalCorrect/questions.length)*100);
+const grade=pct>=82?"Strong Hire":pct>=64?"Proceed to Round 2":pct>=45?"Needs Improvement":"Below Expectations";
+const gradeColor=pct>=82?"#22c55e":pct>=64?"#f59e0b":pct>=45?"#fb923c":"#ef4444";
+return(<div className="completion">
+<div className="score-circle" style={{border:`4px solid ${gradeColor}`,boxShadow:`0 0 40px ${gradeColor}20`}}><div className="pct" style={{color:gradeColor}}>{pct}%</div><div className="lbl">Score</div></div>
+<h2>Assessment Complete!</h2><p>{candidateName} · Time: {formatTime(elapsed)}</p>
+<div style={{display:"inline-block",padding:"8px 24px",borderRadius:10,background:`${gradeColor}18`,border:`1px solid ${gradeColor}40`,color:gradeColor,fontWeight:700,fontSize:16,marginBottom:24}}>{grade}</div>
+<div className="score-breakdown">
+<div className="item"><div className="val" style={{color:"#4ade80"}}>{totalCorrect}</div><div className="desc">Correct</div></div>
+<div className="item"><div className="val" style={{color:"#f87171"}}>{totalWrong}</div><div className="desc">Wrong</div></div>
+<div className="item"><div className="val" style={{color:"#fbbf24"}}>{totalSkipped}</div><div className="desc">Skipped</div></div>
+</div>
+<button className="restart-btn" onClick={()=>{setStarted(false);setActivePart("A");setCurrentIdx(0);setAnswers({});setSubmitted({});setFinished(false);setTyping(null);setTypedText("");setCandidateName("")}}>Restart</button>
+</div>)}
+
+return(<div>
+<div className="header">
+  <div className="header-left">
+    <div className="header-icon">⚛</div>
+    <div><div className="header-title">Frontend Assessment</div><div className="header-sub">{candidateName} · {formatTime(elapsed)}</div></div>
+  </div>
+  <div className="score-pills">
+    <div className="pill pill-green">✓ {totalCorrect}</div>
+    <div className="pill pill-red">✗ {totalWrong}</div>
+    <div className="pill pill-total">{totalAnswered}/{questions.length}</div>
+  </div>
+</div>
+<div className="tabs">{PARTS.map(p=>{const count=questions.filter(q2=>q2.part===p.key).length;const done=questions.filter(q2=>q2.part===p.key).filter(q2=>submitted[questions.indexOf(q2)]!==undefined).length;return(<button key={p.key} className={`tab ${activePart===p.key?"active":""}`} style={{"--tab-color":p.color}} onClick={()=>setActivePart(p.key)}><span>{p.icon}</span> {p.label}<span className="tab-badge">{done}/{count}</span></button>)})}</div>
+<div className="main">
+<div className="q-header">
+  <div className="q-header-left">
+    <span className="q-num">Q{currentIdx+1}/{filtered.length}</span>
+    <span className="diff-badge" style={{color:diffColor[q.diff],background:`${diffColor[q.diff]}18`,border:`1px solid ${diffColor[q.diff]}30`}}>{q.diff}</span>
+    <span className="q-prompt">Type A, B, C, or D</span>
+  </div>
+  <div className="nav-btns">
+    <button className="nav-btn" onClick={handlePrev} disabled={currentIdx===0}>←</button>
+    <button className="nav-btn" onClick={handleNext} disabled={!isSubmitted}>→</button>
+  </div>
+</div>
+
+<div className="editor">
+  <div className="editor-bar">
+    <div style={{display:"flex",alignItems:"center",gap:8}}>
+      <div className="dots">
+        <div className="dot" style={{background:"#ef4444"}}/>
+        <div className="dot" style={{background:"#f59e0b"}}/>
+        <div className="dot" style={{background:"#22c55e"}}/>
+      </div>
+      <span className="filename">question_{String(questions.indexOf(q)+1).padStart(2,'0')}.md</span>
+    </div>
+    <span className="lang-badge" style={{color:PARTS.find(p=>p.key===activePart)?.color,background:`${PARTS.find(p=>p.key===activePart)?.color}18`,border:`1px solid ${PARTS.find(p=>p.key===activePart)?.color}30`}}>{q.cat.toUpperCase()}</span>
+  </div>
+  <div className="code-body">
+    {q.code.split("\n").map((line,i)=>(
+      <div className="code-line" key={i}>
+        <span className="line-no">{i+1}</span>
+        <span style={{color:"#e2e8f0",whiteSpace:"pre-wrap"}}>{line}</span>
+      </div>
+    ))}
+  </div>
+</div>
+
+{!isSubmitted&&(
+<div className="answer-section">
+  <div className="answer-box">
+    <div className="answer-label">Your Answer</div>
+    <textarea ref={inputRef} className="answer-input" value={inputVal} onChange={e=>setInputVal(e.target.value)}
+      placeholder="Type A, B, C, or D..."
+      style={{minHeight:"48px",resize:"none"}}
+      onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey&&inputVal.trim()){e.preventDefault();handleSubmit(false)}}}
+    />
+    <div className="submit-row">
+      <button className="skip-btn" onClick={()=>handleSubmit(true)}>Skip →</button>
+      <button className="submit-btn" onClick={()=>handleSubmit(false)} disabled={!inputVal.trim()}>Submit Answer</button>
+    </div>
+  </div>
+</div>
+)}
+
+{isSubmitted&&(<>
+<div className={`terminal revealed`}>
+  <div className="terminal-bar">
+    <span>⬡ Result</span>
+    <span style={{color:"#22c55e"}}>● complete</span>
+  </div>
+  <div className="terminal-body">
+    <div className="terminal-cmd">$ assess --question {questions.indexOf(q)+1} --evaluate</div>
+    {typedText.split("\n").map((line,i)=>(<div className="terminal-output" key={i}>{line}</div>))}
+  </div>
+</div>
+
+<div className={`result-card ${submitted[globalIdx]==="correct"?"result-correct":submitted[globalIdx]==="wrong"?"result-wrong":"result-skipped"}`}>
+  <div className="result-header">
+    {submitted[globalIdx]==="correct"&&"✓ Correct!"}
+    {submitted[globalIdx]==="wrong"&&"✗ Incorrect"}
+    {submitted[globalIdx]==="skip"&&"⏭ Skipped"}
+  </div>
+  <div className="result-body">
+    {submitted[globalIdx]!=="skip"&&(
+      <div className="result-compare">
+        <div className="result-col"><label>Your Answer</label><pre>{answers[globalIdx]}</pre></div>
+        <div className="result-col"><label>Correct Answer</label><pre style={{borderColor:"#166534"}}>{q.output}</pre></div>
+      </div>
+    )}
+    {submitted[globalIdx]==="skip"&&(
+      <div className="result-compare" style={{gridTemplateColumns:"1fr"}}>
+        <div className="result-col"><label>Correct Answer</label><pre>{q.output}</pre></div>
+      </div>
+    )}
+    <div className="explanation"><strong>Why: </strong>{q.why}</div>
+  </div>
+</div>
+
+<div style={{textAlign:"center",marginTop:12}}>
+  <button onClick={handleNext} style={{padding:"10px 32px",borderRadius:10,background:"linear-gradient(135deg,#0ea5e9,#8b5cf6)",color:"#fff",fontWeight:700,fontSize:14,border:"none",boxShadow:"0 0 20px #0ea5e920"}}>
+    {currentIdx<filtered.length-1?"Next Question →":PARTS.findIndex(p=>p.key===activePart)<PARTS.length-1?"Next Section →":"Finish Assessment →"}
+  </button>
+</div>
+</>)}
+
+<div className="progress-dots">
+  {filtered.map((fq,i)=>{
+    const gi=questions.indexOf(fq);
+    const st=submitted[gi];
+    let cls="progress-dot ";
+    if(i===currentIdx)cls+="current";
+    else if(st==="correct")cls+="done-correct";
+    else if(st==="wrong")cls+="done-wrong";
+    else if(st==="skip")cls+="done-skip";
+    else cls+="pending";
+    return <button key={i} className={cls} onClick={()=>{setCurrentIdx(i);setTyping(null);setTypedText("")}}/>;
+  })}
+</div>
+</div></div>)}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
