@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Siraj Sharma — Frontend · DataViz · Performance Assessment</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0c0e14;--surface:#111827;--surface2:#151a27;--border:#1e293b;
+  --text:#e2e8f0;--muted:#64748b;--dim:#475569;
+  --blue:#4f8ef7;--blue-bg:rgba(79,142,247,0.1);--blue-border:rgba(79,142,247,0.3);
+  --violet:#8b5cf6;--violet-bg:rgba(139,92,246,0.1);--violet-border:rgba(139,92,246,0.3);
+  --emerald:#10b981;--emerald-bg:rgba(16,185,129,0.1);--emerald-border:rgba(16,185,129,0.3);
+  --orange:#f97316;--orange-bg:rgba(249,115,22,0.1);--orange-border:rgba(249,115,22,0.3);
+  --green:#22c55e;--red:#ef4444;--yellow:#f59e0b;
+}
+body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh}
+button{font-family:inherit;cursor:pointer;border:none}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+/* LANDING */
+.landing{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 24px;text-align:center}
+.landing-icon{width:76px;height:76px;border-radius:22px;background:linear-gradient(135deg,#4f8ef7,#8b5cf6,#10b981);display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:24px;box-shadow:0 0 60px rgba(79,142,247,.35)}
+.landing h1{font-size:28px;font-weight:800;letter-spacing:-.03em;margin-bottom:8px}
+.landing p{color:var(--muted);font-size:15px;max-width:520px;line-height:1.6;margin-bottom:28px}
+.stat-row{display:flex;gap:28px;margin-bottom:36px}
+.stat .num{font-size:30px;font-weight:800;color:var(--blue)}.stat .lbl{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em}
+.tech-tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:28px}
+.tech-tag{padding:4px 12px;border-radius:6px;font-size:11px;font-weight:600;background:var(--surface);border:1px solid var(--border);color:var(--muted);font-family:'JetBrains Mono',monospace}
+.rules-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 28px;text-align:left;max-width:520px;margin-bottom:32px}
+.rules-box h3{font-size:12px;color:var(--blue);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+.rules-box li{color:var(--muted);font-size:13px;line-height:1.9;margin-left:16px}
+.name-input{padding:12px 20px;border-radius:10px;border:1px solid var(--border);background:#111827;color:#e2e8f0;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;width:280px;text-align:center;margin-bottom:16px;outline:none}
+.name-input:focus{border-color:var(--blue)}
+.start-btn{padding:14px 48px;border-radius:12px;background:linear-gradient(135deg,#4f8ef7,#8b5cf6);color:#fff;font-weight:700;font-size:16px;box-shadow:0 0 40px rgba(79,142,247,.25);transition:all .3s}
+.start-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* HEADER */
+.header{background:var(--surface2);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
+.header-left{display:flex;align-items:center;gap:12px}
+.header-icon{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#4f8ef7,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:16px}
+.header-title{font-weight:800;font-size:15px;letter-spacing:-.02em}
+.header-sub{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.score-pills{display:flex;gap:8px}
+.pill{padding:5px 14px;border-radius:8px;font-weight:600;font-size:13px;font-family:'JetBrains Mono',monospace}
+.pill-green{background:#0b2e1a;border:1px solid #166534;color:#4ade80}
+.pill-red{background:#2a0f10;border:1px solid #991b1b;color:#f87171}
+.pill-total{background:var(--border);color:#94a3b8}
+
+/* TABS */
+.tabs{display:flex;gap:6px;padding:12px 24px;background:#0f1219;overflow-x:auto;border-bottom:1px solid var(--border)}
+.tab{padding:10px 18px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--muted);font-weight:600;font-size:13px;display:flex;align-items:center;gap:8px;white-space:nowrap;transition:all .2s}
+.tab.active{border-color:var(--tab-color);background:color-mix(in srgb,var(--tab-color) 10%,transparent);color:var(--tab-color)}
+.tab-badge{padding:2px 8px;border-radius:6px;font-size:11px;background:var(--border);color:var(--dim)}
+.tab.active .tab-badge{background:color-mix(in srgb,var(--tab-color) 15%,transparent);color:var(--tab-color)}
+
+/* MAIN */
+.main{padding:16px 24px;max-width:860px;margin:0 auto}
+.q-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.q-header-left{display:flex;align-items:center;gap:10px}
+.q-num{font-weight:700;font-size:14px}
+.diff-badge{font-size:11px;padding:3px 10px;border-radius:6px;font-weight:600}
+.q-hint{font-size:11px;color:var(--dim)}
+.nav-btns{display:flex;gap:6px}
+.nav-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:#94a3b8;display:flex;align-items:center;justify-content:center;font-size:14px}
+.nav-btn:disabled{color:#334155;cursor:default}
+
+/* EDITOR */
+.editor{border-radius:12px;overflow:hidden;border:1px solid var(--border);margin-bottom:12px}
+.editor-bar{background:var(--surface2);padding:8px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
+.dots{display:flex;gap:6px}.dot{width:10px;height:10px;border-radius:50%}
+.filename{font-size:11px;color:var(--dim);margin-left:10px;font-family:'JetBrains Mono',monospace}
+.lang-pill{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:600;font-family:'JetBrains Mono',monospace}
+.code-body{background:var(--bg);padding:16px 20px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.7;overflow-x:auto}
+.code-line{display:flex}.line-no{color:#334155;width:32px;text-align:right;margin-right:16px;user-select:none;font-size:12px}
+
+/* ANSWER */
+.answer-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:12px}
+.answer-label{font-size:12px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.answer-input{width:100%;background:#06080d;border:1px solid var(--border);border-radius:8px;padding:12px 16px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;resize:none;min-height:48px;outline:none;transition:border-color .2s}
+.answer-input:focus{border-color:var(--blue)}.answer-input::placeholder{color:#334155}
+.submit-row{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+.submit-btn{padding:10px 32px;border-radius:10px;background:linear-gradient(135deg,#4f8ef7,#8b5cf6);color:#fff;font-weight:700;font-size:14px;transition:all .3s}
+.submit-btn:disabled{background:var(--border);color:var(--dim);cursor:default}
+.skip-btn{padding:10px 20px;border-radius:10px;background:transparent;border:1px solid var(--border);color:var(--muted);font-weight:600;font-size:13px}
+
+/* TERMINAL */
+.terminal{border-radius:12px;border:1px solid var(--border);overflow:hidden;margin-bottom:12px;transition:border-color .5s}
+.terminal.revealed{border-color:rgba(34,197,94,.3)}
+.terminal-bar{background:#0a0c10;padding:6px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.terminal-bar span{font-size:11px;color:var(--dim);font-family:'JetBrains Mono',monospace}
+.terminal-body{background:#06080d;padding:14px 20px;min-height:60px;font-family:'JetBrains Mono',monospace;font-size:13px}
+.terminal-cmd{color:var(--dim);font-size:11px;margin-bottom:6px}
+.terminal-out{color:#4ade80;font-weight:500}
+
+/* RESULT */
+.result-card{border-radius:12px;overflow:hidden;margin-bottom:12px;animation:fadeUp .4s ease-out}
+.result-correct{background:#071a0e;border:1px solid #166534}
+.result-wrong{background:#1a0b0b;border:1px solid #991b1b}
+.result-skip{background:var(--surface);border:1px solid var(--border)}
+.result-header{padding:14px 20px;display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px}
+.result-correct .result-header{color:#4ade80}.result-wrong .result-header{color:#f87171}.result-skip .result-header{color:var(--yellow)}
+.result-body{padding:0 20px 16px}
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.result-col label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);margin-bottom:6px;font-weight:600}
+.result-col pre{background:#06080d;border-radius:8px;padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text);white-space:pre-wrap;border:1px solid var(--border)}
+.result-why{font-size:13px;color:#cbd5e1;line-height:1.6}.result-why strong{color:var(--blue)}
+
+/* PROGRESS DOTS */
+.progress-dots{display:flex;gap:4px;justify-content:center;margin-top:20px;flex-wrap:wrap}
+.pdot{height:8px;border-radius:4px;border:none;transition:all .3s;cursor:pointer}
+.pdot.current{width:24px;background:var(--blue)}
+.pdot.ok{width:8px;background:var(--green)}
+.pdot.wrong{width:8px;background:var(--red)}
+.pdot.skip{width:8px;background:var(--yellow)}
+.pdot.pending{width:8px;background:var(--border)}
+
+/* NEXT BTN */
+.next-btn{padding:10px 32px;border-radius:10px;background:linear-gradient(135deg,#4f8ef7,#8b5cf6);color:#fff;font-weight:700;font-size:14px;border:none;box-shadow:0 0 20px rgba(79,142,247,.2)}
+
+/* COMPLETION */
+.completion{text-align:center;padding:60px 24px;animation:fadeUp .6s ease-out}
+.completion h2{font-size:28px;font-weight:800;margin-bottom:8px;letter-spacing:-.03em}
+.score-ring{width:140px;height:140px;border-radius:50%;margin:0 auto 24px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-pct{font-size:40px;font-weight:800;line-height:1}.ring-lbl{font-size:12px;color:var(--muted)}
+.grade-badge{display:inline-block;padding:8px 24px;border-radius:10px;font-weight:700;font-size:16px;margin-bottom:28px}
+.score-bk{display:flex;gap:36px;justify-content:center;margin-bottom:40px}
+.score-bk .si .v{font-size:26px;font-weight:800}.score-bk .si .d{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em}
+.restart-btn{padding:12px 36px;border-radius:10px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-weight:600;font-size:14px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}
+.spinner{width:12px;height:12px;border:2px solid var(--border);border-top-color:var(--muted);border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(max-width:600px){.result-grid{grid-template-columns:1fr}.stat-row{gap:16px}.main{padding:12px 14px}.tabs{padding:10px 12px}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<script type="text/babel">
+const{useState,useEffect,useRef}=React;
+
+const questions=[
+
+// ══════════════════════════════════════════════════════
+// PART A — React + TypeScript  (6 Qs)
+// ══════════════════════════════════════════════════════
+
+{part:"A",cat:"React + TypeScript",diff:"Easy",
+code:`// Zustand store for a financial dashboard:
+const useMarketStore = create<MarketState>((set) => ({
+  prices: {},
+  updatePrice: (ticker: string, price: number) =>
+    set((state) => ({
+      prices: { ...state.prices, [ticker]: price }
+    })),
+}));
+
+// Component consuming it:
+const TickerCard = ({ ticker }: { ticker: string }) => {
+  const price = useMarketStore((s) => s.prices[ticker]);
+  return <div>{ticker}: {price}</div>;
+};
+
+// Why does TickerCard NOT re-render when an
+// unrelated ticker price updates?
+
+A) Zustand uses React Context which batches updates automatically
+
+B) The selector (s) => s.prices[ticker] returns a stable primitive —
+   Zustand only triggers re-render when the selected value changes
+
+C) TickerCard is wrapped in React.memo internally by Zustand
+
+D) Zustand uses a Web Worker to isolate state updates per subscriber`,
+output:`B) Selector returns a stable primitive
+
+Zustand compares previous vs next selected value.
+If s.prices["AAPL"] didn't change, TickerCard
+for "AAPL" skips re-render — even if "MSFT" updated.`,
+why:`Zustand's selector-based subscription is the key performance feature. The component passes a selector function (s) => s.prices[ticker] which extracts one value. Zustand compares the previous and next return value using Object.is() (strict equality). If your ticker's price didn't change, the component is not re-rendered — regardless of how many other tickers updated. This is why granular selectors matter: useMarketStore(s => s) would re-render on every store change.`},
+
+{part:"A",cat:"React + TypeScript",diff:"Medium",
+code:`// SWR fetching real-time stock data:
+const { data, error, isLoading } = useSWR(
+  '/api/market/snapshot',
+  fetcher,
+  { refreshInterval: 5000 }
+);
+
+// Vs TanStack Query:
+const { data } = useQuery({
+  queryKey: ['market-snapshot'],
+  queryFn: fetchSnapshot,
+  refetchInterval: 5000,
+  staleTime: 4000,   // ← What does staleTime do here?
+});
+
+A) staleTime: 4000 delays the first fetch by 4 seconds
+
+B) For 4 seconds after a fetch, cached data is considered fresh —
+   subsequent mounts won't trigger a refetch within that window
+
+C) Data older than 4 seconds is deleted from the cache automatically
+
+D) staleTime disables refetchInterval for the first 4000ms`,
+output:`B) staleTime = freshness window
+
+For 4s after fetching, new component mounts
+reuse cached data without re-fetching.
+After 4s the data is "stale" — refetch triggers.`,
+why:`staleTime controls how long TanStack Query considers cached data "fresh." During this window, a new component mounting with the same queryKey reuses the cache without a background refetch — preventing duplicate API calls when multiple components need the same data. Since refreshInterval is 5000ms and staleTime is 4000ms, data goes stale just before the next scheduled refetch. SWR has an equivalent: dedupingInterval. This distinction is critical for financial dashboards where you balance freshness vs. API rate limits.`},
+
+{part:"A",cat:"React + TypeScript",diff:"Medium",
+code:`// You migrated Angular's stock analytics app to React.
+// This component causes memory leaks in production:
+
+function RealtimePriceChart({ ticker }) {
+  const [prices, setPrices] = useState([]);
+
+  useEffect(() => {
+    const socket = new WebSocket(\`wss://feed/\${ticker}\`);
+
+    socket.onmessage = (e) => {
+      const price = JSON.parse(e.data);
+      setPrices(prev => [...prev, price]);  // ← Bug 1
+    };
+    // ← Bug 2 is here (missing)
+  }, [ticker]);
+
+  return <Chart data={prices}/>;
+}
+
+// Which option correctly identifies BOTH bugs?
+
+A) Bug 1: spread creates new array on every tick (use push).
+   Bug 2: no dependency on prices causes stale closure.
+
+B) Bug 1: unbounded array growth — prices grows forever at 60fps.
+   Bug 2: WebSocket is never closed — new socket opens on
+   ticker change, old one stays open. Memory leak.
+
+C) Bug 1: setPrices causes synchronous re-renders.
+   Bug 2: useEffect needs [ticker, prices] as dependencies.
+
+D) Bug 1: JSON.parse is synchronous and blocks UI.
+   Bug 2: WebSocket needs a try-catch wrapper.`,
+output:`B) — Both bugs correctly identified:
+1. prices array grows unbounded (60fps × minutes)
+2. WebSocket never closed → multiple open connections
+
+Fix 1: keep only last N prices (sliding window)
+Fix 2: return () => socket.close() from useEffect`,
+why:`Bug 1: Real-time financial feeds push 60+ messages/second. [...prev, price] appends forever — the prices array becomes thousands of entries, causing continuous heap growth and chart render slowdowns. Fix: keep a sliding window — setPrices(prev => [...prev.slice(-200), price]). Bug 2: The useEffect has no cleanup function. When ticker changes, React re-runs the effect (opening a new WebSocket) but the old socket remains open, streaming data to a stale closure. Fix: return () => socket.close(). Given Siraj worked on 20-30s iframe rendering delays at Rakuten and memory leaks at Paxcom, this pattern should be deeply familiar.`},
+
+{part:"A",cat:"React + TypeScript",diff:"Hard",
+code:`// TypeScript discriminated union for chart state:
+type ChartState<T> =
+  | { status: 'idle' }
+  | { status: 'loading' }
+  | { status: 'success'; data: T; lastUpdated: Date }
+  | { status: 'error';   error: Error; retryCount: number };
+
+function useChartData<T>(url: string): ChartState<T> { /* ... */ }
+
+// Usage:
+const state = useChartData<PricePoint[]>('/api/prices');
+
+// Which render pattern is MOST type-safe?
+
+A) if (state.data) { return <Chart data={state.data}/> }
+   // TypeScript infers state.data may exist
+
+B) if (state.status === 'success') {
+     return <Chart data={state.data} />
+   }
+   // TypeScript narrows to success branch — data: T guaranteed
+
+C) return <Chart data={state.data ?? []} />
+   // Nullish coalescing handles all states
+
+D) const data = state as Extract<typeof state, {status:'success'}>;
+   return <Chart data={data.data} />`,
+output:`B) Discriminated union narrowing
+
+Inside status === 'success' block, TypeScript
+knows data: PricePoint[] exists. A fails:
+state.data doesn't exist on idle/loading/error.`,
+why:`A discriminated union uses the status property as the discriminant. TypeScript narrows the type inside the conditional: inside if (state.status === 'success'), the type is { status: 'success'; data: T; lastUpdated: Date } — data is guaranteed to exist and correctly typed. Option A fails at compile time: the 'idle', 'loading', and 'error' variants don't have a data property, so state.data is a type error outside a narrowed branch. Option D uses a type assertion — unsafe, bypasses type checking. This pattern is the correct way to model async states in TypeScript.`},
+
+{part:"A",cat:"React + TypeScript",diff:"Medium",
+code:`// You're building a modular charting library.
+// A LineChart needs axes, tooltips, and legends
+// as optional plug-in components.
+
+// Which composition pattern is MOST flexible
+// and avoids prop drilling?
+
+A) Pass all config as a single giant config prop:
+   <LineChart config={{ axes: {...}, tooltip: {...} }} />
+
+B) Compound components with React Context:
+   <Chart data={data}>
+     <Chart.XAxis />
+     <Chart.YAxis label="Price" />
+     <Chart.Tooltip formatter={formatPrice} />
+     <Chart.Legend />
+   </Chart>
+
+C) Use a render prop for every sub-element:
+   <LineChart renderAxis={() => <Axis/>}
+              renderTooltip={() => <Tooltip/>} />
+
+D) HOC — wrap each chart type:
+   const LineWithAxes = withAxes(withTooltip(LineChart))`,
+output:`B) Compound Component pattern
+
+Chart shares state via Context — no prop drilling.
+Consumers compose exactly what they need.
+This is how Recharts, Radix, and D3-React libs work.`,
+why:`Compound components (as used by Recharts, Radix UI, Headless UI) allow Chart to expose sub-components that implicitly share state via React Context — current zoom level, hovered data point, scale functions. Consumers assemble only what they need: an admin dashboard might add all four; a sparkline might use none. Option A creates a massive, hard-to-type prop object. Option C render-props cause callback hell. Option D HOC chains lose TypeScript generics and become unmaintainable. Siraj built a modular charting library at Paxcom — this is exactly the architectural decision he made.`},
+
+{part:"A",cat:"React + TypeScript",diff:"Hard",
+code:`// Next.js — your network visualization page:
+// Large graph data (50,000 nodes) fetched server-side.
+
+// Option A: Server Component
+export default async function NetworkPage() {
+  const graph = await fetchGraph(); // 2MB JSON
+  return <NetworkViz data={graph} />;
+}
+
+// Option B: Client Component with SWR
+'use client';
+export default function NetworkPage() {
+  const { data } = useSWR('/api/graph', fetcher);
+  return <NetworkViz data={data} />;
+}
+
+// For a network viz that needs WebGL (PixiJS) and
+// real-time updates via WebSocket — which is correct?
+
+A) Option A — server components are always faster
+
+B) Option B — PixiJS needs browser APIs (canvas/WebGL).
+   Server Components can't use browser APIs or hooks.
+   Real-time WebSocket also requires client-side code.
+
+C) Option A with 'use server' directive on NetworkViz
+
+D) Split: server fetches initial snapshot, passes to
+   a client boundary for WebGL rendering and WS updates`,
+output:`D) Split: Server → initial data → Client boundary
+
+Server Component fetches 2MB graph (no client JS).
+Client boundary (NetworkViz) handles PixiJS + WebSocket.
+Best of both: fast initial load + real-time interactivity.`,
+why:`Option B is partially correct — PixiJS absolutely requires browser APIs (canvas, WebGL context). But option D is the production pattern: the Server Component fetches the initial graph data (avoiding a client-side waterfall), serializes it, and passes it as props to a 'use client' boundary component. NetworkViz (the PixiJS WebGL renderer) lives in the client boundary and sets up WebSocket subscriptions after hydration. This is Next.js's recommended "Server Component shell + Client leaf" architecture. Siraj's background building PixiJS visualizations makes this a relevant real-world scenario.`},
+
+// ══════════════════════════════════════════════════════
+// PART B — Data Visualization: D3 + WebGL  (6 Qs)
+// ══════════════════════════════════════════════════════
+
+{part:"B",cat:"Data Visualization",diff:"Easy",
+code:`// D3 scale for a stock price chart:
+const yScale = d3.scaleLinear()
+  .domain([minPrice, maxPrice])
+  .range([height, 0]);  // ← Why is range [height, 0] not [0, height]?
+
+A) SVG bug — D3 requires inverted range to render correctly
+
+B) SVG Y-axis is inverted: Y=0 is at the TOP of the SVG.
+   [height, 0] maps high prices to low pixel Y (near top)
+   and low prices to high pixel Y (near bottom) — correct!
+
+C) D3 automatically corrects the inversion so order doesn't matter
+
+D) range [0, height] would work the same way`,
+output:`B) SVG coordinate system is top-down
+
+SVG Y=0 is at top. To put high price near top
+of chart, high price domain → low Y pixel value.
+range [height, 0] achieves this inversion.`,
+why:`This is the most common D3 confusion point. In SVG, the origin (0,0) is the top-left corner, and Y increases downward. So Y=0 is the top of the chart. A stock price of $200 should appear near the top — meaning a low pixel Y value. With range [height, 0]: minPrice maps to height (bottom of chart) and maxPrice maps to 0 (top of chart). If you accidentally use [0, height], high prices appear at the bottom and low prices at the top — a flipped chart. Every D3 price chart inverts the Y range.`},
+
+{part:"B",cat:"Data Visualization",diff:"Medium",
+code:`// 50,000 data points on a scatter plot.
+// D3 SVG approach is too slow (browser freezes).
+
+// Option A: D3 + SVG
+svg.selectAll('circle')
+   .data(points)
+   .join('circle')
+   .attr('cx', d => xScale(d.x))
+   .attr('cy', d => yScale(d.y))
+   .attr('r', 3);
+
+// Option B: Canvas 2D
+points.forEach(d => {
+  ctx.beginPath();
+  ctx.arc(xScale(d.x), yScale(d.y), 3, 0, Math.PI*2);
+  ctx.fill();
+});
+
+// Option C: PixiJS (WebGL)
+points.forEach(d => {
+  const sprite = new PIXI.Sprite(texture);
+  sprite.position.set(xScale(d.x), yScale(d.y));
+  container.addChild(sprite);
+});
+
+// For 50K+ points with real-time updates — correct order?
+
+A) SVG > Canvas > WebGL (WebGL is overkill for charts)
+
+B) WebGL > Canvas > SVG.
+   WebGL: GPU-accelerated, handles millions of points.
+   Canvas: fast, but JS-bound, slows on updates.
+   SVG: DOM node per point — crushes the browser at 50K+.
+
+C) Canvas > WebGL > SVG (Canvas is always fastest)
+
+D) All three perform equally above 10K points`,
+output:`B) WebGL > Canvas > SVG
+
+SVG: 50K DOM nodes = browser freeze
+Canvas: fast render, slow on partial updates
+WebGL (PixiJS): GPU-batched, handles 1M+ points at 60fps`,
+why:`SVG creates one DOM element per data point. 50,000 circles = 50,000 DOM nodes — the browser's layout engine collapses. Canvas is significantly faster: it renders to a bitmap with no DOM nodes, but every frame must redraw all points in JavaScript (CPU-bound). WebGL (PixiJS) sends batched draw calls to the GPU — capable of rendering millions of sprites at 60fps with minimal CPU. Siraj explicitly built PixiJS visualizations at Paxcom for large-scale datasets and fixed 20-30s iframe delays at Rakuten — the performance hierarchy is central to his work.`},
+
+{part:"B",cat:"Data Visualization",diff:"Medium",
+code:`// D3 axis formatting for financial charts:
+const xAxis = d3.axisBottom(xScale)
+  .ticks(d3.timeMonth.every(3))
+  .tickFormat(d3.timeFormat("%b %Y"));
+
+// The chart is zoomed in to show only 7 days.
+// Ticks still show monthly intervals — all bunched up.
+
+// How do you fix the axis to show appropriate
+// granularity based on zoom level?
+
+A) Hard-code if/else for every possible zoom level
+
+B) Use d3.axisBottom(xScale) without .ticks() —
+   D3 will automatically choose the best interval
+
+C) Dynamically calculate tick interval based on visible
+   domain range: if range < 7d → hourly, < 30d → daily,
+   < 365d → weekly, else → monthly
+
+D) Switch to a different chart library that handles zoom`,
+output:`C) Dynamic tick interval from visible domain
+
+Check (xScale.domain()[1] - xScale.domain()[0]):
+< 7 days  → d3.timeHour
+< 30 days → d3.timeDay
+< 1 year  → d3.timeWeek
+else      → d3.timeMonth`,
+why:`D3's automatic tick selection (Option B) is better than hard-coding but doesn't always produce readable financial charts. The correct pattern for zoomable financial charts is to read the current scale's visible domain extent on every zoom event, compute the time range in milliseconds, and select the appropriate d3.time interval. Recharts and D3-based financial libraries like lightweight-charts implement exactly this. This is standard for US stock market analytics dashboards like the one Siraj built at Paxcom.`},
+
+{part:"B",cat:"Data Visualization",diff:"Hard",
+code:`// PixiJS WebGL rendering 500K network nodes.
+// Frame rate drops to 5fps after 2 minutes.
+// Memory tab shows heap growing 50MB every 30 seconds.
+
+// What is the MOST LIKELY root cause?
+
+A) PixiJS doesn't support more than 100K sprites
+
+B) Each frame creates new PIXI.Sprite objects without
+   destroying old ones — sprites accumulate in GPU memory
+   (VRAM leak). Fix: use a sprite pool / object pooling.
+
+C) WebGL context is being reset by the browser
+   due to memory pressure (context loss event)
+
+D) The issue is React re-renders, not PixiJS`,
+output:`B) VRAM leak — sprites created but never destroyed
+
+PIXI.Sprite objects hold GPU texture references.
+Creating without destroy() = VRAM leak.
+Fix: Object pool — reuse sprites, don't recreate.`,
+why:`This is the classic PixiJS memory leak. PIXI.Sprite references a GPU texture. If you create new sprites each frame without calling sprite.destroy() or returning them to a pool, you accumulate VRAM references — the GPU runs out of texture memory, causing frame rate collapse. Object pooling: maintain a pool of pre-created sprites, mark them visible/invisible as nodes enter/exit the viewport, never create/destroy inside the render loop. Siraj built PixiJS network visualizations at Paxcom and Rakuten — this is a real production issue he would have encountered. The 20-30s iframe delay he fixed at Rakuten may have had a similar root cause.`},
+
+{part:"B",cat:"Data Visualization",diff:"Medium",
+code:`// Web Worker for heavy data processing:
+// Main thread: (React component)
+const workerRef = useRef(null);
+
+useEffect(() => {
+  workerRef.current = new Worker(
+    new URL('./dataProcessor.worker.js', import.meta.url)
+  );
+  workerRef.current.onmessage = (e) => {
+    setProcessedData(e.data);
+  };
+  return () => workerRef.current.terminate();
+}, []);
+
+// What type of data CAN'T you send between
+// main thread and Web Worker via postMessage?
+
+A) Large Float64Array (typed arrays with millions of numbers)
+
+B) DOM elements, React refs, and Canvas rendering contexts —
+   these are not transferable across thread boundaries
+
+C) JSON objects and plain JavaScript arrays
+
+D) Strings and numbers`,
+output:`B) DOM elements, React refs, Canvas contexts
+
+Web Workers have no access to the DOM.
+postMessage uses structured clone — DOM refs
+and rendering contexts cannot be serialized.`,
+why:`Web Workers run in a separate thread with zero access to the DOM, window, or document. postMessage uses the Structured Clone Algorithm — it can clone: numbers, strings, arrays, typed arrays (Float64Array etc.), ArrayBuffers, ImageData, and plain objects. It cannot clone: DOM nodes, React refs (they point to DOM elements), CanvasRenderingContext2D, functions, or class instances with prototype methods. The correct pattern for typed arrays: transfer them (not clone) using the transferable objects mechanism — postMessage(buffer, [buffer]) — which avoids copying 50MB of data and transfers ownership in O(1).`},
+
+{part:"B",cat:"Data Visualization",diff:"Hard",
+code:`// AG Grid with 100,000 rows of network topology data.
+// Scrolling is sluggish. Re-sorting takes 3+ seconds.
+
+// Current config:
+<AgGridReact
+  rowData={allRows}          // 100K rows in memory
+  columnDefs={cols}
+  onSortChanged={handleSort} // re-sorts 100K rows client-side
+/>
+
+// Which fix has the MOST impact?
+
+A) Add pagination — show only 100 rows per page
+
+B) Switch to Server-Side Row Model: AG Grid only renders
+   visible rows, sends sort/filter/page params to backend,
+   backend handles the heavy lifting
+
+C) Wrap AgGridReact in React.memo to prevent re-renders
+
+D) Use useMemo to memoize the rowData array`,
+output:`B) Server-Side Row Model
+
+AG Grid renders only visible viewport rows (~30).
+Sort/filter/page → server query → return page of results.
+100K rows → never in browser memory at once.`,
+why:`Client-side row model loads all 100,000 rows into memory and sorts/filters in the browser — JavaScript's single-thread handles this poorly for large datasets. AG Grid's Server-Side Row Model changes the contract: AG Grid renders only the ~30 rows in the current viewport, and when the user sorts or scrolls, it sends a request with { sortModel, filterModel, startRow, endRow } to your backend. The backend returns only the requested page. Memory: constant. Sort speed: server (database index). Siraj built AG Grid interfaces at Rakuten — this is the correct enterprise-scale configuration.`},
+
+// ══════════════════════════════════════════════════════
+// PART C — Performance & Optimization  (5 Qs)
+// ══════════════════════════════════════════════════════
+
+{part:"C",cat:"Performance",diff:"Easy",
+code:`// You built a modular charting library at Paxcom.
+// Bundle analysis shows the entire D3 library
+// (500KB minified) is shipped even when only
+// d3-scale and d3-axis are used.
+
+// How do you fix this?
+
+A) Use a CDN link for D3 — never bundle it
+
+B) Import only specific D3 modules:
+   import { scaleLinear } from 'd3-scale';
+   import { axisBottom } from 'd3-axis';
+   Tree shaking removes unused D3 code.
+
+C) Use dynamic import() for D3:
+   const d3 = await import('d3');
+
+D) Switch to a different charting library`,
+output:`B) Named imports from sub-packages + tree shaking
+
+import * as d3 from 'd3' bundles ALL of D3 (500KB).
+Named imports from 'd3-scale', 'd3-axis' etc.
+let Vite/webpack tree-shake unused exports.`,
+why:`D3 v7 is a monorepo of sub-packages (d3-scale, d3-axis, d3-shape, d3-zoom etc.). When you write import * as d3 from 'd3', you import the umbrella package that re-exports all sub-packages — the full 500KB arrives in your bundle regardless of what you use. Named imports from specific sub-packages (import { scaleLinear } from 'd3-scale') allow tree-shaking to eliminate unused exports. With Vite (which Siraj uses), tree-shaking is enabled by default for ESM builds. This optimization alone can reduce a chart bundle from 500KB to 80-120KB.`},
+
+{part:"C",cat:"Performance",diff:"Medium",
+code:`// You eliminated memory leaks and improved
+// performance by 30% at Paxcom.
+// A chart component re-renders 60 times per second
+// due to real-time WebSocket data.
+
+// Current: every render recalculates D3 scales
+const xScale = d3.scaleLinear()
+  .domain([startTime, endTime])
+  .range([0, width]);
+
+// Which optimization is MOST effective?
+
+A) Wrap the component in React.memo
+
+B) Memoize scale creation with useMemo,
+   only recalculate when domain/range dependencies change:
+   const xScale = useMemo(() =>
+     d3.scaleLinear().domain([start,end]).range([0,w]),
+   [start, end, width]);
+
+C) Move D3 scale calculation to a Web Worker
+
+D) Debounce the WebSocket messages to max 10/second`,
+output:`B) useMemo on D3 scale creation
+
+Scale creation is O(1) but runs 60x/second.
+useMemo caches the scale object — only rebuilds
+when domain (start/end) or range (width) changes.`,
+why:`D3 scale objects are lightweight to create but when a component renders 60 times per second from WebSocket updates, every unnecessary computation compounds. useMemo with precise dependencies ensures the scale is only rebuilt when the visible time range or SVG dimensions actually change — not on every price tick. React.memo (A) prevents re-renders entirely, which is wrong — we need re-renders to update prices. Web Workers (C) can't return DOM-linked scale objects. Debouncing (D) would cause visible chart lag. useMemo is the precise tool for this.`},
+
+{part:"C",cat:"Performance",diff:"Hard",
+code:`// Critical iframe rendering delay: 20-30 seconds.
+// (Problem you solved at Rakuten Symphony)
+
+// Scenario: an Angular app embeds a heavy network
+// visualization iframe. The parent app freezes for
+// 20-30 seconds after the iframe starts loading.
+
+// Most likely root cause?
+
+A) The iframe has a large bundle (10MB) blocking
+   the parent thread during parse + execution
+
+B) Synchronous cross-origin postMessage calls
+   blocking the parent's event loop
+
+C) The iframe is loading synchronously — blocking
+   parent's main thread. Fix: lazy-load the iframe
+   (set src after user interaction or use loading="lazy"),
+   or use IntersectionObserver to defer iframe injection
+
+D) CSS from the iframe bleeds into the parent document`,
+output:`C) Iframe loading blocks parent main thread
+
+Setting <iframe src="..."> triggers synchronous
+resource fetch + JS parse on load.
+Fix: inject src lazily after DOMContentLoaded
+or on user action. Use loading="lazy" attribute.`,
+why:`When an iframe src is set at page load, the browser fetches the resource and parses/executes the iframe's JavaScript on the same compositor thread as the parent for certain events. A heavy PixiJS/WebGL app inside an iframe can cause the parent's rendering pipeline to stall. The fix Siraj implemented at Rakuten was likely: deferring iframe src injection using IntersectionObserver or setTimeout, or using the loading="lazy" attribute (supported in modern browsers) which defers iframe loading until it's near the viewport. This is a known production pattern for embedding heavy visualization iframes.`},
+
+{part:"C",cat:"Performance",diff:"Medium",
+code:`// requestAnimationFrame vs setInterval for animations:
+
+// Option A:
+setInterval(() => {
+  updateChartData();
+  renderFrame();
+}, 16); // ~60fps
+
+// Option B:
+function loop() {
+  updateChartData();
+  renderFrame();
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+// Which is correct for a D3/Canvas chart animation?
+
+A) setInterval is more precise — exactly 16.67ms every frame
+
+B) requestAnimationFrame (rAF) is correct:
+   - Syncs to display refresh rate (60/120/144Hz)
+   - Pauses automatically when tab is backgrounded
+   - Browser optimizes timing with compositor thread
+
+C) Both are equivalent for canvas rendering
+
+D) setInterval is better for financial data because
+   it's not affected by browser throttling`,
+output:`B) requestAnimationFrame — always use for animations
+
+rAF syncs to display refresh rate automatically.
+setInterval fires even when tab is hidden → wasted CPU.
+rAF pauses in background → battery + performance win.`,
+why:`requestAnimationFrame is the correct animation primitive. It syncs with the browser's display refresh rate — on a 144Hz monitor, it fires 144 times per second; on 60Hz, 60 times. setInterval(fn, 16) is inaccurate: the timer fires every ~16ms regardless of display refresh, causing tearing on high-refresh monitors and wasting CPU on low-power devices. Critically, rAF pauses automatically when the tab is hidden or the window is minimized — setInterval keeps firing, wasting CPU and battery. All Canvas/WebGL animation loops (including PixiJS's internal ticker) use rAF.`},
+
+{part:"C",cat:"Performance",diff:"Hard",
+code:`// OpenAI GPT integration in your charting app
+// (you reduced manual analysis by 40% at Paxcom)
+
+// Current: API called on every data update (real-time)
+useEffect(() => {
+  if (data) {
+    callOpenAI(data).then(setInsight);
+  }
+}, [data]); // data updates every 2 seconds
+
+// Problems with this approach?
+
+A) OpenAI API can't handle real-time data
+
+B) API called every 2 seconds:
+   - Cost: $0.01 × 30/min × 60min = $18/hour per user
+   - Rate limit: hits RPM limit instantly
+   - Latency: 1-3s response delays stale data anyway
+
+C) useEffect with async is always wrong
+
+D) The GPT response overwrites data causing infinite loop`,
+output:`B) Calling GPT every 2s = $18/hr + rate limit hell
+
+Fix: debounce or throttle to once per 30-60s,
+call only on significant data changes (threshold),
+or queue analysis jobs in a backend worker.`,
+why:`This is a real cost and architecture problem. GPT-4o at $0.01-0.03 per 1K tokens, called every 2 seconds per active user, becomes thousands of dollars per day at scale. The correct architecture: debounce AI analysis calls (only analyze if data hasn't changed for 30 seconds), use a significance threshold (only call if price moved >2%), or route analysis through a backend job queue (BullMQ/Redis) that rate-limits and batches requests. At Paxcom, Siraj's 40% reduction in manual analysis implies the AI was triggered on meaningful events, not raw data streams.`},
+
+// ══════════════════════════════════════════════════════
+// PART D — Angular + Architecture  (5 Qs)
+// ══════════════════════════════════════════════════════
+
+{part:"D",cat:"Angular + Architecture",diff:"Easy",
+code:`// You migrated Angular → React at Paxcom.
+// In Angular, a service is singleton by default:
+
+@Injectable({ providedIn: 'root' })
+export class MarketDataService {
+  private prices$ = new BehaviorSubject<PriceMap>({});
+
+  updatePrice(ticker: string, price: number) {
+    const current = this.prices$.getValue();
+    this.prices$.next({ ...current, [ticker]: price });
+  }
+}
+
+// What is the DIRECT React equivalent pattern
+// for a singleton global service?
+
+A) A Context with useState — creates a new instance per Provider
+
+B) A Zustand store module — singleton by default (module scope),
+   imported anywhere, no Provider needed
+
+C) Redux store with RTK
+
+D) A class with static methods`,
+output:`B) Zustand store — module-scoped singleton
+
+Zustand store is created once at module level.
+Any component importing it shares the same instance.
+Equivalent to Angular's providedIn: 'root'.`,
+why:`Angular's @Injectable({ providedIn: 'root' }) creates a single service instance shared across the entire application. In React, Zustand replicates this exactly — the store is defined at module scope (outside any component), making it a singleton. Every component that imports useMarketStore shares the same state. React Context (A) requires a Provider wrapping and can create multiple instances. Redux (C) is functionally equivalent but adds significant boilerplate. Zustand's design was explicitly inspired by Flux/Redux but with the simplicity of a singleton service — ideal for this migration pattern.`},
+
+{part:"D",cat:"Angular + Architecture",diff:"Medium",
+code:`// Angular network topology app at Rakuten Symphony.
+// A node detail panel must update whenever
+// a node is selected in the D3 graph visualization.
+
+// Angular approach options:
+
+// A) Input/Output binding chain:
+//    Graph → GraphNode → NodePanel (3 levels deep)
+
+// B) Shared RxJS BehaviorSubject service:
+@Injectable({ providedIn: 'root' })
+export class SelectionService {
+  selectedNode$ = new BehaviorSubject<Node|null>(null);
+  select(node: Node) { this.selectedNode$.next(node); }
+}
+
+// C) Angular Signals:
+//    selectedNode = signal<Node|null>(null);
+
+// For a complex enterprise app with many consumers
+// — which is BEST and why?
+
+A) A — Input/Output is always the Angular way
+
+B) B — BehaviorSubject gives current value on subscribe,
+   works across any component tree, no prop drilling
+
+C) C — Angular Signals are always better than RxJS now
+
+D) A for parent-child, B for siblings, C for new projects`,
+output:`D) Context-dependent — but B is correct for this case
+
+Cross-tree selection state → shared service (B).
+New greenfield feature → Signals (C) are simpler.
+Direct parent-child → Input/Output (A) is fine.`,
+why:`There's nuance here. For cross-component communication in a complex enterprise Angular app (like Rakuten's network visualization), a shared RxJS service with BehaviorSubject (B) is the established pattern — it provides current value on subscription, works across any tree depth, and integrates with Angular's async pipe for automatic subscription management. Angular Signals (C) are the newer, simpler approach for local and derived state but have less ecosystem support for complex async flows at the time of Siraj's work. Option A causes prop drilling through multiple levels. D acknowledges that context determines the right tool.`},
+
+{part:"D",cat:"Angular + Architecture",diff:"Medium",
+code:`// You fixed a critical production issue for 4M+ users
+// via hotfix at Vectoscalar.
+
+// In Angular, what is the SAFEST deployment strategy
+// for a critical hotfix that must reach users
+// without a full release cycle?
+
+A) Deploy directly to production and refresh CDN cache
+
+B) Feature flag — deploy the fix behind a flag,
+   enable for 1% → 10% → 100% of users,
+   monitor error rates at each stage, rollback if needed
+
+C) Ask all 4M users to hard-refresh their browser
+
+D) Create a new Angular app version and deprecate the old`,
+output:`B) Feature flag with gradual rollout
+
+4M users = catastrophic if hotfix itself has bugs.
+Flag: 1% → 10% → 50% → 100% with monitoring.
+Rollback = flip flag, not a redeployment.`,
+why:`A hotfix for 4M+ users carries its own risk — what if the fix introduces a new bug? Feature flags (LaunchDarkly, Flagsmith, or a simple backend toggle) allow controlled rollout: enable for 1% of users, monitor error rates and crash analytics for 30 minutes, expand to 10%, then 100%. If anything looks wrong: disable the flag instantly — no redeployment needed. This is standard practice at companies serving millions of users. The CSV-based bulk moderation system Siraj built at Vectoscalar suggests he was working on admin/ops tooling at scale.`},
+
+{part:"D",cat:"Angular + Architecture",diff:"Hard",
+code:`// GraphQL schema for network topology data:
+query GetTopology {
+  network {
+    nodes {
+      id
+      type
+      connections { targetId latency status }  // ← N+1 risk
+    }
+  }
+}
+
+// 10,000 nodes × 20 avg connections = 200,000 DB queries
+
+// You use GraphQL at Rakuten. How do you fix N+1?
+
+A) Limit query depth to 1 level — disallow nested connections
+
+B) Use DataLoader to batch all connection queries:
+   collect all node IDs → one query:
+   SELECT * FROM connections WHERE node_id IN (1..10000)
+
+C) Add a cache-control directive to the GraphQL schema
+
+D) Switch from GraphQL to REST for this use case`,
+output:`B) DataLoader batching — N+1 → 2 queries total
+
+DataLoader collects IDs per tick, fires one batched query.
+10,000 nodes × 20 connections = 200,000 queries
+becomes: 1 nodes query + 1 connections batch query.`,
+why:`The N+1 problem: fetching 10,000 nodes fires 10,000 separate connection queries — 200,000 total DB hits. DataLoader (Facebook's batching library for GraphQL) solves this elegantly: it collects all requested IDs within the same event loop tick, then fires one batched query. 200,000 queries → 2. Implementation: create a DataLoader per request, load connection data by node ID. For network topology data with thousands of nodes (Siraj's Rakuten work), this is a production-critical optimization — without it, the query would time out or overload the database.`},
+
+{part:"D",cat:"Angular + Architecture",diff:"Medium",
+code:`// Vite build config for your charting library:
+// You want to publish it as an npm package.
+
+export default defineConfig({
+  build: {
+    lib: {
+      entry: './src/index.ts',
+      formats: ['es', 'cjs'],   // ← Why both?
+    },
+    rollupOptions: {
+      external: ['react', 'd3', 'pixi.js'],  // ← Why external?
+    }
+  }
+});
+
+// Which explanation is MOST correct?
+
+A) CJS is for older browsers, ES is for modern ones
+
+B) ES format for bundlers (webpack/Vite tree-shaking),
+   CJS for Node.js/Jest test environments.
+   External prevents bundling react/d3 into the library —
+   consumers provide their own versions, avoiding duplicates.
+
+C) Both formats are required by npm publishing rules
+
+D) External means those packages are loaded from CDN`,
+output:`B) Dual format for interoperability + external for peer deps
+
+ES: bundlers get tree-shaking + ESM benefits.
+CJS: Jest, Node.js, CommonJS consumers.
+External: react, d3, pixi.js are peer deps —
+consumer's bundle provides them, no duplication.`,
+why:`Publishing a library in both ES and CJS formats ensures maximum compatibility: ESM consumers (Vite, webpack 5, Rollup) get tree-shaking; CJS consumers (Jest by default, older bundlers, Node.js scripts) get a working module. The external configuration is critical for library publishing: if you bundle React inside your charting library, consumers end up with two React instances — breaking hooks (the singleton problem from the MFA question). react, d3, and pixi.js should be listed as peerDependencies in package.json and marked external in the build — consumers provide their own copies. Siraj uses Vite and builds modular libraries — this is directly relevant.`},
+
+];
+
+const PARTS=[
+  {key:"A",label:"React + TypeScript",icon:"⚛",color:"#4f8ef7"},
+  {key:"B",label:"Data Visualization",icon:"📊",color:"#10b981"},
+  {key:"C",label:"Performance",icon:"⚡",color:"#f97316"},
+  {key:"D",label:"Angular + Arch",icon:"🔷",color:"#8b5cf6"},
+];
+const diffColor={Easy:"#22c55e",Medium:"#f59e0b",Hard:"#ef4444"};
+
+function App(){
+  const[started,setStarted]=useState(false);
+  const[name,setName]=useState("");
+  const[activePart,setActivePart]=useState("A");
+  const[idx,setIdx]=useState(0);
+  const[answers,setAnswers]=useState({});
+  const[submitted,setSubmitted]=useState({});
+  const[input,setInput]=useState("");
+  const[typingKey,setTypingKey]=useState(null);
+  const[typed,setTyped]=useState("");
+  const[finished,setFinished]=useState(false);
+  const[elapsed,setElapsed]=useState(0);
+  const startTime=useRef(Date.now());
+  const inputRef=useRef(null);
+
+  const filtered=questions.filter(q=>q.part===activePart);
+  const q=filtered[idx];
+  const gi=questions.indexOf(q);
+  const isSubmitted=submitted[gi]!==undefined;
+
+  useEffect(()=>{ setIdx(0); },[activePart]);
+  useEffect(()=>{
+    if(!started||finished)return;
+    const t=setInterval(()=>setElapsed(Math.floor((Date.now()-startTime.current)/1000)),1000);
+    return()=>clearInterval(t);
+  },[started,finished]);
+  useEffect(()=>{
+    if(typingKey===null)return;
+    const out=q.output; let i=0; setTyped("");
+    const iv=setInterval(()=>{ i++; setTyped(out.slice(0,i)); if(i>=out.length)clearInterval(iv); },16);
+    return()=>clearInterval(iv);
+  },[typingKey]);
+  useEffect(()=>{ if(!isSubmitted&&inputRef.current)inputRef.current.focus(); },[idx,activePart,isSubmitted]);
+
+  const fmt=s=>`${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`;
+
+  const checkAnswer=(ans)=>{
+    const l=ans.trim().toLowerCase().replace(/[^a-d].*/,"").charAt(0);
+    const c=q.output.toLowerCase().charAt(0);
+    return l===c&&l!=="";
+  };
+
+  const handleSubmit=(skipped)=>{
+    const userAns=skipped?"(skipped)":input.trim();
+    setAnswers(a=>({...a,[gi]:userAns}));
+    const correct=!skipped&&checkAnswer(userAns);
+    setSubmitted(s=>({...s,[gi]:skipped?"skip":correct?"ok":"wrong"}));
+    setTypingKey(Date.now()); setInput("");
+  };
+
+  const handleNext=()=>{
+    if(idx<filtered.length-1){ setIdx(i=>i+1); setTypingKey(null); setTyped(""); }
+    else{
+      const ni=PARTS.findIndex(p=>p.key===activePart);
+      if(ni<PARTS.length-1){ setActivePart(PARTS[ni+1].key); setTypingKey(null); setTyped(""); }
+      else setFinished(true);
+    }
+  };
+
+  const totalAnswered=Object.keys(submitted).length;
+  const totalOk=Object.values(submitted).filter(v=>v==="ok").length;
+  const totalWrong=Object.values(submitted).filter(v=>v==="wrong").length;
+  const totalSkip=Object.values(submitted).filter(v=>v==="skip").length;
+  const part=PARTS.find(p=>p.key===activePart);
+
+  if(!started) return(
+    <div className="landing">
+      <div className="landing-icon">📊</div>
+      <h1>Frontend Engineer Assessment</h1>
+      <p>React · D3.js · PixiJS / WebGL · Performance · Angular · Architecture</p>
+      <div className="tech-tags">
+        {["React","TypeScript","Next.js","D3.js","PixiJS (WebGL)","Canvas","Web Workers","Zustand","SWR","TanStack Query","Angular","AG Grid","GraphQL","Vite","OpenAI API","Figma"].map(t=><span key={t} className="tech-tag">{t}</span>)}
+      </div>
+      <div className="stat-row">
+        <div className="stat"><div className="num">22</div><div className="lbl">Questions</div></div>
+        <div className="stat"><div className="num">4</div><div className="lbl">Sections</div></div>
+        <div className="stat"><div className="num">~25</div><div className="lbl">Minutes</div></div>
+      </div>
+      <div className="rules-box">
+        <h3>Instructions</h3>
+        <ol>
+          <li>Read each scenario or code snippet carefully</li>
+          <li>Type the letter of your answer — A, B, C, or D</li>
+          <li>Submit to reveal the correct answer with explanation</li>
+          <li>Skip is available — no penalty, but try first</li>
+        </ol>
+      </div>
+      <input className="name-input" value={name} onChange={e=>setName(e.target.value)} placeholder="Enter your name to begin..."/>
+      <br/>
+      <button className="start-btn" onClick={()=>setStarted(true)} disabled={!name.trim()}>Start Assessment →</button>
+    </div>
+  );
+
+  if(finished){
+    const pct=Math.round((totalOk/questions.length)*100);
+    const grade=pct>=82?"Strong Hire":pct>=64?"Proceed — Round 2":pct>=45?"Needs Improvement":"Below Expectations";
+    const gc=pct>=82?"#22c55e":pct>=64?"#f59e0b":pct>=45?"#fb923c":"#ef4444";
+    return(
+      <div className="completion">
+        <div className="score-ring" style={{border:`4px solid ${gc}`,boxShadow:`0 0 40px ${gc}20`}}>
+          <div className="ring-pct" style={{color:gc}}>{pct}%</div>
+          <div className="ring-lbl">Score</div>
+        </div>
+        <h2>Assessment Complete!</h2>
+        <p>{name} · {fmt(elapsed)}</p>
+        <div className="grade-badge" style={{background:`${gc}18`,border:`1px solid ${gc}40`,color:gc}}>{grade}</div>
+        <div className="score-bk">
+          <div className="si"><div className="v" style={{color:"#4ade80"}}>{totalOk}</div><div className="d">Correct</div></div>
+          <div className="si"><div className="v" style={{color:"#f87171"}}>{totalWrong}</div><div className="d">Wrong</div></div>
+          <div className="si"><div className="v" style={{color:"#fbbf24"}}>{totalSkip}</div><div className="d">Skipped</div></div>
+        </div>
+        <button className="restart-btn" onClick={()=>{setStarted(false);setActivePart("A");setIdx(0);setAnswers({});setSubmitted({});setFinished(false);setTypingKey(null);setTyped("");setName("");}}>Restart</button>
+      </div>
+    );
+  }
+
+  return(
+    <div>
+      <div className="header">
+        <div className="header-left">
+          <div className="header-icon">📊</div>
+          <div>
+            <div className="header-title">Frontend Assessment — Siraj Sharma</div>
+            <div className="header-sub">{name} · {fmt(elapsed)}</div>
+          </div>
+        </div>
+        <div className="score-pills">
+          <div className="pill pill-green">✓ {totalOk}</div>
+          <div className="pill pill-red">✗ {totalWrong}</div>
+          <div className="pill pill-total">{totalAnswered}/{questions.length}</div>
+        </div>
+      </div>
+
+      <div className="tabs">
+        {PARTS.map(p=>{
+          const qs=questions.filter(q2=>q2.part===p.key);
+          const done=qs.filter(q2=>submitted[questions.indexOf(q2)]!==undefined).length;
+          return(
+            <button key={p.key} className={`tab ${activePart===p.key?"active":""}`}
+              style={{"--tab-color":p.color}} onClick={()=>setActivePart(p.key)}>
+              <span>{p.icon}</span>{p.label}<span className="tab-badge">{done}/{qs.length}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="main">
+        <div className="q-header">
+          <div className="q-header-left">
+            <span className="q-num">Q{idx+1}/{filtered.length}</span>
+            <span className="diff-badge" style={{color:diffColor[q.diff],background:`${diffColor[q.diff]}18`,border:`1px solid ${diffColor[q.diff]}30`}}>{q.diff}</span>
+            <span className="q-hint">Type A · B · C · D</span>
+          </div>
+          <div className="nav-btns">
+            <button className="nav-btn" onClick={()=>{setIdx(i=>i-1);setTypingKey(null);setTyped("");}} disabled={idx===0}>←</button>
+            <button className="nav-btn" onClick={handleNext} disabled={!isSubmitted}>→</button>
+          </div>
+        </div>
+
+        <div className="editor">
+          <div className="editor-bar">
+            <div style={{display:"flex",alignItems:"center",gap:8}}>
+              <div className="dots">
+                <div className="dot" style={{background:"#ef4444"}}/>
+                <div className="dot" style={{background:"#f59e0b"}}/>
+                <div className="dot" style={{background:"#22c55e"}}/>
+              </div>
+              <span className="filename">question_{String(gi+1).padStart(2,"0")}.ts</span>
+            </div>
+            <span className="lang-pill" style={{color:part?.color,background:`${part?.color}18`,border:`1px solid ${part?.color}30`}}>{q.cat.toUpperCase()}</span>
+          </div>
+          <div className="code-body">
+            {q.code.split("\n").map((line,i)=>(
+              <div className="code-line" key={i}>
+                <span className="line-no">{i+1}</span>
+                <span style={{color:"#e2e8f0",whiteSpace:"pre-wrap"}}>{line}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {!isSubmitted&&(
+          <div className="answer-box">
+            <div className="answer-label">Your Answer</div>
+            <textarea ref={inputRef} className="answer-input" value={input} onChange={e=>setInput(e.target.value)}
+              placeholder="Type A, B, C, or D..."
+              onKeyDown={e=>{ if(e.key==="Enter"&&!e.shiftKey&&input.trim()){ e.preventDefault(); handleSubmit(false); } }}
+              style={{minHeight:"48px",resize:"none"}}
+            />
+            <div className="submit-row">
+              <button className="skip-btn" onClick={()=>handleSubmit(true)}>Skip →</button>
+              <button className="submit-btn" onClick={()=>handleSubmit(false)} disabled={!input.trim()}>Submit Answer</button>
+            </div>
+          </div>
+        )}
+
+        {isSubmitted&&(<>
+          <div className="terminal revealed">
+            <div className="terminal-bar">
+              <span>⬡ Result</span>
+              <span style={{color:"#22c55e"}}>● evaluated</span>
+            </div>
+            <div className="terminal-body">
+              <div className="terminal-cmd">$ assess --q{gi+1} --evaluate</div>
+              {typed.split("\n").map((l,i)=><div className="terminal-out" key={i}>{l}</div>)}
+            </div>
+          </div>
+
+          <div className={`result-card ${submitted[gi]==="ok"?"result-correct":submitted[gi]==="wrong"?"result-wrong":"result-skip"}`}>
+            <div className="result-header">
+              {submitted[gi]==="ok"&&"✓ Correct!"}
+              {submitted[gi]==="wrong"&&"✗ Incorrect"}
+              {submitted[gi]==="skip"&&"⏭ Skipped"}
+            </div>
+            <div className="result-body">
+              {submitted[gi]!=="skip"?(
+                <div className="result-grid">
+                  <div className="result-col"><label>Your Answer</label><pre>{answers[gi]}</pre></div>
+                  <div className="result-col"><label>Correct Answer</label><pre style={{borderColor:"#166534"}}>{q.output}</pre></div>
+                </div>
+              ):(
+                <div className="result-grid" style={{gridTemplateColumns:"1fr"}}>
+                  <div className="result-col"><label>Correct Answer</label><pre>{q.output}</pre></div>
+                </div>
+              )}
+              <div className="result-why"><strong>Why: </strong>{q.why}</div>
+            </div>
+          </div>
+
+          <div style={{textAlign:"center",marginTop:12}}>
+            <button className="next-btn" onClick={handleNext}>
+              {idx<filtered.length-1?"Next Question →":PARTS.findIndex(p=>p.key===activePart)<PARTS.length-1?"Next Section →":"Finish →"}
+            </button>
+          </div>
+        </>)}
+
+        <div className="progress-dots">
+          {filtered.map((fq,i)=>{
+            const fgi=questions.indexOf(fq);
+            const st=submitted[fgi];
+            const cls=`pdot ${i===idx?"current":st==="ok"?"ok":st==="wrong"?"wrong":st==="skip"?"skip":"pending"}`;
+            return <button key={i} className={cls} onClick={()=>{setIdx(i);setTypingKey(null);setTyped("");}}/>;
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
