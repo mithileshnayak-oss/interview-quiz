@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Justine Chacko — AI / ML / GenAI Assessment</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0d14;--surface:#0f1320;--surface2:#141828;--border:#1e2438;
+  --text:#e2e8f0;--muted:#64748b;--dim:#475569;
+  --indigo:#6366f1;--indigo-bg:rgba(99,102,241,0.1);--indigo-border:rgba(99,102,241,0.3);
+  --emerald:#10b981;--emerald-bg:rgba(16,185,129,0.1);--emerald-border:rgba(16,185,129,0.3);
+  --amber:#f59e0b;--amber-bg:rgba(245,158,11,0.1);--amber-border:rgba(245,158,11,0.3);
+  --rose:#f43f5e;--rose-bg:rgba(244,63,94,0.1);--rose-border:rgba(244,63,94,0.3);
+  --green:#22c55e;--red:#ef4444;--yellow:#f59e0b;
+}
+body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh}
+button{font-family:inherit;cursor:pointer;border:none}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+/* LANDING */
+.landing{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 24px;text-align:center}
+.landing-icon{width:76px;height:76px;border-radius:22px;background:linear-gradient(135deg,#6366f1,#10b981,#f59e0b);display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:24px;box-shadow:0 0 60px rgba(99,102,241,.35)}
+.landing h1{font-size:28px;font-weight:800;letter-spacing:-.03em;margin-bottom:8px}
+.landing p{color:var(--muted);font-size:15px;max-width:520px;line-height:1.6;margin-bottom:28px}
+.stat-row{display:flex;gap:28px;margin-bottom:36px}
+.stat .num{font-size:30px;font-weight:800;color:var(--indigo)}.stat .lbl{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em}
+.tech-tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:28px;max-width:600px}
+.tech-tag{padding:4px 12px;border-radius:6px;font-size:11px;font-weight:600;background:var(--surface);border:1px solid var(--border);color:var(--muted);font-family:'JetBrains Mono',monospace}
+.rules-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 28px;text-align:left;max-width:520px;margin-bottom:32px}
+.rules-box h3{font-size:12px;color:var(--indigo);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+.rules-box li{color:var(--muted);font-size:13px;line-height:1.9;margin-left:16px}
+.name-input{padding:12px 20px;border-radius:10px;border:1px solid var(--border);background:#0f1320;color:#e2e8f0;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;width:280px;text-align:center;margin-bottom:16px;outline:none}
+.name-input:focus{border-color:var(--indigo)}
+.start-btn{padding:14px 48px;border-radius:12px;background:linear-gradient(135deg,#6366f1,#10b981);color:#fff;font-weight:700;font-size:16px;box-shadow:0 0 40px rgba(99,102,241,.25);transition:all .3s}
+.start-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* HEADER */
+.header{background:var(--surface2);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
+.header-left{display:flex;align-items:center;gap:12px}
+.header-icon{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#6366f1,#10b981);display:flex;align-items:center;justify-content:center;font-size:16px}
+.header-title{font-weight:800;font-size:15px;letter-spacing:-.02em}
+.header-sub{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.score-pills{display:flex;gap:8px}
+.pill{padding:5px 14px;border-radius:8px;font-weight:600;font-size:13px;font-family:'JetBrains Mono',monospace}
+.pill-green{background:#0b2e1a;border:1px solid #166534;color:#4ade80}
+.pill-red{background:#2a0f10;border:1px solid #991b1b;color:#f87171}
+.pill-total{background:var(--border);color:#94a3b8}
+
+/* TABS */
+.tabs{display:flex;gap:6px;padding:12px 24px;background:#0c0f1a;overflow-x:auto;border-bottom:1px solid var(--border)}
+.tab{padding:10px 18px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--muted);font-weight:600;font-size:13px;display:flex;align-items:center;gap:8px;white-space:nowrap;transition:all .2s}
+.tab.active{border-color:var(--tab-color);background:color-mix(in srgb,var(--tab-color) 10%,transparent);color:var(--tab-color)}
+.tab-badge{padding:2px 8px;border-radius:6px;font-size:11px;background:var(--border);color:var(--dim)}
+.tab.active .tab-badge{background:color-mix(in srgb,var(--tab-color) 15%,transparent);color:var(--tab-color)}
+
+/* MAIN */
+.main{padding:16px 24px;max-width:860px;margin:0 auto}
+.q-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.q-header-left{display:flex;align-items:center;gap:10px}
+.q-num{font-weight:700;font-size:14px}
+.diff-badge{font-size:11px;padding:3px 10px;border-radius:6px;font-weight:600}
+.q-hint{font-size:11px;color:var(--dim)}
+.nav-btns{display:flex;gap:6px}
+.nav-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:#94a3b8;display:flex;align-items:center;justify-content:center;font-size:14px}
+.nav-btn:disabled{color:#334155;cursor:default}
+
+/* EDITOR */
+.editor{border-radius:12px;overflow:hidden;border:1px solid var(--border);margin-bottom:12px}
+.editor-bar{background:var(--surface2);padding:8px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
+.dots{display:flex;gap:6px}.dot{width:10px;height:10px;border-radius:50%}
+.filename{font-size:11px;color:var(--dim);margin-left:10px;font-family:'JetBrains Mono',monospace}
+.lang-pill{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:600;font-family:'JetBrains Mono',monospace}
+.code-body{background:var(--bg);padding:16px 20px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.7;overflow-x:auto}
+.code-line{display:flex}.line-no{color:#334155;width:32px;text-align:right;margin-right:16px;user-select:none;font-size:12px}
+
+/* ANSWER */
+.answer-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:12px}
+.answer-label{font-size:12px;color:var(--indigo);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.answer-input{width:100%;background:#06080d;border:1px solid var(--border);border-radius:8px;padding:12px 16px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;resize:none;min-height:48px;outline:none;transition:border-color .2s}
+.answer-input:focus{border-color:var(--indigo)}.answer-input::placeholder{color:#334155}
+.submit-row{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+.submit-btn{padding:10px 32px;border-radius:10px;background:linear-gradient(135deg,#6366f1,#10b981);color:#fff;font-weight:700;font-size:14px;transition:all .3s}
+.submit-btn:disabled{background:var(--border);color:var(--dim);cursor:default}
+.skip-btn{padding:10px 20px;border-radius:10px;background:transparent;border:1px solid var(--border);color:var(--muted);font-weight:600;font-size:13px}
+
+/* TERMINAL */
+.terminal{border-radius:12px;border:1px solid var(--border);overflow:hidden;margin-bottom:12px;transition:border-color .5s}
+.terminal.revealed{border-color:rgba(34,197,94,.3)}
+.terminal-bar{background:#06080f;padding:6px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.terminal-bar span{font-size:11px;color:var(--dim);font-family:'JetBrains Mono',monospace}
+.terminal-body{background:#06080d;padding:14px 20px;min-height:60px;font-family:'JetBrains Mono',monospace;font-size:13px}
+.terminal-cmd{color:var(--dim);font-size:11px;margin-bottom:6px}
+.terminal-out{color:#4ade80;font-weight:500}
+
+/* RESULT */
+.result-card{border-radius:12px;overflow:hidden;margin-bottom:12px;animation:fadeUp .4s ease-out}
+.result-correct{background:#071a0e;border:1px solid #166534}
+.result-wrong{background:#1a0b0b;border:1px solid #991b1b}
+.result-skip{background:var(--surface);border:1px solid var(--border)}
+.result-header{padding:14px 20px;display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px}
+.result-correct .result-header{color:#4ade80}.result-wrong .result-header{color:#f87171}.result-skip .result-header{color:var(--yellow)}
+.result-body{padding:0 20px 16px}
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.result-col label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);margin-bottom:6px;font-weight:600}
+.result-col pre{background:#06080d;border-radius:8px;padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text);white-space:pre-wrap;border:1px solid var(--border)}
+.result-why{font-size:13px;color:#cbd5e1;line-height:1.6}.result-why strong{color:var(--indigo)}
+
+/* PROGRESS DOTS */
+.progress-dots{display:flex;gap:4px;justify-content:center;margin-top:20px;flex-wrap:wrap}
+.pdot{height:8px;border-radius:4px;border:none;transition:all .3s;cursor:pointer}
+.pdot.current{width:24px;background:var(--indigo)}
+.pdot.ok{width:8px;background:var(--green)}
+.pdot.wrong{width:8px;background:var(--red)}
+.pdot.skip{width:8px;background:var(--yellow)}
+.pdot.pending{width:8px;background:var(--border)}
+
+/* NEXT BTN */
+.next-btn{padding:10px 32px;border-radius:10px;background:linear-gradient(135deg,#6366f1,#10b981);color:#fff;font-weight:700;font-size:14px;border:none;box-shadow:0 0 20px rgba(99,102,241,.2)}
+
+/* COMPLETION */
+.completion{text-align:center;padding:60px 24px;animation:fadeUp .6s ease-out}
+.completion h2{font-size:28px;font-weight:800;margin-bottom:8px;letter-spacing:-.03em}
+.score-ring{width:140px;height:140px;border-radius:50%;margin:0 auto 24px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-pct{font-size:40px;font-weight:800;line-height:1}.ring-lbl{font-size:12px;color:var(--muted)}
+.grade-badge{display:inline-block;padding:8px 24px;border-radius:10px;font-weight:700;font-size:16px;margin-bottom:28px}
+.score-bk{display:flex;gap:36px;justify-content:center;margin-bottom:40px}
+.score-bk .si .v{font-size:26px;font-weight:800}.score-bk .si .d{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em}
+.restart-btn{padding:12px 36px;border-radius:10px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-weight:600;font-size:14px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+@media(max-width:600px){.result-grid{grid-template-columns:1fr}.stat-row{gap:16px}.main{padding:12px 14px}.tabs{padding:10px 12px}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<script type="text/babel">
+const{useState,useEffect,useRef}=React;
+
+const questions=[
+
+// ═══════════════════════════════════════════════════════════
+// PART A — Machine Learning Fundamentals (6 Qs)
+// ═══════════════════════════════════════════════════════════
+
+{part:"A",cat:"ML Fundamentals",diff:"Easy",
+code:`# You trained a model and got these results:
+# Training accuracy:   98%
+# Validation accuracy: 72%
+
+# Which problem is this, and what's the FIRST fix to try?
+
+A) Underfitting — increase model complexity (more layers/params)
+
+B) Overfitting — model memorized training data; reduce
+   complexity, add regularization (dropout, L2), or get more
+   training data
+
+C) Data leakage — validation set contains training samples
+
+D) The metric is wrong — switch from accuracy to F1 score`,
+output:`B) Overfitting
+
+26-point gap between train and validation = classic
+overfitting signature. Fix: dropout, L2 regularization,
+data augmentation, early stopping, or simpler model.`,
+why:`The huge gap between training (98%) and validation (72%) accuracy is the textbook overfitting signature — the model learned training data patterns that don't generalize. Standard fixes in order of preference: (1) get more training data, (2) data augmentation, (3) regularization (dropout for NN, L1/L2 for linear models), (4) reduce model complexity, (5) early stopping. Underfitting would show both accuracies low and similar (~70/70). Data leakage would show suspiciously HIGH validation accuracy. Justine mentions 91% accuracy at Ypsilon — interviewers will check if he understands generalization.`},
+
+{part:"A",cat:"ML Fundamentals",diff:"Easy",
+code:`# You have a binary classification dataset:
+# Class 0: 9,500 samples
+# Class 1:   500 samples  (only 5% of data!)
+
+# Your model gets 95% accuracy. Customer is happy.
+# But the business needs to detect Class 1 (fraud).
+
+# What's the problem and what metric should you use?
+
+A) The model is fine — 95% accuracy is excellent
+
+B) Severely imbalanced. The model likely predicts Class 0 always
+   (gets 95% accuracy by ignoring Class 1). Use Precision,
+   Recall, F1-score, and PR-AUC instead of accuracy.
+
+C) Increase the number of features
+
+D) Use ROC-AUC — it's always the best metric for classification`,
+output:`B) Class imbalance + accuracy is misleading
+
+A model predicting "always Class 0" gets 95% accuracy
+but 0% recall on fraud — completely useless.
+Use: Precision, Recall, F1, PR-AUC. Try SMOTE
+or class_weight='balanced' to rebalance.`,
+why:`This is one of the most common ML mistakes in production. With 95/5 class imbalance, a "predict majority class always" model gets 95% accuracy while detecting zero fraud cases — useless for the business. Correct approach: (1) use Precision, Recall, F1-score, or PR-AUC (Precision-Recall AUC) which focus on the minority class, (2) rebalance with SMOTE oversampling or RandomUnderSampler, (3) use class_weight='balanced' in sklearn, (4) adjust the decision threshold. ROC-AUC can also be misleading on heavily imbalanced data — PR-AUC is preferred.`},
+
+{part:"A",cat:"ML Fundamentals",diff:"Medium",
+code:`# Cross-validation setup:
+from sklearn.model_selection import cross_val_score
+from sklearn.preprocessing import StandardScaler
+
+# Approach A:
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)  # ← scale FIRST
+scores = cross_val_score(model, X_scaled, y, cv=5)
+
+# Approach B:
+from sklearn.pipeline import Pipeline
+pipe = Pipeline([('scaler', StandardScaler()), ('model', model)])
+scores = cross_val_score(pipe, X, y, cv=5)
+
+# Which is correct and why?
+
+A) Approach A — simpler, both produce the same result
+
+B) Approach B — Pipeline scales INSIDE each CV fold using only
+   training data. Approach A leaks test statistics (mean, std)
+   into training data → optimistic, biased scores.
+
+C) Both are correct, just different styles
+
+D) Approach A is faster so it's preferred for large datasets`,
+output:`B) Pipeline (Approach B) — prevents data leakage
+
+scaler.fit_transform(X) uses ALL data's mean & std.
+Inside CV, the "test fold" leaks into training.
+Pipeline applies fit_transform only on train folds.`,
+why:`Approach A has a subtle but critical data leakage problem. StandardScaler.fit_transform(X) computes the mean and standard deviation from the ENTIRE dataset — including what becomes the test fold during CV. The model effectively "sees" test statistics during training, inflating cross-validation scores by 2-5% typically. Approach B uses Pipeline correctly: for each CV fold, the scaler is fit only on the 4 training folds, then applied to the held-out fold. This is one of the most common preprocessing mistakes. Same issue applies to feature selection, imputation, and PCA — they all must live inside the Pipeline.`},
+
+{part:"A",cat:"ML Fundamentals",diff:"Medium",
+code:`# You're tuning a Random Forest:
+from sklearn.model_selection import GridSearchCV
+
+param_grid = {
+    'n_estimators':      [100, 200, 500],   # 3 values
+    'max_depth':         [10, 20, 30, None], # 4 values
+    'min_samples_split': [2, 5, 10],         # 3 values
+    'max_features':      ['sqrt', 'log2'],   # 2 values
+}
+
+grid = GridSearchCV(RandomForestClassifier(), param_grid, cv=5)
+
+# How many models will be trained total?
+
+A) 5 (one per CV fold)
+
+B) 72 — 3 × 4 × 3 × 2 = 72 combinations
+
+C) 360 — 72 combinations × 5 CV folds = 360 model fits
+
+D) 12 — only the unique parameter values`,
+output:`C) 360 total model fits
+
+72 hyperparameter combinations × 5 CV folds = 360
+Each combination is evaluated using 5-fold CV.
+This is why GridSearch is expensive — use
+RandomizedSearchCV or Optuna for large spaces.`,
+why:`GridSearchCV is exhaustive: it trains every combination of hyperparameters across every CV fold. 3 × 4 × 3 × 2 = 72 combinations × 5 folds = 360 model fits. With n_estimators=500 and large datasets, this can take hours or days. For larger search spaces, use RandomizedSearchCV (samples n_iter random combinations) or Bayesian optimization tools like Optuna or Hyperopt — they explore the space intelligently and find good hyperparameters in 10-50 trials instead of hundreds. Understanding this scaling is critical when working with the 100K+ records Justine handled at Ypsilon.`},
+
+{part:"A",cat:"ML Fundamentals",diff:"Medium",
+code:`# You're comparing two models for production deployment:
+
+# Model A: Logistic Regression
+#   - Train time: 5 seconds
+#   - Inference: 0.1 ms
+#   - Accuracy: 84%
+#   - Fully interpretable (coefficients per feature)
+
+# Model B: XGBoost
+#   - Train time: 5 minutes
+#   - Inference: 2 ms
+#   - Accuracy: 89%
+#   - Feature importance available, but not per-prediction explainable
+
+# Business is a healthcare diagnostic tool.
+# Which model would you recommend and WHY?
+
+A) Model B — always pick highest accuracy
+
+B) Model A — for healthcare diagnostics, interpretability is a
+   regulatory and ethical requirement. Doctors need to explain
+   predictions to patients. 5% accuracy trade-off is acceptable.
+
+C) Model A — it's faster and cheaper
+
+D) Model B with SHAP — adds explainability layer; the 5%
+   accuracy gain may save lives, and SHAP provides
+   per-prediction explanations`,
+output:`D) Model B + SHAP explainability
+
+5% accuracy in healthcare = real patient outcomes.
+SHAP (SHapley Additive exPlanations) provides
+per-prediction feature contributions, satisfying
+regulatory explainability requirements.`,
+why:`This is a nuanced ML deployment question. Option B is the textbook answer for explainability-critical domains, but Option D is the more sophisticated answer. SHAP values provide per-prediction explanations for any model — including XGBoost — making them suitable for healthcare regulatory frameworks (FDA, GDPR Article 22). The 5% accuracy gain in healthcare can mean real diagnostic improvements. The right answer balances: accuracy gain, regulatory needs, explainability tools available, and deployment cost. Don't blindly trade accuracy for simplicity when modern explainability tools exist.`},
+
+{part:"A",cat:"ML Fundamentals",diff:"Hard",
+code:`# Feature engineering for a customer churn model:
+# You add a feature: 'customer_lifetime_value' = 
+#   (sum of all past purchases) / (months since signup)
+
+# Training accuracy jumps from 78% to 96%.
+# Validation accuracy also jumps from 76% to 95%.
+
+# Senior engineer says: "Don't deploy this. There's a problem."
+
+# What's the likely issue?
+
+A) The feature is too predictive — model is overfitting
+
+B) The accuracy gain is too small to be statistically significant
+
+C) DATA LEAKAGE: customer_lifetime_value uses future purchase
+   information that wouldn't be available at prediction time.
+   In production, you'd be predicting churn for NEW customers
+   who don't yet have lifetime value computed.
+
+D) The feature has too many missing values`,
+output:`C) Target / temporal leakage
+
+CLV uses information from the future (past purchases
+AFTER signup). At prediction time for a new customer
+or an active customer, this feature doesn't exist yet.
+The model learned a shortcut that won't generalize.`,
+why:`This is one of the most dangerous ML bugs — temporal data leakage. The feature includes data points that would not be available at the moment of prediction. A new customer has no past purchases yet. An active customer's purchases AFTER their "as-of" prediction date should not be included. The model performs brilliantly on the historical dataset but fails catastrophically in production because the predictive feature doesn't exist for new predictions. Always ask: "Would this feature value be known AT the moment of prediction?" If no, it's leakage. This question separates engineers who built one ML model from those who deployed one.`},
+
+// ═══════════════════════════════════════════════════════════
+// PART B — Deep Learning & Neural Networks (6 Qs)
+// ═══════════════════════════════════════════════════════════
+
+{part:"B",cat:"Deep Learning",diff:"Easy",
+code:`# You're building a CNN for emotion detection on
+# 48×48 grayscale facial images (7 emotion classes).
+
+import tensorflow as tf
+model = tf.keras.Sequential([
+    tf.keras.layers.Conv2D(32, (3,3), activation='relu',
+                            input_shape=(48,48,1)),
+    tf.keras.layers.MaxPooling2D((2,2)),
+    tf.keras.layers.Conv2D(64, (3,3), activation='relu'),
+    tf.keras.layers.MaxPooling2D((2,2)),
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dense(128, activation='relu'),
+    tf.keras.layers.Dense(7, activation='???')  # ← What activation?
+])
+
+# Which activation is correct for the final layer?
+
+A) sigmoid — outputs are in range (0,1)
+
+B) softmax — for multi-class classification, outputs sum to 1
+   giving a probability distribution over the 7 emotion classes
+
+C) relu — used throughout the network for consistency
+
+D) tanh — outputs in range (-1, 1) for stability`,
+output:`B) softmax
+
+7 mutually exclusive classes → softmax gives
+probability distribution summing to 1.
+Pair with categorical_crossentropy loss.`,
+why:`Softmax converts raw logits into a probability distribution over K classes, summing to 1. For multi-class classification (one correct class per sample), pair softmax with categorical_crossentropy or sparse_categorical_crossentropy loss. Sigmoid (A) is for binary or multi-label classification (multiple correct classes possible) — paired with binary_crossentropy. ReLU (C) is wrong for output layers — it has range [0, ∞) and can't represent probabilities. This is the standard architecture Justine used for his Emotion Detection project — interviewers will verify he understands these basics.`},
+
+{part:"B",cat:"Deep Learning",diff:"Medium",
+code:`# Your CNN trains for 50 epochs:
+# Epoch 1:  loss=2.1, val_loss=2.0
+# Epoch 10: loss=1.2, val_loss=1.3
+# Epoch 25: loss=0.4, val_loss=1.1  ← Best val_loss
+# Epoch 35: loss=0.2, val_loss=1.4  ← val_loss rising
+# Epoch 50: loss=0.05, val_loss=2.2 ← Overfitting!
+
+# Which callback would have prevented this issue?
+
+A) ModelCheckpoint — saves model weights at every epoch
+
+B) EarlyStopping(monitor='val_loss', patience=5,
+   restore_best_weights=True) — stops training when val_loss
+   stops improving for 5 epochs, restores epoch 25 weights
+
+C) ReduceLROnPlateau — reduces learning rate when stuck
+
+D) TensorBoard — visualizes training metrics`,
+output:`B) EarlyStopping with restore_best_weights=True
+
+Stops training when val_loss stops improving.
+Auto-restores the best weights (epoch 25 here).
+Standard pattern: EarlyStopping + ModelCheckpoint.`,
+why:`EarlyStopping is one of the most important callbacks in deep learning. It monitors val_loss (or any metric) and halts training when no improvement is seen for 'patience' epochs. restore_best_weights=True ensures the model returns to its best state (epoch 25 here) rather than the final overfit state. Often paired with ModelCheckpoint (saves weights to disk) and ReduceLROnPlateau (reduces learning rate when plateauing). This trio is the standard production training pattern. Without EarlyStopping, you waste compute training a worse model.`},
+
+{part:"B",cat:"Deep Learning",diff:"Medium",
+code:`# Your CNN achieves 88% on training, 65% on validation.
+# Dataset: 5,000 images, 7 classes.
+
+# Which technique gives the BIGGEST improvement on validation?
+
+A) Increase batch size from 32 to 256
+
+B) Data augmentation: random flips, rotations, zoom, brightness
+   shifts. Effectively multiplies training data 10x without
+   collecting more images — and forces the model to learn
+   features that are invariant to these transformations.
+
+C) Add 5 more Dense layers at the end
+
+D) Switch from Adam to SGD optimizer`,
+output:`B) Data augmentation
+
+Synthetic transformations create 10x effective data.
+For images: RandomFlip, RandomRotation, RandomZoom.
+Built into TF: tf.keras.layers.Random* layers.
+Best ROI when training data is limited (<10K samples).`,
+why:`With only 5,000 training samples for a 7-class problem (~700 per class), the model lacks data diversity. Data augmentation generates synthetic variations: a flipped face is still a happy face, a slightly rotated/zoomed image is still the same emotion. This forces the model to learn rotation/scale-invariant features rather than memorizing exact pixel positions. TensorFlow's tf.keras.layers.RandomFlip, RandomRotation, RandomZoom can be added directly to the model — they apply only during training. For the FER-2013 emotion dataset (likely Justine's data source), augmentation typically boosts accuracy 3-8%.`},
+
+{part:"B",cat:"Deep Learning",diff:"Hard",
+code:`# Transformer self-attention for sentence: "the cat sat"
+# Vocabulary embedding dim = 4, sequence length = 3
+
+# Q (Query): [[1,0,1,0], [0,1,0,1], [1,1,0,0]]
+# K (Key):   [[1,0,1,0], [0,1,0,1], [1,1,0,0]]
+# V (Value): [[1,2,3,4], [5,6,7,8], [9,10,11,12]]
+
+# Attention formula:
+#   Attention(Q,K,V) = softmax(QK^T / √d_k) · V
+
+# Why divide by √d_k (square root of key dimension)?
+
+A) Cosmetic — doesn't affect anything
+
+B) Prevents the dot products from becoming too large in
+   higher dimensions, which would push softmax into regions
+   with extremely small gradients (saturated softmax = no
+   learning). Scaling stabilizes gradient flow.
+
+C) Required for matrix multiplication to be valid
+
+D) Makes the attention weights sum to 1`,
+output:`B) Prevents vanishing gradients via softmax saturation
+
+In high dims, QK^T values grow large.
+softmax of large values → near 0 or 1 (saturated).
+Gradients → near zero → no learning.
+√d_k scaling keeps values in softmax's sensitive range.`,
+why:`This is the "scaled" in "scaled dot-product attention" from the original Attention Is All You Need paper. Without scaling, in high-dimensional embeddings (d_k = 512, 768, etc.), the dot products QK^T have variance proportional to d_k, growing very large. After softmax, these large values become near-binary (0 or 1) — saturated softmax has near-zero gradients, killing learning. Dividing by √d_k normalizes the variance back to 1, keeping softmax in its sensitive (high-gradient) region. This is a foundational Transformer concept. Justine mentions transformers on his resume — any AI engineer interview will probe this.`},
+
+{part:"B",cat:"Deep Learning",diff:"Medium",
+code:`# You're using a pre-trained ResNet50 for image classification
+# on a small dataset (1,000 medical images, 5 classes).
+
+# Approach A: Train from scratch
+model = ResNet50(weights=None, classes=5)
+model.fit(X_train, y_train, epochs=50)
+
+# Approach B: Transfer learning
+base = ResNet50(weights='imagenet', include_top=False)
+base.trainable = False  # Freeze backbone
+model = Sequential([base, GlobalAveragePooling2D(),
+                    Dense(5, activation='softmax')])
+
+# Which is correct for 1,000 medical images and why?
+
+A) A — medical images differ from ImageNet, train from scratch
+
+B) B — Transfer learning leverages low-level features
+   (edges, textures, shapes) learned from millions of
+   ImageNet images. With only 1,000 medical samples,
+   training from scratch leads to severe overfitting.
+
+C) A — pre-trained weights bias toward ImageNet classes
+
+D) Both work equally well with enough epochs`,
+output:`B) Transfer learning — leverage ImageNet features
+
+ResNet50 trained on 1.2M images learned universal
+low-level features. Freeze backbone, train only the
+new classifier head on your 1,000 medical images.
+Optionally fine-tune the top layers later.`,
+why:`Transfer learning is one of the most important deep learning techniques. ResNet50 was trained on ImageNet's 1.2M images and learned hierarchical features: edges → textures → shapes → object parts. These low-level features transfer to most vision tasks including medical imaging. Standard recipe: (1) freeze the pre-trained backbone, (2) add a new classifier head for your classes, (3) train only the head for a few epochs, (4) optionally unfreeze the top layers and fine-tune with a very low learning rate (1e-5). Training ResNet50 from scratch on 1,000 images would overfit catastrophically — these models have 25M+ parameters.`},
+
+{part:"B",cat:"Deep Learning",diff:"Hard",
+code:`# You optimized model inference time by 40% using
+# quantization. (From your resume!)
+
+# Original model: 100 MB, FP32 weights, 50ms inference
+# Quantized model:  25 MB, INT8 weights, 30ms inference
+
+# What is the PRIMARY trade-off of INT8 quantization?
+
+A) Quantized models can only run on GPU, not CPU
+
+B) Small accuracy drop (typically 1-3%) due to reduced
+   numerical precision. FP32 has 32 bits of precision,
+   INT8 has only 8 bits — some weight values are rounded
+   off, slightly degrading model performance.
+
+C) Quantization permanently destroys the model — can't recover
+
+D) Quantization only works on Convolutional layers`,
+output:`B) Small accuracy drop (1-3%) for 4x size + speed gains
+
+INT8 represents weights with 256 possible values
+vs FP32's billions. Quantization-Aware Training (QAT)
+minimizes this drop by training with simulated quantization.`,
+why:`Quantization is a model compression technique that reduces precision from FP32 (32-bit floats) to INT8 (8-bit integers). This gives 4x smaller models, faster inference (especially on CPUs and edge devices), and lower power consumption. The trade-off is precision loss — INT8 has only 256 distinct values vs FP32's billions, so some weight values get rounded. Typical accuracy drops are 1-3% for post-training quantization, and <1% with Quantization-Aware Training (QAT) where the model is trained to be robust to quantization. Justine claims 40% inference improvement — interviewers will probe his actual understanding of this technique.`},
+
+// ═══════════════════════════════════════════════════════════
+// PART C — Generative AI & LLMs (6 Qs)
+// ═══════════════════════════════════════════════════════════
+
+{part:"C",cat:"Generative AI",diff:"Easy",
+code:`# You're using Ollama with Llama3 locally (from your resume).
+# Your LLM application keeps generating different answers
+# for the same prompt every time.
+
+# Which parameter controls this randomness, and how?
+
+A) max_tokens — limits output length
+
+B) temperature — controls randomness in token selection.
+   temperature=0 → deterministic (always pick highest prob token)
+   temperature=1 → balanced (default)
+   temperature>1 → more random/creative
+
+C) top_p — limits the vocabulary size
+
+D) repeat_penalty — prevents repeated tokens`,
+output:`B) temperature controls randomness
+
+0.0 → deterministic (greedy decoding)
+0.7 → balanced (typical chat default)
+1.0 → creative/varied
+>1.0 → highly random, often incoherent
+
+For factual tasks: temperature=0
+For creative writing: temperature=0.7-1.0`,
+why:`Temperature is the most important LLM generation parameter. At temperature=0, the model always picks the highest-probability next token (greedy decoding) — deterministic output, same every time. As temperature increases, the model samples from a broader distribution, allowing lower-probability tokens. For data analysis tasks (Justine's resume mentions natural language queries on CSV data), use temperature=0 for consistency. For creative writing or brainstorming, use 0.7-1.0. top_p (nucleus sampling) is a complementary parameter that limits sampling to tokens whose cumulative probability sums to p. Understanding both is critical for production LLM apps.`},
+
+{part:"C",cat:"Generative AI",diff:"Medium",
+code:`# You built an AI Coding Assistant using LangChain.
+# User: "Write a Python function to reverse a string"
+# LLM: Generates correct code.
+# User: "Now make it case-insensitive"
+# LLM: "What do you want me to make case-insensitive?"
+# ← LLM forgot the previous context!
+
+# Which LangChain component fixes this?
+
+A) PromptTemplate — formats the prompt with variables
+
+B) ConversationBufferMemory (or ConversationSummaryMemory) —
+   stores chat history and injects it into every prompt,
+   giving the LLM context of the conversation
+
+C) OutputParser — formats the LLM response
+
+D) RetrievalQA — uses external documents for context`,
+output:`B) ConversationBufferMemory
+
+LLMs are STATELESS — each API call is independent.
+Memory components store and inject conversation history.
+Buffer = full history, Summary = compressed summary,
+Window = last N turns only.`,
+why:`This is a foundational concept for chatbot development. LLMs are stateless — every API call is independent. The illusion of "memory" comes from sending the entire conversation history with each new request. LangChain's memory components automate this: ConversationBufferMemory keeps full history (great for short chats), ConversationSummaryMemory uses an LLM to summarize older turns (saves tokens), ConversationBufferWindowMemory keeps only the last K turns. Justine's Coding Assistant resume mentions "persistent memory management for saving, retrieving, and deleting previous interactions" — this is the exact pattern. Interviewers will verify he understands the why, not just the API.`},
+
+{part:"C",cat:"Generative AI",diff:"Medium",
+code:`# You built an AI Data Analyst Agent (from your resume).
+# User uploads a CSV with 100,000 rows and asks:
+# "What is the average price by category?"
+
+# Approach A: Send entire CSV to LLM
+prompt = f"Here is the data: {df.to_csv()} Analyze it."
+response = llm(prompt)  # Costs $$$, hits context limits
+
+# Approach B: Tool-use pattern with Pandas
+@tool
+def query_dataframe(query: str) -> str:
+    """Execute pandas query on df"""
+    return str(df.query(query))
+
+agent = create_agent(llm, tools=[query_dataframe])
+response = agent.run("average price by category")
+
+# Why is B better?
+
+A) A and B are equally good
+
+B) B uses TOOL-USE: LLM decides to call query_dataframe(),
+   Pandas does the heavy lifting (sum, group, aggregate),
+   only the result is sent back to LLM for summarization.
+   Avoids context limits + costs 1000x less.
+
+C) B is slower because it has multiple steps
+
+D) Approach A is more accurate because LLM sees full data`,
+output:`B) Tool-use pattern: LLM as orchestrator, code as engine
+
+100K rows = millions of tokens → context overflow.
+Tool-use: LLM writes pandas query → executes locally
+→ summarizes result. Same accuracy, 1000x cheaper.
+This is how production AI Analyst agents work.`,
+why:`This is the core architectural insight for building production LLM applications with data. LLMs have context limits (128K tokens for GPT-4, 8K-32K for Llama3) and pay-per-token costs. Stuffing 100K CSV rows into a prompt is wasteful and impossible at scale. The tool-use pattern (also called function calling, ReAct, or agentic AI) lets the LLM act as an orchestrator: it decides WHICH tool to call (Pandas, SQL, vector DB) with WHAT arguments, the deterministic tool executes, and only the result is fed back. This is how LangChain agents, ChatGPT Code Interpreter, and Justine's AI Data Analyst Agent should be architected.`},
+
+{part:"C",cat:"Generative AI",diff:"Medium",
+code:`# You're prompting Llama3 to extract structured data
+# from invoice text. The response should be JSON.
+
+# Prompt: "Extract invoice number, date, and amount as JSON"
+
+# Response (sometimes):
+# Sure! Here's the JSON: [code-block-start] json
+# {"invoice_number": "INV-001", "date": "2025-01-15", ...}
+# [code-block-end] Hope this helps!
+
+# The LLM keeps adding chatty preamble + markdown.
+
+# Which is the MOST RELIABLE solution?
+
+A) Just use string replacement to clean the response
+
+B) Use structured output: JSON mode (OpenAI) or schema-guided
+   generation (Llama.cpp grammar / Outlines / Pydantic).
+   Forces the LLM to output valid JSON matching a schema.
+   No parsing failures, no chatty preamble.
+
+C) Add "Output ONLY JSON" 10 times in the prompt
+
+D) Switch to a smaller model`,
+output:`B) Schema-guided structured output
+
+LLMs naturally add preamble/markdown — fighting it with
+prompts is unreliable. Use:
+- OpenAI: response_format={"type":"json_object"}
+- Llama.cpp: grammar files (GBNF)
+- LangChain: PydanticOutputParser + retry on failure`,
+why:`Free-form text output from LLMs is one of the biggest pain points in production. Prompt engineering "ONLY output JSON" works 90% of the time and fails 10% — which breaks downstream code. Schema-guided generation forces the LLM to produce ONLY valid JSON matching a defined schema: OpenAI has JSON mode (response_format), Llama.cpp supports grammar files (GBNF), and libraries like Outlines, Instructor, or LangChain's PydanticOutputParser provide cross-model support. This is essential for any production data extraction pipeline — and a sign of senior-level LLM engineering when a candidate brings it up unprompted.`},
+
+{part:"C",cat:"Generative AI",diff:"Hard",
+code:`# You built a Customer Support automation (from your resume).
+# Bot must answer questions about company's product manuals (PDFs).
+
+# Approach A: Fine-tune Llama3 on all PDFs
+#   - Expensive (GPU hours), permanent change to model
+#   - Hard to update when PDFs change
+#   - Risk of catastrophic forgetting
+
+# Approach B: RAG (Retrieval-Augmented Generation)
+#   1. Split PDFs into chunks, embed with sentence-transformers
+#   2. Store in vector DB (Chroma / Pinecone / FAISS)
+#   3. On query: retrieve top-K relevant chunks
+#   4. Inject chunks into prompt, LLM generates answer
+
+# Which is CORRECT for this use case and why?
+
+A) A — fine-tuning gives the model "deep knowledge"
+
+B) B — RAG is the standard for product Q&A:
+   - Updates instantly when PDFs change (just re-embed)
+   - No GPU training needed (cheaper)
+   - Easier to debug (you see retrieved chunks)
+   - LLM can cite sources from retrieval
+
+C) Both A and B are needed together
+
+D) Just use OpenAI's Custom GPT feature`,
+output:`B) RAG (Retrieval-Augmented Generation)
+
+For factual Q&A over docs that CHANGE → RAG.
+Fine-tuning → for style/behavior changes (not facts).
+Standard RAG stack: chunking + embeddings + vector DB
++ semantic search + LLM generation + source citations.`,
+why:`RAG vs fine-tuning is one of the most important decisions in LLM application architecture. Use RAG when: facts change frequently (product docs, policies), citations matter (legal, medical), data is private/proprietary, or you want explainability ("here are the source chunks"). Use fine-tuning when: changing the model's style/tone, teaching new tasks (not new facts), or optimizing for a specific format. They can be combined — fine-tune for tone, RAG for facts. Justine mentions building customer support automation — this is exactly a RAG use case. The full stack (chunking, embeddings, vector DB, retrieval, generation) is foundational AI engineering.`},
+
+{part:"C",cat:"Generative AI",diff:"Hard",
+code:`# Your Llama3 (8B params) keeps generating wrong code,
+# but GPT-4 generates correct code for the same prompt.
+
+# You can't switch to GPT-4 (data privacy, cost).
+
+# Which technique would MOST improve Llama3's code quality?
+
+A) Increase temperature to 1.5 for more creativity
+
+B) Few-shot prompting: include 2-3 example pairs of
+   (problem → correct code) in the prompt. Demonstrates
+   the expected format/quality. Works because LLMs learn
+   from in-context examples without parameter updates.
+
+C) Make the prompt longer with more instructions
+
+D) Add multiple system messages`,
+output:`B) Few-shot prompting with examples
+
+In-context learning: LLMs learn from examples in the prompt.
+3-5 high-quality examples > 1000 words of instructions.
+For code: include diverse problem/solution pairs that
+demonstrate edge cases, style, and quality bar.`,
+why:`Few-shot prompting is one of the most powerful techniques for improving smaller LLMs. Smaller models like Llama3-8B don't have the parameter capacity of GPT-4 (1T+) for zero-shot generalization, but they're surprisingly good at in-context learning. Provide 3-5 high-quality (input, output) pairs in the prompt, and the model learns the pattern without any training. This is especially effective for: code generation, structured extraction, classification, and style mimicry. For Justine's AI Coding Assistant, switching from zero-shot to few-shot with curated examples can dramatically improve output quality. Chain-of-Thought (CoT) prompting is the next level — include reasoning steps in your examples.`},
+
+// ═══════════════════════════════════════════════════════════
+// PART D — Python & Production AI (4 Qs)
+// ═══════════════════════════════════════════════════════════
+
+{part:"D",cat:"Python & Production",diff:"Easy",
+code:`# You're processing 100K records (from your resume).
+# Comparing approaches:
+
+# Approach A: Pure Python loop
+result = []
+for row in data:
+    result.append(row['price'] * row['quantity'])
+
+# Approach B: Pandas vectorized
+df['total'] = df['price'] * df['quantity']
+
+# Approach C: NumPy
+total = np.array(prices) * np.array(quantities)
+
+# For 100K rows, which is FASTEST and why?
+
+A) A — pure Python is always fastest for simple operations
+
+B) B or C (vectorized) — NumPy/Pandas operations run in
+   compiled C code, processing entire arrays at once
+   without Python's interpreter overhead. Typically 50-100x
+   faster than Python loops for numeric data.
+
+C) All three are identical in speed
+
+D) A is faster because it doesn't load Pandas`,
+output:`B) Vectorized (Pandas/NumPy) — 50-100x faster
+
+Python loop: 100K interpreter cycles in Python
+Vectorized: ONE call to compiled C function
+Always vectorize. .iterrows() is the worst pattern.`,
+why:`This is fundamental Pandas/NumPy performance knowledge. Python's interpreter is slow for simple numeric operations because each iteration has overhead (type checks, reference counting). Pandas and NumPy operations dispatch to compiled C code via the underlying libraries (BLAS, LAPACK). For 100K rows, a Pandas vectorized operation might take 5ms vs 500ms for a pure Python loop. Common anti-patterns to AVOID: df.iterrows() (slow), df.apply(lambda row: ..., axis=1) (also slow). When you must iterate, use df.itertuples() (faster than iterrows). Better yet: vectorize, use Numba, or switch to Polars for very large datasets.`},
+
+{part:"D",cat:"Python & Production",diff:"Medium",
+code:`# Memory error when loading a 5GB CSV into Pandas:
+# df = pd.read_csv('huge_file.csv')  
+# MemoryError!
+
+# Which approach loads and processes this file successfully?
+
+A) Switch to a server with more RAM — buy your way out
+
+B) Use chunked reading + processing:
+   chunks = pd.read_csv('huge.csv', chunksize=50_000)
+   results = []
+   for chunk in chunks:
+       results.append(process(chunk))
+   final = pd.concat(results)
+
+C) Use dtype optimization + selective columns:
+   df = pd.read_csv('huge.csv',
+                    usecols=['id','price','date'],
+                    dtype={'price':'float32'})
+
+D) Both B and C — chunking handles row count,
+   dtype/columns reduces memory per row.
+   In practice, combine them.`,
+output:`D) Combine chunking + dtype optimization
+
+dtype tricks: float32 (not float64), category for strings,
+int8/16 for small ints. Can shrink memory 70%+.
+chunksize: streams rows, processes incrementally.
+For truly huge data: switch to Dask, Polars, or DuckDB.`,
+why:`Memory optimization is a daily concern when working with the 100K+ records Justine processed. Key techniques: (1) chunksize streams the file in batches, processing each and aggregating — memory stays constant regardless of file size. (2) usecols loads only needed columns. (3) dtype optimization: float64 → float32 (50% saving), int64 → int8/16/32 if range allows, object → category for repeated strings (massive saving). Combined, these can take a 5GB file down to 500MB. For truly huge data: Dask (parallelized Pandas), Polars (Rust-based, faster), or DuckDB (in-process analytical SQL) are modern alternatives.`},
+
+{part:"D",cat:"Python & Production",diff:"Medium",
+code:`# You built a Streamlit AI app (from your resume).
+# Every time the user changes ANY widget, the entire
+# data loading + model inference re-runs. Slow!
+
+# Which Streamlit feature fixes this?
+
+A) st.stop() — halt execution conditionally
+
+B) @st.cache_data (for data) and @st.cache_resource
+   (for models/connections). Streamlit caches the
+   function's output keyed by input arguments — so
+   repeated calls with same args skip computation.
+
+C) st.session_state — store user state across reruns
+
+D) st.empty() — create a placeholder for dynamic content`,
+output:`B) @st.cache_data and @st.cache_resource
+
+@st.cache_data: for serializable data (dataframes, dicts)
+@st.cache_resource: for non-serializable (models, DB conns)
+
+Both skip re-execution when inputs unchanged.
+Critical for ANY Streamlit app with expensive ops.`,
+why:`This is critical Streamlit knowledge. Streamlit re-runs the entire script top-to-bottom on every widget interaction — without caching, a model loads on every click, every CSV reads on every slider drag. @st.cache_data caches function returns for serializable data (DataFrames, lists, dicts). @st.cache_resource caches non-serializable objects (loaded models, database connections, file handles). Both use function arguments as the cache key. Without these decorators, Justine's AI Data Analyst Agent would reload the LLM on every chat message — making it unusable. This is a must-know for any Streamlit AI demo. Newer pattern: replace deprecated @st.cache.`},
+
+{part:"D",cat:"Python & Production",diff:"Hard",
+code:`# Your ML model in production keeps degrading over time.
+# Accuracy was 91% at launch (your resume!), but after 6 months
+# it's down to 78%. Users report wrong predictions.
+
+# What is this phenomenon called and how do you detect + fix it?
+
+A) Model overfitting — retrain with more regularization
+
+B) DATA DRIFT / CONCEPT DRIFT: real-world data distribution
+   has shifted from training data. Detect: monitor feature
+   distributions (PSI, KS test), prediction confidence drops,
+   accuracy on labeled production samples.
+   Fix: scheduled retraining pipelines, automated drift alerts,
+   model versioning + rollback.
+
+C) The hardware is failing — replace servers
+
+D) Users are submitting adversarial inputs`,
+output:`B) Data drift / concept drift
+
+Production != training. Customer behavior, prices,
+trends shift over time → model degrades silently.
+
+Solution: MLOps pipeline:
+1. Monitor feature distributions (drift detection)
+2. Monitor prediction confidence + accuracy
+3. Automated retraining on schedule or drift trigger
+4. A/B test new model before full deployment`,
+why:`Data drift is one of the most important production ML concepts and the #1 reason models silently fail in production. Two main types: (1) Covariate / Feature drift — input distribution changes (e.g. customer demographics shift), (2) Concept drift — input→output relationship changes (e.g. fraud patterns evolve). Detection tools: Evidently AI, NannyML, Arize, custom PSI/KS-test scripts. Production MLOps pipeline: continuous monitoring → drift alerts → automated retraining → A/B test new model → deploy with rollback capability. This question separates engineers who built ML pipelines from those who only deployed Jupyter notebooks.`},
+
+];
+
+const PARTS=[
+  {key:"A",label:"ML Fundamentals",icon:"📊",color:"#6366f1"},
+  {key:"B",label:"Deep Learning",icon:"🧠",color:"#10b981"},
+  {key:"C",label:"Generative AI",icon:"✨",color:"#f59e0b"},
+  {key:"D",label:"Python / Production",icon:"⚙",color:"#f43f5e"},
+];
+const diffColor={Easy:"#22c55e",Medium:"#f59e0b",Hard:"#ef4444"};
+
+function App(){
+  const[started,setStarted]=useState(false);
+  const[name,setName]=useState("");
+  const[activePart,setActivePart]=useState("A");
+  const[idx,setIdx]=useState(0);
+  const[answers,setAnswers]=useState({});
+  const[submitted,setSubmitted]=useState({});
+  const[input,setInput]=useState("");
+  const[typingKey,setTypingKey]=useState(null);
+  const[typed,setTyped]=useState("");
+  const[finished,setFinished]=useState(false);
+  const[elapsed,setElapsed]=useState(0);
+  const startTime=useRef(Date.now());
+  const inputRef=useRef(null);
+
+  const filtered=questions.filter(q=>q.part===activePart);
+  const q=filtered[idx];
+  const gi=questions.indexOf(q);
+  const isSubmitted=submitted[gi]!==undefined;
+
+  useEffect(()=>{ setIdx(0); },[activePart]);
+  useEffect(()=>{
+    if(!started||finished)return;
+    const t=setInterval(()=>setElapsed(Math.floor((Date.now()-startTime.current)/1000)),1000);
+    return()=>clearInterval(t);
+  },[started,finished]);
+  useEffect(()=>{
+    if(typingKey===null)return;
+    const out=q.output; let i=0; setTyped("");
+    const iv=setInterval(()=>{ i++; setTyped(out.slice(0,i)); if(i>=out.length)clearInterval(iv); },16);
+    return()=>clearInterval(iv);
+  },[typingKey]);
+  useEffect(()=>{ if(!isSubmitted&&inputRef.current)inputRef.current.focus(); },[idx,activePart,isSubmitted]);
+
+  const fmt=s=>`${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`;
+  const checkAnswer=(ans)=>{
+    const l=ans.trim().toLowerCase().replace(/[^a-d].*/,"").charAt(0);
+    const c=q.output.toLowerCase().charAt(0);
+    return l===c&&l!=="";
+  };
+
+  const handleSubmit=(skipped)=>{
+    const userAns=skipped?"(skipped)":input.trim();
+    setAnswers(a=>({...a,[gi]:userAns}));
+    const correct=!skipped&&checkAnswer(userAns);
+    setSubmitted(s=>({...s,[gi]:skipped?"skip":correct?"ok":"wrong"}));
+    setTypingKey(Date.now()); setInput("");
+  };
+
+  const handleNext=()=>{
+    if(idx<filtered.length-1){ setIdx(i=>i+1); setTypingKey(null); setTyped(""); }
+    else{
+      const ni=PARTS.findIndex(p=>p.key===activePart);
+      if(ni<PARTS.length-1){ setActivePart(PARTS[ni+1].key); setTypingKey(null); setTyped(""); }
+      else setFinished(true);
+    }
+  };
+
+  const totalAnswered=Object.keys(submitted).length;
+  const totalOk=Object.values(submitted).filter(v=>v==="ok").length;
+  const totalWrong=Object.values(submitted).filter(v=>v==="wrong").length;
+  const totalSkip=Object.values(submitted).filter(v=>v==="skip").length;
+  const part=PARTS.find(p=>p.key===activePart);
+
+  if(!started) return(
+    <div className="landing">
+      <div className="landing-icon">🤖</div>
+      <h1>AI / ML Engineer Assessment</h1>
+      <p>Machine Learning · Deep Learning · Generative AI · LangChain · Production AI</p>
+      <div className="tech-tags">
+        {["Python","TensorFlow","Scikit-learn","Pandas","NumPy","PyTorch","CNN","Transformers","LangChain","Ollama (Llama3)","RAG","Vector DBs","Prompt Engineering","Streamlit","Agentic AI","MLOps"].map(t=><span key={t} className="tech-tag">{t}</span>)}
+      </div>
+      <div className="stat-row">
+        <div className="stat"><div className="num">22</div><div className="lbl">Questions</div></div>
+        <div className="stat"><div className="num">4</div><div className="lbl">Sections</div></div>
+        <div className="stat"><div className="num">~25</div><div className="lbl">Minutes</div></div>
+      </div>
+      <div className="rules-box">
+        <h3>Instructions</h3>
+        <ol>
+          <li>Read each code snippet or scenario carefully</li>
+          <li>Type the letter of your answer — A, B, C, or D</li>
+          <li>Submit to reveal the correct answer with explanation</li>
+          <li>Skip is available — no penalty, but try first</li>
+        </ol>
+      </div>
+      <input className="name-input" value={name} onChange={e=>setName(e.target.value)} placeholder="Enter your name to begin..."/>
+      <br/>
+      <button className="start-btn" onClick={()=>setStarted(true)} disabled={!name.trim()}>Start Assessment →</button>
+    </div>
+  );
+
+  if(finished){
+    const pct=Math.round((totalOk/questions.length)*100);
+    const grade=pct>=82?"Strong Hire":pct>=64?"Proceed — Round 2":pct>=45?"Needs Improvement":"Below Expectations";
+    const gc=pct>=82?"#22c55e":pct>=64?"#f59e0b":pct>=45?"#fb923c":"#ef4444";
+    return(
+      <div className="completion">
+        <div className="score-ring" style={{border:`4px solid ${gc}`,boxShadow:`0 0 40px ${gc}20`}}>
+          <div className="ring-pct" style={{color:gc}}>{pct}%</div>
+          <div className="ring-lbl">Score</div>
+        </div>
+        <h2>Assessment Complete!</h2>
+        <p>{name} · {fmt(elapsed)}</p>
+        <div className="grade-badge" style={{background:`${gc}18`,border:`1px solid ${gc}40`,color:gc}}>{grade}</div>
+        <div className="score-bk">
+          <div className="si"><div className="v" style={{color:"#4ade80"}}>{totalOk}</div><div className="d">Correct</div></div>
+          <div className="si"><div className="v" style={{color:"#f87171"}}>{totalWrong}</div><div className="d">Wrong</div></div>
+          <div className="si"><div className="v" style={{color:"#fbbf24"}}>{totalSkip}</div><div className="d">Skipped</div></div>
+        </div>
+        <button className="restart-btn" onClick={()=>{setStarted(false);setActivePart("A");setIdx(0);setAnswers({});setSubmitted({});setFinished(false);setTypingKey(null);setTyped("");setName("");}}>Restart</button>
+      </div>
+    );
+  }
+
+  return(
+    <div>
+      <div className="header">
+        <div className="header-left">
+          <div className="header-icon">🤖</div>
+          <div>
+            <div className="header-title">AI / ML Assessment — Justine Chacko</div>
+            <div className="header-sub">{name} · {fmt(elapsed)}</div>
+          </div>
+        </div>
+        <div className="score-pills">
+          <div className="pill pill-green">✓ {totalOk}</div>
+          <div className="pill pill-red">✗ {totalWrong}</div>
+          <div className="pill pill-total">{totalAnswered}/{questions.length}</div>
+        </div>
+      </div>
+
+      <div className="tabs">
+        {PARTS.map(p=>{
+          const qs=questions.filter(q2=>q2.part===p.key);
+          const done=qs.filter(q2=>submitted[questions.indexOf(q2)]!==undefined).length;
+          return(
+            <button key={p.key} className={`tab ${activePart===p.key?"active":""}`}
+              style={{"--tab-color":p.color}} onClick={()=>setActivePart(p.key)}>
+              <span>{p.icon}</span>{p.label}<span className="tab-badge">{done}/{qs.length}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="main">
+        <div className="q-header">
+          <div className="q-header-left">
+            <span className="q-num">Q{idx+1}/{filtered.length}</span>
+            <span className="diff-badge" style={{color:diffColor[q.diff],background:`${diffColor[q.diff]}18`,border:`1px solid ${diffColor[q.diff]}30`}}>{q.diff}</span>
+            <span className="q-hint">Type A · B · C · D</span>
+          </div>
+          <div className="nav-btns">
+            <button className="nav-btn" onClick={()=>{setIdx(i=>i-1);setTypingKey(null);setTyped("");}} disabled={idx===0}>←</button>
+            <button className="nav-btn" onClick={handleNext} disabled={!isSubmitted}>→</button>
+          </div>
+        </div>
+
+        <div className="editor">
+          <div className="editor-bar">
+            <div style={{display:"flex",alignItems:"center",gap:8}}>
+              <div className="dots">
+                <div className="dot" style={{background:"#ef4444"}}/>
+                <div className="dot" style={{background:"#f59e0b"}}/>
+                <div className="dot" style={{background:"#22c55e"}}/>
+              </div>
+              <span className="filename">question_{String(gi+1).padStart(2,"0")}.py</span>
+            </div>
+            <span className="lang-pill" style={{color:part?.color,background:`${part?.color}18`,border:`1px solid ${part?.color}30`}}>{q.cat.toUpperCase()}</span>
+          </div>
+          <div className="code-body">
+            {q.code.split("\n").map((line,i)=>(
+              <div className="code-line" key={i}>
+                <span className="line-no">{i+1}</span>
+                <span style={{color:"#e2e8f0",whiteSpace:"pre-wrap"}}>{line}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {!isSubmitted&&(
+          <div className="answer-box">
+            <div className="answer-label">Your Answer</div>
+            <textarea ref={inputRef} className="answer-input" value={input} onChange={e=>setInput(e.target.value)}
+              placeholder="Type A, B, C, or D..."
+              onKeyDown={e=>{ if(e.key==="Enter"&&!e.shiftKey&&input.trim()){ e.preventDefault(); handleSubmit(false); } }}
+              style={{minHeight:"48px",resize:"none"}}
+            />
+            <div className="submit-row">
+              <button className="skip-btn" onClick={()=>handleSubmit(true)}>Skip →</button>
+              <button className="submit-btn" onClick={()=>handleSubmit(false)} disabled={!input.trim()}>Submit Answer</button>
+            </div>
+          </div>
+        )}
+
+        {isSubmitted&&(<>
+          <div className="terminal revealed">
+            <div className="terminal-bar">
+              <span>⬡ Result</span>
+              <span style={{color:"#22c55e"}}>● evaluated</span>
+            </div>
+            <div className="terminal-body">
+              <div className="terminal-cmd">$ python evaluate.py --q{gi+1}</div>
+              {typed.split("\n").map((l,i)=><div className="terminal-out" key={i}>{l}</div>)}
+            </div>
+          </div>
+
+          <div className={`result-card ${submitted[gi]==="ok"?"result-correct":submitted[gi]==="wrong"?"result-wrong":"result-skip"}`}>
+            <div className="result-header">
+              {submitted[gi]==="ok"&&"✓ Correct!"}
+              {submitted[gi]==="wrong"&&"✗ Incorrect"}
+              {submitted[gi]==="skip"&&"⏭ Skipped"}
+            </div>
+            <div className="result-body">
+              {submitted[gi]!=="skip"?(
+                <div className="result-grid">
+                  <div className="result-col"><label>Your Answer</label><pre>{answers[gi]}</pre></div>
+                  <div className="result-col"><label>Correct Answer</label><pre style={{borderColor:"#166534"}}>{q.output}</pre></div>
+                </div>
+              ):(
+                <div className="result-grid" style={{gridTemplateColumns:"1fr"}}>
+                  <div className="result-col"><label>Correct Answer</label><pre>{q.output}</pre></div>
+                </div>
+              )}
+              <div className="result-why"><strong>Why: </strong>{q.why}</div>
+            </div>
+          </div>
+
+          <div style={{textAlign:"center",marginTop:12}}>
+            <button className="next-btn" onClick={handleNext}>
+              {idx<filtered.length-1?"Next Question →":PARTS.findIndex(p=>p.key===activePart)<PARTS.length-1?"Next Section →":"Finish →"}
+            </button>
+          </div>
+        </>)}
+
+        <div className="progress-dots">
+          {filtered.map((fq,i)=>{
+            const fgi=questions.indexOf(fq);
+            const st=submitted[fgi];
+            const cls=`pdot ${i===idx?"current":st==="ok"?"ok":st==="wrong"?"wrong":st==="skip"?"skip":"pending"}`;
+            return <button key={i} className={cls} onClick={()=>{setIdx(i);setTypingKey(null);setTyped("");}}/>;
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
