@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aavya AI/Data Practice — Technical Screening</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700;9..144,900&family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4efe6;
+    --bg-card: #fbf8f2;
+    --ink: #1a1a1a;
+    --ink-soft: #4a4a4a;
+    --ink-faint: #8a8a85;
+    --rule: #d8d2c4;
+    --accent: #b8482e;
+    --accent-soft: #f0d9d0;
+    --success: #2d6a3e;
+    --success-bg: #d8e8dc;
+    --error: #b8482e;
+    --error-bg: #f0d9d0;
+    --warning: #8a6d1f;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Manrope', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    min-height: 100vh;
+    padding: 40px 20px;
+    background-image:
+      radial-gradient(circle at 10% 10%, rgba(184, 72, 46, 0.04) 0%, transparent 40%),
+      radial-gradient(circle at 90% 80%, rgba(45, 106, 62, 0.03) 0%, transparent 40%);
+  }
+
+  .container {
+    max-width: 880px;
+    margin: 0 auto;
+  }
+
+  /* HEADER */
+  .masthead {
+    border-top: 4px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+    padding: 32px 0 24px;
+    margin-bottom: 48px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 24px;
+  }
+
+  .masthead-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 12px;
+  }
+
+  .masthead-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: clamp(36px, 5vw, 56px);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+
+  .masthead-title em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+  }
+
+  .masthead-edition {
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+  }
+
+  /* LANDING SCREEN */
+  .landing {
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    padding: 56px 48px;
+    position: relative;
+  }
+
+  .landing::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: -1px;
+    width: 60px; height: 60px;
+    border-top: 3px solid var(--accent);
+    border-left: 3px solid var(--accent);
+  }
+
+  .landing::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; right: -1px;
+    width: 60px; height: 60px;
+    border-bottom: 3px solid var(--accent);
+    border-right: 3px solid var(--accent);
+  }
+
+  .landing-intro {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 22px;
+    line-height: 1.45;
+    color: var(--ink-soft);
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .landing-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px 32px;
+    margin-bottom: 36px;
+  }
+
+  .landing-fact {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .landing-fact strong {
+    display: block;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--ink);
+    margin-top: 4px;
+  }
+
+  .section-preview {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 24px;
+    margin: 24px 0 36px;
+    padding: 20px 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .section-preview-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 14px;
+  }
+
+  .section-preview-row .num {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    font-weight: 700;
+    margin-right: 12px;
+  }
+
+  .section-preview-row .name {
+    flex: 1;
+    color: var(--ink);
+  }
+
+  .section-preview-row .count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+
+  .name-input {
+    display: block;
+    width: 100%;
+    padding: 14px 18px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 16px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid var(--ink);
+    color: var(--ink);
+    margin-bottom: 24px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .name-input:focus { border-color: var(--accent); }
+  .name-input::placeholder { color: var(--ink-faint); }
+
+  .btn {
+    display: inline-block;
+    padding: 16px 36px;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: var(--ink);
+    color: var(--bg);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .btn:hover {
+    background: var(--accent);
+    transform: translateY(-1px);
+  }
+
+  .btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--ink);
+  }
+
+  .btn-ghost:hover {
+    background: var(--ink);
+    color: var(--bg);
+  }
+
+  /* QUIZ SCREEN */
+  .quiz-screen { display: none; }
+  .quiz-screen.active { display: block; }
+
+  .progress-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .progress-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .progress-meta strong { color: var(--accent); }
+
+  .timer {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--ink);
+    padding: 4px 10px;
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+  }
+
+  .section-banner {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--accent);
+    margin-bottom: 8px;
+    letter-spacing: 0.02em;
+  }
+
+  .question-card {
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    padding: 40px 44px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .question-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .question-text {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 1.4;
+    color: var(--ink);
+    margin-bottom: 24px;
+    letter-spacing: -0.01em;
+  }
+
+  .code-block {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    background: var(--ink);
+    color: #f4efe6;
+    padding: 18px 22px;
+    margin: 20px 0;
+    overflow-x: auto;
+    line-height: 1.6;
+    border-left: 3px solid var(--accent);
+  }
+
+  .options { list-style: none; }
+
+  .option {
+    display: block;
+    padding: 14px 20px;
+    margin-bottom: 8px;
+    border: 1px solid var(--rule);
+    background: var(--bg);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 15px;
+    position: relative;
+    padding-left: 52px;
+  }
+
+  .option::before {
+    content: attr(data-letter);
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 12px;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    color: var(--ink-soft);
+    border: 1px solid var(--rule);
+    background: var(--bg-card);
+  }
+
+  .option:hover {
+    border-color: var(--ink);
+    background: var(--bg-card);
+  }
+
+  .option:hover::before {
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+
+  .option.selected {
+    background: var(--bg-card);
+    border-color: var(--ink);
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .option.selected::before {
+    background: var(--ink);
+    color: var(--bg);
+    border-color: var(--ink);
+  }
+
+  .option.correct {
+    background: var(--success-bg);
+    border-color: var(--success);
+  }
+
+  .option.correct::before {
+    background: var(--success);
+    color: var(--bg);
+    border-color: var(--success);
+  }
+
+  .option.incorrect {
+    background: var(--error-bg);
+    border-color: var(--error);
+  }
+
+  .option.incorrect::before {
+    background: var(--error);
+    color: var(--bg);
+    border-color: var(--error);
+  }
+
+  .textarea-input {
+    width: 100%;
+    min-height: 120px;
+    padding: 16px 20px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 15px;
+    border: 1px solid var(--rule);
+    background: var(--bg);
+    color: var(--ink);
+    resize: vertical;
+    outline: none;
+    line-height: 1.6;
+  }
+
+  .textarea-input:focus { border-color: var(--ink); }
+
+  .nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  /* RESULTS SCREEN */
+  .results-screen { display: none; }
+  .results-screen.active { display: block; }
+
+  .results-hero {
+    background: var(--ink);
+    color: var(--bg);
+    padding: 48px;
+    margin-bottom: 36px;
+    position: relative;
+  }
+
+  .results-hero-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .results-hero-name {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-weight: 400;
+    font-style: italic;
+    margin-bottom: 4px;
+  }
+
+  .results-hero-score {
+    font-family: 'Fraunces', serif;
+    font-size: 72px;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    margin: 16px 0 4px;
+  }
+
+  .results-hero-score em {
+    font-size: 28px;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--accent);
+    margin-left: 8px;
+  }
+
+  .results-summary {
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    padding: 32px 36px;
+    margin-bottom: 36px;
+  }
+
+  .results-summary h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--rule);
+    color: var(--ink-soft);
+  }
+
+  .section-result {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    gap: 16px;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px dotted var(--rule);
+  }
+
+  .section-result:last-child { border-bottom: none; }
+
+  .section-result-num {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    font-size: 12px;
+  }
+
+  .section-result-name {
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .section-result-bar {
+    width: 120px;
+    height: 6px;
+    background: var(--rule);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .section-result-bar-fill {
+    position: absolute;
+    top: 0; left: 0;
+    height: 100%;
+    background: var(--accent);
+    transition: width 0.6s ease;
+  }
+
+  .section-result-score {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink);
+    min-width: 50px;
+    text-align: right;
+  }
+
+  .review-section h3 {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 24px;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .review-item {
+    padding: 24px 28px;
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    margin-bottom: 16px;
+  }
+
+  .review-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    gap: 16px;
+  }
+
+  .review-item-q {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    line-height: 1.4;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .review-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    padding: 4px 10px;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  .review-badge.correct { background: var(--success-bg); color: var(--success); }
+  .review-badge.incorrect { background: var(--error-bg); color: var(--error); }
+  .review-badge.skipped { background: var(--rule); color: var(--ink-soft); }
+  .review-badge.text { background: var(--accent-soft); color: var(--accent); }
+
+  .review-answer {
+    font-size: 14px;
+    margin-top: 8px;
+    color: var(--ink-soft);
+  }
+
+  .review-answer strong { color: var(--ink); }
+
+  .review-explanation {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dotted var(--rule);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+
+  .review-user-answer {
+    margin-top: 12px;
+    padding: 12px 16px;
+    background: var(--bg);
+    border-left: 3px solid var(--accent);
+    font-size: 14px;
+    color: var(--ink);
+    font-style: italic;
+  }
+
+  .results-actions {
+    display: flex;
+    gap: 12px;
+    margin: 32px 0;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 640px) {
+    body { padding: 20px 12px; }
+    .landing, .question-card { padding: 28px 22px; }
+    .results-hero { padding: 32px 24px; }
+    .landing-grid, .section-preview { grid-template-columns: 1fr; }
+    .masthead { grid-template-columns: 1fr; }
+    .masthead-edition { text-align: left; }
+    .question-text { font-size: 18px; }
+    .results-hero-score { font-size: 56px; }
+  }
+
+  @media print {
+    body { background: white; padding: 0; }
+    .results-actions, .quiz-screen { display: none !important; }
+    .review-item { break-inside: avoid; page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- MASTHEAD -->
+  <header class="masthead">
+    <div>
+      <div class="masthead-meta">Aavya LLC · AI & Data Practice · Round 01</div>
+      <h1 class="masthead-title">Technical <em>Screening</em></h1>
+    </div>
+    <div class="masthead-edition">
+      Issue No. 5<br>
+      May 2026
+    </div>
+  </header>
+
+  <!-- LANDING SCREEN -->
+  <div id="landing-screen" class="landing">
+    <p class="landing-intro">
+      A 30-question diagnostic across five disciplines — calibrated to surface aptitude, not just recall. Answer at your own pace. Skipping is permitted; guessing is not penalised differently from wrong answers.
+    </p>
+
+    <div class="landing-grid">
+      <div class="landing-fact">
+        Duration
+        <strong>45 minutes</strong>
+      </div>
+      <div class="landing-fact">
+        Format
+        <strong>30 MCQ + 3 Short Answer</strong>
+      </div>
+      <div class="landing-fact">
+        Submission
+        <strong>Online, single sitting</strong>
+      </div>
+      <div class="landing-fact">
+        Tools permitted
+        <strong>Pen & paper only</strong>
+      </div>
+    </div>
+
+    <div class="section-preview">
+      <div class="section-preview-row"><span class="num">I.</span><span class="name">Python Fundamentals</span><span class="count">07</span></div>
+      <div class="section-preview-row"><span class="num">II.</span><span class="name">SQL & Databases</span><span class="count">06</span></div>
+      <div class="section-preview-row"><span class="num">III.</span><span class="name">APIs & Backend</span><span class="count">05</span></div>
+      <div class="section-preview-row"><span class="num">IV.</span><span class="name">AI / ML Foundations</span><span class="count">07</span></div>
+      <div class="section-preview-row"><span class="num">V.</span><span class="name">System Design & Debugging</span><span class="count">05</span></div>
+      <div class="section-preview-row"><span class="num">VI.</span><span class="name">Open-ended Response</span><span class="count">03</span></div>
+    </div>
+
+    <input type="text" id="candidate-name" class="name-input" placeholder="Candidate name — required to begin" autocomplete="off">
+
+    <button class="btn" onclick="startQuiz()">Begin Assessment →</button>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div id="quiz-screen" class="quiz-screen">
+    <div class="progress-bar">
+      <div class="progress-meta">
+        Question <strong id="current-q">1</strong> of <span id="total-q">33</span>
+      </div>
+      <div class="timer" id="timer">00:00</div>
+    </div>
+
+    <div id="question-container"></div>
+
+    <div class="nav-buttons">
+      <button class="btn btn-ghost" id="prev-btn" onclick="prevQuestion()">← Previous</button>
+      <button class="btn" id="next-btn" onclick="nextQuestion()">Next →</button>
+    </div>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div id="results-screen" class="results-screen">
+    <div class="results-hero">
+      <div class="results-hero-label">Assessment Complete</div>
+      <div class="results-hero-name" id="result-name">—</div>
+      <div class="results-hero-score" id="result-score">0/30<em id="result-pct">0%</em></div>
+      <div class="masthead-meta" style="color: var(--ink-faint); margin-top: 8px;">
+        Time elapsed: <span id="result-time">00:00</span> · Submitted <span id="result-date">—</span>
+      </div>
+    </div>
+
+    <div class="results-summary">
+      <h3>Section Breakdown</h3>
+      <div id="section-results"></div>
+    </div>
+
+    <div class="results-actions">
+      <button class="btn" onclick="window.print()">Print / Save PDF</button>
+      <button class="btn btn-ghost" onclick="exportJSON()">Export JSON</button>
+      <button class="btn btn-ghost" onclick="location.reload()">Reset</button>
+    </div>
+
+    <div class="review-section">
+      <h3>Answer Review &amp; Explanations</h3>
+      <div id="review-list"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const questions = [
+  // ============ SECTION 1: PYTHON FUNDAMENTALS ============
+  {
+    section: "I. Python Fundamentals",
+    type: "mcq",
+    code: "a = [1, 2, 3]\nb = a\nb.append(4)\nprint(a)",
+    q: "What is the output?",
+    options: ["[1, 2, 3]", "[1, 2, 3, 4]", "Raises TypeError", "None"],
+    correct: 1,
+    explanation: "Lists are mutable and assigned by reference. b and a point to the same object, so mutating one affects both."
+  },
+  {
+    section: "I. Python Fundamentals",
+    type: "mcq",
+    code: "def add(x, lst=[]):\n    lst.append(x)\n    return lst\n\nprint(add(1))\nprint(add(2))",
+    q: "What is the output?",
+    options: ["[1]\\n[2]", "[1]\\n[1, 2]", "Raises error", "[1, 2]\\n[1, 2]"],
+    correct: 1,
+    explanation: "Mutable default arguments are evaluated once at function definition and shared across calls — a classic Python gotcha."
+  },
+  {
+    section: "I. Python Fundamentals",
+    type: "mcq",
+    q: "In FastAPI, which statement about <code>async def</code> endpoints is correct?",
+    options: [
+      "All endpoints must be declared async",
+      "Async runs faster than sync for CPU-bound work",
+      "Async is best for I/O-bound operations (DB calls, HTTP requests)",
+      "Async functions automatically use multiple CPU cores"
+    ],
+    correct: 2,
+    explanation: "Async unlocks concurrency for I/O-bound work by yielding the event loop during waits. For CPU-bound work, you need workers or processes, not async."
+  },
+  {
+    section: "I. Python Fundamentals",
+    type: "mcq",
+    q: "What does the <code>@property</code> decorator do?",
+    options: [
+      "Makes a method static",
+      "Allows a method to be accessed like an attribute",
+      "Caches the method's return value forever",
+      "Marks the method as private"
+    ],
+    correct: 1,
+    explanation: "@property turns a method into a read-only attribute access — useful for computed values and encapsulation."
+  },
+  {
+    section: "I. Python Fundamentals",
+    type: "mcq",
+    code: "print({1, 2, 3} & {2, 3, 4})",
+    q: "What is the output?",
+    options: ["{1, 2, 3, 4}", "{2, 3}", "{1, 4}", "set()"],
+    correct: 1,
+    explanation: "The & operator on sets returns the intersection — elements common to both sets."
+  },
+  {
+    section: "I. Python Fundamentals",
+    type: "mcq",
+    q: "Most Pythonic way to retrieve a dict value with a fallback when the key may not exist?",
+    options: [
+      "if key in d: val = d[key] else: val = default",
+      "try: val = d[key] except KeyError: val = default",
+      "val = d.get(key, default)",
+      "val = d[key] or default"
+    ],
+    correct: 2,
+    explanation: "d.get(key, default) is the idiomatic one-liner. Option D fails for falsy values like 0 or empty string."
+  },
+  {
+    section: "I. Python Fundamentals",
+    type: "mcq",
+    q: "Primary practical difference between <code>list</code> and <code>tuple</code>?",
+    options: [
+      "Tuples are always faster than lists",
+      "Tuples are immutable; lists are mutable",
+      "Tuples can only hold one type; lists can hold mixed types",
+      "Tuples don't support indexing"
+    ],
+    correct: 1,
+    explanation: "Immutability is the defining difference. Tuples are slightly more memory-efficient and hashable (usable as dict keys), but immutability is the why."
+  },
+
+  // ============ SECTION 2: SQL & DATABASES ============
+  {
+    section: "II. SQL & Databases",
+    type: "mcq",
+    q: "Given <code>users(id, name)</code> and <code>orders(id, user_id, amount)</code>, which JOIN returns every user, including those with no orders?",
+    options: ["INNER JOIN", "LEFT JOIN", "RIGHT JOIN", "CROSS JOIN"],
+    correct: 1,
+    explanation: "LEFT JOIN preserves all rows from the left table (users), filling NULLs where no matching order exists."
+  },
+  {
+    section: "II. SQL & Databases",
+    type: "mcq",
+    q: "A query <code>SELECT * FROM orders WHERE user_id = 5</code> is slow on a 10M-row table. Best first action?",
+    options: [
+      "Add LIMIT 1000 to the query",
+      "Add an index on user_id",
+      "Switch to MongoDB",
+      "Increase server RAM"
+    ],
+    correct: 1,
+    explanation: "Without an index, the database scans all 10M rows. An index on user_id reduces lookup to O(log n)."
+  },
+  {
+    section: "II. SQL & Databases",
+    type: "mcq",
+    q: "What is the N+1 query problem?",
+    options: [
+      "When you fetch N records and one is corrupt",
+      "Fetching a list of N items triggers 1 extra query per item (N+1 total)",
+      "When a database has N+1 tables joined",
+      "A pagination off-by-one bug"
+    ],
+    correct: 1,
+    explanation: "Classic ORM pitfall: 1 query for the list, then N more for each item's related data. Fix with eager loading or explicit JOINs."
+  },
+  {
+    section: "II. SQL & Databases",
+    type: "mcq",
+    q: "Best-suited database for semantic search over text embeddings?",
+    options: [
+      "Plain MySQL with VARCHAR columns",
+      "Redis without modules",
+      "PostgreSQL with pgvector, or Pinecone / Weaviate / Qdrant",
+      "SQLite"
+    ],
+    correct: 2,
+    explanation: "Vector databases (or pgvector extension) provide ANN indexes for fast similarity search. Plain SQL string columns cannot do this efficiently."
+  },
+  {
+    section: "II. SQL & Databases",
+    type: "mcq",
+    q: "ACID stands for:",
+    options: [
+      "Atomic, Consistent, Indexed, Durable",
+      "Atomic, Consistent, Isolated, Durable",
+      "Asynchronous, Concurrent, Isolated, Distributed",
+      "Available, Cached, Indexed, Documented"
+    ],
+    correct: 1,
+    explanation: "ACID is the foundational property set for transactional databases. Isolation (not Indexing) governs concurrent transaction behaviour."
+  },
+  {
+    section: "II. SQL & Databases",
+    type: "mcq",
+    q: "Most efficient way to get the top 5 highest-amount orders?",
+    options: [
+      "SELECT * FROM orders ORDER BY amount DESC LIMIT 5",
+      "SELECT * FROM orders WHERE amount > 1000",
+      "Fetch all rows and sort in application code",
+      "Run SELECT MAX(amount) five times"
+    ],
+    correct: 0,
+    explanation: "ORDER BY + LIMIT is the canonical pattern. With an index on amount, this is fast even on large tables."
+  },
+
+  // ============ SECTION 3: APIS & BACKEND ============
+  {
+    section: "III. APIs & Backend",
+    type: "mcq",
+    q: "A POST to <code>/users</code> returns 201 instead of 200. What does this indicate?",
+    options: [
+      "201 Created — semantically correct for resource creation",
+      "Server misconfiguration — should be fixed",
+      "201 is deprecated in HTTP/2",
+      "No semantic difference — both are fine"
+    ],
+    correct: 0,
+    explanation: "201 Created is the correct status for successful resource creation. 200 OK is for general success. Semantic status codes matter for REST clients and caches."
+  },
+  {
+    section: "III. APIs & Backend",
+    type: "mcq",
+    q: "What does <strong>idempotency</strong> mean for an API endpoint?",
+    options: [
+      "It returns the same response regardless of state",
+      "The same request can be made multiple times with the same end-state effect",
+      "The endpoint never fails",
+      "It is protected against SQL injection"
+    ],
+    correct: 1,
+    explanation: "Idempotency = repeating the request yields the same final state. Critical for safe retries on flaky networks (PUT, DELETE are idempotent; POST typically isn't)."
+  },
+  {
+    section: "III. APIs & Backend",
+    type: "mcq",
+    q: "Among these HTTP methods, which is idempotent by specification?",
+    options: ["POST", "PUT", "PATCH", "CONNECT"],
+    correct: 1,
+    explanation: "PUT replaces the full resource — repeating yields the same state. GET, DELETE, HEAD are also idempotent. POST and PATCH typically are not."
+  },
+  {
+    section: "III. APIs & Backend",
+    type: "mcq",
+    q: "Most secure place to store a JWT in a web browser for session auth?",
+    options: [
+      "localStorage (always)",
+      "An <code>httpOnly</code> + <code>Secure</code> cookie",
+      "URL query parameters",
+      "sessionStorage (always)"
+    ],
+    correct: 1,
+    explanation: "httpOnly cookies are inaccessible to JavaScript, mitigating XSS theft. localStorage tokens are readable by any script on the page."
+  },
+  {
+    section: "III. APIs & Backend",
+    type: "mcq",
+    q: "You need to paginate 1M records efficiently. Best approach?",
+    options: [
+      "OFFSET/LIMIT for all pages",
+      "Cursor-based pagination using an indexed sortable column (e.g. id or created_at)",
+      "Fetch all rows once and slice in memory",
+      "Use LIMIT 1000000 and let the client paginate"
+    ],
+    correct: 1,
+    explanation: "OFFSET gets slower as page number grows (the DB still scans skipped rows). Cursor pagination uses WHERE id > last_seen_id — O(log n) per page."
+  },
+
+  // ============ SECTION 4: AI / ML FOUNDATIONS ============
+  {
+    section: "IV. AI / ML Foundations",
+    type: "mcq",
+    q: "What is an <strong>embedding</strong>?",
+    options: [
+      "A serialized JSON representation of an object",
+      "A dense vector that represents text / image / audio in a semantic space",
+      "An encrypted form of data",
+      "A type of database index for full-text search"
+    ],
+    correct: 1,
+    explanation: "Embeddings map content into a high-dimensional vector space where semantic similarity corresponds to geometric proximity."
+  },
+  {
+    section: "IV. AI / ML Foundations",
+    type: "mcq",
+    q: "In a RAG pipeline, the <strong>retrieval</strong> step's job is to:",
+    options: [
+      "Generate the final answer to the user",
+      "Find relevant context from a knowledge base to feed into the LLM prompt",
+      "Train the model on new data",
+      "Cache LLM responses for reuse"
+    ],
+    correct: 1,
+    explanation: "Retrieval pulls the top-K most semantically similar chunks from a vector store, which are then injected into the LLM prompt as grounded context."
+  },
+  {
+    section: "IV. AI / ML Foundations",
+    type: "mcq",
+    q: "Cosine similarity between two vectors measures:",
+    options: [
+      "Their absolute Euclidean distance",
+      "The angle between them — directional similarity, magnitude-independent",
+      "The product of their magnitudes",
+      "Their Manhattan (L1) distance"
+    ],
+    correct: 1,
+    explanation: "Cosine measures the angle's cosine, so it's invariant to vector magnitude. For text embeddings, this is usually preferred over Euclidean distance."
+  },
+  {
+    section: "IV. AI / ML Foundations",
+    type: "mcq",
+    q: "Which approach is most likely to reduce LLM hallucinations in a domain chatbot?",
+    options: [
+      "Raising the temperature setting",
+      "Grounding responses in retrieved context (RAG) with explicit citations",
+      "Using a smaller, faster model",
+      "Removing the system prompt"
+    ],
+    correct: 1,
+    explanation: "RAG anchors the LLM in retrieved facts. Higher temperature increases creativity / hallucination. Smaller models hallucinate more, not less."
+  },
+  {
+    section: "IV. AI / ML Foundations",
+    type: "mcq",
+    q: "What is the <strong>context window</strong> of an LLM?",
+    options: [
+      "The chat UI window that the model renders into",
+      "Maximum tokens the model can process per call (input + output combined)",
+      "The time window in which the model must respond",
+      "RAM allocated to the model at runtime"
+    ],
+    correct: 1,
+    explanation: "Context window is the token budget per inference call. Different models have different limits (e.g. 128k, 200k, 1M). Exceeding it truncates earlier content."
+  },
+  {
+    section: "IV. AI / ML Foundations",
+    type: "mcq",
+    q: "<strong>Overfitting</strong> means:",
+    options: [
+      "The model performs well on training data but poorly on unseen data",
+      "The model is too small to fit the data",
+      "Training takes too long",
+      "The model uses too much memory"
+    ],
+    correct: 0,
+    explanation: "The model has memorised training-set noise rather than learned generalisable patterns. Diagnosed by a gap between training and validation metrics."
+  },
+  {
+    section: "IV. AI / ML Foundations",
+    type: "mcq",
+    q: "Asked to build a chatbot that answers questions from 10,000 PDFs. Best architecture?",
+    options: [
+      "Fine-tune the LLM on all 10,000 PDFs",
+      "Stuff every PDF into every prompt",
+      "Chunk PDFs → embed → store in vector DB → retrieve top-K per query → pass to LLM (RAG)",
+      "Manually summarise each PDF and store as a lookup table"
+    ],
+    correct: 2,
+    explanation: "RAG is the standard pattern: it scales with corpus size, lets you update knowledge without retraining, and provides citations. Fine-tuning is expensive and brittle for factual recall."
+  },
+
+  // ============ SECTION 5: SYSTEM DESIGN & DEBUGGING ============
+  {
+    section: "V. System Design & Debugging",
+    type: "mcq",
+    q: "An API endpoint takes 8 seconds because it calls an LLM. Best UX improvement?",
+    options: [
+      "Increase server timeout to 30 seconds",
+      "Stream the response as tokens are generated (Server-Sent Events / streaming)",
+      "Tell users to be patient",
+      "Cache nothing and hope for the best"
+    ],
+    correct: 1,
+    explanation: "Streaming displays text as it generates, dropping perceived latency from 8s to ~300ms-to-first-token. Modern LLM APIs all support this."
+  },
+  {
+    section: "V. System Design & Debugging",
+    type: "mcq",
+    q: "You're rate-limiting an API. Best approach?",
+    options: [
+      "Permanently block IPs that exceed a threshold once",
+      "Token bucket or sliding window, scoped per API key / user",
+      "Randomly reject 10% of requests",
+      "No rate limiting needed if servers are large enough"
+    ],
+    correct: 1,
+    explanation: "Token bucket / sliding window allow bursts within bounds and reset gracefully. Permanent IP bans punish shared NAT users (offices, mobile networks)."
+  },
+  {
+    section: "V. System Design & Debugging",
+    type: "mcq",
+    q: "A background job runs hourly and is sometimes slow / sometimes fails. Best infrastructure?",
+    options: [
+      "cron + a bash script, no logging",
+      "A Python while-True loop in a screen session",
+      "A task queue (Celery / RQ / Sidekiq) with retries, monitoring, and dead-letter handling",
+      "A FastAPI endpoint that the cron pings"
+    ],
+    correct: 2,
+    explanation: "Task queues handle retries, scheduling, observability, and worker scaling. Critical for production reliability — Palak's resume mentions Celery + Redis."
+  },
+  {
+    section: "V. System Design & Debugging",
+    type: "mcq",
+    q: "Your vector DB returns irrelevant results. What do you check first?",
+    options: [
+      "The LLM's temperature setting",
+      "Embedding model, chunk size / overlap, and similarity threshold",
+      "Database backup status",
+      "Server uptime"
+    ],
+    correct: 1,
+    explanation: "Retrieval quality lives in the embedding pipeline: model choice, chunking strategy (too small loses context, too large dilutes), and the cosine threshold for matches."
+  },
+  {
+    section: "V. System Design & Debugging",
+    type: "mcq",
+    q: "A FastAPI app is slow under load. CPU is at 95%. Most likely cause?",
+    options: [
+      "The CSS bundle is too large",
+      "Blocking I/O or CPU-bound work inside async endpoints, plus too few uvicorn workers",
+      "The database is fine — must be the network",
+      "Browser cache is disabled"
+    ],
+    correct: 1,
+    explanation: "Single async worker + a blocking call (e.g. sync DB driver, heavy computation) starves the event loop. Fix: more workers, offload CPU work to background tasks or processes."
+  },
+
+  // ============ SECTION 6: OPEN-ENDED RESPONSE ============
+  {
+    section: "VI. Open-ended Response",
+    type: "text",
+    q: "In 2–3 sentences: Explain what happens when you embed a 1000-word document for use in a RAG system. Mention chunking if relevant.",
+    explanation: "Looking for: split into chunks (e.g. 500 tokens with overlap), pass each chunk to an embedding model, store the resulting vectors + original text in a vector DB. Bonus: mentions overlap, metadata, or chunking strategy trade-offs."
+  },
+  {
+    section: "VI. Open-ended Response",
+    type: "text",
+    q: "A user complains your chatbot is giving outdated answers. What is the first thing you check, and why?",
+    explanation: "Looking for: the retrieval source — is the vector DB stale? When was the source corpus last updated? Bonus: mentions re-indexing cadence, source-of-truth validation, or whether the LLM is answering from training data instead of retrieved context."
+  },
+  {
+    section: "VI. Open-ended Response",
+    type: "text",
+    q: "Walk through, in 3–4 sentences, how you would design an API endpoint that summarises an uploaded PDF.",
+    explanation: "Looking for: upload handling (size limits, virus scan), text extraction (PyPDF / pdfplumber / OCR for scans), prompt construction (with map-reduce for long docs), async processing for long PDFs (return job ID, poll for status), error handling. Bonus: mentions streaming or token-cost awareness."
+  }
+];
+
+// ============ STATE ============
+let state = {
+  name: '',
+  currentQ: 0,
+  answers: new Array(questions.length).fill(null),
+  startTime: null,
+  elapsedSeconds: 0,
+  timerInterval: null
+};
+
+// ============ INIT ============
+document.getElementById('total-q').textContent = questions.length;
+
+// ============ NAVIGATION ============
+function startQuiz() {
+  const name = document.getElementById('candidate-name').value.trim();
+  if (!name) {
+    document.getElementById('candidate-name').focus();
+    document.getElementById('candidate-name').style.borderColor = 'var(--accent)';
+    return;
+  }
+  state.name = name;
+  state.startTime = Date.now();
+
+  // Start timer
+  state.timerInterval = setInterval(updateTimer, 1000);
+
+  document.getElementById('landing-screen').style.display = 'none';
+  document.getElementById('quiz-screen').classList.add('active');
+  renderQuestion();
+}
+
+function updateTimer() {
+  state.elapsedSeconds = Math.floor((Date.now() - state.startTime) / 1000);
+  const m = Math.floor(state.elapsedSeconds / 60).toString().padStart(2, '0');
+  const s = (state.elapsedSeconds % 60).toString().padStart(2, '0');
+  document.getElementById('timer').textContent = `${m}:${s}`;
+}
+
+function renderQuestion() {
+  const q = questions[state.currentQ];
+  const container = document.getElementById('question-container');
+  document.getElementById('current-q').textContent = state.currentQ + 1;
+
+  let html = `
+    <div class="question-card">
+      <div class="section-banner">${q.section}</div>
+      <div class="question-num">Question ${state.currentQ + 1} of ${questions.length}</div>
+      <div class="question-text">${q.q}</div>
+      ${q.code ? `<pre class="code-block">${q.code}</pre>` : ''}
+  `;
+
+  if (q.type === 'mcq') {
+    html += '<ul class="options">';
+    q.options.forEach((opt, i) => {
+      const letter = String.fromCharCode(65 + i);
+      const selected = state.answers[state.currentQ] === i ? 'selected' : '';
+      const safeOpt = opt.replace(/\\n/g, '<br>');
+      html += `<li class="option ${selected}" data-letter="${letter}" onclick="selectOption(${i})">${safeOpt}</li>`;
+    });
+    html += '</ul>';
+  } else if (q.type === 'text') {
+    const val = state.answers[state.currentQ] || '';
+    html += `<textarea class="textarea-input" id="text-answer" placeholder="Write your answer here..." oninput="saveTextAnswer(this.value)">${val}</textarea>`;
+  }
+
+  html += '</div>';
+  container.innerHTML = html;
+
+  // Update nav buttons
+  document.getElementById('prev-btn').disabled = state.currentQ === 0;
+  document.getElementById('next-btn').textContent =
+    state.currentQ === questions.length - 1 ? 'Submit Assessment ✓' : 'Next →';
+}
+
+function selectOption(idx) {
+  state.answers[state.currentQ] = idx;
+  renderQuestion();
+}
+
+function saveTextAnswer(value) {
+  state.answers[state.currentQ] = value;
+}
+
+function nextQuestion() {
+  if (state.currentQ < questions.length - 1) {
+    state.currentQ++;
+    renderQuestion();
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  } else {
+    submitAssessment();
+  }
+}
+
+function prevQuestion() {
+  if (state.currentQ > 0) {
+    state.currentQ--;
+    renderQuestion();
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+}
+
+// ============ SUBMISSION & RESULTS ============
+function submitAssessment() {
+  clearInterval(state.timerInterval);
+
+  // Compute scores
+  let totalCorrect = 0;
+  let totalMCQ = 0;
+  const sectionStats = {};
+
+  questions.forEach((q, i) => {
+    if (!sectionStats[q.section]) {
+      sectionStats[q.section] = { correct: 0, total: 0, mcqTotal: 0 };
+    }
+    sectionStats[q.section].total++;
+
+    if (q.type === 'mcq') {
+      totalMCQ++;
+      sectionStats[q.section].mcqTotal++;
+      if (state.answers[i] === q.correct) {
+        totalCorrect++;
+        sectionStats[q.section].correct++;
+      }
+    }
+  });
+
+  // Render hero
+  document.getElementById('result-name').textContent = state.name;
+  document.getElementById('result-score').innerHTML =
+    `${totalCorrect}/${totalMCQ}<em id="result-pct">${Math.round(totalCorrect / totalMCQ * 100)}%</em>`;
+  const m = Math.floor(state.elapsedSeconds / 60).toString().padStart(2, '0');
+  const s = (state.elapsedSeconds % 60).toString().padStart(2, '0');
+  document.getElementById('result-time').textContent = `${m}:${s}`;
+  document.getElementById('result-date').textContent = new Date().toLocaleString('en-IN', {dateStyle: 'medium', timeStyle: 'short'});
+
+  // Section breakdown
+  const sectionHTML = Object.entries(sectionStats).map(([name, stats]) => {
+    if (stats.mcqTotal === 0) {
+      return `
+        <div class="section-result">
+          <span class="section-result-num">—</span>
+          <span class="section-result-name">${name}</span>
+          <div class="section-result-bar"><div class="section-result-bar-fill" style="width: 0%; background: var(--accent-soft);"></div></div>
+          <span class="section-result-score">manual review</span>
+        </div>
+      `;
+    }
+    const pct = Math.round(stats.correct / stats.mcqTotal * 100);
+    return `
+      <div class="section-result">
+        <span class="section-result-num">${stats.correct}/${stats.mcqTotal}</span>
+        <span class="section-result-name">${name}</span>
+        <div class="section-result-bar"><div class="section-result-bar-fill" style="width: ${pct}%"></div></div>
+        <span class="section-result-score">${pct}%</span>
+      </div>
+    `;
+  }).join('');
+  document.getElementById('section-results').innerHTML = sectionHTML;
+
+  // Review list
+  const reviewHTML = questions.map((q, i) => {
+    let badge, badgeClass, userAnswerHTML, correctAnswerHTML = '';
+
+    if (q.type === 'mcq') {
+      const userIdx = state.answers[i];
+      if (userIdx === null) {
+        badge = 'Skipped'; badgeClass = 'skipped';
+        userAnswerHTML = `<div class="review-answer"><strong>No answer provided.</strong></div>`;
+      } else if (userIdx === q.correct) {
+        badge = 'Correct'; badgeClass = 'correct';
+        userAnswerHTML = `<div class="review-answer"><strong>Answer:</strong> ${String.fromCharCode(65 + userIdx)} — ${q.options[userIdx].replace(/\\n/g, ' ')}</div>`;
+      } else {
+        badge = 'Incorrect'; badgeClass = 'incorrect';
+        userAnswerHTML = `<div class="review-answer"><strong>Your answer:</strong> ${String.fromCharCode(65 + userIdx)} — ${q.options[userIdx].replace(/\\n/g, ' ')}</div>`;
+        correctAnswerHTML = `<div class="review-answer"><strong>Correct answer:</strong> ${String.fromCharCode(65 + q.correct)} — ${q.options[q.correct].replace(/\\n/g, ' ')}</div>`;
+      }
+    } else {
+      badge = 'Open Response'; badgeClass = 'text';
+      const ans = state.answers[i];
+      userAnswerHTML = ans
+        ? `<div class="review-user-answer">${ans.replace(/\n/g, '<br>')}</div>`
+        : `<div class="review-answer"><strong>No answer provided.</strong></div>`;
+    }
+
+    return `
+      <div class="review-item">
+        <div class="review-item-header">
+          <div class="review-item-q">Q${i + 1}. ${q.q.replace(/<[^>]+>/g, '')}</div>
+          <span class="review-badge ${badgeClass}">${badge}</span>
+        </div>
+        ${q.code ? `<pre class="code-block">${q.code}</pre>` : ''}
+        ${userAnswerHTML}
+        ${correctAnswerHTML}
+        <div class="review-explanation"><strong>Note:</strong> ${q.explanation}</div>
+      </div>
+    `;
+  }).join('');
+  document.getElementById('review-list').innerHTML = reviewHTML;
+
+  // Show results
+  document.getElementById('quiz-screen').classList.remove('active');
+  document.getElementById('results-screen').classList.add('active');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function exportJSON() {
+  const data = {
+    candidate: state.name,
+    timestamp: new Date().toISOString(),
+    elapsedSeconds: state.elapsedSeconds,
+    answers: questions.map((q, i) => ({
+      section: q.section,
+      question: q.q.replace(/<[^>]+>/g, ''),
+      type: q.type,
+      userAnswer: q.type === 'mcq' && state.answers[i] !== null
+        ? `${String.fromCharCode(65 + state.answers[i])}: ${q.options[state.answers[i]]}`
+        : state.answers[i],
+      correctAnswer: q.type === 'mcq' ? `${String.fromCharCode(65 + q.correct)}: ${q.options[q.correct]}` : 'manual review',
+      correct: q.type === 'mcq' ? state.answers[i] === q.correct : null
+    }))
+  };
+
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `aavya-screening-${state.name.replace(/\s+/g, '-').toLowerCase()}-${Date.now()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  if (!document.getElementById('quiz-screen').classList.contains('active')) return;
+  if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+
+  const q = questions[state.currentQ];
+  if (q.type === 'mcq' && /^[1-4]$/.test(e.key)) {
+    selectOption(parseInt(e.key) - 1);
+  } else if (e.key === 'ArrowRight') {
+    nextQuestion();
+  } else if (e.key === 'ArrowLeft') {
+    prevQuestion();
+  }
+});
+</script>
+</body>
+</html>
