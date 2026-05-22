@@ -1,0 +1,1636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Technical Interview — Vishal Suman | Senior Full Stack</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0e1014;
+  --bg-elev: #161a21;
+  --bg-card: #1c2129;
+  --border: #2a3038;
+  --border-strong: #3a424d;
+  --text: #e8e6e1;
+  --text-dim: #9aa0aa;
+  --text-faint: #6b7280;
+  --accent: #c89456;          /* warm copper */
+  --accent-hot: #e6b076;
+  --accent-soft: rgba(200,148,86,0.12);
+  --good: #6fae5e;
+  --bad: #c75c5c;
+  --hard: #b8956b;
+  --serif: "Fraunces", Georgia, serif;
+  --sans: "IBM Plex Sans", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-weight: 400;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background-image:
+    radial-gradient(ellipse at 20% 0%, rgba(200,148,86,0.06), transparent 50%),
+    radial-gradient(ellipse at 80% 100%, rgba(80,120,140,0.04), transparent 50%);
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 48px 24px 96px;
+}
+
+/* ---------- Header ---------- */
+.masthead {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 32px;
+  margin-bottom: 48px;
+}
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.eyebrow::before {
+  content: "";
+  display: inline-block;
+  width: 28px;
+  height: 1px;
+  background: var(--accent);
+}
+
+h1.title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(36px, 5vw, 56px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  font-variation-settings: "opsz" 144, "SOFT" 50;
+  margin-bottom: 16px;
+}
+h1.title em {
+  font-style: italic;
+  color: var(--accent-hot);
+  font-variation-settings: "opsz" 144, "SOFT" 100;
+}
+
+.meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-top: 24px;
+  color: var(--text-dim);
+  font-size: 14px;
+}
+.meta-row .meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.meta-row .meta-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.meta-row .meta-value {
+  color: var(--text);
+  font-weight: 500;
+}
+
+/* ---------- Score Panel ---------- */
+.scoreboard {
+  position: sticky;
+  top: 16px;
+  z-index: 10;
+  background: rgba(22,26,33,0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 14px 20px;
+  margin-bottom: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-family: var(--mono);
+  font-size: 13px;
+}
+.scoreboard .label {
+  color: var(--text-faint);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 11px;
+}
+.scoreboard .progress-bar {
+  flex: 1;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+  margin: 0 8px;
+}
+.scoreboard .progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-hot));
+  width: 0%;
+  transition: width 0.4s ease;
+}
+.scoreboard .score-value {
+  color: var(--accent-hot);
+  font-weight: 600;
+}
+
+/* ---------- Sections ---------- */
+section.quiz-section {
+  margin-bottom: 64px;
+}
+
+.section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 32px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.section-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-faint);
+  letter-spacing: 0.15em;
+}
+.section-title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-style: italic;
+  font-size: 28px;
+  letter-spacing: -0.01em;
+  flex: 1;
+  margin-left: 16px;
+}
+.section-meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-faint);
+  letter-spacing: 0.1em;
+}
+
+/* ---------- Question Card ---------- */
+.q-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  margin-bottom: 24px;
+  padding: 28px;
+  transition: border-color 0.2s ease;
+}
+.q-card:hover { border-color: var(--border-strong); }
+
+.q-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.q-id {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  padding: 2px 8px;
+  background: var(--accent-soft);
+  border-radius: 2px;
+}
+.q-diff {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.q-diff.easy { color: var(--good); }
+.q-diff.med { color: var(--accent); }
+.q-diff.hard { color: var(--hard); }
+
+.q-text {
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.5;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  color: var(--text);
+  margin-bottom: 20px;
+}
+
+.q-code {
+  font-family: var(--mono);
+  font-size: 13px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 16px 18px;
+  margin: 16px 0;
+  overflow-x: auto;
+  color: #d4cab8;
+  line-height: 1.55;
+}
+.q-code .kw { color: #c89456; }
+.q-code .str { color: #8ba888; }
+.q-code .com { color: #6b7280; font-style: italic; }
+.q-code .num { color: #d4a574; }
+
+/* ---------- Options ---------- */
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.option {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.option:hover {
+  border-color: var(--accent);
+  background: rgba(200,148,86,0.04);
+}
+.option.selected {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.option.correct {
+  border-color: var(--good);
+  background: rgba(111,174,94,0.08);
+}
+.option.incorrect {
+  border-color: var(--bad);
+  background: rgba(199,92,92,0.06);
+}
+.option .marker {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-faint);
+  flex-shrink: 0;
+  margin-top: 3px;
+  width: 16px;
+}
+.option.correct .marker { color: var(--good); }
+.option.incorrect .marker { color: var(--bad); }
+
+/* ---------- Short answer / textarea ---------- */
+.q-input {
+  width: 100%;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 12px 16px;
+  font-family: var(--sans);
+  font-size: 15px;
+  color: var(--text);
+  resize: vertical;
+  min-height: 90px;
+  transition: border-color 0.15s ease;
+}
+.q-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* ---------- Actions ---------- */
+.q-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.btn {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.15s ease;
+}
+.btn:hover { border-color: var(--accent); color: var(--accent-hot); }
+.btn.primary {
+  border-color: var(--accent);
+  color: var(--accent-hot);
+}
+.btn.primary:hover {
+  background: var(--accent-soft);
+}
+.btn.scored-good {
+  background: rgba(111,174,94,0.15);
+  border-color: var(--good);
+  color: var(--good);
+}
+.btn.scored-bad {
+  background: rgba(199,92,92,0.1);
+  border-color: var(--bad);
+  color: var(--bad);
+}
+
+/* ---------- Answer reveal ---------- */
+.answer-box {
+  margin-top: 16px;
+  padding: 16px 18px;
+  background: var(--bg);
+  border-left: 2px solid var(--accent);
+  border-radius: 0 3px 3px 0;
+  display: none;
+}
+.answer-box.show { display: block; }
+.answer-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--accent);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.answer-text {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.6;
+}
+.answer-text strong { color: var(--accent-hot); font-weight: 600; }
+.answer-text code {
+  font-family: var(--mono);
+  font-size: 12px;
+  background: var(--bg-elev);
+  padding: 1px 6px;
+  border-radius: 2px;
+  color: #d4cab8;
+}
+.answer-text ul { margin: 8px 0 8px 20px; }
+.answer-text li { margin-bottom: 4px; }
+
+.followups {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border);
+}
+.followups-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-faint);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.followups ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.followups li {
+  font-size: 13px;
+  color: var(--text-dim);
+  padding-left: 16px;
+  position: relative;
+  margin-bottom: 4px;
+}
+.followups li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+}
+
+/* ---------- Final Summary ---------- */
+.final-summary {
+  background: linear-gradient(135deg, var(--bg-card), var(--bg-elev));
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  padding: 40px;
+  margin-top: 48px;
+  text-align: center;
+  display: none;
+}
+.final-summary.show { display: block; }
+.final-summary h2 {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 36px;
+  margin-bottom: 16px;
+  color: var(--accent-hot);
+}
+.final-score-num {
+  font-family: var(--mono);
+  font-size: 64px;
+  color: var(--accent);
+  font-weight: 600;
+  margin: 16px 0;
+}
+.final-breakdown {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 16px;
+  margin-top: 32px;
+  text-align: left;
+}
+.breakdown-item {
+  padding: 12px 16px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}
+.breakdown-item .bd-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-faint);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.breakdown-item .bd-value {
+  font-family: var(--mono);
+  font-size: 18px;
+  color: var(--accent-hot);
+  margin-top: 4px;
+}
+
+/* ---------- Notes/Flags Box ---------- */
+.recruiter-notes {
+  background: rgba(184,149,107,0.05);
+  border: 1px dashed var(--hard);
+  border-radius: 4px;
+  padding: 20px 24px;
+  margin-bottom: 36px;
+}
+.recruiter-notes .rn-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--hard);
+  margin-bottom: 12px;
+}
+.recruiter-notes h3 {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.recruiter-notes ul { margin: 8px 0 0 20px; font-size: 14px; color: var(--text-dim); }
+.recruiter-notes li { margin-bottom: 6px; }
+
+footer.colophon {
+  text-align: center;
+  margin-top: 64px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-faint);
+  letter-spacing: 0.1em;
+}
+
+@media (max-width: 600px) {
+  .container { padding: 24px 16px 64px; }
+  .q-card { padding: 20px 18px; }
+  .section-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .section-title { margin-left: 0; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Masthead -->
+  <header class="masthead">
+    <div class="eyebrow">Technical Screening · Aavya LLC</div>
+    <h1 class="title">Vishal Suman <em>— Senior Full Stack</em></h1>
+    <p style="color: var(--text-dim); font-size: 15px; max-width: 640px;">
+      A structured technical screen covering the candidate's claimed stack: Node.js, Laravel, Vue.js, React.js, with database, DevOps, and scenario probes.
+      Recommended duration: 60–75 minutes. Sections may be skipped based on role focus.
+    </p>
+    <div class="meta-row">
+      <div class="meta-item">
+        <span class="meta-label">Candidate</span>
+        <span class="meta-value">Vishal Suman</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Claimed Experience</span>
+        <span class="meta-value">~13 yrs total (BE 2013)</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Sections</span>
+        <span class="meta-value">7</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Questions</span>
+        <span class="meta-value">35</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Recruiter Notes / Flags -->
+  <div class="recruiter-notes">
+    <div class="rn-label">⚑ Interviewer Notes · Resume Flags to Probe</div>
+    <h3>Things worth clarifying before / during the call</h3>
+    <ul>
+      <li><strong style="color: var(--text);">Title inconsistency:</strong> Header says "3+ years experience" but BE-2013 + 7-yr Infowind stint = ~13 yrs total. Worth clarifying whether "3+ years" referred to Node.js specifically or overall positioning.</li>
+      <li><strong style="color: var(--text);">Contract stability:</strong> Two short consecutive contracts after ValueLabs (OTA Tech Hub: 3 months; Speed of Thought: 5 months). Currently between roles since Jan 2026 — ask reason for short tenures and current availability.</li>
+      <li><strong style="color: var(--text);">Single-employer plateau risk:</strong> Infowind tenure of nearly 7 years (Jan 2017 – Nov 2023) with same "Senior Software Developer" title. Probe for growth, scope evolution, team size handled.</li>
+      <li><strong style="color: var(--text);">Skills math:</strong> Vue 6 yrs + Laravel 5 yrs claim is plausible given Infowind tenure — verify Vue 2 → Vue 3 migration experience as Vue 6 years would span the breaking 2020 transition.</li>
+      <li><strong style="color: var(--text);">React 2 yrs:</strong> Recent addition — verify whether hands-on (component design, hooks, Redux Toolkit) or peripheral.</li>
+    </ul>
+  </div>
+
+  <!-- Scoreboard -->
+  <div class="scoreboard">
+    <span class="label">Progress</span>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <span><span class="label">Score</span> <span class="score-value" id="scoreValue">0 / 0</span></span>
+  </div>
+
+  <!-- ============ SECTION 1: Node.js / Express ============ -->
+  <section class="quiz-section" id="sec1">
+    <div class="section-header">
+      <span class="section-num">§ 01</span>
+      <h2 class="section-title">Node.js &amp; Express — depth check</h2>
+      <span class="section-meta">5 questions · candidate claims 3 yrs</span>
+    </div>
+
+    <!-- Q1.1 -->
+    <div class="q-card" data-q="1.1">
+      <div class="q-header"><span class="q-id">Q 1.1</span><span class="q-diff easy">EASY</span></div>
+      <div class="q-text">In which phase of the Node.js event loop are <code>setImmediate()</code> callbacks executed?</div>
+      <div class="options">
+        <div class="option" data-correct="false"><span class="marker">A.</span><span>Timers phase</span></div>
+        <div class="option" data-correct="false"><span class="marker">B.</span><span>Pending callbacks phase</span></div>
+        <div class="option" data-correct="true"><span class="marker">C.</span><span>Check phase</span></div>
+        <div class="option" data-correct="false"><span class="marker">D.</span><span>Poll phase</span></div>
+      </div>
+      <div class="q-actions">
+        <button class="btn primary" onclick="checkOption(this)">Check</button>
+        <button class="btn" onclick="revealAnswer(this)">Show Answer</button>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">Expected Answer</div>
+        <div class="answer-text">
+          <strong>C. Check phase.</strong> The event loop has six phases — timers, pending callbacks, idle/prepare, poll, <strong>check</strong> (where <code>setImmediate</code> callbacks run), and close callbacks. A senior should also note that <code>setImmediate</code> fires <em>after</em> I/O events in the poll phase, which is its main practical difference from <code>setTimeout(fn, 0)</code>.
+        </div>
+        <div class="followups">
+          <div class="followups-label">Follow-up</div>
+          <ul>
+            <li>Where does <code>process.nextTick</code> sit in this picture? (Answer: microtask queue, runs between every phase transition)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q1.2 -->
+    <div class="q-card" data-q="1.2">
+      <div class="q-header"><span class="q-id">Q 1.2</span><span class="q-diff med">MEDIUM</span></div>
+      <div class="q-text">What does this Express middleware print when a GET request hits <code>/test</code>?</div>
+<pre class="q-code"><span class="kw">app</span>.use((req, res, next) => {
+  console.log(<span class="str">'A'</span>);
+  next();
+  console.log(<span class="str">'D'</span>);
+});
+<span class="kw">app</span>.use((req, res, next) => {
+  console.log(<span class="str">'B'</span>);
+  next();
+});
+<span class="kw">app</span>.get(<span class="str">'/test'</span>, (req, res) => {
+  console.log(<span class="str">'C'</span>);
+  res.send(<span class="str">'ok'</span>);
+});</pre>
+      <div class="options">
+        <div class="option" data-correct="false"><span class="marker">A.</span><span>A, B, C</span></div>
+        <div class="option" data-correct="true"><span class="marker">B.</span><span>A, B, C, D</span></div>
+        <div class="option" data-correct="false"><span class="marker">C.</span><span>A, D, B, C</span></div>
+        <div class="option" data-correct="false"><span class="marker">D.</span><span>A, B, D, C</span></div>
+      </div>
+      <div class="q-actions">
+        <button class="btn primary" onclick="checkOption(this)">Check</button>
+        <button class="btn" onclick="revealAnswer(this)">Show Answer</button>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">Expected Answer</div>
+        <div class="answer-text">
+          <strong>B. A, B, C, D.</strong> The middleware chain unwinds back up after the response handler. Code after <code>next()</code> runs once control returns. This pattern is the foundation of response-timing middleware (e.g., logging duration). A senior should mention that calling <code>next()</code> in an async middleware without <code>await</code>ing it can break this unwinding.
+        </div>
+      </div>
+    </div>
+
+    <!-- Q1.3 -->
+    <div class="q-card" data-q="1.3">
+      <div class="q-header"><span class="q-id">Q 1.3</span><span class="q-diff med">MEDIUM</span></div>
+      <div class="q-text">Your StriveScan project says you built "high-concurrency event scanning modules." For a Node.js service handling 10k concurrent scan events per minute, which is the right concurrency primitive — <code>cluster</code> module, <code>worker_threads</code>, or just async I/O? Justify briefly.</div>
+      <textarea class="q-input" placeholder="Type your answer..."></textarea>
+      <div class="q-actions">
+        <button class="btn primary" onclick="scoreOpen(this, true)">Pass</button>
+        <button class="btn" onclick="scoreOpen(this, false)">Fail</button>
+        <button class="btn" onclick="revealAnswer(this)">Show Answer</button>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">Expected Answer</div>
+        <div class="answer-text">
+          A strong answer separates I/O-bound from CPU-bound work:
+          <ul>
+            <li><strong>Async I/O alone</strong> handles the bulk if scans are I/O-bound (DB writes, API calls) — Node's single-thread event loop is built for this.</li>
+            <li><strong>cluster</strong> horizontally scales across CPU cores via process forking; useful when you want to saturate a multi-core machine without container orchestration.</li>
+            <li><strong>worker_threads</strong> only matter for CPU-bound transforms (hashing, parsing big payloads, compression) where you'd otherwise block the loop.</li>
+          </ul>
+          <strong>Red flag:</strong> if candidate jumps to <code>worker_threads</code> immediately for I/O-heavy work, that suggests shallow Node experience.
+        </div>
+      </div>
+    </div>
+
+    <!-- Q1.4 -->
+    <div class="q-card" data-q="1.4">
+      <div class="q-header"><span class="q-id">Q 1.4</span><span class="q-diff hard">HARD</span></div>
+      <div class="q-text">In an Express + Node service handling file uploads, you notice memory keeps climbing under load even though uploads complete successfully. Name two likely causes and how you'd diagnose.</div>
+      <textarea class="q-input" placeholder="Type your answer..."></textarea>
+      <div class="q-actions">
+        <button class="btn primary" onclick="scoreOpen(this, true)">Pass</button>
+        <button class="btn" onclick="scoreOpen(this, false)">Fail</button>
+        <button class="btn" onclick="revealAnswer(this)">Show Answer</button>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">Expected Answer</div>
+        <div class="answer-text">
+          Common causes:
+          <ul>
+            <li><strong>Buffering instead of streaming:</strong> reading the full file into memory (<code>req.body</code>, <code>multer.memoryStorage</code>) instead of piping to disk/S3.</li>
+            <li><strong>Unclosed streams</strong> or event listeners accumulating on long-lived emitters (memory leak via closure references).</li>
+            <li><strong>Large response caching</strong> in middleware (e.g., compression buffers).</li>
+          </ul>
+          Diagnosis: <code>--inspect</code> + Chrome DevTools heap snapshots, <code>clinic.js doctor</code>, or <code>node --heap-prof</code>. Bonus if they mention V8's old-generation growth as the telltale sign.
+        </div>
+      </div>
+    </div>
+
+    <!-- Q1.5 -->
+    <div class="q-card" data-q="1.5">
+      <div class="q-header"><span class="q-id">Q 1.5</span><span class="q-diff med">MEDIUM</span></div>
+      <div class="q-text">You're using NestJS (claimed in skills). What is the difference between a <strong>Provider</strong>, a <strong>Module</strong>, and a <strong>Controller</strong>?</div>
+      <textarea class="q-input" placeholder="Type your answer..."></textarea>
+      <div class="q-actions">
+        <button class="btn primary" onclick="scoreOpen(this, true)">Pass</button>
+        <button class="btn" onclick="scoreOpen(this, false)">Fail</button>
+        <button class="btn" onclick="revealAnswer(this)">Show Answer</button>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">Expected Answer</div>
+        <div class="answer-text">
+          <ul>
+            <li><strong>Controller</strong>: handles incoming requests, routes them — the HTTP layer.</li>
+            <li><strong>Provider</strong>: any class with <code>@Injectable()</code> — services, repositories, factories. The DI container resolves these.</li>
+            <li><strong>Module</strong>: a logical grouping with <code>@Module({ imports, controllers, providers, exports })</code>. Defines a scope for DI and what it shares with other modules.</li>
+          </ul>
+          <strong>Red flag:</strong> If candidate can't articulate dependency injection scope or hasn't actually written a NestJS module, the NestJS line in their resume may be over-claimed.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 2: Laravel ============ -->
+  <section class="quiz-section" id="sec2">
+    <div class="section-header">
+      <span class="section-num">§ 02</span>
+      <h2 class="section-title">Laravel &amp; PHP — 5-year claim</h2>
+      <span class="section-meta">5 questions · expect deep answers</span>
+    </div>
+
+    <!-- Q2.1 -->
+    <div class="q-card" data-q="2.1">
+      <div class="q-header"><span class="q-id">Q 2.1</span><span class="q-diff easy">EASY</span></div>
+      <div class="q-text">What's the practical difference between <code>with()</code> and <code>load()</code> on an Eloquent query?</div>
+      <textarea class="q-input" placeholder="Type your answer..."></textarea>
+      <div class="q-actions">
+        <button class="btn primary" onclick="scoreOpen(this, true)">Pass</button>
+        <button class="btn" onclick="scoreOpen(this, false)">Fail</button>
+        <button class="btn" onclick="revealAnswer(this)">Show Answer</button>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">Expected Answer</div>
+        <div class="answer-text">
+          <strong>with()</strong> is eager loading at query time — <code>User::with('posts')->get()</code> runs two queries up front.<br>
+          <strong>load()</strong> is lazy eager loading <em>after</em> you already have the collection — <code>$users->load('posts')</code>. Useful when relationships are conditional.<br>
+          Both solve the N+1 problem. A 5-year Laravel dev should also mention <code>loadMissing</code>, <code>withCount</code>, and constraining eager loads via closures.
+        </div>
+      </div>
+    </div>
+
+    <!-- Q2.2 -->
+    <div class="q-card" data-q="2.2">
+      <div class="q-header"><span class="q-id">Q 2.2</span><span class="q-diff med">MEDIUM</span></div>
+      <div class="q-text">Resume mentions <strong>Laravel Passport</strong> and <strong>Sanctum</strong>. When would you pick Sanctum over Passport?</div>
+      <div class="options">
+        <div class="option" data-correct="false"><span class="marker">A.</span><span>Sanctum supports OAuth2 flows; Passport doesn't.</span></div>
+        <div class="option" data-correct="true"><span class="marker">B.</span><span>Sanctum is lightweight — token-based or SPA cookie auth; Passport is heavier (full OAuth2 server) and only needed when you're authorizing third-party clients.</span></div>
+        <div class="option" data-correct="false"><span class="marker">C.</span><span>Sanctum issues JWTs; Passport doesn't.</span></div>
+        <div class="option" data-correct="false"><span class="marker">D.</span><span>They're functionally identical; Sanctum is just newer.</span></div>
+      </div>
+      <div class="q-actions">
+        <button class="btn primary" onclick="checkOption(this)">Check</button>
+        <button class="btn" onclick="revealAnswer(this)">Show Answer</button>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">Expected Answer</div>
+        <div class="answer-text">
+          <strong>B.</strong> Sanctum = SPAs, mobile apps, simple API tokens (opaque, DB-backed). Passport = full OAuth2 authorization server (authorization code, client credentials, password grants), needed only when you're letting third parties build apps against your API.
+        </div>
+      </div>
+    </div>
+
+    <!-- Q2.3 -->
+    <div class="q-card" data-q="2.3">
+      <div class="q-header"><span class="q-id">Q 2.3</span><span class="q-diff med">MEDIUM</span></div>
+      <div class="q-text">What does the <code>Service Container</code> do in Laravel, and how is it different from a <code>Service Provider</code>?</div>
+      <textarea class="q-input" placeholder="Type your answer..."></textarea>
+      <div class="q-actions">
+        <button class="btn primary" onclick="scoreOpen(this, true)">Pass</button>
+        <button class="btn" onclick="scoreOpen(this, false)">Fail</button>
+        <button class="btn" onclick="revealAnswer(this)">Show Answer</button>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">Expected Answer</div>
+        <div class="answer-text">
+          <strong>Service Container</strong> is Laravel's IoC / DI container — resolves classes, manages bindings, performs auto-wiring via reflection.<br>
+          <strong>Service Provider</strong> is the <em>configuration</em> entry point — where you <code>bind()</code>, <code>singleton()</code>, register macros, publish config, and bootstrap packages. Providers register things <em>into</em> the container.<br>
+          A 5-year Laravel dev should also know about <code>register()</code> vs <code>boot()</code> ordering and deferred providers.
+        </div>
+      </div>
+    </div>
+
+    <!-- Q2.4 -->
+    <div class="q-card" data-q="2.4">
+      <div class="q-header"><span class="q-id">Q 2.4</span><span class="q-diff hard">HARD</span></div>
+      <div class="q-text">A queued job is failing intermittently in production. Walk me through how you'd debug it — what's logged, what Artisan commands you'd use, and how you'd guarantee idempotency.</div>
+      <textarea class="q-input" placeholder="Type your answer..."></textarea>
+      <div class="q-actions">
+        <button class="btn primary" onclick="scoreOpen(this, true)">Pass</button>
+        <button class="btn" onclick="scoreOpen(this, false)">Fail</button>
+        <button class="btn" onclick="revealAnswer(this)">Show Answer</button>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">Expected Answer</div>
+        <div class="answer-text">
+          Strong answer covers:
+          <ul>
+            <li><code>failed_jobs</code> table — schema, payload, exception stack trace.</li>
+            <li><code>php artisan queue:failed</code>, <code>queue:retry {id}</code>, <code>queue:flush</code>.</li>
+            <li><code>$tries</code>, <code>$backoff</code>, <code>$timeout</code> properties; <code>failed()</code> method on the job class for cleanup.</li>
+            <li><strong>Idempotency:</strong> use <code>ShouldBeUnique</code> interface, or guard with a DB lookup / Redis lock keyed on a business ID. Database transactions wrapping side-effects so retries don't double-charge / double-send.</li>
+            <li>Bonus: Horizon dashboard for observability, separating queues by criticality.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q2.5 -->
+    <div class="q-card" data-q="2.5">
+      <div class="q-header"><span class="q-id">Q 2.5</span><span class="q-diff easy">EASY</span></div>
+      <div class="q-text">Resume mentions <strong>Livewire and Flux</strong> (Speed of Thought, 2025). What problem does Livewire solve, and what's the tradeoff vs. Vue/React?</div>
+      <textarea class="q-input" placeholder="Type your answer..."></textarea>
+      <div class="q-actions">
+        <button class="btn primary" onclick="scoreOpen(this, true)">Pass</button>
+        <button class="btn" onclick="scoreOpen(this, false)">Fail</button>
+        <button class="btn" onclick="revealAnswer(this)">Show Answer</button>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">Expected Answer</div>
+        <div class="answer-text">
+          Livewire lets you build dynamic UIs in Blade + PHP without writing JS — server renders, AJAX round-trips bring updated HTML fragments. Great for teams that don't want a separate SPA stack.<br>
+          <strong>Tradeoff:</strong> network chatty (every interaction = round-trip), so it's not ideal for highly interactive UIs. Vue/React keep state client-side, faster interactions, but need a separate build/deploy pipeline and API layer.<br>
+          <strong>Flux</strong> in this context is Livewire's official component library (different from React's Flux pattern) — worth clarifying with the candidate.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 3: Vue.js (CANDIDATE'S DEEPEST CLAIM) ============ -->
+  <section class="quiz-section" id="sec3">
+    <div class="section-header">
+      <span class="section-num">§ 03</span>
+      <h2 class="section-title">Vue.js — 6-year claim, expect expert level</h2>
+      <span class="section-meta">6 questions · the deepest probe</span>
+    </div>
+
+    <!-- Q3.1 -->
+    <div class="q-card" data-q="3.1">
+      <div class="q-header"><span class="q-id">Q 3.1</span><span class="q-diff easy">EASY</span></div>
+      <div class="q-text">In Vue 3 Composition API, what is the difference between <code>ref()</code> and <code>reactive()</code>?</div>
+      <textarea class="q-input" placeholder="Type your answer..."></textarea>
+      <div class="q-actions">
+        <button class="btn primary" onclick="scoreOpen(this, true)">Pass</button>
+        <button class="btn" onclick="scoreOpen(this, false)">Fail</button>
+        <button class="btn" onclick="revealAnswer(this)">Show Answer</button>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">Expected Answer</div>
+        <div class="answer-text">
+          <strong>ref()</strong> wraps any value (primitive or object) in a reactive container — access via <code>.value</code> in JS, but auto-unwrapped in templates.<br>
+          <strong>reactive()</strong> uses a Proxy and only works on objects/arrays — no <code>.value</code> needed but you lose reactivity on destructure.<br>
+          Practical rule: <code>ref</code> for primitives and when you need to reassign whole objects; <code>reactive</code> for stable object shapes. Bonus: mention <code>toRefs()</code> for safe destructuring.
+        </div>
+      </div>
+    </div>
+
+    <!-- Q3.2 -->
+    <div class="q-card" data-q="3.2">
+      <div class="q-header"><span class="q-id">Q 3.2</span><span class="q-diff med">MEDIUM</span></div>
+      <div class="q-text">Six years of Vue means the candidate lived through Vue 2 → Vue 3. Name three breaking changes that required code rewrites during migration.</div>
+      <textarea class="q-input" placeholder="Type your answer..."></textarea>
+      <div class="q-actions">
+        <button class="btn primary" onclick="scoreOpen(this, true)">Pass</button>
+        <button class="btn" onclick="scoreOpen(this, false)">Fail</button>
+        <button class="btn" onclick="revealAnswer(this)">Show Answer</button>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">Expected Answer</div>
+        <div class="answer-text">
+          Strong candidates name several from:
+          <ul>
+            <li><code>new Vue()</code> → <code>createApp()</code> — multiple roots, no more global state pollution.</li>
+            <li>Filters removed (use methods or computed instead).</li>
+            <li>Functional components syntax change — no more <code>functional: true</code>.</li>
+            <li>v-model now uses <code>modelValue</code> + <code>update:modelValue</code>; <code>v-model.sync</code> gone.</li>
+            <li>Event bus pattern dropped (<code>$on</code>, <code>$off</code> removed) — use external libs or provide/inject.</li>
+            <li>Reactivity rewritten with Proxy — can now react to property add/delete without <code>Vue.set</code>.</li>
+            <li>Fragments — multiple root nodes per template.</li>
+          </ul>
+          <strong>Red flag:</strong> If the candidate can only name one or two surface changes, the 6-year claim deserves further probing.
+        </div>
+      </div>
+    </div>
+
+    <!-- Q3.3 -->
+    <div class="q-card" data-q="3.3">
+      <div class="q-header"><span class="q-id">Q 3.3</span><span class="q-diff med">MEDIUM</span></div>
+      <div class="q-text">What does this Vue 3 component log when the button is clicked?</div>
+<pre class="q-code"><span class="kw">&lt;script setup&gt;</span>
+<span class="kw">import</span> { reactive, watch } <span class="kw">from</span> <span class="str">'vue'</span>;
+
+<span class="kw">const</span> state = reactive({ count: <span class="num">0</span>, name: <span class="str">'A'</span> });
+
+watch(() => state.count, (n, o) => {
+  console.log(<span class="str">`count: ${o} → ${n}`</span>);
+});
+
+<span class="kw">function</span> handler() {
+  state.count++;
+  state.name = <span class="str">'B'</span>;
+  state.count++;
+}
+<span class="kw">&lt;/script&gt;</span></pre>
+      <div class="options">
+        <div class="option" data-correct="false"><span class="marker">A.</span><span>count: 0 → 1, count: 1 → 2</span></div>
+        <div class="option" data-correct="true"><span class="marker">B.</span><span>count: 0 → 2 (single log, batched)</span></div>
+        <div class="option" data-correct="false"><span class="marker">C.</span><span>count: 0 → 1, count: 1 → 2, name change logged</span></div>
+        <div class="option" data-correct="false"><span class="marker">D.</span><span>Nothing — watch needs deep: true</span></div>
+      </div>
+      <div class="q-actions">
+        <button class="btn primary" onclick="checkOption(this)">Check</button>
+        <button class="btn" onclick="revealAnswer(this)">Show Answer</button>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">Expected Answer</div>
+        <div class="answer-text">
+          <strong>B.</strong> Vue batches reactive updates within a synchronous block — by default, watchers fire <em>after</em> the next tick with the final value. So even though count is incremented twice, the watcher fires once with old=0, new=2. Knowing this is the difference between someone who's <em>used</em> Vue and someone who's <em>debugged</em> Vue.<br>
+          Bonus: ask about <code>flush: 'sync'</code> if you want immediate watch firing.
+        </div>
+      </div>
+    </div>
+
+    <!-- Q3.4 -->
+    <div class="q-card" data-q="3.4">
+      <div class="q-header"><span class="q-id">Q 3.4</span><span class="q-diff med">MEDIUM</span></div>
+      <div class="q-text">Pinia vs. Vuex — what made Pinia the default, and what changes for a developer migrating from Vuex?</div>
+      <textarea class="q-input" placeholder="Type your answer..."></textarea>
+      <div class="q-actions">
+        <button class="btn primary" onclick="scoreOpen(this, true)">Pass</button>
+        <button class="btn" onclick="scoreOpen(this, false)">Fail</button>
+        <button class="btn" onclick="revealAnswer(this)">Show Answer</button>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">Expected Answer</div>
+        <div class="answer-text">
+          <ul>
+            <li><strong>No mutations</strong> — Pinia drops mutations entirely; actions can directly mutate state.</li>
+            <li><strong>No modules nesting</strong> — flat stores instead of namespaced module trees.</li>
+            <li><strong>Better TypeScript inference</strong> — first-class TS support without complex generics.</li>
+            <li><strong>Composition API native</strong> — <code>defineStore</code> with setup-style stores is idiomatic.</li>
+            <li><strong>Smaller bundle, devtools support.</strong></li>
+          </ul>
+          Resume claims both Vuex and Pinia — candidate should be able to articulate why a team would migrate.
+        </div>
+      </div>
+    </div>
+
+    <!-- Q3.5 -->
+    <div class="q-card" data-q="3.5">
+      <div class="q-header"><span class="q-id">Q 3.5</span><span class="q-diff hard">HARD</span></div>
+      <div class="q-text">You're building a reusable <code>DataTable</code> component used across many pages. It needs: configurable columns, slot-based custom cell rendering, sort/filter state lifted to parent, and v-model on selected rows. Sketch the API (props, emits, slots) you'd expose.</div>
+      <textarea class="q-input" placeholder="Type your answer..." style="min-height: 140px;"></textarea>
+      <div class="q-actions">
+        <button class="btn primary" onclick="scoreOpen(this, true)">Pass</button>
+        <button class="btn" onclick="scoreOpen(this, false)">Fail</button>
+        <button class="btn" onclick="revealAnswer(this)">Show Answer</button>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">Expected Answer</div>
+        <div class="answer-text">
+          A senior Vue dev should sketch something like:
+<pre class="q-code"><span class="kw">props</span>: {
+  rows: Array,
+  columns: Array,           <span class="com">// [{ key, label, sortable }]</span>
+  modelValue: Array,        <span class="com">// selected row ids</span>
+  sort: Object,             <span class="com">// { key, dir }</span>
+  filter: Object
+}
+<span class="kw">emits</span>: [
+  <span class="str">'update:modelValue'</span>,
+  <span class="str">'update:sort'</span>,
+  <span class="str">'update:filter'</span>,
+  <span class="str">'row-click'</span>
+]
+<span class="kw">slots</span>: {
+  <span class="str">'cell-{columnKey}'</span>: <span class="com">// scoped slot per column</span>
+  empty,
+  loading
+}</pre>
+          Strong signals: scoped slots per column, multiple v-model bindings (Vue 3), separation of state from presentation, accessibility considerations (aria-sort).
+        </div>
+      </div>
+    </div>
+
+    <!-- Q3.6 -->
+    <div class="q-card" data-q="3.6">
+      <div class="q-header"><span class="q-id">Q 3.6</span><span class="q-diff med">MEDIUM</span></div>
+      <div class="q-text">What does <code>&lt;script setup&gt;</code> give you that the older Composition API <code>setup()</code> function doesn't?</div>
+      <textarea class="q-input" placeholder="Type your answer..."></textarea>
+      <div class="q-actions">
+        <button class="btn primary" onclick="scoreOpen(this, true)">Pass</button>
+        <button class="btn" onclick="scoreOpen(this, false)">Fail</button>
+        <button class="btn" onclick="revealAnswer(this)">Show Answer</button>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">Expected Answer</div>
+        <div class="answer-text">
+          <ul>
+            <li>Compile-time syntactic sugar — top-level imports and bindings auto-exposed to template.</li>
+            <li>No need to <code>return</code> things from setup.</li>
+            <li><code>defineProps</code>, <code>defineEmits</code>, <code>defineExpose</code> as compiler macros.</li>
+            <li>Better runtime performance (less object overhead per instance).</li>
+            <li>Better TypeScript inference for props.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 4: React.js ============ -->
+  <section class="quiz-section" id="sec4">
+    <div class="section-header">
+      <span class="section-num">§ 04</span>
+      <h2 class="section-title">React.js — 2-year claim, recent addition</h2>
+      <span class="section-meta">5 questions · verify it's hands-on</span>
+    </div>
+
+    <!-- Q4.1 -->
+    <div class="q-card" data-q="4.1">
+      <div class="q-header"><span class="q-id">Q 4.1</span><span class="q-diff easy">EASY</span></div>
+      <div class="q-text">Why does this component cause infinite re-renders?</div>
+<pre class="q-code"><span class="kw">function</span> Profile({ userId }) {
+  <span class="kw">const</span> [user, setUser] = useState(<span class="kw">null</span>);
+
+  useEffect(() => {
+    fetchUser(userId).then(setUser);
+  });
+
+  <span class="kw">return</span> &lt;div&gt;{user?.name}&lt;/div&gt;;
+}</pre>
+      <div class="options">
+        <div class="option" data-correct="false"><span class="marker">A.</span><span><code>fetchUser</code> is not memoized</span></div>
+        <div class="option" data-correct="true"><span class="marker">B.</span><span>Missing dependency array → effect runs every render → setUser → re-render → effect again</span></div>
+        <div class="option" data-correct="false"><span class="marker">C.</span><span><code>setUser</code> needs to be wrapped in <code>useCallback</code></span></div>
+        <div class="option" data-correct="false"><span class="marker">D.</span><span>It does not — React batches state updates</span></div>
+      </div>
+      <div class="q-actions">
+        <button class="btn primary" onclick="checkOption(this)">Check</button>
+        <button class="btn" onclick="revealAnswer(this)">Show Answer</button>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">Expected Answer</div>
+        <div class="answer-text">
+          <strong>B.</strong> Without a dependency array, <code>useEffect</code> runs after every render. Each run calls <code>setUser</code>, which triggers another render, which runs the effect again. Fix: <code>useEffect(() => {...}, [userId])</code>.
+        </div>
+      </div>
+    </div>
+
+    <!-- Q4.2 -->
+    <div class="q-card" data-q="4.2">
+      <div class="q-header"><span class="q-id">Q 4.2</span><span class="q-diff med">MEDIUM</span></div>
+      <div class="q-text">When is <code>useMemo</code> actually worth it, and when is it premature optimization?</div>
+      <textarea class="q-input" placeholder="Type your answer..."></textarea>
+      <div class="q-actions">
+        <button class="btn primary" onclick="scoreOpen(this, true)">Pass</button>
+        <button class="btn" onclick="scoreOpen(this, false)">Fail</button>
+        <button class="btn" onclick="revealAnswer(this)">Show Answer</button>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">Expected Answer</div>
+        <div class="answer-text">
+          <strong>Worth it</strong> when:
+          <ul>
+            <li>Computation is genuinely expensive (filtering/sorting large lists, complex transforms).</li>
+            <li>The memoized value is passed as a prop to a <code>React.memo</code> child — reference stability matters.</li>
+            <li>It's a dependency of another hook (useEffect, useMemo) and you need stable identity.</li>
+          </ul>
+          <strong>Premature</strong> when wrapping cheap computations — useMemo itself has overhead (closure + deps array comparison). For React 19's compiler, this becomes mostly unnecessary.
+        </div>
+      </div>
+    </div>
+
+    <!-- Q4.3 -->
+    <div class="q-card" data-q="4.3">
+      <div class="q-header"><span class="q-id">Q 4.3</span><span class="q-diff med">MEDIUM</span></div>
+      <div class="q-text">Resume claims Redux Toolkit. Walk through what <code>createSlice</code> generates for you that vanilla Redux required manually.</div>
+      <textarea class="q-input" placeholder="Type your answer..."></textarea>
+      <div class="q-actions">
+        <button class="btn primary" onclick="scoreOpen(this, true)">Pass</button>
+        <button class="btn" onclick="scoreOpen(this, false)">Fail</button>
+        <button class="btn" onclick="revealAnswer(this)">Show Answer</button>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">Expected Answer</div>
+        <div class="answer-text">
+          <ul>
+            <li><strong>Action creators</strong> auto-generated from reducer function names.</li>
+            <li><strong>Action types</strong> auto-generated as <code>sliceName/reducerName</code>.</li>
+            <li><strong>Immer integration</strong> — write "mutating" reducers that produce immutable updates under the hood.</li>
+            <li>Returns <code>{ actions, reducer }</code> — combineReducers handles the rest.</li>
+            <li>Bonus: mention <code>createAsyncThunk</code>, <code>extraReducers</code>, RTK Query for data fetching layer.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q4.4 -->
+    <div class="q-card" data-q="4.4">
+      <div class="q-header"><span class="q-id">Q 4.4</span><span class="q-diff hard">HARD</span></div>
+      <div class="q-text">You wrap a child component in <code>React.memo</code> but it still re-renders whenever the parent re-renders. Give two reasons why memoization isn't working.</div>
+      <textarea class="q-input" placeholder="Type your answer..."></textarea>
+      <div class="q-actions">
+        <button class="btn primary" onclick="scoreOpen(this, true)">Pass</button>
+        <button class="btn" onclick="scoreOpen(this, false)">Fail</button>
+        <button class="btn" onclick="revealAnswer(this)">Show Answer</button>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">Expected Answer</div>
+        <div class="answer-text">
+          <ul>
+            <li><strong>Inline objects/arrays</strong> as props — <code>{ ...obj }</code> or <code>[a, b]</code> creates a new reference every render, defeating shallow comparison.</li>
+            <li><strong>Inline functions</strong> as props — <code>onClick={() => ...}</code> creates new function each render. Need <code>useCallback</code>.</li>
+            <li><strong>Children prop</strong> is a new element every time (most overlooked).</li>
+            <li><strong>Context consumption</strong> — if the child uses <code>useContext</code> for a changing context value, it re-renders regardless of memo.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q4.5 -->
+    <div class="q-card" data-q="4.5">
+      <div class="q-header"><span class="q-id">Q 4.5</span><span class="q-diff easy">EASY</span></div>
+      <div class="q-text">You used React Testing Library (per resume). What's the philosophy behind it, and how is it different from Enzyme?</div>
+      <textarea class="q-input" placeholder="Type your answer..."></textarea>
+      <div class="q-actions">
+        <button class="btn primary" onclick="scoreOpen(this, true)">Pass</button>
+        <button class="btn" onclick="scoreOpen(this, false)">Fail</button>
+        <button class="btn" onclick="revealAnswer(this)">Show Answer</button>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">Expected Answer</div>
+        <div class="answer-text">
+          RTL's philosophy: <em>"The more your tests resemble the way your software is used, the more confidence they can give you."</em> Query by accessible roles, labels, text — what users see, not internal component structure.<br>
+          Enzyme tested implementation details (state, props, instance methods), making refactors painful. RTL forces you toward integration-style tests around the public surface. Good candidates mention <code>screen.getByRole</code>, <code>userEvent</code> over <code>fireEvent</code>, async <code>findBy</code> queries.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 5: Databases & APIs ============ -->
+  <section class="quiz-section" id="sec5">
+    <div class="section-header">
+      <span class="section-num">§ 05</span>
+      <h2 class="section-title">Databases &amp; API design</h2>
+      <span class="section-meta">5 questions · MySQL, Mongo, REST</span>
+    </div>
+
+    <!-- Q5.1 -->
+    <div class="q-card" data-q="5.1">
+      <div class="q-header"><span class="q-id">Q 5.1</span><span class="q-diff med">MEDIUM</span></div>
+      <div class="q-text">Given a MySQL <code>orders</code> table with columns <code>(id, user_id, status, created_at, amount)</code> and a query: <code>SELECT * FROM orders WHERE user_id = ? AND status = 'paid' ORDER BY created_at DESC LIMIT 20</code>. What's the optimal index?</div>
+      <div class="options">
+        <div class="option" data-correct="false"><span class="marker">A.</span><span>Separate indexes on <code>user_id</code>, <code>status</code>, <code>created_at</code></span></div>
+        <div class="option" data-correct="true"><span class="marker">B.</span><span>Composite index on <code>(user_id, status, created_at)</code></span></div>
+        <div class="option" data-correct="false"><span class="marker">C.</span><span>Composite index on <code>(created_at, user_id, status)</code></span></div>
+        <div class="option" data-correct="false"><span class="marker">D.</span><span>Full-text index on the table</span></div>
+      </div>
+      <div class="q-actions">
+        <button class="btn primary" onclick="checkOption(this)">Check</button>
+        <button class="btn" onclick="revealAnswer(this)">Show Answer</button>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">Expected Answer</div>
+        <div class="answer-text">
+          <strong>B.</strong> Leftmost-prefix rule: equality predicates first (<code>user_id</code>, <code>status</code>) then the range/order column (<code>created_at</code>). MySQL can use the composite index for the WHERE filter <em>and</em> avoid a filesort. Strong candidate also mentions covering index, <code>EXPLAIN</code> output, and that index cardinality matters.
+        </div>
+      </div>
+    </div>
+
+    <!-- Q5.2 -->
+    <div class="q-card" data-q="5.2">
+      <div class="q-header"><span class="q-id">Q 5.2</span><span class="q-diff med">MEDIUM</span></div>
+      <div class="q-text">When would you choose MongoDB over PostgreSQL for a project, and what's the strongest argument <em>against</em> that choice?</div>
+      <textarea class="q-input" placeholder="Type your answer..."></textarea>
+      <div class="q-actions">
+        <button class="btn primary" onclick="scoreOpen(this, true)">Pass</button>
+        <button class="btn" onclick="scoreOpen(this, false)">Fail</button>
+        <button class="btn" onclick="revealAnswer(this)">Show Answer</button>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">Expected Answer</div>
+        <div class="answer-text">
+          <strong>Choose Mongo</strong> when: schema is genuinely fluid, document-shaped data (embedded docs > joins), horizontal sharding from day one, write throughput dominates.<br>
+          <strong>Argument against</strong>: PostgreSQL has JSONB, GIN indexes, partial indexes, MVCC, foreign keys, ACID across multi-row transactions. For most "we need flexibility" use-cases, PG + JSONB is the better default. Mongo's join story (<code>$lookup</code>) is weaker, and ad-hoc analytics are harder.<br>
+          Senior signal: candidate doesn't reflexively pick one — frames the decision.
+        </div>
+      </div>
+    </div>
+
+    <!-- Q5.3 -->
+    <div class="q-card" data-q="5.3">
+      <div class="q-header"><span class="q-id">Q 5.3</span><span class="q-diff med">MEDIUM</span></div>
+      <div class="q-text">Your REST API exposes <code>POST /payments</code>. A flaky client retries the request and you accidentally charge the user twice. How would you make this endpoint idempotent?</div>
+      <textarea class="q-input" placeholder="Type your answer..."></textarea>
+      <div class="q-actions">
+        <button class="btn primary" onclick="scoreOpen(this, true)">Pass</button>
+        <button class="btn" onclick="scoreOpen(this, false)">Fail</button>
+        <button class="btn" onclick="revealAnswer(this)">Show Answer</button>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">Expected Answer</div>
+        <div class="answer-text">
+          Strong answer:
+          <ul>
+            <li>Client sends an <code>Idempotency-Key</code> header (UUID).</li>
+            <li>Server stores key + response in a table/Redis with TTL.</li>
+            <li>On a duplicate key within TTL: return the original response, do not re-execute.</li>
+            <li>Use a DB unique constraint on <code>(idempotency_key, endpoint)</code> to enforce at the storage layer.</li>
+            <li>Bonus: mention Stripe's pattern as the canonical implementation; race conditions handled via <code>SELECT … FOR UPDATE</code> or insert-then-catch-duplicate.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q5.4 -->
+    <div class="q-card" data-q="5.4">
+      <div class="q-header"><span class="q-id">Q 5.4</span><span class="q-diff hard">HARD</span></div>
+      <div class="q-text">Offset pagination (<code>LIMIT 20 OFFSET 100000</code>) becomes brutally slow on big tables. What's the alternative, and what's its tradeoff?</div>
+      <textarea class="q-input" placeholder="Type your answer..."></textarea>
+      <div class="q-actions">
+        <button class="btn primary" onclick="scoreOpen(this, true)">Pass</button>
+        <button class="btn" onclick="scoreOpen(this, false)">Fail</button>
+        <button class="btn" onclick="revealAnswer(this)">Show Answer</button>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">Expected Answer</div>
+        <div class="answer-text">
+          <strong>Cursor-based / keyset pagination</strong>: instead of <code>OFFSET</code>, use <code>WHERE id &lt; last_seen_id ORDER BY id DESC LIMIT 20</code>. The DB seeks straight to the right index entry rather than scanning + discarding.<br>
+          <strong>Tradeoff:</strong> no random page access — you can't jump to "page 47". Also harder if sort is by a non-unique column (need a tie-breaker, usually <code>(sort_col, id)</code>).<br>
+          Good for infinite-scroll UIs, mobile feeds, log pagination.
+        </div>
+      </div>
+    </div>
+
+    <!-- Q5.5 -->
+    <div class="q-card" data-q="5.5">
+      <div class="q-header"><span class="q-id">Q 5.5</span><span class="q-diff easy">EASY</span></div>
+      <div class="q-text">What HTTP status code do you return when a resource exists but the user isn't allowed to access it?</div>
+      <div class="options">
+        <div class="option" data-correct="false"><span class="marker">A.</span><span>401 Unauthorized</span></div>
+        <div class="option" data-correct="true"><span class="marker">B.</span><span>403 Forbidden</span></div>
+        <div class="option" data-correct="false"><span class="marker">C.</span><span>404 Not Found</span></div>
+        <div class="option" data-correct="false"><span class="marker">D.</span><span>Either 403 or 404 depending on policy — both can be valid</span></div>
+      </div>
+      <div class="q-actions">
+        <button class="btn primary" onclick="checkOption(this)">Check</button>
+        <button class="btn" onclick="revealAnswer(this)">Show Answer</button>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">Expected Answer</div>
+        <div class="answer-text">
+          Strictly <strong>B (403)</strong> per RFC. But <strong>D</strong> is a defensible senior answer — some APIs return 404 to avoid leaking resource existence to unauthorized users (auth probe protection). 401 is for unauthenticated, not unauthorized. Accept B or D with rationale.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 6: DevOps, Testing, AI ============ -->
+  <section class="quiz-section" id="sec6">
+    <div class="section-header">
+      <span class="section-num">§ 06</span>
+      <h2 class="section-title">DevOps, Testing &amp; AI tools</h2>
+      <span class="section-meta">5 questions · CI/CD, Docker, AI workflow</span>
+    </div>
+
+    <!-- Q6.1 -->
+    <div class="q-card" data-q="6.1">
+      <div class="q-header"><span class="q-id">Q 6.1</span><span class="q-diff easy">EASY</span></div>
+      <div class="q-text">What does a <strong>multi-stage Dockerfile</strong> give you that a single-stage one doesn't?</div>
+      <textarea class="q-input" placeholder="Type your answer..."></textarea>
+      <div class="q-actions">
+        <button class="btn primary" onclick="scoreOpen(this, true)">Pass</button>
+        <button class="btn" onclick="scoreOpen(this, false)">Fail</button>
+        <button class="btn" onclick="revealAnswer(this)">Show Answer</button>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">Expected Answer</div>
+        <div class="answer-text">
+          Smaller final images — you build in a fat image (with dev deps, compilers, npm cache) and copy only the artifact into a minimal runtime image. Benefits:
+          <ul>
+            <li>Smaller attack surface (no shell, no build tools in production).</li>
+            <li>Faster pulls and cold starts.</li>
+            <li>Same Dockerfile handles build + run; CI doesn't need a separate builder step.</li>
+            <li>Cache layers per stage.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q6.2 -->
+    <div class="q-card" data-q="6.2">
+      <div class="q-header"><span class="q-id">Q 6.2</span><span class="q-diff med">MEDIUM</span></div>
+      <div class="q-text">In a GitHub Actions workflow, what's the difference between <code>on: push</code> with a branch filter and <code>on: pull_request</code>?</div>
+      <textarea class="q-input" placeholder="Type your answer..."></textarea>
+      <div class="q-actions">
+        <button class="btn primary" onclick="scoreOpen(this, true)">Pass</button>
+        <button class="btn" onclick="scoreOpen(this, false)">Fail</button>
+        <button class="btn" onclick="revealAnswer(this)">Show Answer</button>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">Expected Answer</div>
+        <div class="answer-text">
+          <ul>
+            <li><code>on: push</code> fires on every commit to a matching branch (typically <code>main</code> for deploys, or feature branches).</li>
+            <li><code>on: pull_request</code> fires when a PR is opened/updated/reopened — runs against the merge commit (not the branch head), so checks reflect what <em>would</em> land on main.</li>
+            <li>Common pattern: PR triggers run tests/lint; push to main triggers deploy.</li>
+            <li>Senior detail: <code>pull_request</code> from forks doesn't get secrets (security boundary); use <code>pull_request_target</code> with care if you need them.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q6.3 -->
+    <div class="q-card" data-q="6.3">
+      <div class="q-header"><span class="q-id">Q 6.3</span><span class="q-diff med">MEDIUM</span></div>
+      <div class="q-text">You're testing a function that hits an external API. Walk through three different mocking strategies in Jest and when to use each.</div>
+      <textarea class="q-input" placeholder="Type your answer..."></textarea>
+      <div class="q-actions">
+        <button class="btn primary" onclick="scoreOpen(this, true)">Pass</button>
+        <button class="btn" onclick="scoreOpen(this, false)">Fail</button>
+        <button class="btn" onclick="revealAnswer(this)">Show Answer</button>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">Expected Answer</div>
+        <div class="answer-text">
+          <ul>
+            <li><strong>jest.mock(moduleName)</strong> — auto-mock the whole module. Quick but coarse.</li>
+            <li><strong>jest.spyOn(obj, 'method').mockResolvedValue(...)</strong> — surgical, preserves real behavior of the rest of the module.</li>
+            <li><strong>MSW (Mock Service Worker)</strong> or <strong>nock</strong> — intercept at the network layer. Tests the real HTTP client code. Best for integration tests.</li>
+          </ul>
+          When: unit-test logic → spyOn; module needs whole-replacement → jest.mock; testing HTTP error handling, retries, headers → MSW.
+        </div>
+      </div>
+    </div>
+
+    <!-- Q6.4 -->
+    <div class="q-card" data-q="6.4">
+      <div class="q-header"><span class="q-id">Q 6.4</span><span class="q-diff easy">EASY</span></div>
+      <div class="q-text">Resume says you've been using <strong>ChatGPT, GitHub Copilot, and Gemini for 2 years</strong>. Walk me through a recent example — what task, what you asked, and where the AI was wrong or unhelpful.</div>
+      <textarea class="q-input" placeholder="Type your answer..." style="min-height: 110px;"></textarea>
+      <div class="q-actions">
+        <button class="btn primary" onclick="scoreOpen(this, true)">Pass</button>
+        <button class="btn" onclick="scoreOpen(this, false)">Fail</button>
+        <button class="btn" onclick="revealAnswer(this)">Show Answer</button>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">Expected Answer</div>
+        <div class="answer-text">
+          <strong>What you're looking for:</strong> concrete specifics. A genuine AI-tool user will name something like "Copilot kept generating outdated Laravel syntax for queues" or "Gemini hallucinated a Vue API that didn't exist" or "Used ChatGPT to scaffold tests and had to fix the matcher names."<br>
+          <strong>Red flag:</strong> vague answers ("it speeds up boilerplate", "writes code for me") without examples. Means the candidate uses AI superficially.<br>
+          Bonus: ask about prompt patterns, when they <em>don't</em> use AI, and how they verify output.
+        </div>
+      </div>
+    </div>
+
+    <!-- Q6.5 -->
+    <div class="q-card" data-q="6.5">
+      <div class="q-header"><span class="q-id">Q 6.5</span><span class="q-diff med">MEDIUM</span></div>
+      <div class="q-text">Resume says "deployed and managed cloud applications on AWS EC2." Walk through how you'd zero-downtime deploy a Node + Laravel app on EC2. (No Kubernetes — just EC2.)</div>
+      <textarea class="q-input" placeholder="Type your answer..."></textarea>
+      <div class="q-actions">
+        <button class="btn primary" onclick="scoreOpen(this, true)">Pass</button>
+        <button class="btn" onclick="scoreOpen(this, false)">Fail</button>
+        <button class="btn" onclick="revealAnswer(this)">Show Answer</button>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">Expected Answer</div>
+        <div class="answer-text">
+          Acceptable answers vary; senior signal is mentioning at least one of:
+          <ul>
+            <li><strong>Blue/green</strong>: two EC2 fleets behind an ALB; deploy to green, swap target group.</li>
+            <li><strong>Rolling</strong>: ASG with health checks; deregister, drain, replace one at a time.</li>
+            <li>For Laravel specifically: <code>php artisan down --refresh=15</code>, or symlink-swap pattern (Envoyer / Deployer) — release directories, atomic symlink to <code>current/</code>.</li>
+            <li>For Node: PM2 graceful reload, or systemd socket activation.</li>
+            <li>DB migrations are the gotcha — backward-compatible migrations only during deploy.</li>
+          </ul>
+          <strong>Red flag:</strong> "I just SSH and git pull then restart" — not senior-grade.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 7: Career & Scenarios ============ -->
+  <section class="quiz-section" id="sec7">
+    <div class="section-header">
+      <span class="section-num">§ 07</span>
+      <h2 class="section-title">Career, scenario &amp; communication</h2>
+      <span class="section-meta">4 questions · the human side</span>
+    </div>
+
+    <!-- Q7.1 -->
+    <div class="q-card" data-q="7.1">
+      <div class="q-header"><span class="q-id">Q 7.1</span><span class="q-diff med">MEDIUM</span></div>
+      <div class="q-text">Walk me through your time at <strong>Infowind Technologies (Jan 2017 – Nov 2023)</strong>. Seven years is a long stint — how did your scope, responsibilities, and the projects you owned evolve from year 1 to year 7?</div>
+      <textarea class="q-input" placeholder="Notes on candidate's answer..." style="min-height: 130px;"></textarea>
+      <div class="q-actions">
+        <button class="btn primary" onclick="scoreOpen(this, true)">Strong</button>
+        <button class="btn" onclick="scoreOpen(this, false)">Weak</button>
+        <button class="btn" onclick="revealAnswer(this)">Notes</button>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">What to listen for</div>
+        <div class="answer-text">
+          <strong>Strong signal:</strong> visible growth — went from feature dev → owning modules → leading other devs → architecture decisions → client interactions → mentoring. Different projects, different domains, different tech stacks within Laravel/Vue.<br>
+          <strong>Plateau signal:</strong> same kinds of CRUD apps year after year, no team-lead exposure, no architectural ownership, no new tech adoption.<br>
+          <strong>Probe:</strong> ask about team size handled, largest architectural decision they made, biggest technical regret.
+        </div>
+      </div>
+    </div>
+
+    <!-- Q7.2 -->
+    <div class="q-card" data-q="7.2">
+      <div class="q-header"><span class="q-id">Q 7.2</span><span class="q-diff med">MEDIUM</span></div>
+      <div class="q-text">After leaving ValueLabs in June 2025, you took two short contracts — <strong>OTA Tech Hub (3 months)</strong> and <strong>Speed of Thought (5 months)</strong>. What drove those choices and why did each end?</div>
+      <textarea class="q-input" placeholder="Notes on candidate's answer..." style="min-height: 110px;"></textarea>
+      <div class="q-actions">
+        <button class="btn primary" onclick="scoreOpen(this, true)">Acceptable</button>
+        <button class="btn" onclick="scoreOpen(this, false)">Concern</button>
+        <button class="btn" onclick="revealAnswer(this)">Notes</button>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">What to listen for</div>
+        <div class="answer-text">
+          <strong>Acceptable reasons:</strong> contracts were defined-term from the start, project-shipped-and-wrapped, intentional bridge while looking for a full-time role.<br>
+          <strong>Concerning:</strong> performance issues, mutual mismatches, vague non-answers, the candidate ended the contract early. Two short-tenure roles in a row warrant a clear narrative.<br>
+          Also probe: current availability — has Jan 2026 → May 2026 been intentional break, freelance, or active job search?
+        </div>
+      </div>
+    </div>
+
+    <!-- Q7.3 -->
+    <div class="q-card" data-q="7.3">
+      <div class="q-header"><span class="q-id">Q 7.3</span><span class="q-diff hard">HARD</span></div>
+      <div class="q-text"><strong>System design:</strong> Design the backend for an event-scanning system (like StriveScan) that needs to process 50k attendee badge scans per hour at a large trade show. Constraints: organizers want real-time attendance dashboards, exhibitors want lead lists synced to their CRMs within 5 minutes. Walk through your architecture.</div>
+      <textarea class="q-input" placeholder="Notes on candidate's design..." style="min-height: 160px;"></textarea>
+      <div class="q-actions">
+        <button class="btn primary" onclick="scoreOpen(this, true)">Strong</button>
+        <button class="btn" onclick="scoreOpen(this, false)">Weak</button>
+        <button class="btn" onclick="revealAnswer(this)">Notes</button>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">What to listen for</div>
+        <div class="answer-text">
+          Strong design should touch:
+          <ul>
+            <li><strong>Ingest:</strong> Node.js/Express service behind a load balancer; scan endpoint very lightweight, persists to a write-optimized store (Postgres with batch inserts, or a queue like Redis Streams / SQS).</li>
+            <li><strong>Async processing:</strong> Worker pool consumes the queue → enriches data, writes to "source of truth" DB, fans out to exhibitor-specific lead streams.</li>
+            <li><strong>Real-time dashboard:</strong> WebSocket / SSE push from a read-replica; or polling against a Redis counter for cheap aggregate stats.</li>
+            <li><strong>CRM sync:</strong> dedicated worker per exhibitor (or per CRM provider) with retry + backoff + dead-letter; rate-limit per exhibitor.</li>
+            <li><strong>Observability:</strong> per-stage metrics, scan-to-CRM latency SLO.</li>
+            <li><strong>Capacity math:</strong> 50k/hr ≈ 14/sec — not crushing, so emphasis on reliability over raw throughput.</li>
+          </ul>
+          <strong>Red flag:</strong> jumps to "scale with Kubernetes" without sizing the actual load, or designs only the happy path without retries/idempotency.
+        </div>
+      </div>
+    </div>
+
+    <!-- Q7.4 -->
+    <div class="q-card" data-q="7.4">
+      <div class="q-header"><span class="q-id">Q 7.4</span><span class="q-diff easy">EASY</span></div>
+      <div class="q-text">In your current job hunt, what does the next role look like for you — full-time vs. contract, on-site/hybrid/remote, salary expectations, and what would make you say yes to an offer here?</div>
+      <textarea class="q-input" placeholder="Notes on candidate's answer..." style="min-height: 100px;"></textarea>
+      <div class="q-actions">
+        <button class="btn primary" onclick="scoreOpen(this, true)">Aligned</button>
+        <button class="btn" onclick="scoreOpen(this, false)">Misaligned</button>
+        <button class="btn" onclick="revealAnswer(this)">Notes</button>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">What to listen for</div>
+        <div class="answer-text">
+          Make sure expectations match Aavya's offer envelope on:
+          <ul>
+            <li>Compensation band (CTC + variable).</li>
+            <li>Engagement type — Aavya typically does subcontractor / full-time; candidate's last two roles were contract.</li>
+            <li>Location — Aavya is Pune-friendly; candidate's base?</li>
+            <li>Notice period if currently in a contract.</li>
+            <li>Tech alignment — does the candidate want Vue-heavy work or are they happy to do FastAPI / GCP / Foundry adjacent work too?</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Final Summary ============ -->
+  <div class="final-summary" id="finalSummary">
+    <h2>Screening complete</h2>
+    <div class="final-score-num" id="finalScoreNum">0 / 0</div>
+    <p style="color: var(--text-dim);">Section breakdown and recommendation should be added to the interviewer's own notes — these scores are an aid, not a verdict.</p>
+    <div class="final-breakdown" id="finalBreakdown"></div>
+  </div>
+
+  <footer class="colophon">
+    Prepared for Aavya LLC · screening template v1
+  </footer>
+
+</div>
+
+<script>
+  let totalAnswered = 0;
+  let totalCorrect = 0;
+  const totalQuestions = document.querySelectorAll('.q-card').length;
+  const sectionStats = {};
+
+  // initialize section stats
+  document.querySelectorAll('section.quiz-section').forEach(sec => {
+    sectionStats[sec.id] = {
+      title: sec.querySelector('.section-title').textContent.trim(),
+      total: sec.querySelectorAll('.q-card').length,
+      correct: 0,
+      answered: 0
+    };
+  });
+
+  function updateProgress() {
+    const pct = (totalAnswered / totalQuestions) * 100;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('scoreValue').textContent = `${totalCorrect} / ${totalAnswered}`;
+    if (totalAnswered === totalQuestions) {
+      showFinalSummary();
+    }
+  }
+
+  function getSection(el) {
+    return el.closest('section.quiz-section').id;
+  }
+
+  // For multiple-choice
+  document.querySelectorAll('.options').forEach(group => {
+    group.querySelectorAll('.option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        if (group.dataset.locked) return;
+        group.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+      });
+    });
+  });
+
+  function checkOption(btn) {
+    const card = btn.closest('.q-card');
+    if (card.dataset.scored === 'true') return;
+    const group = card.querySelector('.options');
+    const selected = group.querySelector('.option.selected');
+    if (!selected) { alert('Pick an option first.'); return; }
+
+    group.dataset.locked = 'true';
+    const correct = selected.dataset.correct === 'true';
+    group.querySelectorAll('.option').forEach(o => {
+      if (o.dataset.correct === 'true') o.classList.add('correct');
+      else if (o.classList.contains('selected')) o.classList.add('incorrect');
+    });
+
+    card.dataset.scored = 'true';
+    totalAnswered++;
+    const secId = getSection(card);
+    sectionStats[secId].answered++;
+    if (correct) { totalCorrect++; sectionStats[secId].correct++; }
+
+    btn.classList.add(correct ? 'scored-good' : 'scored-bad');
+    btn.textContent = correct ? '✓ Correct' : '✕ Incorrect';
+    btn.disabled = true;
+
+    // auto-reveal answer
+    const ans = card.querySelector('.answer-box');
+    if (ans) ans.classList.add('show');
+
+    updateProgress();
+  }
+
+  // For open-ended questions (interviewer scores manually)
+  function scoreOpen(btn, pass) {
+    const card = btn.closest('.q-card');
+    if (card.dataset.scored === 'true') return;
+
+    card.dataset.scored = 'true';
+    totalAnswered++;
+    const secId = getSection(card);
+    sectionStats[secId].answered++;
+    if (pass) { totalCorrect++; sectionStats[secId].correct++; }
+
+    // disable the pass/fail buttons in this card
+    card.querySelectorAll('.q-actions .btn').forEach(b => {
+      if (b.textContent.match(/Pass|Fail|Strong|Weak|Acceptable|Concern|Aligned|Misaligned/i)) {
+        b.disabled = true;
+      }
+    });
+    btn.classList.add(pass ? 'scored-good' : 'scored-bad');
+
+    // reveal answer
+    const ans = card.querySelector('.answer-box');
+    if (ans) ans.classList.add('show');
+
+    updateProgress();
+  }
+
+  function revealAnswer(btn) {
+    const card = btn.closest('.q-card');
+    const ans = card.querySelector('.answer-box');
+    if (ans) ans.classList.toggle('show');
+  }
+
+  function showFinalSummary() {
+    const finalDiv = document.getElementById('finalSummary');
+    document.getElementById('finalScoreNum').textContent = `${totalCorrect} / ${totalAnswered}`;
+    const breakdown = document.getElementById('finalBreakdown');
+    breakdown.innerHTML = '';
+    Object.values(sectionStats).forEach(s => {
+      const item = document.createElement('div');
+      item.className = 'breakdown-item';
+      item.innerHTML = `<div class="bd-label">${s.title.split('—')[0].trim()}</div><div class="bd-value">${s.correct} / ${s.total}</div>`;
+      breakdown.appendChild(item);
+    });
+    finalDiv.classList.add('show');
+    finalDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+</script>
+</body>
+</html>
