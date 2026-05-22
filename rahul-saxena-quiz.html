@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Rahul Saxena — Senior Full Stack Assessment</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0e1a;--surface:#11162a;--surface2:#161c34;--border:#222a44;
+  --text:#e2e8f0;--muted:#64748b;--dim:#475569;
+  --purple:#a855f7;--purple-bg:rgba(168,85,247,0.1);--purple-border:rgba(168,85,247,0.3);
+  --cyan:#06b6d4;--cyan-bg:rgba(6,182,212,0.1);--cyan-border:rgba(6,182,212,0.3);
+  --amber:#f59e0b;--amber-bg:rgba(245,158,11,0.1);--amber-border:rgba(245,158,11,0.3);
+  --emerald:#10b981;--emerald-bg:rgba(16,185,129,0.1);--emerald-border:rgba(16,185,129,0.3);
+  --green:#22c55e;--red:#ef4444;--yellow:#f59e0b;
+}
+body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh}
+button{font-family:inherit;cursor:pointer;border:none}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+/* LANDING */
+.landing{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 24px;text-align:center}
+.landing-icon{width:76px;height:76px;border-radius:22px;background:linear-gradient(135deg,#a855f7,#06b6d4,#10b981);display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:24px;box-shadow:0 0 60px rgba(168,85,247,.35)}
+.landing h1{font-size:28px;font-weight:800;letter-spacing:-.03em;margin-bottom:8px}
+.landing .lead-line{color:var(--muted);font-size:15px;max-width:520px;line-height:1.6;margin-bottom:8px}
+.landing .exp-line{color:var(--purple);font-size:14px;font-weight:600;margin-bottom:24px}
+.stat-row{display:flex;gap:28px;margin-bottom:36px}
+.stat .num{font-size:30px;font-weight:800;color:var(--purple)}.stat .lbl{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em}
+.tech-tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:28px;max-width:640px}
+.tech-tag{padding:4px 12px;border-radius:6px;font-size:11px;font-weight:600;background:var(--surface);border:1px solid var(--border);color:var(--muted);font-family:'JetBrains Mono',monospace}
+.rules-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 28px;text-align:left;max-width:520px;margin-bottom:32px}
+.rules-box h3{font-size:12px;color:var(--purple);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+.rules-box li{color:var(--muted);font-size:13px;line-height:1.9;margin-left:16px}
+.name-input{padding:12px 20px;border-radius:10px;border:1px solid var(--border);background:#11162a;color:#e2e8f0;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;width:280px;text-align:center;margin-bottom:16px;outline:none}
+.name-input:focus{border-color:var(--purple)}
+.start-btn{padding:14px 48px;border-radius:12px;background:linear-gradient(135deg,#a855f7,#06b6d4);color:#fff;font-weight:700;font-size:16px;box-shadow:0 0 40px rgba(168,85,247,.25);transition:all .3s}
+.start-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* HEADER */
+.header{background:var(--surface2);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
+.header-left{display:flex;align-items:center;gap:12px}
+.header-icon{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#a855f7,#06b6d4);display:flex;align-items:center;justify-content:center;font-size:16px}
+.header-title{font-weight:800;font-size:15px;letter-spacing:-.02em}
+.header-sub{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.score-pills{display:flex;gap:8px}
+.pill{padding:5px 14px;border-radius:8px;font-weight:600;font-size:13px;font-family:'JetBrains Mono',monospace}
+.pill-green{background:#0b2e1a;border:1px solid #166534;color:#4ade80}
+.pill-red{background:#2a0f10;border:1px solid #991b1b;color:#f87171}
+.pill-total{background:var(--border);color:#94a3b8}
+
+/* TABS */
+.tabs{display:flex;gap:6px;padding:12px 24px;background:#0d1124;overflow-x:auto;border-bottom:1px solid var(--border)}
+.tab{padding:10px 18px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--muted);font-weight:600;font-size:13px;display:flex;align-items:center;gap:8px;white-space:nowrap;transition:all .2s}
+.tab.active{border-color:var(--tab-color);background:color-mix(in srgb,var(--tab-color) 10%,transparent);color:var(--tab-color)}
+.tab-badge{padding:2px 8px;border-radius:6px;font-size:11px;background:var(--border);color:var(--dim)}
+.tab.active .tab-badge{background:color-mix(in srgb,var(--tab-color) 15%,transparent);color:var(--tab-color)}
+
+/* MAIN */
+.main{padding:16px 24px;max-width:860px;margin:0 auto}
+.q-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.q-header-left{display:flex;align-items:center;gap:10px}
+.q-num{font-weight:700;font-size:14px}
+.diff-badge{font-size:11px;padding:3px 10px;border-radius:6px;font-weight:600}
+.q-hint{font-size:11px;color:var(--dim)}
+.nav-btns{display:flex;gap:6px}
+.nav-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:#94a3b8;display:flex;align-items:center;justify-content:center;font-size:14px}
+.nav-btn:disabled{color:#334155;cursor:default}
+
+/* EDITOR */
+.editor{border-radius:12px;overflow:hidden;border:1px solid var(--border);margin-bottom:12px}
+.editor-bar{background:var(--surface2);padding:8px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
+.dots{display:flex;gap:6px}.dot{width:10px;height:10px;border-radius:50%}
+.filename{font-size:11px;color:var(--dim);margin-left:10px;font-family:'JetBrains Mono',monospace}
+.lang-pill{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:600;font-family:'JetBrains Mono',monospace}
+.code-body{background:var(--bg);padding:16px 20px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.7;overflow-x:auto}
+.code-line{display:flex}.line-no{color:#334155;width:32px;text-align:right;margin-right:16px;user-select:none;font-size:12px}
+
+/* ANSWER */
+.answer-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:12px}
+.answer-label{font-size:12px;color:var(--purple);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.answer-input{width:100%;background:#06080d;border:1px solid var(--border);border-radius:8px;padding:12px 16px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;resize:none;min-height:48px;outline:none;transition:border-color .2s}
+.answer-input:focus{border-color:var(--purple)}.answer-input::placeholder{color:#334155}
+.submit-row{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+.submit-btn{padding:10px 32px;border-radius:10px;background:linear-gradient(135deg,#a855f7,#06b6d4);color:#fff;font-weight:700;font-size:14px;transition:all .3s}
+.submit-btn:disabled{background:var(--border);color:var(--dim);cursor:default}
+.skip-btn{padding:10px 20px;border-radius:10px;background:transparent;border:1px solid var(--border);color:var(--muted);font-weight:600;font-size:13px}
+
+/* TERMINAL */
+.terminal{border-radius:12px;border:1px solid var(--border);overflow:hidden;margin-bottom:12px;transition:border-color .5s}
+.terminal.revealed{border-color:rgba(34,197,94,.3)}
+.terminal-bar{background:#06080f;padding:6px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.terminal-bar span{font-size:11px;color:var(--dim);font-family:'JetBrains Mono',monospace}
+.terminal-body{background:#06080d;padding:14px 20px;min-height:60px;font-family:'JetBrains Mono',monospace;font-size:13px}
+.terminal-cmd{color:var(--dim);font-size:11px;margin-bottom:6px}
+.terminal-out{color:#4ade80;font-weight:500}
+
+/* RESULT */
+.result-card{border-radius:12px;overflow:hidden;margin-bottom:12px;animation:fadeUp .4s ease-out}
+.result-correct{background:#071a0e;border:1px solid #166534}
+.result-wrong{background:#1a0b0b;border:1px solid #991b1b}
+.result-skip{background:var(--surface);border:1px solid var(--border)}
+.result-header{padding:14px 20px;display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px}
+.result-correct .result-header{color:#4ade80}.result-wrong .result-header{color:#f87171}.result-skip .result-header{color:var(--yellow)}
+.result-body{padding:0 20px 16px}
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.result-col label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);margin-bottom:6px;font-weight:600}
+.result-col pre{background:#06080d;border-radius:8px;padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text);white-space:pre-wrap;border:1px solid var(--border)}
+.result-why{font-size:13px;color:#cbd5e1;line-height:1.6}.result-why strong{color:var(--purple)}
+
+/* PROGRESS DOTS */
+.progress-dots{display:flex;gap:4px;justify-content:center;margin-top:20px;flex-wrap:wrap}
+.pdot{height:8px;border-radius:4px;border:none;transition:all .3s;cursor:pointer}
+.pdot.current{width:24px;background:var(--purple)}
+.pdot.ok{width:8px;background:var(--green)}
+.pdot.wrong{width:8px;background:var(--red)}
+.pdot.skip{width:8px;background:var(--yellow)}
+.pdot.pending{width:8px;background:var(--border)}
+
+.next-btn{padding:10px 32px;border-radius:10px;background:linear-gradient(135deg,#a855f7,#06b6d4);color:#fff;font-weight:700;font-size:14px;border:none;box-shadow:0 0 20px rgba(168,85,247,.2)}
+
+/* COMPLETION */
+.completion{text-align:center;padding:60px 24px;animation:fadeUp .6s ease-out}
+.completion h2{font-size:28px;font-weight:800;margin-bottom:8px;letter-spacing:-.03em}
+.score-ring{width:140px;height:140px;border-radius:50%;margin:0 auto 24px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-pct{font-size:40px;font-weight:800;line-height:1}.ring-lbl{font-size:12px;color:var(--muted)}
+.grade-badge{display:inline-block;padding:8px 24px;border-radius:10px;font-weight:700;font-size:16px;margin-bottom:28px}
+.score-bk{display:flex;gap:36px;justify-content:center;margin-bottom:40px}
+.score-bk .si .v{font-size:26px;font-weight:800}.score-bk .si .d{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em}
+.restart-btn{padding:12px 36px;border-radius:10px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-weight:600;font-size:14px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+@media(max-width:600px){.result-grid{grid-template-columns:1fr}.stat-row{gap:16px}.main{padding:12px 14px}.tabs{padding:10px 12px}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<script type="text/babel">
+const{useState,useEffect,useRef}=React;
+
+const questions=[
+
+// ═══════════════════════════════════════════════════════════
+// PART A — PHP & Laravel  (6 Qs) — Senior Level
+// ═══════════════════════════════════════════════════════════
+
+{part:"A",cat:"PHP & Laravel",diff:"Medium",
+code:`// Laravel Eloquent — User has many Orders, each Order has many Products
+// Common N+1 mistake:
+
+$users = User::all();  // 1 query
+foreach ($users as $user) {
+    echo $user->orders->count();        // +1 query per user
+    foreach ($user->orders as $order) {
+        echo $order->products->count(); // +1 query per order
+    }
+}
+
+// 100 users × 10 orders = 1 + 100 + 1000 = 1101 queries!
+
+// What's the CORRECT Eloquent pattern to fix this?
+
+A) Use DB::raw() to write a single raw SQL JOIN query
+
+B) Eager loading with with():
+   $users = User::with('orders.products')->get();
+   // Total queries: 3 (users, orders, products)
+
+C) Increase MySQL connection pool size
+
+D) Switch from Eloquent to Query Builder for performance`,
+output:`B) Eager Loading with with('orders.products')
+
+1101 queries → 3 queries.
+with() uses WHERE IN clauses to batch-load
+related records. Dot notation for nested relations.`,
+why:`The N+1 problem is the most common Laravel performance issue. Lazy loading (default) fires a new query for each related model access. with() eager loads relationships in batched queries — instead of 100 individual queries for orders, Laravel runs ONE query with WHERE user_id IN (1,2,...,100). Nested relations use dot notation: with('orders.products'). For conditional eager loading, use load() after the initial query. To detect N+1 in development, enable strict mode: Model::preventLazyLoading() — throws an exception if lazy loading occurs. This is foundational senior-level Laravel knowledge.`},
+
+{part:"A",cat:"PHP & Laravel",diff:"Medium",
+code:`// You're building the eSignly digital signature platform.
+// API endpoint receives a request to sign a document.
+
+// Approach A: Synchronous processing
+public function signDocument(Request $request) {
+    $doc = Document::find($request->id);
+    $signed = $this->signService->process($doc);  // 15s
+    $this->notifyService->send($doc->user);       // 3s
+    $this->auditLog->record($doc);                // 1s
+    return response()->json(['status' => 'done']); // Total: 19s
+}
+
+// User waits 19 seconds for the API response!
+
+// What's the BEST Laravel approach to fix this?
+
+A) Add @ini_set('max_execution_time', 60) to allow longer requests
+
+B) Dispatch a Laravel Job to a queue (Redis/database/SQS),
+   return 202 Accepted immediately, process async.
+   Use Job chaining or Job batching for the sequence.
+   User polls a status endpoint or gets a webhook.
+
+C) Optimize the signing algorithm to be faster
+
+D) Run the code inside a database transaction`,
+output:`B) Laravel Queue + Jobs (async processing)
+
+dispatch(new SignDocumentJob($doc))->onQueue('signing');
+Return 202 Accepted immediately.
+Workers process via: php artisan queue:work redis
+Notify via WebSocket, polling, or webhook on completion.`,
+why:`Long-running synchronous APIs are a senior-level architecture mistake — they block worker threads, hit timeouts, and create poor UX. Laravel's Queue system (Redis/Database/SQS/RabbitMQ drivers) lets you dispatch jobs asynchronously: dispatch(new ProcessSignature($doc)). The API returns immediately, workers consume the queue. For sequences: Bus::chain() (run jobs in order), or Bus::batch() (parallel batch with completion callback). For real-time progress: Laravel Echo + WebSockets or simple polling. This is THE pattern for any I/O-heavy Laravel application — and Rahul's eSignly platform absolutely uses this.`},
+
+{part:"A",cat:"PHP & Laravel",diff:"Hard",
+code:`// Laravel Service Container — Dependency Injection
+// You have an interface and two implementations:
+
+interface PaymentGateway {
+    public function charge($amount);
+}
+
+class StripeGateway implements PaymentGateway { /* ... */ }
+class RazorpayGateway implements PaymentGateway { /* ... */ }
+
+// In your controller:
+public function pay(PaymentGateway $gateway) {
+    $gateway->charge(100);
+}
+
+// Laravel doesn't know which implementation to inject!
+// How do you tell Laravel which one to use?
+
+A) Use @Inject annotations on the controller method
+
+B) Bind the interface in AppServiceProvider's register() method:
+   $this->app->bind(PaymentGateway::class, function($app) {
+       return config('app.gateway') === 'stripe'
+           ? new StripeGateway() : new RazorpayGateway();
+   });
+
+C) Pass the implementation class as a string argument
+
+D) Use static class methods instead of dependency injection`,
+output:`B) Service Container binding in AppServiceProvider
+
+In register() method, bind the interface to a concrete class.
+Use contextual binding for different controllers needing
+different implementations. Use singleton() for shared instances.`,
+why:`Service Container is Laravel's IoC (Inversion of Control) heart. Bindings can be: simple (bind/singleton), contextual (when()->needs()->give()), tagged, or instance. Code: $this->app->bind(PaymentGateway::class, StripeGateway::class) — auto-resolves on injection. For multiple controllers needing different implementations, use contextual binding: $this->app->when(InvoiceController::class)->needs(PaymentGateway::class)->give(StripeGateway::class). singleton() ensures one instance across the request. Senior Laravel devs must understand this — it's the foundation of testability, SOLID principles, and clean architecture in Laravel.`},
+
+{part:"A",cat:"PHP & Laravel",diff:"Hard",
+code:`// Your eSignly platform handles 50,000 documents per day.
+// MySQL slow query log shows this query taking 8+ seconds:
+
+SELECT documents.*, users.name, organizations.name
+FROM documents
+JOIN users ON documents.user_id = users.id
+JOIN organizations ON users.org_id = organizations.id
+WHERE documents.status = 'pending'
+  AND documents.created_at >= '2026-01-01'
+ORDER BY documents.created_at DESC
+LIMIT 50;
+
+// EXPLAIN shows: type=ALL, rows=2400000 on documents table.
+
+// What's the BIGGEST optimization win?
+
+A) Cache the query result with Redis for 5 minutes
+
+B) Add a composite index covering the WHERE + ORDER BY:
+   CREATE INDEX idx_status_created 
+   ON documents(status, created_at DESC);
+   Now MySQL can use the index to filter AND sort, avoiding
+   a full table scan + filesort.
+
+C) Switch from MySQL to MongoDB
+
+D) Increase MySQL innodb_buffer_pool_size`,
+output:`B) Composite index on (status, created_at DESC)
+
+type=ALL means full table scan (2.4M rows!).
+Composite index serves WHERE status + ORDER BY created_at.
+Index order matters: equality columns first, then range/sort.`,
+why:`Database indexing strategy is critical senior knowledge. The EXPLAIN shows type=ALL = full table scan over 2.4M rows. The query has TWO things MySQL needs: filter by status + range on created_at + sort by created_at. A composite index (status, created_at) lets MySQL: (1) use the index to find pending docs, (2) use the same index for sorting (avoiding filesort). Rule: equality columns first, then range/sort columns. Even with caching (A), the underlying query would still be slow on cache miss. innodb_buffer_pool_size helps but doesn't fix the root cause. After this index, EXPLAIN should show type=range and Using index.`},
+
+{part:"A",cat:"PHP & Laravel",diff:"Medium",
+code:`// Laravel API security review:
+// Your team built this endpoint for the SaaS dashboard:
+
+Route::get('/api/documents/{id}', function($id) {
+    $doc = Document::find($id);
+    return response()->json($doc);
+});
+
+// Security review flags TWO critical issues. What are they?
+
+A) Missing rate limiting and CSRF token
+
+B) (1) No authentication check — any user can access any doc.
+   (2) No authorization — even authenticated users could access
+       OTHER users' documents (IDOR — Insecure Direct Object
+       Reference). Fix: use middleware('auth:sanctum') and
+       a Policy or Gate to verify ownership.
+
+C) Should use POST instead of GET for security
+
+D) Missing CORS headers`,
+output:`B) Missing AUTH + missing IDOR protection
+
+(1) auth middleware → require login
+(2) Policy / Gate → check document ownership
+
+Route::get('/api/documents/{document}', ...)
+    ->middleware(['auth:sanctum', 'can:view,document']);`,
+why:`This is a textbook IDOR (Insecure Direct Object Reference) vulnerability — one of OWASP's Top 10. Even if you add authentication, a logged-in user could iterate IDs (1, 2, 3, ...) to access other users' documents. Laravel's solution: (1) auth:sanctum or auth:web middleware to require authentication, (2) Policies for authorization — php artisan make:policy DocumentPolicy, define view() method checking $user->id === $document->user_id, (3) apply via 'can:view,document' middleware or $this->authorize('view', $document) in the controller. For Rahul's eSignly platform (security-critical), this is non-negotiable knowledge. Senior devs spot IDOR instantly.`},
+
+{part:"A",cat:"PHP & Laravel",diff:"Medium",
+code:`// Laravel queue worker stops processing jobs in production
+// after a few hours. Jobs pile up in the failed_jobs table.
+
+// You SSH into the server and check:
+$ php artisan queue:work --daemon
+# (Running, but processes random jobs and stops)
+
+// Investigation shows:
+// - Memory usage grows over time (memory leak)
+// - One worker handles 10K+ jobs before silent crash
+
+// Which is the CORRECT production setup?
+
+A) Run queue:work without --daemon flag
+
+B) Use Supervisor (Linux process manager) to restart the
+   worker if it crashes. Combine with --max-jobs=1000 or
+   --max-time=3600 to recycle workers (PHP doesn't release
+   memory well across many jobs). Use Horizon for Redis
+   queues — built-in dashboard + auto-scaling.
+
+C) Increase PHP's memory_limit to 1GB
+
+D) Switch from Laravel queues to a Bash cron job`,
+output:`B) Supervisor + worker recycling + Horizon
+
+Supervisor: auto-restart on crash.
+--max-jobs / --max-time: prevent memory leaks.
+Horizon: production-grade Redis queue manager with
+dashboard, metrics, and auto-scaling.`,
+why:`Running Laravel queue workers in production has well-known pitfalls. PHP doesn't reclaim memory cleanly across many job executions — workers accumulate memory and eventually OOM-crash. Production setup: (1) Supervisor (or systemd) to manage worker lifecycle and auto-restart, (2) --max-jobs=1000 or --max-time=3600 flags so workers recycle before memory issues, (3) Laravel Horizon for Redis-backed queues — gives you metrics, dashboard, auto-scaling. Without Supervisor, a single crash leaves jobs unprocessed for hours. This is the difference between "works in dev" and "scales in production" — and exactly what Rahul should know as a 9-year senior.`},
+
+// ═══════════════════════════════════════════════════════════
+// PART B — React, Frontend & AEM  (6 Qs)
+// ═══════════════════════════════════════════════════════════
+
+{part:"B",cat:"React & Frontend",diff:"Easy",
+code:`// React component re-renders too often in your dashboard:
+
+function Dashboard({ user, settings }) {
+  const [filter, setFilter] = useState('all');
+  
+  return (
+    <>
+      <FilterBar onChange={setFilter} />
+      <ExpensiveChart  
+        data={user.transactions}
+        config={{ theme: 'dark', size: 'lg' }}  // ← problem!
+      />
+    </>
+  );
+}
+
+// ExpensiveChart re-renders even when only 'filter' changes.
+// Why? And what's the fix?
+
+A) Wrap ExpensiveChart in useMemo
+
+B) The 'config' prop is a NEW object literal on every render.
+   ExpensiveChart's React.memo (if used) fails because
+   { theme:'dark', size:'lg' } !== { theme:'dark', size:'lg' }
+   (different references).
+   Fix: useMemo the config object, OR move it outside the component.
+
+C) ExpensiveChart needs useCallback wrapper
+
+D) Use useRef instead of useState for filter`,
+output:`B) Inline object literals = new reference every render
+
+Fix:
+const config = useMemo(() => ({ theme:'dark', size:'lg' }), []);
+
+Or define static config outside component:
+const CHART_CONFIG = { theme:'dark', size:'lg' };`,
+why:`This is one of the most common React performance bugs. React.memo and shouldComponentUpdate use shallow comparison (Object.is) on props. Inline object/array literals { ... } and [ ... ] create a new reference on every render — defeating memoization. Same with inline functions: onClick={() => doX()}. Solutions: (1) Static values: define outside the component, (2) Dynamic values: useMemo for objects/arrays, useCallback for functions. This is foundational for a 5-year React developer. Rahul lists React.js with Hooks and Context API — he should know this cold.`},
+
+{part:"B",cat:"React & Frontend",diff:"Medium",
+code:`// Context API problem:
+// Your Dashboard has 50 components consuming UserContext:
+
+const UserContext = createContext();
+
+function App() {
+  const [user, setUser] = useState(null);
+  const [theme, setTheme] = useState('light');
+  
+  return (
+    <UserContext.Provider value={{ user, setUser, theme, setTheme }}>
+      <Dashboard />  {/* 50 child components */}
+    </UserContext.Provider>
+  );
+}
+
+// When theme changes, ALL 50 components re-render — even
+// those that only use user. Performance issue!
+
+// What's the BEST fix?
+
+A) Use useMemo to memoize the context value
+
+B) SPLIT contexts: UserContext + ThemeContext.
+   Components only re-render when their consumed context changes.
+   This is the single most important Context optimization.
+
+C) Use Redux instead of Context
+
+D) Wrap each consumer in React.memo`,
+output:`B) Split into multiple Contexts
+
+UserContext for user state
+ThemeContext for theme state
+
+A component consuming only UserContext won't re-render
+when theme changes. This is fundamental Context design.`,
+why:`Context API has a known performance gotcha: every consumer re-renders when ANY value in the provider changes — even if they only use one field. The cure is context splitting: separate contexts for unrelated state. UserContext and ThemeContext are independent — a theme change doesn't trigger user-consumers to re-render. For very large apps, use libraries like Zustand or Jotai which provide selector-based subscriptions (component re-renders only when its selected slice changes). useMemo on the value helps if the provider re-renders for other reasons but doesn't solve the cross-state pollution problem. This is critical knowledge for a 5-year React dev.`},
+
+{part:"B",cat:"React & Frontend",diff:"Medium",
+code:`// React Hooks rules - which code has a BUG?
+
+function UserProfile({ userId }) {
+  const [user, setUser] = useState(null);
+  
+  if (!userId) {
+    return <div>No user</div>;  // ← Early return!
+  }
+  
+  useEffect(() => {
+    fetch(\`/api/users/\${userId}\`)
+      .then(r => r.json())
+      .then(setUser);
+  }, [userId]);
+  
+  return user ? <div>{user.name}</div> : <div>Loading...</div>;
+}
+
+A) The useState should come AFTER the early return
+
+B) RULE VIOLATION: Hooks must be called in the SAME ORDER
+   on every render. The early return causes useEffect to be
+   skipped sometimes, breaking React's internal hook tracking.
+   Fix: Move the early return AFTER all hooks, or restructure
+   the logic to call hooks unconditionally.
+
+C) Missing dependency in useEffect array
+
+D) fetch should be inside a try/catch`,
+output:`B) Rules of Hooks violation
+
+Hooks MUST be called:
+1. In the same order on every render
+2. Only at the top level (not in conditions, loops, nested fns)
+3. Only from React functions or custom hooks
+
+Fix: Move early return AFTER all hooks are called.`,
+why:`The Rules of Hooks are non-negotiable: hooks must be called in the same order, every render, at the top level of the component. React tracks hooks by call order internally — if useEffect is sometimes skipped, the internal counter desyncs and chaos follows. The fix: call ALL hooks first, then handle conditional rendering: if (!userId) return <div>; goes AFTER useState and useEffect. Inside useEffect itself, you can check if (!userId) return; to skip the fetch logic. eslint-plugin-react-hooks catches this automatically — every React project should have it enabled.`},
+
+{part:"B",cat:"AEM",diff:"Medium",
+code:`// Adobe Experience Manager (AEM) — Headless CMS scenario
+// Your team is building a React frontend that consumes content
+// from AEM via its Headless / GraphQL API.
+
+// In AEM, where do you DEFINE the structured content schema
+// that becomes available through the GraphQL endpoint?
+
+A) Write custom Java OSGi services for each content type
+
+B) Create Content Fragment Models in AEM —
+   define fields (text, date, references, etc.). AEM auto-
+   generates GraphQL types and queries from these models.
+   Authors create Content Fragments using these models.
+
+C) Edit the AEM Sling repository directly via WebDAV
+
+D) Create Sightly (HTL) templates with structured data tags`,
+output:`B) Content Fragment Models
+
+In AEM author UI: Tools → General → Content Fragment Models.
+Define fields → AEM auto-generates GraphQL schema.
+Authors create Content Fragments from these models.
+React app queries via /content/_cq_graphql/global/endpoint.json`,
+why:`AEM Headless CMS workflow: (1) Architects/devs create Content Fragment Models defining the schema (title: text, body: rich text, author: reference to Author CF, publishDate: date, tags: tag list). (2) AEM auto-generates a GraphQL schema from these models. (3) Authors create Content Fragments (instances) using these models. (4) Frontend apps (React/Next.js/Vue) query the GraphQL endpoint to fetch structured content. Endpoint: /content/_cq_graphql/global/endpoint.json or /graphql/execute.json/{project}/{persisted-query}. This is the modern AEM pattern used in any headless deployment. Rahul has worked on enterprise SaaS — AEM exposure is realistic.`},
+
+{part:"B",cat:"AEM",diff:"Medium",
+code:`// Your frontend team writes ad-hoc GraphQL queries against
+// the AEM endpoint from the React app:
+
+fetch('https://aem.com/content/_cq_graphql/global/endpoint.json', {
+  method: 'POST',
+  body: JSON.stringify({ 
+    query: \`query { articleList { items { title body } } }\` 
+  })
+});
+
+// Security team raises 2 concerns. What are they?
+
+A) HTTPS isn't enforced
+
+B) (1) Ad-hoc GraphQL queries are visible in browser DevTools
+       — attackers can craft arbitrary queries (introspection,
+       expensive queries, data exfiltration).
+   (2) Each query is unique → CDN cannot cache responses
+       efficiently.
+   Fix: Use Persisted Queries — register queries server-side,
+   client calls a URL with the query name + params.
+
+C) The query syntax is wrong
+
+D) Missing CORS headers`,
+output:`B) Use AEM Persisted Queries
+
+Persisted Queries:
+- Stored server-side, identified by name
+- Client calls a URL (cacheable!), not the full query
+- Prevents arbitrary query execution
+- Enables CDN caching of responses
+
+URL pattern: /graphql/execute.json/{project}/{query-name}`,
+why:`AEM Persisted Queries solve two critical problems simultaneously: (1) Security — clients can only execute pre-registered queries, preventing introspection attacks and query injection, (2) Performance — each persisted query gets a unique URL, making responses CDN-cacheable (Akamai, Cloudflare). Workflow: developer creates a persisted query in AEM, gives it a project + name (e.g., /graphql/execute.json/wknd/articles-by-author), client calls this URL with parameters. AEM as a Cloud Service requires persisted queries for production. Ad-hoc queries are useful for development but should never go to production. This is THE pattern for senior AEM-aware frontend developers.`},
+
+{part:"B",cat:"React & Frontend",diff:"Hard",
+code:`// Your React SPA for the eSignly platform consumes content
+// from AEM Content Fragments via GraphQL. 
+// The user clicks a draft article that doesn't exist yet on
+// AEM publish (still in author's draft state).
+
+// Production flow:
+// React App → AEM Publish GraphQL → returns 404 for draft
+
+// Editor needs to preview drafts. How do you architect this?
+
+A) Disable production caching whenever someone previews
+
+B) Two endpoints:
+   (1) Production: React → AEM Publish GraphQL (only approved)
+   (2) Preview: React (in preview mode) → BFF / Next.js API route
+       → AEM Author GraphQL with service-account credentials.
+   Auth credentials NEVER exposed to browser — only server-side.
+
+C) Allow CORS from frontend to AEM Author directly
+
+D) Use cookies to authenticate against AEM Author`,
+output:`B) BFF (Backend-for-Frontend) for preview mode
+
+Preview: React → Next.js API route → AEM Author (service auth)
+Production: React → AEM Publish (public)
+
+Service credentials live on the server, never browser.
+Industry-standard pattern for AEM headless preview.`,
+why:`Production AEM headless architecture requires separating concerns: AEM Publish serves approved, public content (no auth needed for read). AEM Author has all content including drafts — but requires authentication. Browsers cannot safely hold AEM service credentials. The pattern: a BFF (Backend-for-Frontend) — typically a Next.js API route, Node.js Express endpoint, or serverless function — holds the AEM service account credentials server-side, accepts preview requests from authenticated editors, and proxies to AEM Author. This is the standard pattern across Adobe's official documentation and any production AEM deployment. Senior frontend devs handling AEM must understand this.`},
+
+// ═══════════════════════════════════════════════════════════
+// PART C — Backend Architecture & Database  (5 Qs)
+// ═══════════════════════════════════════════════════════════
+
+{part:"C",cat:"Backend & Database",diff:"Medium",
+code:`// Node.js + Express endpoint with a memory issue:
+
+app.post('/upload', async (req, res) => {
+  const file = req.body.fileData;  // Base64-encoded 50MB file
+  const buffer = Buffer.from(file, 'base64');
+  
+  // Load entire file into memory:
+  const result = await processLargeFile(buffer);
+  
+  // Save to disk in one go:
+  fs.writeFileSync('/storage/' + req.body.name, buffer);
+  
+  res.json({ success: true });
+});
+
+// Production: server crashes under 50 concurrent uploads.
+// What's the issue and the fix?
+
+A) Use TypeScript for better type safety
+
+B) The entire 50MB file is held in memory: req body + buffer
+   + processed result. 50 concurrent uploads = 5+ GB RAM.
+   Fix: STREAM the upload using multer or busboy → pipe
+   directly to disk or processor. Buffer never holds full file.
+
+C) Use synchronous fs.writeFileSync — it's faster
+
+D) Switch from Express to Fastify`,
+output:`B) Streaming uploads instead of buffering
+
+Multer with stream/pipe pattern:
+multer({ storage: multer.diskStorage({...}) })
+
+Or busboy: pipe req → busboy → fs.createWriteStream
+Memory stays constant regardless of file size.`,
+why:`This is a classic Node.js anti-pattern. Loading entire files into memory doesn't scale — each concurrent request multiplies memory usage. Streaming is Node.js's superpower: data flows from source to destination in small chunks, memory stays constant. multer with diskStorage streams uploads directly to disk. busboy gives even more control for custom processing. For S3 uploads: pipe directly to AWS SDK upload stream. The pattern req.pipe(fs.createWriteStream(...)) handles arbitrarily large files with minimal memory. Senior backend engineers know: never load full files into memory. Same principle applies to database query results — always use streams or cursors for large datasets.`},
+
+{part:"C",cat:"Backend & Database",diff:"Medium",
+code:`// Designing the documents table for eSignly (50K docs/day):
+
+CREATE TABLE documents (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    file_path VARCHAR(500),
+    status VARCHAR(50),
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
+// Senior architect reviews and asks you to add an index.
+// You query frequently by: user_id, status, and date ranges.
+
+// Which index strategy is BEST?
+
+A) Single index on user_id only
+
+B) Composite index based on query patterns:
+   INDEX (user_id, status, created_at) 
+   - Covers: WHERE user_id=X
+   - Covers: WHERE user_id=X AND status='Y'
+   - Covers: WHERE user_id=X AND status='Y' AND created_at>?
+   Leftmost prefix rule: index serves any prefix of these columns.
+
+C) Index every column separately for maximum flexibility
+
+D) No indexes — let MySQL auto-optimize`,
+output:`B) Composite index following leftmost prefix rule
+
+INDEX (user_id, status, created_at)
+
+Leftmost prefix: same index serves queries on
+(user_id), (user_id, status), or all three.
+Order matters: most selective + most common first.`,
+why:`MySQL composite indexes follow the "leftmost prefix rule": an index on (A, B, C) can satisfy WHERE A=?, WHERE A=? AND B=?, or WHERE A=? AND B=? AND C=? — but NOT WHERE B=? alone (skipping A). The order matters: place columns by (1) selectivity (most unique values first usually), (2) common query patterns. user_id is highly selective for per-user queries, status filters within a user's docs, created_at supports range queries and ordering. One composite index serves multiple query shapes. Per-column indexes (C) waste storage and slow writes. No indexes (D) means table scans. This is foundational DB design knowledge for high-traffic SaaS like eSignly.`},
+
+{part:"C",cat:"Backend & Database",diff:"Hard",
+code:`// Race condition in your e-commerce checkout:
+// Two users try to buy the LAST item in stock simultaneously:
+
+// PHP/Laravel code:
+$product = Product::find($id);
+if ($product->stock > 0) {
+    $product->stock -= 1;
+    $product->save();
+    Order::create([...]);
+}
+
+// Result: BOTH orders succeed when only 1 item existed!
+
+// Which is the CORRECT fix?
+
+A) Add a sleep(rand(0,1)) before checking stock
+
+B) Use database transactions + row-level locking:
+   DB::transaction(function() use ($id) {
+       $product = Product::lockForUpdate()->find($id);
+       if ($product->stock > 0) {
+           $product->stock -= 1;
+           $product->save();
+           // Only ONE transaction can hold this row lock
+       }
+   });
+   Other transactions wait until the first completes/rolls back.
+
+C) Add a UNIQUE constraint on the order_id column
+
+D) Use Redis to lock the product ID externally`,
+output:`B) Database transaction + lockForUpdate (SELECT FOR UPDATE)
+
+DB::transaction(function() {
+    $product = Product::lockForUpdate()->find($id);
+    // Other transactions WAIT until this commits/rolls back
+});
+
+Pessimistic locking prevents concurrent reads-then-writes.`,
+why:`Race conditions are critical bugs in production e-commerce, payments, and inventory systems. The standard fix: pessimistic row-level locking with SELECT ... FOR UPDATE (Laravel's lockForUpdate()). Inside a transaction, this acquires an exclusive lock — other transactions trying to lock the same row wait. Alternative: optimistic locking with a version column (sharedLock + check version, retry on conflict). Redis-based distributed locks (D) work but add complexity and a new dependency. Sleep (A) doesn't solve the race, just delays it. Unique constraints (C) work for some scenarios but not stock decrements. Senior devs must understand transaction isolation levels (READ COMMITTED vs REPEATABLE READ) and locking patterns.`},
+
+{part:"C",cat:"Backend & Database",diff:"Medium",
+code:`// Snackwyze platform — order processing system.
+// You have these microservices:
+
+// API Gateway → Order Service → Payment Service → 
+//                              → Inventory Service →
+//                              → Email Service
+
+// Currently: all services called synchronously in sequence.
+// Problem: any service down = entire flow fails.
+
+// Which architectural pattern is BEST for resilience?
+
+A) Add try-catch around each service call
+
+B) EVENT-DRIVEN architecture with message queue:
+   Order Service publishes 'OrderPlaced' event to RabbitMQ/Kafka.
+   Payment, Inventory, Email services subscribe and process
+   independently. Failed services retry from the queue.
+   No tight coupling. Each service scales independently.
+
+C) Use circuit breakers for each service
+
+D) Combine all services into a monolith for reliability`,
+output:`B) Event-Driven Architecture + Message Queue
+
+Order Service → publishes 'OrderPlaced' event → Queue
+Payment, Inventory, Email → subscribe and process async
+
+Benefits: loose coupling, independent scaling, retry on failure,
+audit trail. Patterns: SAGA for distributed transactions,
+Outbox pattern for atomic DB+event writes.`,
+why:`Synchronous service chains are fragile — they cascade failures. Event-driven architecture decouples services: producers publish events, consumers subscribe. Tools: RabbitMQ (AMQP), Kafka (high-throughput log), Redis Streams, AWS SNS/SQS. For Laravel: Pub/Sub via Redis or queue-based events. Patterns to know: (1) SAGA — orchestrate distributed transactions with compensating actions on failure, (2) Outbox pattern — write event to local DB in same transaction, separate worker publishes to queue (avoids dual-write problem), (3) Event Sourcing — store all state changes as events. Circuit breakers (C) add resilience to sync calls but don't solve coupling. This is senior architecture knowledge.`},
+
+{part:"C",cat:"Backend & Database",diff:"Hard",
+code:`// API rate limiting on your Laravel SaaS API.
+// You implement this naive approach:
+
+if (Cache::get("rate:{$ip}") > 100) {
+    return response('Rate limited', 429);
+}
+Cache::increment("rate:{$ip}");
+
+// Three problems exist. Which option lists them ALL?
+
+A) Cache doesn't have an expiration → counter grows forever.
+
+B) (1) No expiration set → counters never reset.
+   (2) Race condition: two simultaneous requests could both
+       read 100, both increment to 101 (lost update).
+   (3) IP-based limiting unfairly groups users behind NAT
+       or shared proxies. Better: per-user-token rate limiting.
+   Fix: Use Laravel's RateLimiter facade or built-in
+   throttle middleware with atomic Redis operations.
+
+C) HTTP 429 is the wrong status code — should be 503.
+
+D) Cache::increment is not thread-safe in PHP.`,
+output:`B) All three issues + use built-in throttle middleware
+
+Laravel: Route::middleware('throttle:100,1')
+Custom: RateLimiter::for('api', fn($req) => 
+    Limit::perMinute(100)->by($req->user()?->id ?: $req->ip())
+);
+
+Uses atomic Redis ops, configurable keys, returns proper headers.`,
+why:`Three real issues: (1) Missing expiration — Cache::put($key, $value, $ttl) — without TTL, counters accumulate forever. (2) Race condition: Cache::increment IS atomic but reading then comparing breaks atomicity (TOCTOU — time of check to time of use). Use atomic comparison via Redis Lua scripts or proper rate limiter libraries. (3) IP-based limiting causes collateral damage — all users behind one corporate NAT share a rate limit. Better keys: user ID (after auth), API key, or combinations. Laravel ships with a robust RateLimiter facade and 'throttle' middleware that solves all three. Custom rate limiters should use Redis MULTI/EXEC or Lua scripts for true atomicity. Returns RFC-compliant headers: X-RateLimit-Limit, X-RateLimit-Remaining, Retry-After.`},
+
+// ═══════════════════════════════════════════════════════════
+// PART D — DevOps, Leadership & System Design  (5 Qs)
+// ═══════════════════════════════════════════════════════════
+
+{part:"D",cat:"DevOps & Leadership",diff:"Medium",
+code:`// You're set up Docker for the eSignly Laravel application.
+// Junior dev's first Dockerfile attempt:
+
+FROM ubuntu:latest
+RUN apt-get update && apt-get install -y php nginx mysql
+COPY . /var/www/html
+RUN cd /var/www/html && composer install
+EXPOSE 80
+CMD service nginx start && tail -f /dev/null
+
+// As tech lead, what FOUR issues do you flag in code review?
+
+A) Looks fine — junior did a great job
+
+B) (1) FROM ubuntu:latest → use specific tag (e.g., php:8.2-fpm)
+       for reproducibility. 'latest' is a moving target.
+   (2) Running multiple services (nginx + mysql) in ONE container
+       violates the "one process per container" principle.
+       Use docker-compose with separate containers.
+   (3) COPY . copies everything including .git, node_modules,
+       .env files — security & size issues. Add .dockerignore.
+   (4) No multi-stage build → final image includes composer,
+       dev dependencies. Bloats image. Use multi-stage build
+       to copy only the artifact to a slim runtime image.
+
+C) Use a different Linux distro
+
+D) Switch to Kubernetes instead of Docker`,
+output:`B) FOUR critical issues:
+1. Use pinned base image tags (not :latest)
+2. One process per container (separate nginx, app, mysql)
+3. Add .dockerignore for security + image size
+4. Multi-stage builds → smaller, secure final images
+
+Best: use official php:8.2-fpm-alpine as base.`,
+why:`Senior tech leads must mentor on Docker best practices: (1) Pinned tags — :latest changes silently, breaking builds. Use php:8.2.10-fpm-alpine. (2) Single concern containers — easier to scale, restart, debug. nginx and PHP-FPM live in separate containers communicating via shared volume or socket. (3) .dockerignore — exclude .git, node_modules, .env, *.log, vendor/ (built inside container). Reduces image size 10x+ and prevents secrets leaking into image layers. (4) Multi-stage builds — build stage installs composer + npm + builds assets, final stage starts from slim runtime image and copies only the artifact. Common reduction: 1.5GB image → 200MB. As an Associate Team Leader, this is exactly the type of code review feedback Rahul should give.`},
+
+{part:"D",cat:"DevOps & Leadership",diff:"Medium",
+code:`// Junior developer's CI/CD pipeline (.github/workflows/deploy.yml):
+
+name: Deploy to Production
+on:
+  push:
+    branches: [main]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: ssh server "cd /app && git pull && composer install"
+      - run: ssh server "php artisan migrate --force"
+
+// What CRITICAL issues should you flag?
+
+A) Need to add a Slack notification step
+
+B) (1) NO TESTS run before deploying — production gets untested code.
+   (2) NO STAGING environment — deploys directly to production
+       on every main push.
+   (3) NO ROLLBACK strategy if migration breaks things.
+   (4) Migrations run AFTER code deploy, not in maintenance mode
+       — schema changes can break old code briefly.
+   (5) SSH credentials likely hardcoded — should use GitHub Secrets.
+   (6) No code quality gate (SonarQube was on his resume!).
+
+C) Use Docker images instead of git pull
+
+D) Switch to GitLab CI instead of GitHub Actions`,
+output:`B) Six critical pipeline issues:
+1. Run tests BEFORE deploy (CI gate)
+2. Deploy to staging first → smoke tests → then prod
+3. Backup DB + rollback plan before migrations
+4. Run migrations with maintenance mode if breaking
+5. Use GitHub Secrets for SSH keys
+6. Add SonarQube quality gate (mentioned on Rahul's resume!)`,
+why:`Production CI/CD requires multiple safety gates. A mature pipeline: (1) Lint → Static analysis → SonarQube quality gate → Test (unit, feature, integration) → Build (artifact) → Deploy to staging → Smoke tests on staging → Manual approval gate → Deploy to production with maintenance mode → Run migrations → Health checks → Remove maintenance mode → Notify Slack. Database migrations are the riskiest part — for breaking changes (DROP, ALTER), use blue-green deployments or expand-contract pattern (add column → deploy code that writes to both → backfill → switch reads → remove old column). Rahul mentions SonarQube on his resume — interviewers will probe whether he can integrate it as a quality gate.`},
+
+{part:"D",cat:"DevOps & Leadership",diff:"Hard",
+code:`// System Design: Building eSignly v2.
+// Requirements:
+// - Sign 1M+ documents/day  
+// - Multi-region (US, EU, India)
+// - PDF rendering, OCR for scanned docs
+// - Email/SMS notifications
+// - Audit trail (compliance: who signed what when)
+// - Maximum availability (99.99% SLA)
+
+// Which architecture is MOST appropriate?
+
+A) Single Laravel monolith on a powerful VM, MySQL primary
+
+B) Microservices:
+   - API Gateway (Kong/AWS API Gateway)
+   - Auth Service, Doc Service, Sign Service, Notification Service
+   - Async queue (Kafka/SQS) for document processing
+   - Object storage (S3) for files, MySQL/Postgres for metadata
+   - Redis for sessions/caching
+   - Multi-region with read replicas + S3 cross-region replication
+   - CDN (CloudFront) for static + signed URLs for documents
+   - ElasticSearch for audit trail search
+   - Kubernetes for orchestration + horizontal autoscaling
+
+C) Serverless only (Lambda + DynamoDB)
+
+D) Pure monolith but with multiple instances behind LB`,
+output:`B) Microservices + Event-Driven + Multi-region
+
+Key decisions:
+- Stateless services for horizontal scaling
+- S3 for files (durability, lifecycle policies)
+- Event queue for async document processing
+- Read replicas per region for low latency
+- ElasticSearch for searchable audit trail
+- K8s for orchestration + autoscaling`,
+why:`At 1M+ docs/day with 99.99% SLA, monoliths break down. Senior system design considerations: (1) Stateless services — sessions in Redis, no local state, horizontal scaling. (2) Storage tiering — files in S3 (cheap, durable), metadata in RDBMS, hot data in Redis, search in ElasticSearch. (3) Async processing — Kafka or SQS for document signing pipelines (PDF render, sign, OCR, notify all happen async). (4) Multi-region — primary write region + read replicas globally, S3 cross-region replication, route via Route53 latency-based routing. (5) Observability — distributed tracing (Jaeger/Zipkin), structured logs (ELK), metrics (Prometheus). (6) Security — encryption at rest + transit, signed URLs for documents, audit immutability. Compliance for digital signatures: eIDAS (EU), ESIGN Act (US), IT Act (India). This is the architecture Rahul should be able to discuss.`},
+
+{part:"D",cat:"DevOps & Leadership",diff:"Medium",
+code:`// You're an Associate Team Leader. A junior developer pushed
+// this code to main branch:
+
+// UserController.php
+public function updateProfile(Request $request) {
+    $sql = "UPDATE users SET email = '" 
+        . $request->email 
+        . "' WHERE id = " 
+        . $request->user_id;
+    DB::statement($sql);
+    return response()->json(['ok' => true]);
+}
+
+// As tech lead, what's your response?
+
+A) Approve the PR — code works correctly
+
+B) REJECT the PR with clear feedback (constructive, not harsh):
+   (1) Critical SQL injection vulnerability — anyone can drop
+       tables via the email field.
+   (2) No authentication check — any user can update any account.
+   (3) No input validation (email format, ownership).
+   
+   Then: PAIR with the junior to refactor it together using:
+   - Form Request validation
+   - Eloquent ORM (parameter-bound queries)
+   - Policy for authorization
+   
+   Schedule a team session on SQL injection prevention.
+
+C) Fix it yourself silently — don't embarrass the junior
+
+D) Add the junior to a performance improvement plan`,
+output:`B) Reject + Pair + Educate (proper leadership response)
+
+1. Detail issues in PR review (constructive feedback)
+2. Pair-program the fix together
+3. Team session on security best practices
+4. Add Bandit/PHPStan + SonarQube rules to catch this in CI
+
+The job isn't just fixing code — it's preventing the next time.`,
+why:`This question tests leadership maturity, not just code knowledge. The code has THREE critical issues: SQL injection (catastrophic), missing auth (IDOR), no input validation. A senior/lead's job: (1) Reject the PR with specific, kind feedback explaining WHY each issue matters and what the right pattern is. Reference docs (Laravel validation, OWASP). (2) Pair-program the fix — turn a mistake into a learning moment. (3) Systemic prevention — add static analysis (PHPStan, Psalm), security scanning (Bandit), SonarQube quality gates, and write the team's security checklist. The worst response is C (silent fix) — it deprives the junior of learning, fails the team, and doesn't prevent recurrence. The best leaders make their team better, not just their code.`},
+
+{part:"D",cat:"DevOps & Leadership",diff:"Hard",
+code:`// Your eSignly production has a 4-hour outage.
+// Root cause: a deployment introduced a bug that corrupted
+// 50,000 user signature records.
+
+// Post-incident, your manager asks you to write the
+// post-mortem document. What's the MOST important section?
+
+A) Detailed blame analysis — who pushed which commit
+
+B) BLAMELESS post-mortem with 5 sections:
+   1. Timeline (when did what happen)
+   2. Impact (users affected, business metrics)
+   3. Root cause analysis (5 Whys, not blame)
+   4. What went well + what went poorly
+   5. ACTION ITEMS with owners + deadlines:
+      - Add migration dry-run to CI/CD
+      - Implement DB backup verification automation
+      - Add canary deployments
+      - Document rollback procedures
+      - Add anomaly detection alerts
+   
+   Goal: prevent recurrence, not punish individuals.
+
+C) Just send an email apologizing to customers
+
+D) Update the runbook and move on quickly`,
+output:`B) Blameless Post-Mortem with Action Items
+
+Section 5 (Action Items) is MOST important:
+- Specific, owned, dated tasks
+- Systemic fixes, not "be more careful"
+- Followed up at next sprint planning
+
+Blameless culture → team reports issues, doesn't hide them.`,
+why:`The blameless post-mortem is a senior engineering culture practice (popularized by Google's SRE book, Etsy). Core principles: (1) Assume good intent — the person who deployed didn't mean to cause an outage. (2) Focus on systems, not individuals — "the deployment process allowed an unreviewed migration" not "John deployed without review". (3) Use techniques like 5 Whys to find root cause, not blame. (4) Action items are the most important section — specific, owned, dated. Without them, the same incident repeats. (5) Share publicly — build organizational learning. Blame culture causes engineers to hide problems, leading to bigger outages later. As a Tech Lead, Rahul should be able to lead this conversation. This question reveals senior maturity vs junior anxiety.`},
+
+];
+
+const PARTS=[
+  {key:"A",label:"PHP & Laravel",icon:"🔷",color:"#a855f7"},
+  {key:"B",label:"React & AEM",icon:"⚛",color:"#06b6d4"},
+  {key:"C",label:"Backend Arch",icon:"⚙",color:"#10b981"},
+  {key:"D",label:"DevOps & Lead",icon:"🚀",color:"#f59e0b"},
+];
+const diffColor={Easy:"#22c55e",Medium:"#f59e0b",Hard:"#ef4444"};
+
+function App(){
+  const[started,setStarted]=useState(false);
+  const[name,setName]=useState("");
+  const[activePart,setActivePart]=useState("A");
+  const[idx,setIdx]=useState(0);
+  const[answers,setAnswers]=useState({});
+  const[submitted,setSubmitted]=useState({});
+  const[input,setInput]=useState("");
+  const[typingKey,setTypingKey]=useState(null);
+  const[typed,setTyped]=useState("");
+  const[finished,setFinished]=useState(false);
+  const[elapsed,setElapsed]=useState(0);
+  const startTime=useRef(Date.now());
+  const inputRef=useRef(null);
+
+  const filtered=questions.filter(q=>q.part===activePart);
+  const q=filtered[idx];
+  const gi=questions.indexOf(q);
+  const isSubmitted=submitted[gi]!==undefined;
+
+  useEffect(()=>{ setIdx(0); },[activePart]);
+  useEffect(()=>{
+    if(!started||finished)return;
+    const t=setInterval(()=>setElapsed(Math.floor((Date.now()-startTime.current)/1000)),1000);
+    return()=>clearInterval(t);
+  },[started,finished]);
+  useEffect(()=>{
+    if(typingKey===null)return;
+    const out=q.output; let i=0; setTyped("");
+    const iv=setInterval(()=>{ i++; setTyped(out.slice(0,i)); if(i>=out.length)clearInterval(iv); },14);
+    return()=>clearInterval(iv);
+  },[typingKey]);
+  useEffect(()=>{ if(!isSubmitted&&inputRef.current)inputRef.current.focus(); },[idx,activePart,isSubmitted]);
+
+  const fmt=s=>`${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`;
+  const checkAnswer=(ans)=>{
+    const l=ans.trim().toLowerCase().replace(/[^a-d].*/,"").charAt(0);
+    const c=q.output.toLowerCase().charAt(0);
+    return l===c&&l!=="";
+  };
+
+  const handleSubmit=(skipped)=>{
+    const userAns=skipped?"(skipped)":input.trim();
+    setAnswers(a=>({...a,[gi]:userAns}));
+    const correct=!skipped&&checkAnswer(userAns);
+    setSubmitted(s=>({...s,[gi]:skipped?"skip":correct?"ok":"wrong"}));
+    setTypingKey(Date.now()); setInput("");
+  };
+
+  const handleNext=()=>{
+    if(idx<filtered.length-1){ setIdx(i=>i+1); setTypingKey(null); setTyped(""); }
+    else{
+      const ni=PARTS.findIndex(p=>p.key===activePart);
+      if(ni<PARTS.length-1){ setActivePart(PARTS[ni+1].key); setTypingKey(null); setTyped(""); }
+      else setFinished(true);
+    }
+  };
+
+  const totalAnswered=Object.keys(submitted).length;
+  const totalOk=Object.values(submitted).filter(v=>v==="ok").length;
+  const totalWrong=Object.values(submitted).filter(v=>v==="wrong").length;
+  const totalSkip=Object.values(submitted).filter(v=>v==="skip").length;
+  const part=PARTS.find(p=>p.key===activePart);
+
+  if(!started) return(
+    <div className="landing">
+      <div className="landing-icon">🔷</div>
+      <h1>Senior Full Stack Assessment</h1>
+      <div className="lead-line">PHP · Laravel · React · Node.js · AEM Headless · DevOps</div>
+      <div className="exp-line">Calibrated for 8+ years experience · Tech Lead Level</div>
+      <div className="tech-tags">
+        {["PHP","Laravel","React.js + Hooks","Node.js","Express.js","MySQL","Eloquent ORM","REST APIs","AEM Headless","Content Fragments","Docker","CI/CD","SonarQube","Microservices","Event-Driven","Team Leadership"].map(t=><span key={t} className="tech-tag">{t}</span>)}
+      </div>
+      <div className="stat-row">
+        <div className="stat"><div className="num">22</div><div className="lbl">Questions</div></div>
+        <div className="stat"><div className="num">4</div><div className="lbl">Sections</div></div>
+        <div className="stat"><div className="num">~30</div><div className="lbl">Minutes</div></div>
+      </div>
+      <div className="rules-box">
+        <h3>Instructions</h3>
+        <ol>
+          <li>Read each scenario or code snippet carefully</li>
+          <li>Type the letter of your answer — A, B, C, or D</li>
+          <li>Submit to reveal correct answer with detailed explanation</li>
+          <li>This assessment is calibrated for senior / tech lead level</li>
+        </ol>
+      </div>
+      <input className="name-input" value={name} onChange={e=>setName(e.target.value)} placeholder="Enter your name..."/>
+      <br/>
+      <button className="start-btn" onClick={()=>setStarted(true)} disabled={!name.trim()}>Begin Assessment →</button>
+    </div>
+  );
+
+  if(finished){
+    const pct=Math.round((totalOk/questions.length)*100);
+    const grade=pct>=82?"Strong Hire — Tech Lead":pct>=68?"Strong Senior Hire":pct>=50?"Mid-Level":"Below Senior Bar";
+    const gc=pct>=82?"#22c55e":pct>=68?"#a855f7":pct>=50?"#f59e0b":"#ef4444";
+    return(
+      <div className="completion">
+        <div className="score-ring" style={{border:`4px solid ${gc}`,boxShadow:`0 0 40px ${gc}20`}}>
+          <div className="ring-pct" style={{color:gc}}>{pct}%</div>
+          <div className="ring-lbl">Score</div>
+        </div>
+        <h2>Assessment Complete!</h2>
+        <p>{name} · {fmt(elapsed)}</p>
+        <div className="grade-badge" style={{background:`${gc}18`,border:`1px solid ${gc}40`,color:gc}}>{grade}</div>
+        <div className="score-bk">
+          <div className="si"><div className="v" style={{color:"#4ade80"}}>{totalOk}</div><div className="d">Correct</div></div>
+          <div className="si"><div className="v" style={{color:"#f87171"}}>{totalWrong}</div><div className="d">Wrong</div></div>
+          <div className="si"><div className="v" style={{color:"#fbbf24"}}>{totalSkip}</div><div className="d">Skipped</div></div>
+        </div>
+        <button className="restart-btn" onClick={()=>{setStarted(false);setActivePart("A");setIdx(0);setAnswers({});setSubmitted({});setFinished(false);setTypingKey(null);setTyped("");setName("");}}>Restart</button>
+      </div>
+    );
+  }
+
+  return(
+    <div>
+      <div className="header">
+        <div className="header-left">
+          <div className="header-icon">🔷</div>
+          <div>
+            <div className="header-title">Senior Full Stack — Rahul Saxena</div>
+            <div className="header-sub">{name} · {fmt(elapsed)}</div>
+          </div>
+        </div>
+        <div className="score-pills">
+          <div className="pill pill-green">✓ {totalOk}</div>
+          <div className="pill pill-red">✗ {totalWrong}</div>
+          <div className="pill pill-total">{totalAnswered}/{questions.length}</div>
+        </div>
+      </div>
+
+      <div className="tabs">
+        {PARTS.map(p=>{
+          const qs=questions.filter(q2=>q2.part===p.key);
+          const done=qs.filter(q2=>submitted[questions.indexOf(q2)]!==undefined).length;
+          return(
+            <button key={p.key} className={`tab ${activePart===p.key?"active":""}`}
+              style={{"--tab-color":p.color}} onClick={()=>setActivePart(p.key)}>
+              <span>{p.icon}</span>{p.label}<span className="tab-badge">{done}/{qs.length}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="main">
+        <div className="q-header">
+          <div className="q-header-left">
+            <span className="q-num">Q{idx+1}/{filtered.length}</span>
+            <span className="diff-badge" style={{color:diffColor[q.diff],background:`${diffColor[q.diff]}18`,border:`1px solid ${diffColor[q.diff]}30`}}>{q.diff}</span>
+            <span className="q-hint">Type A · B · C · D</span>
+          </div>
+          <div className="nav-btns">
+            <button className="nav-btn" onClick={()=>{setIdx(i=>i-1);setTypingKey(null);setTyped("");}} disabled={idx===0}>←</button>
+            <button className="nav-btn" onClick={handleNext} disabled={!isSubmitted}>→</button>
+          </div>
+        </div>
+
+        <div className="editor">
+          <div className="editor-bar">
+            <div style={{display:"flex",alignItems:"center",gap:8}}>
+              <div className="dots">
+                <div className="dot" style={{background:"#ef4444"}}/>
+                <div className="dot" style={{background:"#f59e0b"}}/>
+                <div className="dot" style={{background:"#22c55e"}}/>
+              </div>
+              <span className="filename">question_{String(gi+1).padStart(2,"0")}.php</span>
+            </div>
+            <span className="lang-pill" style={{color:part?.color,background:`${part?.color}18`,border:`1px solid ${part?.color}30`}}>{q.cat.toUpperCase()}</span>
+          </div>
+          <div className="code-body">
+            {q.code.split("\n").map((line,i)=>(
+              <div className="code-line" key={i}>
+                <span className="line-no">{i+1}</span>
+                <span style={{color:"#e2e8f0",whiteSpace:"pre-wrap"}}>{line}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {!isSubmitted&&(
+          <div className="answer-box">
+            <div className="answer-label">Your Answer</div>
+            <textarea ref={inputRef} className="answer-input" value={input} onChange={e=>setInput(e.target.value)}
+              placeholder="Type A, B, C, or D..."
+              onKeyDown={e=>{ if(e.key==="Enter"&&!e.shiftKey&&input.trim()){ e.preventDefault(); handleSubmit(false); } }}
+              style={{minHeight:"48px",resize:"none"}}
+            />
+            <div className="submit-row">
+              <button className="skip-btn" onClick={()=>handleSubmit(true)}>Skip →</button>
+              <button className="submit-btn" onClick={()=>handleSubmit(false)} disabled={!input.trim()}>Submit Answer</button>
+            </div>
+          </div>
+        )}
+
+        {isSubmitted&&(<>
+          <div className="terminal revealed">
+            <div className="terminal-bar">
+              <span>⬡ Result</span>
+              <span style={{color:"#22c55e"}}>● evaluated</span>
+            </div>
+            <div className="terminal-body">
+              <div className="terminal-cmd">$ php artisan evaluate --q{gi+1}</div>
+              {typed.split("\n").map((l,i)=><div className="terminal-out" key={i}>{l}</div>)}
+            </div>
+          </div>
+
+          <div className={`result-card ${submitted[gi]==="ok"?"result-correct":submitted[gi]==="wrong"?"result-wrong":"result-skip"}`}>
+            <div className="result-header">
+              {submitted[gi]==="ok"&&"✓ Correct!"}
+              {submitted[gi]==="wrong"&&"✗ Incorrect"}
+              {submitted[gi]==="skip"&&"⏭ Skipped"}
+            </div>
+            <div className="result-body">
+              {submitted[gi]!=="skip"?(
+                <div className="result-grid">
+                  <div className="result-col"><label>Your Answer</label><pre>{answers[gi]}</pre></div>
+                  <div className="result-col"><label>Correct Answer</label><pre style={{borderColor:"#166534"}}>{q.output}</pre></div>
+                </div>
+              ):(
+                <div className="result-grid" style={{gridTemplateColumns:"1fr"}}>
+                  <div className="result-col"><label>Correct Answer</label><pre>{q.output}</pre></div>
+                </div>
+              )}
+              <div className="result-why"><strong>Why: </strong>{q.why}</div>
+            </div>
+          </div>
+
+          <div style={{textAlign:"center",marginTop:12}}>
+            <button className="next-btn" onClick={handleNext}>
+              {idx<filtered.length-1?"Next Question →":PARTS.findIndex(p=>p.key===activePart)<PARTS.length-1?"Next Section →":"Finish →"}
+            </button>
+          </div>
+        </>)}
+
+        <div className="progress-dots">
+          {filtered.map((fq,i)=>{
+            const fgi=questions.indexOf(fq);
+            const st=submitted[fgi];
+            const cls=`pdot ${i===idx?"current":st==="ok"?"ok":st==="wrong"?"wrong":st==="skip"?"skip":"pending"}`;
+            return <button key={i} className={cls} onClick={()=>{setIdx(i);setTypingKey(null);setTyped("");}}/>;
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
