@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bhumika Balchandani — Skills Quiz</title>
+<meta name="description" content="An interactive quiz covering React, Next.js, Node.js, system design and AI engineering — based on Bhumika Balchandani's resume." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #F5F1EA;
+    --surface: #FFFFFF;
+    --ink: #1A1814;
+    --ink-soft: #5A5650;
+    --ink-faint: #8B867E;
+    --line: rgba(26, 24, 20, 0.10);
+    --line-strong: rgba(26, 24, 20, 0.25);
+    --accent: #0A6E5A;
+    --accent-soft: #E1F0EB;
+    --fe: #1E5A9C;
+    --fe-soft: #E6EEF7;
+    --be: #0A6E5A;
+    --be-soft: #E1F0EB;
+    --ai: #5D3A8E;
+    --ai-soft: #ECE6F4;
+    --success: #0A6E5A;
+    --success-soft: #DCEDE6;
+    --danger: #9C3329;
+    --danger-soft: #F4E2DF;
+    --serif: 'Instrument Serif', 'Georgia', serif;
+    --sans: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+    --mono: 'JetBrains Mono', 'Menlo', monospace;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 24px 80px;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 680px;
+  }
+
+  /* Header */
+  .header {
+    margin-bottom: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 16px;
+  }
+  .brand {
+    font-family: var(--serif);
+    font-size: 22px;
+    letter-spacing: -0.01em;
+  }
+  .brand em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* Card */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 40px;
+    animation: fadeIn 0.4s ease-out;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Welcome screen */
+  .welcome { text-align: center; }
+  .welcome-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 16px;
+  }
+  .welcome h1 {
+    font-family: var(--serif);
+    font-size: 44px;
+    line-height: 1.1;
+    font-weight: 400;
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+  }
+  .welcome h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .welcome-sub {
+    color: var(--ink-soft);
+    font-size: 15px;
+    margin-bottom: 28px;
+    max-width: 440px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .categories {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+  .cat-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    font-weight: 500;
+  }
+  .cat-pill.fe { background: var(--fe-soft); color: var(--fe); }
+  .cat-pill.be { background: var(--be-soft); color: var(--be); }
+  .cat-pill.ai { background: var(--ai-soft); color: var(--ai); }
+  .cat-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: currentColor;
+  }
+
+  /* Buttons */
+  .btn {
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 12px 24px;
+    border-radius: var(--radius-sm);
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-primary {
+    background: var(--ink);
+    color: var(--bg);
+  }
+  .btn-primary:hover { transform: translateY(-1px); background: #000; }
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--line-strong);
+  }
+  .btn-ghost:hover { background: var(--bg); border-color: var(--ink); }
+  .btn-arrow { font-size: 16px; line-height: 1; }
+
+  /* Question screen */
+  .q-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .q-count {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-faint);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .progress {
+    height: 3px;
+    background: var(--line);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 32px;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    transition: width 0.4s ease;
+  }
+  .q-text {
+    font-family: var(--serif);
+    font-size: 26px;
+    line-height: 1.35;
+    margin-bottom: 28px;
+    letter-spacing: -0.01em;
+  }
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    width: 100%;
+    text-align: left;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--ink);
+    background: var(--bg);
+  }
+  .option:disabled { cursor: default; }
+  .option.correct {
+    background: var(--success-soft);
+    border-color: var(--success);
+    color: var(--success);
+  }
+  .option.wrong {
+    background: var(--danger-soft);
+    border-color: var(--danger);
+    color: var(--danger);
+  }
+  .opt-letter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--bg);
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .option.correct .opt-letter,
+  .option.wrong .opt-letter {
+    background: rgba(255, 255, 255, 0.5);
+  }
+
+  /* Feedback */
+  .feedback {
+    margin-top: 24px;
+    padding: 16px 18px;
+    background: var(--bg);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--ink-soft);
+    animation: fadeIn 0.3s ease-out;
+  }
+  .feedback.is-wrong { border-left-color: var(--danger); }
+  .feedback-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--success);
+    margin-bottom: 8px;
+  }
+  .feedback.is-wrong .feedback-head { color: var(--danger); }
+  .feedback-icon {
+    width: 16px; height: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: currentColor;
+    color: white;
+    font-size: 10px;
+    line-height: 1;
+  }
+
+  .nav {
+    margin-top: 28px;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  /* Results */
+  .results { text-align: center; }
+  .results-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 12px;
+  }
+  .results-score {
+    font-family: var(--serif);
+    font-size: 96px;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .results-score .total {
+    font-size: 36px;
+    color: var(--ink-faint);
+  }
+  .results-verdict {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 18px;
+    color: var(--ink-soft);
+    margin-bottom: 36px;
+  }
+  .breakdown {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .stat {
+    padding: 20px 12px;
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line);
+  }
+  .stat-val {
+    font-family: var(--serif);
+    font-size: 32px;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-val.fe { color: var(--fe); }
+  .stat-val.be { color: var(--be); }
+  .stat-val.ai { color: var(--ai); }
+  .stat-lbl {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .results-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* Footer */
+  .footer {
+    margin-top: 32px;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-faint);
+    letter-spacing: 0.05em;
+  }
+  .footer a { color: var(--accent); text-decoration: none; }
+  .footer a:hover { text-decoration: underline; }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    body { padding: 24px 16px 48px; }
+    .card { padding: 24px; }
+    .welcome h1 { font-size: 32px; }
+    .q-text { font-size: 20px; }
+    .results-score { font-size: 72px; }
+    .breakdown { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="brand">Skills <em>quiz</em></div>
+      <div class="meta">v1.0 · MERN + AI</div>
+    </header>
+
+    <main id="root"></main>
+
+    <footer class="footer">
+      Built for <a href="mailto:bhumikabalchandani8@gmail.com">Bhumika Balchandani</a> · 6+ yrs MERN
+    </footer>
+  </div>
+
+<script>
+const QUESTIONS = [
+  {
+    cat: 'fe',
+    q: "In React, when should you use useRef instead of useState for storing a value?",
+    opts: [
+      "When the value needs to trigger a re-render whenever it changes",
+      "When the value is mutable but should persist across renders without causing re-renders",
+      "When you want to share state between unrelated components",
+      "When the value comes from an asynchronous API call"
+    ],
+    correct: 1,
+    explain: "useRef holds a mutable .current value that survives renders but never triggers one. Perfect for timers, DOM nodes, or previous-value tracking. useState is the right tool when a change must re-render the UI."
+  },
+  {
+    cat: 'fe',
+    q: "Your Next.js page shows product listings that change a few times a day. Which rendering strategy fits best?",
+    opts: [
+      "Client-side rendering with useEffect on every mount",
+      "Server-side rendering (getServerSideProps) on every request",
+      "Incremental Static Regeneration (ISR) with a revalidate interval",
+      "Static export with no revalidation"
+    ],
+    correct: 2,
+    explain: "ISR builds the page once, serves the cached HTML fast, and quietly regenerates it in the background after the revalidate window. SSR on every request wastes compute; pure static can't reflect the daily updates."
+  },
+  {
+    cat: 'fe',
+    q: "What does React.memo actually do?",
+    opts: [
+      "Caches the return value of expensive functions inside a component",
+      "Memoizes a callback so its identity stays stable across renders",
+      "Skips re-rendering a component if its props haven't changed (shallow compare)",
+      "Stores component state in localStorage automatically"
+    ],
+    correct: 2,
+    explain: "React.memo wraps a component and bails out of re-rendering when props are shallowly equal. useMemo is for values, useCallback is for stable function identities — three distinct tools that get mixed up often."
+  },
+  {
+    cat: 'fe',
+    q: "Which TypeScript utility type makes every property of T optional?",
+    opts: [
+      "Required<T>",
+      "Partial<T>",
+      "Pick<T, K>",
+      "Readonly<T>"
+    ],
+    correct: 1,
+    explain: "Partial<T> turns every field optional — invaluable for PATCH update payloads. Required<T> does the opposite, Pick selects a subset, and Readonly makes fields immutable at the type level."
+  },
+  {
+    cat: 'be',
+    q: "Your MongoDB query on a 10M-document collection is slow. Which step usually gives the biggest win first?",
+    opts: [
+      "Switch from MongoDB to PostgreSQL",
+      "Add a compound index that matches the query's filter and sort fields",
+      "Increase the server RAM",
+      "Disable the WiredTiger storage engine"
+    ],
+    correct: 1,
+    explain: "A well-designed compound index (filter fields first, then sort field, following the ESR rule — Equality, Sort, Range) is almost always the cheapest, highest-impact fix. Hardware upgrades come last."
+  },
+  {
+    cat: 'be',
+    q: "When integrating Stripe subscriptions, why must you verify webhook signatures?",
+    opts: [
+      "To make webhook delivery faster",
+      "To confirm the request actually came from Stripe and wasn't forged by an attacker",
+      "Because Stripe charges extra for unsigned requests",
+      "To translate the payload from XML to JSON"
+    ],
+    correct: 1,
+    explain: "Webhook endpoints are public URLs — anyone could POST to them. Verifying the Stripe-Signature header with your endpoint secret proves the payload came from Stripe and wasn't tampered with."
+  },
+  {
+    cat: 'be',
+    q: "In a Role-Based Access Control (RBAC) system, what does 'granular permission mapping' typically mean?",
+    opts: [
+      "Every user is assigned exactly one role with no exceptions",
+      "Permissions are defined per resource and action (e.g. invoice:read, invoice:delete) and roles bundle them",
+      "All admin users automatically inherit every permission in the system",
+      "Permissions are checked only at login, never on individual requests"
+    ],
+    correct: 1,
+    explain: "Granular RBAC defines fine-grained permissions like resource:action pairs, then composes them into roles. This lets you say a Manager can read and edit invoices but not delete them — without writing one-off checks everywhere."
+  },
+  {
+    cat: 'be',
+    q: "What's the main advantage GraphQL offers over REST for a complex client UI?",
+    opts: [
+      "GraphQL is always faster than REST on the network",
+      "Clients fetch exactly the fields they need in one request, avoiding over-fetching and waterfall calls",
+      "GraphQL automatically encrypts every request",
+      "GraphQL eliminates the need for a database"
+    ],
+    correct: 1,
+    explain: "REST endpoints often return more than the screen needs, or require multiple round-trips. GraphQL lets the client describe the exact shape it wants in a single query — at the cost of more complex server resolvers and caching."
+  },
+  {
+    cat: 'ai',
+    q: "What does RAG (Retrieval-Augmented Generation) do?",
+    opts: [
+      "Retrains the LLM's weights with new documents every night",
+      "Fetches relevant chunks from a knowledge base and injects them into the prompt so the LLM can answer with grounded context",
+      "Replaces the LLM entirely with a search engine",
+      "Generates random answers when the model is uncertain"
+    ],
+    correct: 1,
+    explain: "RAG bolts a retrieval step in front of the LLM: embed the query, find similar chunks from your docs, paste them into the prompt. The model stays unchanged but answers with up-to-date, source-grounded information."
+  },
+  {
+    cat: 'ai',
+    q: "Why are vector embeddings used in semantic search?",
+    opts: [
+      "They compress text into smaller files for storage",
+      "They map text into a numeric space where semantically similar items sit close together, enabling similarity search",
+      "They encrypt text so only the LLM can read it",
+      "They translate text into machine code"
+    ],
+    correct: 1,
+    explain: "An embedding turns text into a high-dimensional vector where meaning becomes geometry. 'King' and 'monarch' land near each other; cosine or dot-product similarity then finds related passages even when keywords don't overlap."
+  },
+  {
+    cat: 'ai',
+    q: "When does fine-tuning an LLM make more sense than prompt engineering or RAG?",
+    opts: [
+      "Whenever the prompt is longer than 100 tokens",
+      "When you need a specific style, format, or behaviour that's hard to elicit reliably with prompts — and you have enough labeled examples",
+      "When you want the model to know yesterday's news",
+      "Fine-tuning is always cheaper than prompting"
+    ],
+    correct: 1,
+    explain: "Fine-tuning teaches the model a behaviour pattern (tone, format, classification heuristic) from examples. For fresh facts, RAG is better. For most use cases, a good prompt is the cheapest first step — fine-tune when prompting plateaus."
+  },
+  {
+    cat: 'ai',
+    q: "In a Transformer-based LLM, what does the attention mechanism do?",
+    opts: [
+      "Decides which GPU core to run on",
+      "Lets each token weigh how much every other token in the context matters when computing its own representation",
+      "Stops the model when it has generated enough tokens",
+      "Compresses the vocabulary to save memory"
+    ],
+    correct: 1,
+    explain: "Self-attention is the heart of the Transformer — for each token, it computes weighted contributions from every other token in the sequence, so meaning emerges from context rather than from position alone."
+  }
+];
+
+const CATS = {
+  fe: { label: 'Frontend' },
+  be: { label: 'Backend' },
+  ai: { label: 'AI engineering' }
+};
+
+const state = {
+  idx: 0,
+  score: 0,
+  answered: false,
+  byCat: { fe: { right: 0, total: 0 }, be: { right: 0, total: 0 }, ai: { right: 0, total: 0 } }
+};
+
+QUESTIONS.forEach(q => state.byCat[q.cat].total++);
+
+const root = document.getElementById('root');
+
+function reset() {
+  state.idx = 0;
+  state.score = 0;
+  state.answered = false;
+  Object.keys(state.byCat).forEach(k => state.byCat[k].right = 0);
+}
+
+function renderWelcome() {
+  root.innerHTML = `
+    <section class="card welcome">
+      <div class="welcome-eyebrow">12 questions · ~5 minutes</div>
+      <h1>Test your <em>full-stack</em> instincts.</h1>
+      <p class="welcome-sub">A walk through the technologies on the resume — React, Next.js, Node.js, MongoDB, Stripe, RBAC — plus a short detour into AI engineering.</p>
+      <div class="categories">
+        <span class="cat-pill fe"><span class="cat-dot"></span>4 frontend</span>
+        <span class="cat-pill be"><span class="cat-dot"></span>4 backend</span>
+        <span class="cat-pill ai"><span class="cat-dot"></span>4 AI</span>
+      </div>
+      <button class="btn btn-primary" id="start">Begin quiz <span class="btn-arrow">&rarr;</span></button>
+    </section>
+  `;
+  document.getElementById('start').onclick = () => { reset(); renderQuestion(); };
+}
+
+function renderQuestion() {
+  state.answered = false;
+  const q = QUESTIONS[state.idx];
+  const pct = Math.round((state.idx / QUESTIONS.length) * 100);
+
+  root.innerHTML = `
+    <section class="card">
+      <div class="q-head">
+        <span class="cat-pill ${q.cat}"><span class="cat-dot"></span>${CATS[q.cat].label}</span>
+        <span class="q-count">Question ${state.idx + 1} / ${QUESTIONS.length}</span>
+      </div>
+      <div class="progress"><div class="progress-fill" style="width: ${pct}%"></div></div>
+      <h2 class="q-text">${q.q}</h2>
+      <div class="options" id="options">
+        ${q.opts.map((o, i) => `
+          <button class="option" data-i="${i}">
+            <span class="opt-letter">${String.fromCharCode(65 + i)}</span>
+            <span>${o}</span>
+          </button>
+        `).join('')}
+      </div>
+      <div id="feedback"></div>
+      <div class="nav" id="nav"></div>
+    </section>
+  `;
+
+  document.querySelectorAll('.option').forEach(btn => {
+    btn.onclick = () => selectAnswer(parseInt(btn.dataset.i, 10));
+  });
+}
+
+function selectAnswer(i) {
+  if (state.answered) return;
+  state.answered = true;
+  const q = QUESTIONS[state.idx];
+  const isRight = i === q.correct;
+  if (isRight) { state.score++; state.byCat[q.cat].right++; }
+
+  document.querySelectorAll('.option').forEach(btn => {
+    const bi = parseInt(btn.dataset.i, 10);
+    btn.disabled = true;
+    if (bi === q.correct) btn.classList.add('correct');
+    else if (bi === i) btn.classList.add('wrong');
+  });
+
+  document.getElementById('feedback').innerHTML = `
+    <div class="feedback ${isRight ? '' : 'is-wrong'}">
+      <div class="feedback-head">
+        <span class="feedback-icon">${isRight ? '\u2713' : '\u2715'}</span>
+        ${isRight ? 'Correct' : 'Not quite'}
+      </div>
+      ${q.explain}
+    </div>
+  `;
+
+  const isLast = state.idx === QUESTIONS.length - 1;
+  document.getElementById('nav').innerHTML = `
+    <button class="btn btn-primary" id="next">${isLast ? 'See results' : 'Next question'} <span class="btn-arrow">&rarr;</span></button>
+  `;
+  document.getElementById('next').onclick = () => {
+    if (isLast) renderResults();
+    else { state.idx++; renderQuestion(); }
+  };
+}
+
+function renderResults() {
+  const pct = Math.round((state.score / QUESTIONS.length) * 100);
+  let verdict;
+  if (pct >= 85) verdict = 'Excellent — senior-level grasp across the board.';
+  else if (pct >= 65) verdict = 'Strong — solid foundation with room to polish.';
+  else if (pct >= 40) verdict = 'Decent start — a few areas worth revisiting.';
+  else verdict = 'Plenty of room to grow — try again after a refresher.';
+
+  root.innerHTML = `
+    <section class="card results">
+      <div class="results-eyebrow">Your result</div>
+      <div class="results-score">${state.score}<span class="total"> / ${QUESTIONS.length}</span></div>
+      <div class="results-verdict">${verdict}</div>
+      <div class="breakdown">
+        <div class="stat">
+          <div class="stat-val fe">${state.byCat.fe.right}/${state.byCat.fe.total}</div>
+          <div class="stat-lbl">Frontend</div>
+        </div>
+        <div class="stat">
+          <div class="stat-val be">${state.byCat.be.right}/${state.byCat.be.total}</div>
+          <div class="stat-lbl">Backend</div>
+        </div>
+        <div class="stat">
+          <div class="stat-val ai">${state.byCat.ai.right}/${state.byCat.ai.total}</div>
+          <div class="stat-lbl">AI engineering</div>
+        </div>
+      </div>
+      <div class="results-actions">
+        <button class="btn btn-primary" id="restart">Try again</button>
+        <button class="btn btn-ghost" id="review">Review answers</button>
+      </div>
+    </section>
+  `;
+  document.getElementById('restart').onclick = () => { reset(); renderWelcome(); };
+  document.getElementById('review').onclick = renderReview;
+}
+
+function renderReview() {
+  root.innerHTML = `
+    <section class="card">
+      <div class="q-head">
+        <h2 style="font-family: var(--serif); font-size: 28px; letter-spacing: -0.01em;">Answer key</h2>
+        <button class="btn btn-ghost" id="back">&larr; Back</button>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 24px; margin-top: 8px;">
+        ${QUESTIONS.map((q, i) => `
+          <div style="padding-bottom: 24px; border-bottom: 1px solid var(--line);">
+            <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+              <span class="cat-pill ${q.cat}"><span class="cat-dot"></span>${CATS[q.cat].label}</span>
+              <span class="q-count">Q${i + 1}</span>
+            </div>
+            <div style="font-family: var(--serif); font-size: 18px; line-height: 1.4; margin-bottom: 10px;">${q.q}</div>
+            <div style="font-family: var(--mono); font-size: 12px; color: var(--success); margin-bottom: 8px;">
+              <strong style="font-weight: 500;">${String.fromCharCode(65 + q.correct)}.</strong> ${q.opts[q.correct]}
+            </div>
+            <div style="font-size: 14px; color: var(--ink-soft); line-height: 1.6;">${q.explain}</div>
+          </div>
+        `).join('')}
+      </div>
+    </section>
+  `;
+  document.getElementById('back').onclick = renderResults;
+}
+
+renderWelcome();
+</script>
+</body>
+</html>
