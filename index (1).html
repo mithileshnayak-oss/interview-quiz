@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DevOps Engineer Assessment — Neelesh Vaishnav</title>
+<style>
+  :root {
+    --bg: #0f1115;
+    --surface: #1a1d24;
+    --surface-2: #21252e;
+    --border: #2c313c;
+    --border-hover: #3d4350;
+    --text: #e6e8eb;
+    --text-muted: #9aa0aa;
+    --text-dim: #6b7280;
+    --accent: #1D9E75;
+    --accent-dark: #0F6E56;
+    --green-bg: #1a2e1a;
+    --green-border: #639922;
+    --green-text: #9bd45e;
+    --red-bg: #2e1a1a;
+    --red-border: #E24B4A;
+    --red-text: #f09595;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 2rem 1rem;
+  }
+  .quiz-wrap { width: 100%; max-width: 720px; }
+  .header { margin-bottom: 1.5rem; }
+  .header h1 { font-size: 22px; font-weight: 600; }
+  .header p { font-size: 13px; color: var(--text-muted); margin-top: 6px; }
+  .progress-bar-wrap { background: var(--surface); border-radius: 999px; height: 6px; margin-bottom: 1.5rem; overflow: hidden; }
+  .progress-bar { height: 6px; background: var(--accent); border-radius: 999px; transition: width 0.4s ease; width: 0%; }
+  .meta { display: flex; gap: 12px; margin-bottom: 1rem; flex-wrap: wrap; }
+  .meta-badge { font-size: 12px; padding: 4px 12px; border-radius: var(--radius-sm); background: var(--surface); color: var(--text-muted); border: 1px solid var(--border); }
+  .q-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1rem; }
+  .q-number { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 8px; }
+  .q-text { font-size: 16px; font-weight: 500; line-height: 1.5; margin-bottom: 1.25rem; }
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .opt-btn { text-align: left; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 16px; font-size: 14px; color: var(--text); cursor: pointer; transition: border-color 0.15s, background 0.15s; display: flex; gap: 12px; align-items: flex-start; font-family: inherit; }
+  .opt-btn:hover:not(:disabled) { border-color: var(--border-hover); }
+  .opt-btn.correct { background: var(--green-bg); border-color: var(--green-border); color: var(--green-text); }
+  .opt-btn.wrong { background: var(--red-bg); border-color: var(--red-border); color: var(--red-text); }
+  .opt-btn:disabled { cursor: default; }
+  .opt-label { font-weight: 600; min-width: 18px; }
+  .explanation { font-size: 13px; margin-top: 12px; padding: 12px 14px; border-radius: var(--radius-sm); background: var(--surface-2); color: var(--text-muted); border-left: 3px solid var(--accent); line-height: 1.6; }
+  .explanation.wrong-exp { border-left-color: var(--red-border); }
+  .nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; }
+  .nav-btn { background: transparent; border: 1px solid var(--border-hover); border-radius: var(--radius-sm); padding: 9px 20px; font-size: 14px; color: var(--text); cursor: pointer; font-family: inherit; }
+  .nav-btn:hover:not(:disabled) { background: var(--surface); }
+  .nav-btn:disabled { opacity: 0.35; cursor: default; }
+  .nav-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .nav-btn.primary:hover:not(:disabled) { background: var(--accent-dark); }
+  .score-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 2.5rem 2rem; text-align: center; }
+  .score-big { font-size: 56px; font-weight: 600; color: var(--accent); }
+  .score-sub { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
+  .verdict { margin-top: 1.5rem; font-size: 17px; font-weight: 600; }
+  .verdict-detail { font-size: 14px; color: var(--text-muted); margin-top: 8px; line-height: 1.6; }
+  .cat-breakdown { margin-top: 2rem; text-align: left; }
+  .cat-breakdown h3 { font-size: 14px; font-weight: 600; margin-bottom: 14px; }
+  .cat-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 13px; }
+  .cat-label { color: var(--text-muted); min-width: 90px; }
+  .cat-bar-wrap { flex: 1; margin: 0 12px; background: var(--surface-2); height: 6px; border-radius: 99px; overflow: hidden; }
+  .cat-bar { height: 6px; border-radius: 99px; background: var(--accent); transition: width 0.6s ease; }
+  .cat-score { font-weight: 600; min-width: 32px; text-align: right; }
+  .restart-btn { margin-top: 1.5rem; background: transparent; border: 1px solid var(--border-hover); border-radius: var(--radius-sm); padding: 9px 22px; font-size: 14px; color: var(--text); cursor: pointer; font-family: inherit; }
+  .restart-btn:hover { background: var(--surface-2); }
+  .hidden { display: none; }
+  footer { text-align: center; margin-top: 2rem; font-size: 12px; color: var(--text-dim); }
+</style>
+</head>
+<body>
+<div class="quiz-wrap" id="app">
+  <div id="quiz-view">
+    <div class="header">
+      <h1>DevOps Engineer Assessment</h1>
+      <p>Candidate: Neelesh Vaishnav &nbsp;·&nbsp; 3 yrs experience &nbsp;·&nbsp; AWS / Kubernetes / Terraform / CI-CD</p>
+    </div>
+    <div class="progress-bar-wrap"><div class="progress-bar" id="progress"></div></div>
+    <div class="meta">
+      <div class="meta-badge" id="q-counter">1 / 19</div>
+      <div class="meta-badge" id="category-badge">AWS</div>
+      <div class="meta-badge" id="score-live">Score: 0</div>
+    </div>
+    <div class="q-card">
+      <div class="q-number" id="q-number">Question 1</div>
+      <div class="q-text" id="q-text"></div>
+      <div class="options" id="options"></div>
+      <div class="explanation hidden" id="explanation"></div>
+    </div>
+    <div class="nav-row">
+      <button class="nav-btn" id="prev-btn" onclick="prevQ()" disabled>&larr; Prev</button>
+      <button class="nav-btn primary" id="next-btn" onclick="nextQ()" disabled>Next &rarr;</button>
+    </div>
+  </div>
+
+  <div id="result-view" class="hidden">
+    <div class="score-card">
+      <div class="score-big" id="final-score">0/19</div>
+      <div class="score-sub">questions answered correctly</div>
+      <div class="verdict" id="verdict"></div>
+      <div class="verdict-detail" id="verdict-detail"></div>
+      <div class="cat-breakdown">
+        <h3>Performance by category</h3>
+        <div id="cat-rows"></div>
+      </div>
+      <button class="restart-btn" onclick="restart()">&#8635; Retake quiz</button>
+    </div>
+  </div>
+
+  <footer>DevOps technical assessment &middot; Aavya LLC hiring</footer>
+</div>
+
+<script>
+const questions = [
+  {
+    cat: "AWS",
+    text: "In an AWS EKS setup, what is the purpose of IRSA (IAM Roles for Service Accounts)?",
+    opts: ["To create IAM users for each pod", "To assign AWS IAM roles to Kubernetes service accounts for fine-grained pod-level AWS permissions", "To enable cross-region replication of EKS clusters", "To manage SSH keys for EC2 worker nodes"],
+    ans: 1,
+    exp: "IRSA lets pods assume IAM roles without using node-level instance profiles, enabling least-privilege AWS access per workload. Neelesh mentions IRSA in his Terraform EKS project."
+  },
+  {
+    cat: "Terraform",
+    text: "You have a Terraform module being used across 3 environments (dev, staging, prod). The prod environment needs a larger instance type. What is the cleanest approach?",
+    opts: ["Duplicate the module for prod", "Hard-code the instance type in the module", "Pass the instance type as a variable with a default value, override it in prod's tfvars", "Use a separate Terraform workspace and rewrite the resource block"],
+    ans: 2,
+    exp: "Variables with per-environment .tfvars files is the standard Terraform pattern for environment-specific overrides without duplicating module code — aligning with Neelesh's 'reusable Terraform modules' experience."
+  },
+  {
+    cat: "Kubernetes",
+    text: "A pod in your EKS cluster is stuck in CrashLoopBackOff. What is your first diagnostic step?",
+    opts: ["Delete and recreate the deployment", "Scale down the replica count to 0", "Run kubectl logs <pod> --previous to check the previous container's output", "Restart the EKS control plane"],
+    ans: 2,
+    exp: "kubectl logs --previous fetches logs from the crashed container instance, which often reveals the root cause (OOM kill, app error, missing env var). Deleting the pod just restarts the cycle."
+  },
+  {
+    cat: "CI/CD",
+    text: "In a GitHub Actions pipeline, what is the correct way to securely pass an AWS secret key to a deployment job?",
+    opts: ["Hardcode it in the workflow YAML file", "Store it in a .env file committed to the repo", "Use GitHub Actions Secrets and reference as secrets.AWS_SECRET_KEY", "Pass it as a query parameter in the workflow trigger URL"],
+    ans: 2,
+    exp: "GitHub Actions Secrets are encrypted at rest and masked in logs. Hardcoding or committing secrets is a critical security vulnerability."
+  },
+  {
+    cat: "Monitoring",
+    text: "You need to alert when average CPU across your EKS nodes exceeds 80% for 5 minutes. Which Prometheus approach is correct?",
+    opts: ["cpu_usage > 80", "avg(rate(node_cpu_seconds_total[5m])) * 100 > 80 with a 'for: 5m' clause", "node_cpu > 0.8 for 5m", "count(cpu_high_alert) > 1"],
+    ans: 1,
+    exp: "The correct PromQL uses rate() on node_cpu_seconds_total to calculate CPU utilization as a percentage. The 'for: 5m' clause in the alert rule handles the duration condition."
+  },
+  {
+    cat: "AWS",
+    text: "Your application behind an Application Load Balancer is returning 502 errors intermittently. What is the most likely cause?",
+    opts: ["The ALB's SSL certificate expired", "The target EC2 instances are failing health checks or timing out", "The ALB's IAM role has insufficient permissions", "The VPC CIDR block is too small"],
+    ans: 1,
+    exp: "502 Bad Gateway from ALB means the ALB reached the target but the target returned an invalid response or the connection failed — usually unhealthy targets, app crashes, or port mismatches."
+  },
+  {
+    cat: "Kubernetes",
+    text: "What is the key difference between a Kubernetes Deployment and a StatefulSet?",
+    opts: ["Deployments run on master nodes; StatefulSets on worker nodes", "StatefulSets provide stable network identities and ordered pod management — important for databases; Deployments are for stateless apps", "Deployments support rolling updates; StatefulSets do not", "StatefulSets are only available in EKS, not AKS"],
+    ans: 1,
+    exp: "StatefulSets guarantee stable pod names, persistent storage binding per pod, and ordered scaling — crucial for databases like Cassandra, Kafka, or Postgres. Deployments treat pods as interchangeable."
+  },
+  {
+    cat: "Terraform",
+    text: "What happens if you run terraform apply without first running terraform plan in a production environment?",
+    opts: ["Apply automatically runs an internal plan and shows a diff before prompting for confirmation", "Terraform skips the plan and applies changes immediately without confirmation", "Terraform throws an error requiring plan first", "Terraform only applies changes to dev environments without a plan"],
+    ans: 0,
+    exp: "terraform apply runs an internal plan and shows the diff, prompting for 'yes' before proceeding. However, best practice is to always run plan separately, review the output, and use -auto-approve only in automation with proper guardrails."
+  },
+  {
+    cat: "CI/CD",
+    text: "In Jenkins, what is a Jenkinsfile and why is it preferred over configuring pipelines through the UI?",
+    opts: ["A binary Jenkins plugin file that speeds up builds", "A Groovy-based Pipeline-as-Code file stored in the repo, enabling versioning, review, and reproducibility", "A Jenkins license file required for enterprise features", "A YAML file only supported in Jenkins 3.0+"],
+    ans: 1,
+    exp: "Jenkinsfiles store pipeline definitions as code in the SCM repo — enabling PR reviews, version history, and consistent pipeline behavior across environments. UI-configured pipelines are fragile and hard to audit."
+  },
+  {
+    cat: "Networking",
+    text: "In a VPC, your EC2 instance in a private subnet needs outbound internet access to pull Docker images. What do you configure?",
+    opts: ["Attach an Internet Gateway directly to the private subnet", "Place a NAT Gateway in a public subnet and route private subnet traffic through it", "Assign a public IP to the private instance", "Create a VPC peering connection to the internet"],
+    ans: 1,
+    exp: "NAT Gateway sits in a public subnet with an Elastic IP. Private subnets route 0.0.0.0/0 traffic to the NAT Gateway, enabling outbound internet access without exposing the instance publicly."
+  },
+  {
+    cat: "Monitoring",
+    text: "You want to track how long each API endpoint takes to respond and visualize p95 latency in Grafana. Which approach is correct?",
+    opts: ["Use CloudWatch Logs Insights with a regex on latency strings", "Instrument the app with Prometheus histogram metrics and use histogram_quantile(0.95, ...) in Grafana", "Enable AWS X-Ray and manually export CSVs to Grafana", "Use Grafana's built-in latency scanner plugin"],
+    ans: 1,
+    exp: "Prometheus histograms capture latency distributions. histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) gives p95 latency — the standard SRE metric for tail latency."
+  },
+  {
+    cat: "AWS",
+    text: "For a multi-project engagement, multiple teams need isolated AWS environments (dev, staging, prod) with centralized billing and shared security policies. What AWS feature best addresses this?",
+    opts: ["Multiple IAM users in a single account with strict permissions", "AWS Organizations with separate accounts per environment and Service Control Policies (SCPs)", "VPC peering between environments in one account", "AWS Config rules applied to a single shared account"],
+    ans: 1,
+    exp: "AWS Organizations enables a multi-account strategy — each environment in its own account for blast-radius isolation, with SCPs enforcing guardrails centrally. This is the enterprise best practice for multi-team projects."
+  },
+  {
+    cat: "GitHub CI/CD",
+    text: "In a GitHub Actions workflow, you want a deployment job to run only after the build and test jobs succeed. How do you enforce this ordering?",
+    opts: ["Place all steps in a single job in the correct order", "Use the 'needs:' keyword on the deploy job listing the build and test jobs", "Use 'continue-on-error: false' on every job", "Order the jobs alphabetically so they run in sequence"],
+    ans: 1,
+    exp: "By default jobs run in parallel. The 'needs:' keyword creates explicit dependencies — 'needs: [build, test]' makes the deploy job wait for both to succeed before starting."
+  },
+  {
+    cat: "GitHub CI/CD",
+    text: "What is the correct way to trigger a GitHub Actions workflow only when code is pushed to the main branch AND only when files under 'src/' change?",
+    opts: ["on: push with branches: [main] and paths: ['src/**']", "on: pull_request only", "Use a cron schedule that polls the repo every minute", "Add an if-condition checking the branch inside each step"],
+    ans: 0,
+    exp: "Combining 'branches' and 'paths' filters under the push event scopes the trigger precisely — saving runner minutes by skipping runs for unrelated changes or branches."
+  },
+  {
+    cat: "GitHub CI/CD",
+    text: "Your GitHub Actions jobs reinstall npm dependencies on every run, slowing the pipeline. What is the standard fix?",
+    opts: ["Commit node_modules to the repo", "Use actions/cache to cache ~/.npm or node_modules keyed on the package-lock.json hash", "Switch from npm to a global install on the runner", "Increase the runner's CPU allocation"],
+    ans: 1,
+    exp: "actions/cache restores dependencies keyed on a lockfile hash. The cache is reused across runs until the lockfile changes, dramatically cutting install time without committing node_modules."
+  },
+  {
+    cat: "GitLab CI/CD",
+    text: "In a .gitlab-ci.yml file, what defines the ordered phases (build, test, deploy) that jobs are grouped into?",
+    opts: ["The 'workflow:' keyword", "The 'stages:' keyword, with each job assigned to a stage via 'stage:'", "The 'needs:' keyword on every job", "The 'rules:' keyword at the top of the file"],
+    ans: 1,
+    exp: "'stages:' defines the global ordered list of phases. Jobs declare which stage they belong to with 'stage:'. Jobs in the same stage run in parallel; stages run sequentially."
+  },
+  {
+    cat: "GitLab CI/CD",
+    text: "What is a GitLab Runner?",
+    opts: ["A built-in browser-based code editor", "An agent that executes the jobs defined in .gitlab-ci.yml — can be shared, group, or project-specific", "A merge request approval bot", "A container registry hosted by GitLab"],
+    ans: 1,
+    exp: "Runners are the agents that pick up and execute CI/CD jobs. They can run via Docker, shell, Kubernetes, or other executors, and be scoped as shared, group, or project-specific."
+  },
+  {
+    cat: "GitLab CI/CD",
+    text: "In GitLab CI/CD, you want a deployment job to run only on the main branch and require manual approval before deploying to production. Which keywords do you use?",
+    opts: ["only: tags combined with retry:", "rules: with 'if: $CI_COMMIT_BRANCH == \"main\"' plus 'when: manual'", "allow_failure: true on the deploy job", "environment: production alone is sufficient"],
+    ans: 1,
+    exp: "'rules' with a branch condition scopes the job to main, and 'when: manual' creates a play button requiring a human to trigger the production deploy — a common gated-deployment pattern."
+  },
+  {
+    cat: "GitLab CI/CD",
+    text: "How do you pass build artifacts (e.g., a compiled binary) from a build job to a later deploy job in GitLab CI/CD?",
+    opts: ["Commit the artifact back to the repo between jobs", "Define 'artifacts: paths:' in the build job; later jobs in subsequent stages download them automatically", "Use a shared volume mounted on the runner host", "Email the artifact to the deploy job"],
+    ans: 1,
+    exp: "The 'artifacts:' keyword uploads specified paths after a job completes. Jobs in later stages automatically download artifacts from earlier stages, enabling clean build-then-deploy handoffs."
+  }
+];
+
+const cats = [...new Set(questions.map(q => q.cat))];
+let current = 0;
+let answers = new Array(questions.length).fill(null);
+let answered = new Array(questions.length).fill(false);
+let score = 0;
+
+function render() {
+  const q = questions[current];
+  document.getElementById('q-number').textContent = 'Question ' + (current + 1);
+  document.getElementById('q-text').textContent = q.text;
+  document.getElementById('q-counter').textContent = (current + 1) + ' / ' + questions.length;
+  document.getElementById('category-badge').textContent = q.cat;
+  document.getElementById('progress').style.width = (((current + 1) / questions.length) * 100) + '%';
+  document.getElementById('score-live').textContent = 'Score: ' + score;
+
+  const optDiv = document.getElementById('options');
+  optDiv.innerHTML = '';
+  const labels = ['A','B','C','D'];
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.disabled = answered[current];
+    if (answered[current]) {
+      if (i === q.ans) btn.classList.add('correct');
+      else if (i === answers[current] && answers[current] !== q.ans) btn.classList.add('wrong');
+    }
+    btn.innerHTML = '<span class="opt-label">' + labels[i] + '</span><span>' + opt + '</span>';
+    btn.onclick = function() { selectAnswer(i); };
+    optDiv.appendChild(btn);
+  });
+
+  const expDiv = document.getElementById('explanation');
+  if (answered[current]) {
+    expDiv.textContent = q.exp;
+    expDiv.className = 'explanation' + (answers[current] !== q.ans ? ' wrong-exp' : '');
+    expDiv.classList.remove('hidden');
+  } else {
+    expDiv.classList.add('hidden');
+  }
+
+  document.getElementById('prev-btn').disabled = current === 0;
+  const nextBtn = document.getElementById('next-btn');
+  if (current === questions.length - 1 && answered[current]) {
+    nextBtn.innerHTML = 'See Results &rarr;';
+    nextBtn.disabled = false;
+  } else {
+    nextBtn.innerHTML = 'Next &rarr;';
+    nextBtn.disabled = !answered[current];
+  }
+}
+
+function selectAnswer(i) {
+  if (answered[current]) return;
+  answers[current] = i;
+  answered[current] = true;
+  if (i === questions[current].ans) score++;
+  render();
+}
+
+function nextQ() {
+  if (current === questions.length - 1) { showResults(); return; }
+  current++;
+  render();
+}
+
+function prevQ() {
+  if (current > 0) { current--; render(); }
+}
+
+function showResults() {
+  document.getElementById('quiz-view').classList.add('hidden');
+  document.getElementById('result-view').classList.remove('hidden');
+  document.getElementById('final-score').textContent = score + '/' + questions.length;
+
+  let verdict, detail;
+  const pct = (score / questions.length) * 100;
+  if (pct >= 83) {
+    verdict = "Strong hire for DevOps role";
+    detail = "Demonstrates solid command across AWS, Kubernetes, Terraform, and CI/CD — well-aligned with multi-project DevOps needs.";
+  } else if (pct >= 58) {
+    verdict = "Conditional hire — gaps to address";
+    detail = "Shows foundational DevOps knowledge but has gaps in some areas. Consider a follow-up technical round on weak categories before finalizing.";
+  } else {
+    verdict = "Not recommended at this time";
+    detail = "Significant knowledge gaps across core DevOps areas. The candidate may need more hands-on experience before handling production workloads.";
+  }
+  document.getElementById('verdict').textContent = verdict;
+  document.getElementById('verdict-detail').textContent = detail;
+
+  const catRows = document.getElementById('cat-rows');
+  catRows.innerHTML = '';
+  cats.forEach(function(cat) {
+    const catQs = questions.map(function(q, i){ return {q:q, i:i}; }).filter(function(o){ return o.q.cat === cat; });
+    const correct = catQs.filter(function(o){ return answered[o.i] && answers[o.i] === questions[o.i].ans; }).length;
+    const total = catQs.length;
+    const p = total ? Math.round((correct / total) * 100) : 0;
+    catRows.innerHTML += '<div class="cat-row"><span class="cat-label">' + cat + '</span><div class="cat-bar-wrap"><div class="cat-bar" style="width:' + p + '%"></div></div><span class="cat-score">' + correct + '/' + total + '</span></div>';
+  });
+}
+
+function restart() {
+  current = 0;
+  answers = new Array(questions.length).fill(null);
+  answered = new Array(questions.length).fill(false);
+  score = 0;
+  document.getElementById('quiz-view').classList.remove('hidden');
+  document.getElementById('result-view').classList.add('hidden');
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
