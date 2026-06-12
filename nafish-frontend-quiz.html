@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Frontend Interview Quiz – Mohd Nafish</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161920;
+    --surface2: #1e2230;
+    --border: #2a2f42;
+    --accent: #6c63ff;
+    --accent2: #00e5c3;
+    --text: #e8eaf0;
+    --muted: #7b82a0;
+    --correct: #00c896;
+    --wrong: #ff5b6e;
+    --warn: #ffb547;
+    --radius: 12px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px 48px;
+  }
+
+  /* ── Header ── */
+  .header {
+    width: 100%;
+    max-width: 760px;
+    text-align: center;
+    padding: 40px 0 32px;
+  }
+  .header .tag {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 20px;
+    margin-bottom: 18px;
+  }
+  .header h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 10px;
+    background: linear-gradient(135deg, #e8eaf0 30%, var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .header p {
+    font-size: 14px;
+    color: var(--muted);
+    max-width: 480px;
+    margin: 0 auto 28px;
+    line-height: 1.6;
+  }
+  .meta-chips {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .chip {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 14px;
+    color: var(--muted);
+  }
+  .chip span { color: var(--text); }
+
+  /* ── Progress ── */
+  .progress-wrap {
+    width: 100%;
+    max-width: 760px;
+    margin-bottom: 24px;
+  }
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .progress-bar-bg {
+    background: var(--surface2);
+    border-radius: 4px;
+    height: 6px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  /* ── Section label ── */
+  .section-label {
+    width: 100%;
+    max-width: 760px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .section-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+  .section-name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  /* ── Card ── */
+  .card {
+    width: 100%;
+    max-width: 760px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    margin-bottom: 24px;
+    transition: border-color 0.2s;
+  }
+  .card.correct-card { border-color: var(--correct); }
+  .card.wrong-card   { border-color: var(--wrong); }
+
+  .q-num {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+  .q-text {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  code {
+    font-family: 'Courier New', monospace;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 13px;
+    color: var(--accent2);
+  }
+
+  /* ── Options ── */
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    font-size: 14px;
+    line-height: 1.5;
+    text-align: left;
+  }
+  .opt:hover:not(.disabled) { border-color: var(--accent); background: #1e2230; }
+  .opt.selected { border-color: var(--accent); background: rgba(108,99,255,0.08); }
+  .opt.correct  { border-color: var(--correct); background: rgba(0,200,150,0.08); }
+  .opt.wrong    { border-color: var(--wrong);   background: rgba(255,91,110,0.08); }
+  .opt.disabled { cursor: default; }
+  .opt-key {
+    min-width: 26px; height: 26px;
+    border-radius: 6px;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .opt.correct .opt-key { background: var(--correct); color: #000; }
+  .opt.wrong   .opt-key { background: var(--wrong);   color: #fff; }
+  .opt.selected .opt-key { background: var(--accent); color: #fff; }
+
+  /* ── Explanation ── */
+  .explanation {
+    margin-top: 18px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    background: rgba(0,229,195,0.05);
+    border-left: 3px solid var(--accent2);
+    font-size: 13px;
+    line-height: 1.7;
+    color: #c4cde8;
+    display: none;
+  }
+  .explanation.show { display: block; }
+  .explanation strong { color: var(--accent2); }
+
+  /* ── Nav / Action Buttons ── */
+  .actions {
+    width: 100%;
+    max-width: 760px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+  .btn {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 24px;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-secondary {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+  .btn-secondary:hover { color: var(--text); border-color: var(--muted); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), #8b5cf6);
+    color: #fff;
+  }
+  .btn-primary:hover { opacity: 0.88; }
+  .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  /* ── Results Screen ── */
+  #results-screen {
+    display: none;
+    width: 100%;
+    max-width: 760px;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+  #results-screen.active { display: flex; }
+  .score-ring {
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    background: conic-gradient(var(--accent) var(--pct), var(--surface2) 0);
+    box-shadow: 0 0 0 6px var(--surface);
+  }
+  .score-inner {
+    width: 112px; height: 112px;
+    background: var(--surface);
+    border-radius: 50%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+  .score-num {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .score-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .result-heading {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    text-align: center;
+  }
+  .result-sub { font-size: 14px; color: var(--muted); text-align: center; max-width: 400px; line-height: 1.6; }
+  .result-breakdown {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .breakdown-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+  .breakdown-row:last-child { border-bottom: none; }
+  .breakdown-row .section-tag {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .breakdown-score {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .breakdown-score.good { color: var(--correct); }
+  .breakdown-score.ok   { color: var(--warn); }
+  .breakdown-score.low  { color: var(--wrong); }
+  .btn-restart {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    border: none;
+    border-radius: 12px;
+    padding: 14px 40px;
+    cursor: pointer;
+  }
+  .btn-restart:hover { opacity: 0.88; }
+
+  /* ── Quiz nav dots ── */
+  .dots {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 400px;
+  }
+  .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: background 0.2s;
+  }
+  .dot.answered { background: var(--accent); }
+  .dot.current  { background: var(--accent2); }
+
+  #quiz-screen { width: 100%; display: flex; flex-direction: column; align-items: center; }
+
+  @media (max-width: 540px) {
+    .card { padding: 20px 18px; }
+    .actions { flex-direction: column; }
+    .actions .btn { width: 100%; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<div class="header">
+  <div class="tag">Interview Assessment</div>
+  <h1>Frontend Developer Quiz</h1>
+  <p>React.js · Next.js · CSS · UI/UX · Performance · API Integration</p>
+  <div class="meta-chips">
+    <div class="chip">Candidate: <span>Mohd Nafish</span></div>
+    <div class="chip">Experience: <span>7+ Years</span></div>
+    <div class="chip">Questions: <span>20</span></div>
+    <div class="chip">Time: <span>~25 min</span></div>
+  </div>
+</div>
+
+<!-- ── QUIZ SCREEN ── -->
+<div id="quiz-screen">
+  <div class="progress-wrap">
+    <div class="progress-meta">
+      <span id="q-counter">Question 1 of 20</span>
+      <span id="score-live">Score: 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progress-fill" style="width:5%"></div>
+    </div>
+  </div>
+
+  <div class="section-label">
+    <div class="section-dot"></div>
+    <div class="section-name" id="section-name">React.js Fundamentals</div>
+  </div>
+
+  <div class="card" id="q-card">
+    <div class="q-num" id="q-num">Q01</div>
+    <div class="q-text" id="q-text"></div>
+    <div class="options" id="options-wrap"></div>
+    <div class="explanation" id="explanation"></div>
+  </div>
+
+  <div class="actions">
+    <div class="dots" id="nav-dots"></div>
+    <button class="btn btn-primary" id="next-btn" disabled onclick="nextQuestion()">Next →</button>
+  </div>
+</div>
+
+<!-- ── RESULTS SCREEN ── -->
+<div id="results-screen">
+  <div class="score-ring" id="score-ring">
+    <div class="score-inner">
+      <div class="score-num" id="final-score">0/20</div>
+      <div class="score-label">Score</div>
+    </div>
+  </div>
+  <div class="result-heading" id="result-heading">—</div>
+  <div class="result-sub" id="result-sub">—</div>
+  <div class="result-breakdown" id="breakdown"></div>
+  <button class="btn-restart" onclick="restartQuiz()">↺ Retake Quiz</button>
+</div>
+
+<script>
+const QUESTIONS = [
+  // ── SECTION 1: React.js Fundamentals ──
+  {
+    section: "React.js Fundamentals",
+    q: "In React, what is the primary purpose of the <code>useCallback</code> hook?",
+    options: [
+      "To memoize a component's rendered output",
+      "To memoize a function reference so it doesn't change on every render",
+      "To replace useState for managing callbacks",
+      "To trigger a side effect when a callback is called"
+    ],
+    answer: 1,
+    explanation: "<strong>useCallback</strong> returns a memoized version of a callback function. It only changes if one of its dependencies changes — preventing unnecessary re-renders in child components that receive the function as a prop."
+  },
+  {
+    section: "React.js Fundamentals",
+    q: "What is the key difference between <code>useMemo</code> and <code>useCallback</code>?",
+    options: [
+      "useMemo is for class components; useCallback is for functional ones",
+      "useMemo memoizes a computed value; useCallback memoizes a function",
+      "useCallback triggers on mount only; useMemo triggers on every render",
+      "They are identical — just aliases for the same internal hook"
+    ],
+    answer: 1,
+    explanation: "<strong>useMemo</strong> caches a computed <em>value</em> and re-computes only when deps change. <strong>useCallback</strong> caches a <em>function definition</em>. Think of useMemo as memoizing the result, useCallback as memoizing the function itself."
+  },
+  {
+    section: "React.js Fundamentals",
+    q: "You have a list of 1,000 items rendered via <code>.map()</code>. React warns about missing 'key' props. What is the WORST value to use as a key?",
+    options: [
+      "item.id (unique database ID)",
+      "item.slug (unique URL slug)",
+      "index (array index)",
+      "item.uuid (UUID v4)"
+    ],
+    answer: 2,
+    explanation: "Using array <strong>index</strong> as key is problematic when items are reordered, added, or removed. React uses keys to track component identity — index-based keys can cause incorrect state retention and performance regressions."
+  },
+  // ── SECTION 2: Next.js ──
+  {
+    section: "Next.js",
+    q: "In Next.js 13+ (App Router), what is the default rendering strategy for a component inside the <code>app/</code> directory?",
+    options: [
+      "Client-side rendering (CSR)",
+      "Static Site Generation (SSG)",
+      "Server Component (Server-side by default)",
+      "Incremental Static Regeneration (ISR)"
+    ],
+    answer: 2,
+    explanation: "In the <strong>App Router</strong>, all components are <strong>Server Components by default</strong>. You must explicitly add <code>'use client'</code> at the top of a file to opt into client-side rendering. This enables zero-JS-by-default server rendering."
+  },
+  {
+    section: "Next.js",
+    q: "Which Next.js feature allows a page to be statically generated at build time AND re-generated in the background at a set interval?",
+    options: [
+      "getServerSideProps",
+      "Incremental Static Regeneration (ISR)",
+      "Dynamic Routing",
+      "Middleware"
+    ],
+    answer: 1,
+    explanation: "<strong>ISR</strong> lets you specify a <code>revalidate</code> interval in <code>getStaticProps</code>. After that interval, Next.js regenerates the page in the background on the next request — serving the old page until the new one is ready."
+  },
+  {
+    section: "Next.js",
+    q: "In the Next.js App Router, to share state between a Server Component and a Client Component, what is the correct approach?",
+    options: [
+      "Pass props from Server → Client Component",
+      "Use useContext in both components",
+      "Use localStorage to sync the state",
+      "Server components can directly read from useState"
+    ],
+    answer: 0,
+    explanation: "Server Components <strong>cannot</strong> use React state or context. The pattern is to pass data as <strong>props</strong> from a Server Component down to a Client Component. The Server Component fetches/prepares data; the Client Component handles interactivity."
+  },
+  // ── SECTION 3: CSS / SCSS / Tailwind ──
+  {
+    section: "CSS / SCSS / Tailwind",
+    q: "In SCSS, what is the key advantage of using <code>@use</code> over <code>@import</code>?",
+    options: [
+      "@use allows nesting; @import does not",
+      "@use provides module scoping and avoids global namespace pollution",
+      "@use compiles faster than @import in all cases",
+      "@import is deprecated in CSS but @use is not"
+    ],
+    answer: 1,
+    explanation: "<strong>@use</strong> loads a stylesheet as a module, scoping its variables, functions, and mixins. This avoids the global namespace issues of <code>@import</code> and prevents duplicate CSS output. Dart Sass recommends always using <code>@use</code> and <code>@forward</code>."
+  },
+  {
+    section: "CSS / SCSS / Tailwind",
+    q: "In Tailwind CSS, how would you apply a style only on dark mode using the <code>dark:</code> variant?",
+    options: [
+      "It applies automatically based on system preference with no config",
+      "Tailwind doesn't support dark mode natively",
+      "Set <code>darkMode: 'class'</code> in config and add the <code>dark</code> class to <code>&lt;html&gt;</code>",
+      "Use <code>@media (prefers-dark)</code> in the CSS file"
+    ],
+    answer: 2,
+    explanation: "Tailwind supports two dark mode strategies: <code>'media'</code> (uses OS preference) and <code>'class'</code> (applies dark styles when the <code>dark</code> class is on the root element). Class-based is preferred for toggling dark mode via a button."
+  },
+  {
+    section: "CSS / SCSS / Tailwind",
+    q: "A developer writes: <code>position: sticky; top: 0</code> on a navbar, but it doesn't stick. What is the MOST likely cause?",
+    options: [
+      "sticky doesn't work on navbar elements",
+      "A parent element has <code>overflow: hidden</code> or <code>overflow: auto</code>",
+      "The z-index is missing",
+      "sticky requires JavaScript to activate"
+    ],
+    answer: 1,
+    explanation: "<code>position: sticky</code> is broken by any ancestor with <code>overflow: hidden</code>, <code>overflow: auto</code>, or <code>overflow: scroll</code>. The sticky element needs to be able to scroll within its scroll container — overflow on a parent clips that behavior."
+  },
+  // ── SECTION 4: JavaScript ──
+  {
+    section: "JavaScript",
+    q: "What does <code>Promise.allSettled()</code> do differently from <code>Promise.all()</code>?",
+    options: [
+      "allSettled is faster because it runs promises in parallel",
+      "allSettled waits for ALL promises to complete (fulfilled or rejected) without short-circuiting",
+      "allSettled returns only the fulfilled values; all returns everything",
+      "They are identical; allSettled is just an alias"
+    ],
+    answer: 1,
+    explanation: "<strong>Promise.all()</strong> short-circuits on the first rejection. <strong>Promise.allSettled()</strong> waits for all promises to settle (resolve or reject) and returns an array of result objects with <code>{status, value/reason}</code> — ideal when you need all outcomes regardless of failure."
+  },
+  {
+    section: "JavaScript",
+    q: "What is the output of: <code>console.log(typeof null)</code>?",
+    options: [
+      "<code>'null'</code>",
+      "<code>'undefined'</code>",
+      "<code>'object'</code>",
+      "<code>'boolean'</code>"
+    ],
+    answer: 2,
+    explanation: "This is a famous JavaScript quirk. <code>typeof null === 'object'</code> is a legacy bug from JS's first implementation. <code>null</code> is a primitive, but its type tag in the original engine was 000 — the same as objects — and this was never fixed to maintain backwards compatibility."
+  },
+  {
+    section: "JavaScript",
+    q: "You need to deeply clone a JavaScript object without using any library. Which modern approach is safest for JSON-serializable data?",
+    options: [
+      "<code>Object.assign({}, obj)</code>",
+      "<code>{...obj}</code> (spread operator)",
+      "<code>JSON.parse(JSON.stringify(obj))</code>",
+      "<code>Object.create(obj)</code>"
+    ],
+    answer: 2,
+    explanation: "<code>JSON.parse(JSON.stringify(obj))</code> creates a deep clone for JSON-compatible data. Spread and <code>Object.assign</code> are <em>shallow</em> copies — nested objects remain referenced. Note: this fails on functions, <code>undefined</code>, <code>Date</code>, <code>RegExp</code>, and circular refs; use <code>structuredClone()</code> in modern environments."
+  },
+  // ── SECTION 5: API Integration & React Query ──
+  {
+    section: "API Integration & React Query",
+    q: "You're using React Query. A user submits a form that creates a new record. How do you make the related list query re-fetch after a successful mutation?",
+    options: [
+      "Manually call <code>window.location.reload()</code>",
+      "Use <code>queryClient.invalidateQueries()</code> inside the mutation's <code>onSuccess</code> callback",
+      "Set a 1-second timer and then refetch",
+      "React Query automatically detects new records"
+    ],
+    answer: 1,
+    explanation: "<strong>queryClient.invalidateQueries(queryKey)</strong> marks queries as stale and triggers a background refetch. This is the canonical React Query pattern — call it in <code>onSuccess</code> of your mutation to keep the UI in sync after a create/update/delete."
+  },
+  {
+    section: "API Integration & React Query",
+    q: "When making a REST API call with <code>fetch()</code>, how do you properly handle HTTP error responses (like 404 or 500)?",
+    options: [
+      "fetch() automatically throws an error for 4xx/5xx status codes",
+      "Check <code>response.ok</code> and manually throw if false",
+      "Use try/catch — it catches 404 and 500 automatically",
+      "HTTP errors are only accessible via Axios, not native fetch"
+    ],
+    answer: 1,
+    explanation: "<strong>fetch() does NOT throw for HTTP error status codes</strong> (404, 500, etc.) — it only rejects on network failure. You must check <code>response.ok</code> (true for 200–299) and throw manually: <code>if (!response.ok) throw new Error(response.statusText)</code>."
+  },
+  // ── SECTION 6: UI/UX Principles ──
+  {
+    section: "UI/UX Design Principles",
+    q: "According to <strong>Fitts' Law</strong>, which button layout improves click speed in a modal dialog?",
+    options: [
+      "Small buttons clustered in the center of the modal",
+      "Large buttons placed at the bottom edge, close to where the cursor naturally rests",
+      "Buttons with animated hover states only",
+      "Buttons that expand on hover to signal clickability"
+    ],
+    answer: 1,
+    explanation: "<strong>Fitts' Law</strong> states that the time to reach a target depends on its size and distance. Larger buttons placed near the natural cursor resting position (e.g., bottom of a modal) are faster to click. This is why OS-native dialog buttons often appear at the screen corners or near frequent interaction zones."
+  },
+  {
+    section: "UI/UX Design Principles",
+    q: "A dashboard page loads slowly. From a UX standpoint, what should be shown IMMEDIATELY to reduce perceived wait time?",
+    options: [
+      "A full-screen white blank page until all data is ready",
+      "A loading spinner for 3 seconds",
+      "Skeleton screens (placeholder UI matching the content layout)",
+      "A pop-up asking the user to wait"
+    ],
+    answer: 2,
+    explanation: "<strong>Skeleton screens</strong> show a placeholder that mirrors the shape of incoming content — the layout feels instantly ready even while data loads. Research shows they reduce perceived loading time compared to spinners because they signal structure and progress rather than ambiguity."
+  },
+  {
+    section: "UI/UX Design Principles",
+    q: "WCAG 2.1 AA compliance requires a minimum color contrast ratio for normal text on a background. What is that ratio?",
+    options: [
+      "2:1",
+      "3:1",
+      "4.5:1",
+      "7:1"
+    ],
+    answer: 2,
+    explanation: "<strong>4.5:1</strong> is the WCAG 2.1 AA minimum contrast ratio for normal text (under 18pt). Large text (18pt+ or 14pt bold) requires 3:1. AAA conformance requires 7:1 for normal text. As a Sr. UI/UX dev, ensuring accessible contrast is fundamental."
+  },
+  // ── SECTION 7: Performance & Architecture ──
+  {
+    section: "Performance & Architecture",
+    q: "In a Next.js app, images loaded with <code>&lt;img&gt;</code> tags are large and slowing LCP. What is the best fix?",
+    options: [
+      "Compress images manually to WebP before deploying",
+      "Use Next.js <code>&lt;Image&gt;</code> component which handles lazy loading, resizing, and WebP conversion",
+      "Add <code>loading='lazy'</code> attribute manually to all img tags",
+      "Move images to a CDN and use absolute URLs"
+    ],
+    answer: 1,
+    explanation: "Next.js <strong>&lt;Image&gt;</strong> component automatically: serves WebP/AVIF, lazy-loads by default, resizes per viewport, prevents Cumulative Layout Shift (CLS), and uses built-in CDN caching. This directly improves LCP — the most impactful Core Web Vital for page experience."
+  },
+  {
+    section: "Performance & Architecture",
+    q: "You have a large React component tree that re-renders frequently due to a top-level state change. What is the most effective architectural fix?",
+    options: [
+      "Convert all components to class components",
+      "Wrap every component in React.memo()",
+      "Lift state down — co-locate state closer to where it's consumed, and use context selectively",
+      "Use jQuery for the dynamic parts to bypass React's diffing"
+    ],
+    answer: 2,
+    explanation: "<strong>State co-location</strong> is the most effective fix. Moving state closer to the components that need it limits re-render scope naturally. Wrapping everything in <code>React.memo()</code> blindly can cause bugs and isn't scalable. Context can also be split into smaller providers to prevent unrelated re-renders."
+  },
+  {
+    section: "Performance & Architecture",
+    q: "In a component-based architecture using React, what is the 'Compound Component' pattern used for?",
+    options: [
+      "Combining multiple npm packages into one component",
+      "A pattern where a parent and its child components share implicit state via context for flexible composition",
+      "Using multiple <code>useState</code> calls inside one component",
+      "A performance pattern to reduce the number of re-renders"
+    ],
+    answer: 1,
+    explanation: "<strong>Compound Components</strong> (like <code>&lt;Select&gt;</code> and <code>&lt;Select.Option&gt;</code>) share state via React Context internally. This gives consumers a flexible, declarative API without prop drilling. Examples: Radix UI, Headless UI, and custom Tabs/Accordion components."
+  }
+];
+
+let current = 0;
+let score = 0;
+let answered = new Array(QUESTIONS.length).fill(false);
+let selectedAnswers = new Array(QUESTIONS.length).fill(null);
+
+function renderQuestion() {
+  const q = QUESTIONS[current];
+  const total = QUESTIONS.length;
+
+  // Progress
+  document.getElementById('q-counter').textContent = `Question ${current + 1} of ${total}`;
+  document.getElementById('score-live').textContent = `Score: ${score}`;
+  document.getElementById('progress-fill').style.width = `${((current + 1) / total) * 100}%`;
+  document.getElementById('section-name').textContent = q.section;
+  document.getElementById('q-num').textContent = `Q${String(current + 1).padStart(2, '0')}`;
+  document.getElementById('q-text').innerHTML = q.q;
+
+  // Card state
+  const card = document.getElementById('q-card');
+  card.className = 'card';
+  if (answered[current]) {
+    card.classList.add(selectedAnswers[current] === q.answer ? 'correct-card' : 'wrong-card');
+  }
+
+  // Options
+  const wrap = document.getElementById('options-wrap');
+  wrap.innerHTML = '';
+  const keys = ['A', 'B', 'C', 'D'];
+  q.options.forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.className = 'opt';
+    if (answered[current]) {
+      div.classList.add('disabled');
+      if (i === q.answer) div.classList.add('correct');
+      else if (i === selectedAnswers[current]) div.classList.add('wrong');
+    } else if (selectedAnswers[current] === i) {
+      div.classList.add('selected');
+    }
+    div.innerHTML = `<div class="opt-key">${keys[i]}</div><span>${opt}</span>`;
+    if (!answered[current]) {
+      div.onclick = () => selectOption(i);
+    }
+    wrap.appendChild(div);
+  });
+
+  // Explanation
+  const expEl = document.getElementById('explanation');
+  if (answered[current]) {
+    expEl.innerHTML = q.explanation;
+    expEl.classList.add('show');
+  } else {
+    expEl.classList.remove('show');
+  }
+
+  // Next button
+  const nextBtn = document.getElementById('next-btn');
+  if (!answered[current]) {
+    nextBtn.disabled = selectedAnswers[current] === null;
+    nextBtn.textContent = 'Submit Answer';
+    nextBtn.onclick = submitAnswer;
+  } else {
+    nextBtn.disabled = false;
+    nextBtn.textContent = current < total - 1 ? 'Next →' : 'View Results';
+    nextBtn.onclick = nextQuestion;
+  }
+
+  // Dots
+  const dotsWrap = document.getElementById('nav-dots');
+  dotsWrap.innerHTML = '';
+  QUESTIONS.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'dot';
+    if (answered[i]) dot.classList.add('answered');
+    if (i === current) dot.classList.add('current');
+    dotsWrap.appendChild(dot);
+  });
+}
+
+function selectOption(i) {
+  if (answered[current]) return;
+  selectedAnswers[current] = i;
+  document.getElementById('next-btn').disabled = false;
+  renderQuestion();
+}
+
+function submitAnswer() {
+  if (selectedAnswers[current] === null) return;
+  answered[current] = true;
+  if (selectedAnswers[current] === QUESTIONS[current].answer) score++;
+  renderQuestion();
+}
+
+function nextQuestion() {
+  if (!answered[current]) { submitAnswer(); return; }
+  if (current < QUESTIONS.length - 1) {
+    current++;
+    renderQuestion();
+  } else {
+    showResults();
+  }
+}
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  const rs = document.getElementById('results-screen');
+  rs.classList.add('active');
+
+  const pct = Math.round((score / QUESTIONS.length) * 100);
+  document.getElementById('score-ring').style.setProperty('--pct', `${pct}%`);
+  document.getElementById('final-score').textContent = `${score}/${QUESTIONS.length}`;
+
+  let heading, sub;
+  if (pct >= 85) { heading = '🏆 Outstanding Performance'; sub = 'Excellent command of React, Next.js, CSS, and UI/UX fundamentals. Ready for senior-level frontend work.'; }
+  else if (pct >= 65) { heading = '✅ Good Performance'; sub = 'Solid foundation across the stack. A few areas to sharpen — focus on React internals and accessibility.'; }
+  else if (pct >= 45) { heading = '⚡ Needs Improvement'; sub = 'Core concepts need more depth. Review React hooks, Next.js rendering modes, and CSS positioning.'; }
+  else { heading = '📚 More Practice Needed'; sub = 'Revisit fundamentals: React lifecycle, JavaScript async patterns, CSS layout, and API integration.'; }
+
+  document.getElementById('result-heading').textContent = heading;
+  document.getElementById('result-sub').textContent = sub;
+
+  // Breakdown by section
+  const sections = {};
+  QUESTIONS.forEach((q, i) => {
+    if (!sections[q.section]) sections[q.section] = { total: 0, correct: 0 };
+    sections[q.section].total++;
+    if (selectedAnswers[i] === q.answer) sections[q.section].correct++;
+  });
+
+  const bd = document.getElementById('breakdown');
+  bd.innerHTML = '';
+  Object.entries(sections).forEach(([name, data]) => {
+    const p = Math.round((data.correct / data.total) * 100);
+    const cls = p >= 75 ? 'good' : p >= 50 ? 'ok' : 'low';
+    bd.innerHTML += `
+      <div class="breakdown-row">
+        <span class="section-tag">${name}</span>
+        <span class="breakdown-score ${cls}">${data.correct}/${data.total} &nbsp;(${p}%)</span>
+      </div>`;
+  });
+}
+
+function restartQuiz() {
+  current = 0; score = 0;
+  answered = new Array(QUESTIONS.length).fill(false);
+  selectedAnswers = new Array(QUESTIONS.length).fill(null);
+  document.getElementById('results-screen').classList.remove('active');
+  document.getElementById('quiz-screen').style.display = 'flex';
+  renderQuestion();
+}
+
+// Init
+renderQuestion();
+</script>
+</body>
+</html>
