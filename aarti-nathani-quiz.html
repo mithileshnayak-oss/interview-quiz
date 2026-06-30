@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UI/UX & Full-Stack Quiz — Aarti Nathani</title>
+<style>
+  :root{
+    --bg:#0f1117; --card:#171a24; --accent:#7c5cff; --accent2:#22d3ee;
+    --text:#eef0f6; --muted:#9aa0b4; --good:#2ecc71; --bad:#ff5c7a; --border:#262a38;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:'Segoe UI',system-ui,Arial,sans-serif;
+    background:radial-gradient(1200px 600px at 10% -10%, #221b3a 0%, var(--bg) 60%);
+    color:var(--text); min-height:100vh; padding:30px 16px;
+  }
+  .wrap{max-width:780px; margin:0 auto;}
+  header{text-align:center; margin-bottom:24px;}
+  header h1{font-size:1.7rem; margin:0 0 6px;}
+  header p{color:var(--muted); margin:0; font-size:.95rem;}
+  .badge{display:inline-block; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#0b0c12; font-weight:700; padding:4px 12px; border-radius:20px; font-size:.75rem; margin-bottom:10px; letter-spacing:.4px;}
+  .progress{height:8px; background:var(--border); border-radius:6px; overflow:hidden; margin:18px 0;}
+  .progress-bar{height:100%; width:0%; background:linear-gradient(90deg,var(--accent),var(--accent2)); transition:width .35s ease;}
+  .card{background:var(--card); border:1px solid var(--border); border-radius:14px; padding:24px; box-shadow:0 10px 30px rgba(0,0,0,.35);}
+  .cat{display:inline-block; font-size:.72rem; text-transform:uppercase; letter-spacing:.6px; color:var(--accent2); background:rgba(34,211,238,.1); padding:3px 10px; border-radius:6px; margin-bottom:14px;}
+  .qtext{font-size:1.1rem; line-height:1.5; margin:0 0 18px;}
+  .options{display:grid; gap:10px;}
+  .opt{
+    text-align:left; background:#1d2130; border:1px solid var(--border); color:var(--text);
+    padding:13px 16px; border-radius:10px; cursor:pointer; font-size:.95rem; transition:.15s;
+  }
+  .opt:hover{border-color:var(--accent); transform:translateX(2px);}
+  .opt.correct{background:rgba(46,204,113,.15); border-color:var(--good); color:#bdf5d3;}
+  .opt.wrong{background:rgba(255,92,122,.15); border-color:var(--bad); color:#ffc6d2;}
+  .opt[disabled]{cursor:default;}
+  .explain{margin-top:16px; padding:12px 14px; background:#11131c; border-left:3px solid var(--accent2); border-radius:6px; font-size:.88rem; color:var(--muted); display:none;}
+  .explain.show{display:block;}
+  .footer-row{display:flex; justify-content:space-between; align-items:center; margin-top:20px;}
+  .score-pill{font-size:.85rem; color:var(--muted);}
+  button.next{background:var(--accent); color:#fff; border:none; padding:10px 22px; border-radius:8px; font-size:.9rem; cursor:pointer; font-weight:600; display:none;}
+  button.next:hover{filter:brightness(1.1);}
+  .result{text-align:center; padding:10px;}
+  .result h2{font-size:2rem; margin-bottom:6px;}
+  .result .big{font-size:3rem; font-weight:800; background:linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .result p{color:var(--muted);}
+  .breakdown{text-align:left; margin-top:22px; font-size:.88rem;}
+  .breakdown div{display:flex; justify-content:space-between; padding:7px 0; border-bottom:1px solid var(--border);}
+  .restart{margin-top:20px; background:transparent; border:1px solid var(--accent); color:var(--accent2); padding:9px 20px; border-radius:8px; cursor:pointer;}
+  footer.site{text-align:center; color:var(--muted); font-size:.75rem; margin-top:24px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="badge">UI/UX • React • Tailwind • Full-Stack</div>
+    <h1>Technical Assessment Quiz</h1>
+    <p>Prepared for Aarti Nathani — UI/UX Designer & Frontend Engineer (React)</p>
+  </header>
+
+  <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+
+  <div class="card" id="quizCard"></div>
+
+  <footer class="site">Built for self-assessment & GitHub Pages portfolio · 20 questions</footer>
+</div>
+
+<script>
+const QUESTIONS = [
+  // ---- UI/UX Design ----
+  {cat:"UI/UX Design", q:"In Figma, what is the primary purpose of 'Auto Layout'?",
+   options:["To automatically generate color palettes","To create responsive, dynamically-resizing components without manual repositioning","To export assets in multiple formats","To run usability tests"],
+   answer:1, explain:"Auto Layout lets frames resize and reflow automatically as content changes — core to building responsive design systems in Figma."},
+  {cat:"UI/UX Design", q:"What is the main goal of a 'design system'?",
+   options:["To make every screen look different for variety","To ensure visual and functional consistency across a product via reusable components","To replace the need for developer handoff","To reduce the number of Figma files"],
+   answer:1, explain:"Design systems standardize components, tokens, and patterns so products stay consistent as they scale."},
+  {cat:"UI/UX Design", q:"Which technique is used early in the UX process to understand user needs before designing screens?",
+   options:["High-fidelity prototyping","User research (interviews, surveys, personas)","A/B testing the final product","Writing production code"],
+   answer:1, explain:"User research grounds design decisions in real user needs and happens before wireframes/prototypes."},
+  {cat:"UI/UX Design", q:"What does 'accessibility (a11y)' in UI design primarily address?",
+   options:["Making the UI load faster","Ensuring usable experiences for people with disabilities (contrast, screen readers, keyboard nav)","Reducing file size of Figma assets","Adding more animations"],
+   answer:1, explain:"Accessibility ensures interfaces work for users with visual, motor, auditory, or cognitive impairments — e.g. WCAG contrast ratios, ARIA labels, keyboard navigation."},
+  {cat:"UI/UX Design", q:"What is a 'wireframe' typically used for?",
+   options:["Final pixel-perfect visual design","Low-fidelity structural layout to plan content and flow before visual design","Writing backend APIs","Hosting the website"],
+   answer:1, explain:"Wireframes focus on structure and hierarchy, intentionally skipping color/typography to validate layout and flow early."},
+
+  // ---- React.js ----
+  {cat:"React.js", q:"What does the useState hook return?",
+   options:["A single value only","An array with the current state value and a setter function","A promise","A class component instance"],
+   answer:1, explain:"const [state, setState] = useState(initial) — useState returns a [value, setterFunction] pair."},
+  {cat:"React.js", q:"Why are 'keys' important when rendering lists in React?",
+   options:["They style list items","They help React identify which items changed/added/removed for efficient re-rendering","They are required for CSS","They sort the array automatically"],
+   answer:1, explain:"Keys give React a stable identity for each list item, enabling efficient diffing during re-renders."},
+  {cat:"React.js", q:"What is the purpose of the useEffect hook?",
+   options:["To create new components","To handle side effects like data fetching, subscriptions, or DOM updates after render","To define component styling","To manage routing"],
+   answer:1, explain:"useEffect runs side effects (API calls, timers, subscriptions) after the component renders, and can clean up via a return function."},
+  {cat:"React.js", q:"What are 'props' in React?",
+   options:["Internal component state","Read-only data passed from a parent component to a child component","CSS properties","Global variables"],
+   answer:1, explain:"Props are immutable inputs passed down from parent to child, enabling reusable, configurable components."},
+  {cat:"React.js", q:"What's the main benefit of building 'reusable UI components' (as mentioned in design-system work)?",
+   options:["They make the bundle size larger","They reduce duplication and keep UI consistent across the app","They eliminate the need for testing","They only work with class components"],
+   answer:1, explain:"Reusable components encapsulate markup/logic/styling once, ensuring consistency and reducing maintenance overhead."},
+
+  // ---- Tailwind / CSS ----
+  {cat:"Tailwind CSS", q:"What is the core philosophy behind Tailwind CSS?",
+   options:["Writing custom CSS classes for every element","Utility-first: composing small, single-purpose classes directly in markup","Using only inline styles","Replacing JavaScript entirely"],
+   answer:1, explain:"Tailwind provides low-level utility classes (e.g. flex, p-4, text-center) that you compose in HTML/JSX instead of writing custom CSS."},
+  {cat:"Tailwind CSS", q:"How do you make a Tailwind layout responsive for different screen sizes?",
+   options:["Write separate stylesheets for each device","Use responsive prefixes like sm:, md:, lg: before utility classes","Use only percentage widths","It's not possible in Tailwind"],
+   answer:1, explain:"Tailwind uses mobile-first responsive prefixes, e.g. md:flex-row applies flex-row at the md breakpoint and above."},
+  {cat:"CSS", q:"Which CSS property is most directly responsible for creating a flexible, responsive grid of items?",
+   options:["display: flex / display: grid","color","font-weight","text-decoration"],
+   answer:0, explain:"Flexbox and CSS Grid (display: flex / display: grid) are the standard tools for responsive, flexible layouts."},
+
+  // ---- JavaScript Fundamentals ----
+  {cat:"JavaScript", q:"What does the '===' operator check in JavaScript?",
+   options:["Only value equality, allowing type coercion","Both value and type equality (strict equality)","Reference equality for objects only","Nothing — it's invalid syntax"],
+   answer:1, explain:"=== compares both value and type without coercion, unlike == which coerces types before comparing."},
+  {cat:"JavaScript", q:"What is the purpose of 'async/await' in JavaScript?",
+   options:["To make code run faster by default","To write asynchronous code (like API calls) in a more readable, synchronous-looking style","To declare variables","To style components"],
+   answer:1, explain:"async/await is syntactic sugar over Promises, letting asynchronous code read top-to-bottom instead of nested .then() chains."},
+  {cat:"JavaScript", q:"Which array method creates a new array by transforming each element, commonly used in React to render lists?",
+   options:["forEach()","map()","filter() only","push()"],
+   answer:1, explain:"Array.map() returns a new array of transformed items — the standard way to render lists of JSX elements in React."},
+
+  // ---- Full-Stack / MERN ----
+  {cat:"Full-Stack (MERN)", q:"In the MERN stack, what does the 'N' stand for and what is its role?",
+   options:["Nginx — a web server","Node.js — the JavaScript runtime that powers the backend server","Next.js — a React framework","NoSQL — a type of database query"],
+   answer:1, explain:"MERN = MongoDB, Express.js, React, Node.js. Node.js runs JavaScript on the server to handle backend logic."},
+  {cat:"Full-Stack (MERN)", q:"What is the role of Express.js in a MERN application?",
+   options:["It's the database layer","It's a lightweight Node.js framework for building REST APIs and handling routing/middleware","It renders the frontend UI","It's a CSS framework"],
+   answer:1, explain:"Express.js simplifies building backend APIs in Node — handling routes, middleware, and HTTP requests/responses."},
+  {cat:"Full-Stack (MERN)", q:"What kind of database is MongoDB, and how does that affect data design?",
+   options:["A relational SQL database requiring fixed schemas/tables","A NoSQL document database storing flexible, JSON-like documents","A purely in-memory cache","A file storage system only"],
+   answer:1, explain:"MongoDB stores data as flexible BSON/JSON-like documents in collections, allowing schema flexibility compared to relational tables."},
+
+  // ---- Git/GitHub ----
+  {cat:"Git & GitHub", q:"What is the purpose of a 'pull request' on GitHub?",
+   options:["To delete a branch","To propose changes from one branch for review and merging into another","To download the repository","To create a new GitHub account"],
+   answer:1, explain:"A pull request lets you propose, discuss, and review code changes before merging them into a target branch."},
+  {cat:"Git & GitHub", q:"What does 'git clone' do?",
+   options:["Creates a new empty repository","Downloads a full copy of a remote repository (including history) to your local machine","Deletes uncommitted changes","Pushes local changes to remote"],
+   answer:1, explain:"git clone copies an entire remote repository — files, branches, and commit history — to your local environment."}
+];
+
+let current = 0, score = 0, answered = false;
+const card = document.getElementById('quizCard');
+const bar = document.getElementById('progressBar');
+
+function render(){
+  if(current >= QUESTIONS.length){ renderResult(); return; }
+  answered = false;
+  const item = QUESTIONS[current];
+  bar.style.width = ((current)/QUESTIONS.length*100) + '%';
+  card.innerHTML = `
+    <span class="cat">${item.cat} · Q${current+1}/${QUESTIONS.length}</span>
+    <p class="qtext">${item.q}</p>
+    <div class="options" id="opts"></div>
+    <div class="explain" id="explain"></div>
+    <div class="footer-row">
+      <span class="score-pill">Score: ${score}/${current}</span>
+      <button class="next" id="nextBtn">${current === QUESTIONS.length-1 ? 'See Results →' : 'Next →'}</button>
+    </div>
+  `;
+  const optsDiv = document.getElementById('opts');
+  item.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.textContent = opt;
+    btn.onclick = () => selectOption(i, btn);
+    optsDiv.appendChild(btn);
+  });
+  document.getElementById('nextBtn').onclick = () => { current++; render(); };
+}
+
+function selectOption(i, btn){
+  if(answered) return;
+  answered = true;
+  const item = QUESTIONS[current];
+  const allBtns = document.querySelectorAll('.opt');
+  allBtns.forEach((b, idx) => {
+    b.disabled = true;
+    if(idx === item.answer) b.classList.add('correct');
+    else if(idx === i) b.classList.add('wrong');
+  });
+  if(i === item.answer) score++;
+  document.getElementById('explain').textContent = item.explain;
+  document.getElementById('explain').classList.add('show');
+  document.getElementById('nextBtn').style.display = 'inline-block';
+}
+
+function renderResult(){
+  bar.style.width = '100%';
+  const pct = Math.round((score/QUESTIONS.length)*100);
+  let verdict = pct >= 80 ? "Strong grasp across UI/UX & full-stack basics 🚀"
+              : pct >= 60 ? "Solid foundation — a few areas to brush up 👍"
+              : "Good starting point — review the explanations and retry 💪";
+
+  const catScores = {};
+  QUESTIONS.forEach((q, idx) => {
+    if(!catScores[q.cat]) catScores[q.cat] = {correct:0, total:0};
+  });
+
+  card.innerHTML = `
+    <div class="result">
+      <h2>Quiz Complete!</h2>
+      <div class="big">${score}/${QUESTIONS.length}</div>
+      <p>${pct}% — ${verdict}</p>
+      <div class="breakdown" id="breakdown"></div>
+      <button class="restart" onclick="restart()">↻ Retake Quiz</button>
+    </div>
+  `;
+}
+
+function restart(){
+  current = 0; score = 0;
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
