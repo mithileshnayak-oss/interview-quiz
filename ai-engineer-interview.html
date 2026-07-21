@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Engineer Interview — Rishi</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0f14;
+      --surface: #13161d;
+      --surface2: #1a1e28;
+      --border: #252a38;
+      --accent: #7c6af7;
+      --accent2: #4fc3f7;
+      --success: #4caf7a;
+      --warn: #f7c948;
+      --danger: #f76a6a;
+      --text: #e8eaf0;
+      --muted: #6b7385;
+      --mono: 'JetBrains Mono', monospace;
+      --sans: 'Inter', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      border-bottom: 1px solid var(--border);
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      background: rgba(13,15,20,0.95);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+    }
+    .header-left { display: flex; align-items: center; gap: 14px; }
+    .logo {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      padding: 4px 10px;
+      border: 1px solid var(--accent);
+      border-radius: 4px;
+    }
+    .header-title { font-size: 13px; color: var(--muted); font-family: var(--mono); }
+    .timer-wrap { display: flex; align-items: center; gap: 10px; }
+    .timer {
+      font-family: var(--mono);
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--warn);
+      letter-spacing: 0.04em;
+      min-width: 70px;
+      text-align: right;
+    }
+    .timer.urgent { color: var(--danger); animation: pulse 1s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+    .timer-label { font-size: 11px; color: var(--muted); text-align: right; }
+
+    /* ── PROGRESS BAR ── */
+    .progress-bar-wrap {
+      height: 3px;
+      background: var(--border);
+      width: 100%;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transition: width 0.4s ease;
+    }
+
+    /* ── MAIN ── */
+    .main { max-width: 780px; margin: 0 auto; padding: 40px 24px 80px; }
+
+    /* ── INTRO CARD ── */
+    .intro-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 32px;
+    }
+    .intro-card h1 { font-family: var(--mono); font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+    .intro-card h1 span { color: var(--accent); }
+    .intro-card p { color: var(--muted); font-size: 14px; margin-bottom: 20px; }
+    .badges { display: flex; gap: 8px; flex-wrap: wrap; }
+    .badge {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      border: 1px solid;
+    }
+    .badge-purple { color: var(--accent); border-color: var(--accent); background: rgba(124,106,247,0.08); }
+    .badge-blue   { color: var(--accent2); border-color: var(--accent2); background: rgba(79,195,247,0.08); }
+    .badge-green  { color: var(--success); border-color: var(--success); background: rgba(76,175,122,0.08); }
+    .badge-warn   { color: var(--warn); border-color: var(--warn); background: rgba(247,201,72,0.08); }
+
+    /* ── SECTION HEADER ── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 36px 0 16px;
+    }
+    .section-tag {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      background: rgba(124,106,247,0.1);
+      padding: 3px 10px;
+      border-radius: 3px;
+    }
+    .section-line { flex: 1; height: 1px; background: var(--border); }
+
+    /* ── QUESTION CARD ── */
+    .q-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 22px 24px;
+      margin-bottom: 14px;
+      transition: border-color 0.2s;
+    }
+    .q-card:hover { border-color: #30364a; }
+    .q-card.answered { border-color: rgba(76,175,122,0.35); }
+    .q-card.answered-warn { border-color: rgba(247,106,106,0.3); }
+
+    .q-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .q-num {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      background: rgba(124,106,247,0.12);
+      padding: 2px 8px;
+      border-radius: 4px;
+      min-width: 36px;
+      text-align: center;
+    }
+    .q-tag {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .q-difficulty {
+      margin-left: auto;
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+    .diff-easy   { color: var(--success); background: rgba(76,175,122,0.1); }
+    .diff-medium { color: var(--warn);    background: rgba(247,201,72,0.1); }
+    .diff-hard   { color: var(--danger);  background: rgba(247,106,106,0.1); }
+
+    .q-text {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 14px;
+      line-height: 1.55;
+    }
+
+    /* ── TEXTAREA ── */
+    .q-answer {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 14px;
+      padding: 12px 14px;
+      resize: vertical;
+      min-height: 88px;
+      transition: border-color 0.2s;
+      line-height: 1.6;
+    }
+    .q-answer:focus { outline: none; border-color: var(--accent); }
+    .q-answer::placeholder { color: var(--muted); font-size: 13px; }
+
+    /* ── MCQ ── */
+    .mcq-options { display: flex; flex-direction: column; gap: 8px; }
+    .mcq-opt {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 11px 14px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      font-size: 14px;
+    }
+    .mcq-opt:hover { border-color: var(--accent); background: rgba(124,106,247,0.05); }
+    .mcq-opt input[type="radio"] { display: none; }
+    .mcq-opt.selected { border-color: var(--accent); background: rgba(124,106,247,0.12); color: var(--text); }
+    .mcq-dot {
+      width: 16px; height: 16px; min-width: 16px;
+      border-radius: 50%;
+      border: 2px solid var(--muted);
+      margin-top: 2px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .mcq-opt.selected .mcq-dot { border-color: var(--accent); background: var(--accent); }
+
+    /* ── CODE BLOCK ── */
+    .code-block {
+      background: #0a0c10;
+      border: 1px solid #1d2130;
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-family: var(--mono);
+      font-size: 12.5px;
+      color: #a8b0cc;
+      margin-bottom: 14px;
+      overflow-x: auto;
+      line-height: 1.7;
+    }
+    .code-block .kw  { color: #7c6af7; }
+    .code-block .str { color: #4fc3f7; }
+    .code-block .fn  { color: #f7c948; }
+    .code-block .cm  { color: #4a5270; }
+
+    /* ── SUBMIT / RESULTS ── */
+    .submit-row {
+      margin-top: 40px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .btn-submit {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      padding: 14px 32px;
+      background: linear-gradient(135deg, var(--accent), #5a4de0);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    .btn-submit:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-submit:active { transform: translateY(0); }
+    .submit-hint { font-size: 12px; color: var(--muted); }
+
+    /* ── RESULTS PANEL ── */
+    .results-panel {
+      display: none;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      margin-top: 32px;
+    }
+    .results-panel.visible { display: block; }
+    .results-panel h2 { font-family: var(--mono); font-size: 20px; margin-bottom: 24px; }
+    .results-panel h2 span { color: var(--accent); }
+
+    .score-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px; }
+    .score-box {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+    }
+    .score-box .score-val { font-family: var(--mono); font-size: 32px; font-weight: 700; }
+    .score-box .score-lbl { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .score-box.green .score-val { color: var(--success); }
+    .score-box.blue  .score-val { color: var(--accent2); }
+    .score-box.purple .score-val { color: var(--accent); }
+
+    .breakdown-title { font-family: var(--mono); font-size: 13px; color: var(--muted); margin-bottom: 12px; letter-spacing: 0.06em; }
+    .breakdown-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .breakdown-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+    }
+    .breakdown-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .dot-green { background: var(--success); }
+    .dot-warn  { background: var(--warn); }
+    .dot-gray  { background: var(--muted); }
+
+    /* ── ANSWERED INDICATOR ── */
+    .q-status {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      margin-top: 8px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      gap: 6px;
+      transition: color 0.2s;
+    }
+    .q-status.done { color: var(--success); }
+    .q-status .status-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: currentColor;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .header { padding: 14px 16px; }
+      .main { padding: 20px 12px 60px; }
+      .score-grid { grid-template-columns: repeat(2, 1fr); }
+      .intro-card { padding: 20px; }
+    }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-left">
+    <div class="logo">AI//EVAL</div>
+    <div class="header-title">AI Engineer Interview · Rishi</div>
+  </div>
+  <div class="timer-wrap">
+    <div>
+      <div class="timer" id="timer">30:00</div>
+      <div class="timer-label">TIME LEFT</div>
+    </div>
+  </div>
+</header>
+
+<!-- PROGRESS BAR -->
+<div class="progress-bar-wrap">
+  <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+</div>
+
+<main class="main">
+
+  <!-- INTRO -->
+  <div class="intro-card">
+    <h1><span>30 Questions</span> · AI Engineer Assessment</h1>
+    <p>Covers your hands-on experience with RAG, LangChain/LangGraph, MCP, vector DBs, tool calling, agentic systems, prompt engineering, and system design. Answer every question — subjective answers are self-evaluated after submission.</p>
+    <div class="badges">
+      <span class="badge badge-purple">RAG & Retrieval</span>
+      <span class="badge badge-blue">LangChain / LangGraph</span>
+      <span class="badge badge-green">MCP & Tool Calling</span>
+      <span class="badge badge-warn">AI System Design</span>
+      <span class="badge badge-purple">Prompt Engineering</span>
+      <span class="badge badge-blue">Agents</span>
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────── -->
+  <!-- SECTION 1: RAG & VECTOR RETRIEVAL -->
+  <!-- ────────────────────────────────────────────── -->
+  <div class="section-header">
+    <span class="section-tag">RAG & Vector Retrieval</span>
+    <div class="section-line"></div>
+  </div>
+
+  <!-- Q1 -->
+  <div class="q-card" id="qcard-1">
+    <div class="q-meta">
+      <span class="q-num">Q01</span>
+      <span class="q-tag">RAG</span>
+      <span class="q-difficulty diff-easy">Easy</span>
+    </div>
+    <div class="q-text">In your SalesPilot project you built a RAG pipeline. Walk through each stage: document ingestion → chunking → embedding → indexing → retrieval → generation. What design decision at each stage had the most impact on output quality?</div>
+    <textarea class="q-answer" id="ans-1" placeholder="Write your answer here…" oninput="markAnswered(1)"></textarea>
+    <div class="q-status" id="status-1"><div class="status-dot"></div>Not answered</div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="q-card" id="qcard-2">
+    <div class="q-meta">
+      <span class="q-num">Q02</span>
+      <span class="q-tag">Chunking</span>
+      <span class="q-difficulty diff-medium">Medium</span>
+    </div>
+    <div class="q-text">Compare fixed-size chunking, sentence-based chunking, and recursive character text splitting. Which did you use in SalesPilot and why? What is the risk of chunk overlap being too large vs too small?</div>
+    <textarea class="q-answer" id="ans-2" placeholder="Write your answer here…" oninput="markAnswered(2)"></textarea>
+    <div class="q-status" id="status-2"><div class="status-dot"></div>Not answered</div>
+  </div>
+
+  <!-- Q3 MCQ -->
+  <div class="q-card" id="qcard-3">
+    <div class="q-meta">
+      <span class="q-num">Q03</span>
+      <span class="q-tag">Vector DB</span>
+      <span class="q-difficulty diff-easy">Easy</span>
+    </div>
+    <div class="q-text">You used Pinecone for vector storage. Which of the following best describes how Pinecone performs approximate nearest neighbour (ANN) search at scale?</div>
+    <div class="mcq-options" id="mcq-3">
+      <label class="mcq-opt" onclick="selectMCQ(3, 'A')"><input type="radio" name="q3"><div class="mcq-dot"></div>A. Full linear scan of every vector with cosine similarity</label>
+      <label class="mcq-opt" onclick="selectMCQ(3, 'B')"><input type="radio" name="q3"><div class="mcq-dot"></div>B. HNSW graph traversal or IVF-based partitioning to narrow the search space</label>
+      <label class="mcq-opt" onclick="selectMCQ(3, 'C')"><input type="radio" name="q3"><div class="mcq-dot"></div>C. B-tree index over embedding dimensions</label>
+      <label class="mcq-opt" onclick="selectMCQ(3, 'D')"><input type="radio" name="q3"><div class="mcq-dot"></div>D. Sorted inverted index over tokenised vector values</label>
+    </div>
+    <div class="q-status" id="status-3"><div class="status-dot"></div>Not answered</div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="q-card" id="qcard-4">
+    <div class="q-meta">
+      <span class="q-num">Q04</span>
+      <span class="q-tag">Retrieval Quality</span>
+      <span class="q-difficulty diff-hard">Hard</span>
+    </div>
+    <div class="q-text">You used "similarity thresholds and metadata filtering" to improve retrieval relevance. Describe a concrete scenario in SalesPilot where a query returned irrelevant chunks. What threshold value did you tune, and how did you verify improvement?</div>
+    <textarea class="q-answer" id="ans-4" placeholder="Write your answer here…" oninput="markAnswered(4)"></textarea>
+    <div class="q-status" id="status-4"><div class="status-dot"></div>Not answered</div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="q-card" id="qcard-5">
+    <div class="q-meta">
+      <span class="q-num">Q05</span>
+      <span class="q-tag">Hybrid Search</span>
+      <span class="q-difficulty diff-medium">Medium</span>
+    </div>
+    <div class="q-text">What is hybrid search in the context of RAG (combining dense + sparse retrieval)? When would you choose it over pure semantic search, and what is the role of Reciprocal Rank Fusion (RRF) in combining results?</div>
+    <textarea class="q-answer" id="ans-5" placeholder="Write your answer here…" oninput="markAnswered(5)"></textarea>
+    <div class="q-status" id="status-5"><div class="status-dot"></div>Not answered</div>
+  </div>
+
+  <!-- ────────────────────────────────────────────── -->
+  <!-- SECTION 2: LangChain / LangGraph -->
+  <!-- ────────────────────────────────────────────── -->
+  <div class="section-header">
+    <span class="section-tag">LangChain & LangGraph</span>
+    <div class="section-line"></div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="q-card" id="qcard-6">
+    <div class="q-meta">
+      <span class="q-num">Q06</span>
+      <span class="q-tag">LangGraph</span>
+      <span class="q-difficulty diff-medium">Medium</span>
+    </div>
+    <div class="q-text">Explain the core primitives in LangGraph: State, Node, Edge, and Conditional Edge. How would you model a "research → draft → review → publish" agent workflow using these primitives? Draw it in ASCII if helpful.</div>
+    <textarea class="q-answer" id="ans-6" placeholder="Write your answer here…" oninput="markAnswered(6)"></textarea>
+    <div class="q-status" id="status-6"><div class="status-dot"></div>Not answered</div>
+  </div>
+
+  <!-- Q7 MCQ -->
+  <div class="q-card" id="qcard-7">
+    <div class="q-meta">
+      <span class="q-num">Q07</span>
+      <span class="q-tag">LangChain</span>
+      <span class="q-difficulty diff-medium">Medium</span>
+    </div>
+    <div class="q-text">In LangChain's LCEL (LangChain Expression Language), what does the <code>|</code> pipe operator accomplish?</div>
+    <div class="mcq-options" id="mcq-7">
+      <label class="mcq-opt" onclick="selectMCQ(7, 'A')"><input type="radio" name="q7"><div class="mcq-dot"></div>A. Runs two chains in parallel and merges outputs</label>
+      <label class="mcq-opt" onclick="selectMCQ(7, 'B')"><input type="radio" name="q7"><div class="mcq-dot"></div>B. Chains runnables sequentially, piping the output of one as input to the next</label>
+      <label class="mcq-opt" onclick="selectMCQ(7, 'C')"><input type="radio" name="q7"><div class="mcq-opt"></div>C. Streams tokens one-by-one to the client</label>
+      <label class="mcq-opt" onclick="selectMCQ(7, 'D')"><input type="radio" name="q7"><div class="mcq-dot"></div>D. Acts as a logical OR between two retrieval results</label>
+    </div>
+    <div class="q-status" id="status-7"><div class="status-dot"></div>Not answered</div>
+  </div>
+
+  <!-- Q8 -->
+  <div class="q-card" id="qcard-8">
+    <div class="q-meta">
+      <span class="q-num">Q08</span>
+      <span class="q-tag">Memory</span>
+      <span class="q-difficulty diff-hard">Hard</span>
+    </div>
+    <div class="q-text">Compare these memory strategies in a LangChain multi-turn agent: (a) ConversationBufferMemory, (b) ConversationSummaryBufferMemory, (c) VectorStoreRetrieverMemory. Under what conditions would you choose each, and what are the token-cost implications?</div>
+    <textarea class="q-answer" id="ans-8" placeholder="Write your answer here…" oninput="markAnswered(8)"></textarea>
+    <div class="q-status" id="status-8"><div class="status-dot"></div>Not answered</div>
+  </div>
+
+  <!-- Q9 -->
+  <div class="q-card" id="qcard-9">
+    <div class="q-meta">
+      <span class="q-num">Q09</span>
+      <span class="q-tag">LangGraph</span>
+      <span class="q-difficulty diff-hard">Hard</span>
+    </div>
+    <div class="q-text">What is a "checkpointer" in LangGraph and why is it important for production agentic systems? How would you implement human-in-the-loop approval at a specific node using LangGraph's interrupt mechanism?</div>
+    <textarea class="q-answer" id="ans-9" placeholder="Write your answer here…" oninput="markAnswered(9)"></textarea>
+    <div class="q-status" id="status-9"><div class="status-dot"></div>Not answered</div>
+  </div>
+
+  <!-- Q10 code question -->
+  <div class="q-card" id="qcard-10">
+    <div class="q-meta">
+      <span class="q-num">Q10</span>
+      <span class="q-tag">Code</span>
+      <span class="q-difficulty diff-medium">Medium</span>
+    </div>
+    <div class="q-text">What does the following LangGraph snippet do? Identify the issue and rewrite the conditional edge logic correctly.</div>
+    <div class="code-block">
+<span class="kw">from</span> langgraph.graph <span class="kw">import</span> StateGraph
+
+<span class="kw">def</span> <span class="fn">router</span>(state):
+    <span class="kw">if</span> state[<span class="str">"needs_tool"</span>]:
+        <span class="kw">return</span> <span class="str">"tool_node"</span>
+    <span class="kw">return</span> <span class="str">"end"</span>
+
+graph.add_conditional_edges(<span class="str">"agent"</span>, router)  <span class="cm"># ← problem here</span>
+    </div>
+    <textarea class="q-answer" id="ans-10" placeholder="Identify the bug and write the fix…" oninput="markAnswered(10)"></textarea>
+    <div class="q-status" id="status-10"><div class="status-dot"></div>Not answered</div>
+  </div>
+
+  <!-- ────────────────────────────────────────────── -->
+  <!-- SECTION 3: MCP & TOOL CALLING -->
+  <!-- ────────────────────────────────────────────── -->
+  <div class="section-header">
+    <span class="section-tag">MCP & Tool Calling</span>
+    <div class="section-line"></div>
+  </div>
+
+  <!-- Q11 -->
+  <div class="q-card" id="qcard-11">
+    <div class="q-meta">
+      <span class="q-num">Q11</span>
+      <span class="q-tag">MCP</span>
+      <span class="q-difficulty diff-medium">Medium</span>
+    </div>
+    <div class="q-text">Explain Anthropic's Model Context Protocol (MCP). What problem does it solve compared to writing custom tool integrations? How does an MCP server expose "resources", "tools", and "prompts" to the host?</div>
+    <textarea class="q-answer" id="ans-11" placeholder="Write your answer here…" oninput="markAnswered(11)"></textarea>
+    <div class="q-status" id="status-11"><div class="status-dot"></div>Not answered</div>
+  </div>
+
+  <!-- Q12 MCQ -->
+  <div class="q-card" id="qcard-12">
+    <div class="q-meta">
+      <span class="q-num">Q12</span>
+      <span class="q-tag">Tool Calling</span>
+      <span class="q-difficulty diff-easy">Easy</span>
+    </div>
+    <div class="q-text">When an LLM returns a <code>tool_use</code> content block, what must your orchestration layer do before calling the LLM again?</div>
+    <div class="mcq-options" id="mcq-12">
+      <label class="mcq-opt" onclick="selectMCQ(12, 'A')"><input type="radio" name="q12"><div class="mcq-dot"></div>A. Append the raw JSON tool call to the messages array and resend</label>
+      <label class="mcq-opt" onclick="selectMCQ(12, 'B')"><input type="radio" name="q12"><div class="mcq-dot"></div>B. Execute the tool, then append both the assistant's tool_use block and a tool_result user message before the next call</label>
+      <label class="mcq-opt" onclick="selectMCQ(12, 'C')"><input type="radio" name="q12"><div class="mcq-dot"></div>C. Re-prompt the model with only the tool result, discarding prior context</label>
+      <label class="mcq-opt" onclick="selectMCQ(12, 'D')"><input type="radio" name="q12"><div class="mcq-dot"></div>D. Stream the tool result token-by-token back to the user immediately</label>
+    </div>
+    <div class="q-status" id="status-12"><div class="status-dot"></div>Not answered</div>
+  </div>
+
+  <!-- Q13 -->
+  <div class="q-card" id="qcard-13">
+    <div class="q-meta">
+      <span class="q-num">Q13</span>
+      <span class="q-tag">MCP Remote</span>
+      <span class="q-difficulty diff-hard">Hard</span>
+    </div>
+    <div class="q-text">You have "Remote MCP Servers" in your skill set. Describe the SSE (Server-Sent Events) transport mechanism used by remote MCP. How does a client discover available tools, and how are errors surfaced back to the model?</div>
+    <textarea class="q-answer" id="ans-13" placeholder="Write your answer here…" oninput="markAnswered(13)"></textarea>
+    <div class="q-status" id="status-13"><div class="status-dot"></div>Not answered</div>
+  </div>
+
+  <!-- Q14 -->
+  <div class="q-card" id="qcard-14">
+    <div class="q-meta">
+      <span class="q-num">Q14</span>
+      <span class="q-tag">Tool Design</span>
+      <span class="q-difficulty diff-medium">Medium</span>
+    </div>
+    <div class="q-text">In SalesPilot you "triggered external functions and business workflows" via tool calling. Write a JSON schema definition for a tool called <code>search_products</code> that accepts <code>query</code> (string), <code>max_results</code> (integer, default 5), and <code>category</code> (optional enum: electronics | apparel | services).</div>
+    <textarea class="q-answer" id="ans-14" placeholder="Write the JSON schema…" oninput="markAnswered(14)"></textarea>
+    <div class="q-status" id="status-14"><div class="status-dot"></div>Not answered</div>
+  </div>
+
+  <!-- Q15 -->
+  <div class="q-card" id="qcard-15">
+    <div class="q-meta">
+      <span class="q-num">Q15</span>
+      <span class="q-tag">Agent Skills</span>
+      <span class="q-difficulty diff-hard">Hard</span>
+    </div>
+    <div class="q-text">Describe "Agent Skills" as a pattern in multi-agent systems. In your Clevergens platform with 40–45 agents, how did you avoid duplicating tool/skill logic across agents? What architectural pattern governed shared capabilities?</div>
+    <textarea class="q-answer" id="ans-15" placeholder="Write your answer here…" oninput="markAnswered(15)"></textarea>
+    <div class="q-status" id="status-15"><div class="status-dot"></div>Not answered</div>
+  </div>
+
+  <!-- ────────────────────────────────────────────── -->
+  <!-- SECTION 4: PROMPT ENGINEERING -->
+  <!-- ────────────────────────────────────────────── -->
+  <div class="section-header">
+    <span class="section-tag">Prompt Engineering & Context</span>
+    <div class="section-line"></div>
+  </div>
+
+  <!-- Q16 -->
+  <div class="q-card" id="qcard-16">
+    <div class="q-meta">
+      <span class="q-num">Q16</span>
+      <span class="q-tag">Prompting</span>
+      <span class="q-difficulty diff-medium">Medium</span>
+    </div>
+    <div class="q-text">What is the difference between Chain-of-Thought (CoT), Zero-Shot CoT, and Self-Consistency prompting? Give a concrete example of where each would be the right choice in an AI sales assistant context.</div>
+    <textarea class="q-answer" id="ans-16" placeholder="Write your answer here…" oninput="markAnswered(16)"></textarea>
+    <div class="q-status" id="status-16"><div class="status-dot"></div>Not answered</div>
+  </div>
+
+  <!-- Q17 MCQ -->
+  <div class="q-card" id="qcard-17">
+    <div class="q-meta">
+      <span class="q-num">Q17</span>
+      <span class="q-tag">Context Engineering</span>
+      <span class="q-difficulty diff-medium">Medium</span>
+    </div>
+    <div class="q-text">You list "Context Engineering" and "Context Optimization" as skills. Which of the following is NOT a recognised technique for staying within context window limits?</div>
+    <div class="mcq-options" id="mcq-17">
+      <label class="mcq-opt" onclick="selectMCQ(17, 'A')"><input type="radio" name="q17"><div class="mcq-dot"></div>A. Selective context injection — only inject chunks relevant to the current query</label>
+      <label class="mcq-opt" onclick="selectMCQ(17, 'B')"><input type="radio" name="q17"><div class="mcq-dot"></div>B. Conversation summarisation to compress older turns</label>
+      <label class="mcq-opt" onclick="selectMCQ(17, 'C')"><input type="radio" name="q17"><div class="mcq-dot"></div>C. Upscaling the model's temperature to generate shorter outputs</label>
+      <label class="mcq-opt" onclick="selectMCQ(17, 'D')"><input type="radio" name="q17"><div class="mcq-dot"></div>D. Using a sliding window over conversation history</label>
+    </div>
+    <div class="q-status" id="status-17"><div class="status-dot"></div>Not answered</div>
+  </div>
+
+  <!-- Q18 -->
+  <div class="q-card" id="qcard-18">
+    <div class="q-meta">
+      <span class="q-num">Q18</span>
+      <span class="q-tag">System Prompt</span>
+      <span class="q-difficulty diff-easy">Easy</span>
+    </div>
+    <div class="q-text">Write a concise system prompt for the SalesPilot assistant that: (1) defines its role, (2) enforces grounding — it must only answer from retrieved context, (3) sets tone as professional and brief, and (4) gracefully handles out-of-scope questions.</div>
+    <textarea class="q-answer" id="ans-18" placeholder="Write the system prompt…" oninput="markAnswered(18)" style="min-height:110px;"></textarea>
+    <div class="q-status" id="status-18"><div class="status-dot"></div>Not answered</div>
+  </div>
+
+  <!-- Q19 -->
+  <div class="q-card" id="qcard-19">
+    <div class="q-meta">
+      <span class="q-num">Q19</span>
+      <span class="q-tag">Hallucination</span>
+      <span class="q-difficulty diff-hard">Hard</span>
+    </div>
+    <div class="q-text">Name three prompt-level and two architecture-level techniques to reduce LLM hallucination in a production RAG system. Which of these did you apply in SalesPilot, and how did you measure hallucination rate?</div>
+    <textarea class="q-answer" id="ans-19" placeholder="Write your answer here…" oninput="markAnswered(19)"></textarea>
+    <div class="q-status" id="status-19"><div class="status-dot"></div>Not answered</div>
+  </div>
+
+  <!-- Q20 -->
+  <div class="q-card" id="qcard-20">
+    <div class="q-meta">
+      <span class="q-num">Q20</span>
+      <span class="q-tag">Few-Shot</span>
+      <span class="q-difficulty diff-medium">Medium</span>
+    </div>
+    <div class="q-text">Design a few-shot prompt that teaches an LLM to extract structured data (product name, price, availability) from free-form sales rep notes. Show at least two input-output examples and explain your choice of delimiter format.</div>
+    <textarea class="q-answer" id="ans-20" placeholder="Write the few-shot prompt with examples…" oninput="markAnswered(20)" style="min-height:120px;"></textarea>
+    <div class="q-status" id="status-20"><div class="status-dot"></div>Not answered</div>
+  </div>
+
+  <!-- ────────────────────────────────────────────── -->
+  <!-- SECTION 5: AGENTIC SYSTEMS & DESIGN -->
+  <!-- ────────────────────────────────────────────── -->
+  <div class="section-header">
+    <span class="section-tag">Agentic Systems & AI System Design</span>
+    <div class="section-line"></div>
+  </div>
+
+  <!-- Q21 -->
+  <div class="q-card" id="qcard-21">
+    <div class="q-meta">
+      <span class="q-num">Q21</span>
+      <span class="q-tag">Multi-Agent</span>
+      <span class="q-difficulty diff-hard">Hard</span>
+    </div>
+    <div class="q-text">In Clevergens you built 40–45 specialized agents on a shared architecture. Describe an "Orchestrator → Subagent" pattern. When would you choose this over a single-agent design? What are the failure modes unique to multi-agent systems?</div>
+    <textarea class="q-answer" id="ans-21" placeholder="Write your answer here…" oninput="markAnswered(21)"></textarea>
+    <div class="q-status" id="status-21"><div class="status-dot"></div>Not answered</div>
+  </div>
+
+  <!-- Q22 MCQ -->
+  <div class="q-card" id="qcard-22">
+    <div class="q-meta">
+      <span class="q-num">Q22</span>
+      <span class="q-tag">ReAct</span>
+      <span class="q-difficulty diff-medium">Medium</span>
+    </div>
+    <div class="q-text">The ReAct (Reason + Act) prompting pattern produces agent traces. What is the correct sequence of a single ReAct step?</div>
+    <div class="mcq-options" id="mcq-22">
+      <label class="mcq-opt" onclick="selectMCQ(22, 'A')"><input type="radio" name="q22"><div class="mcq-dot"></div>A. Action → Thought → Observation</label>
+      <label class="mcq-opt" onclick="selectMCQ(22, 'B')"><input type="radio" name="q22"><div class="mcq-dot"></div>B. Thought → Action → Observation</label>
+      <label class="mcq-opt" onclick="selectMCQ(22, 'C')"><input type="radio" name="q22"><div class="mcq-dot"></div>C. Observation → Action → Thought</label>
+      <label class="mcq-opt" onclick="selectMCQ(22, 'D')"><input type="radio" name="q22"><div class="mcq-dot"></div>D. Thought → Observation → Action</label>
+    </div>
+    <div class="q-status" id="status-22"><div class="status-dot"></div>Not answered</div>
+  </div>
+
+  <!-- Q23 -->
+  <div class="q-card" id="qcard-23">
+    <div class="q-meta">
+      <span class="q-num">Q23</span>
+      <span class="q-tag">Evaluation</span>
+      <span class="q-difficulty diff-hard">Hard</span>
+    </div>
+    <div class="q-text">How do you evaluate an agentic AI system end-to-end? Name at least four metrics beyond accuracy (e.g. latency, cost per query) and explain how you would build a regression test suite to catch prompt drift between model versions.</div>
+    <textarea class="q-answer" id="ans-23" placeholder="Write your answer here…" oninput="markAnswered(23)"></textarea>
+    <div class="q-status" id="status-23"><div class="status-dot"></div>Not answered</div>
+  </div>
+
+  <!-- Q24 system design -->
+  <div class="q-card" id="qcard-24">
+    <div class="q-meta">
+      <span class="q-num">Q24</span>
+      <span class="q-tag">System Design</span>
+      <span class="q-difficulty diff-hard">Hard</span>
+    </div>
+    <div class="q-text">Design a production-grade AI content generation service: user submits a topic → AI drafts content → human reviews → published. Include: API layer, LLM orchestration, queue/async processing (BullMQ-style), storage, and how you'd handle LLM timeouts gracefully. You've done similar async work in Engage — reference it.</div>
+    <textarea class="q-answer" id="ans-24" placeholder="Outline the architecture, components, data flow, and failure handling…" oninput="markAnswered(24)" style="min-height:120px;"></textarea>
+    <div class="q-status" id="status-24"><div class="status-dot"></div>Not answered</div>
+  </div>
+
+  <!-- Q25 -->
+  <div class="q-card" id="qcard-25">
+    <div class="q-meta">
+      <span class="q-num">Q25</span>
+      <span class="q-tag">Streaming</span>
+      <span class="q-difficulty diff-medium">Medium</span>
+    </div>
+    <div class="q-text">In your Meeting Intelligence project you used WebSockets for real-time sync. In an AI chat context, compare WebSockets vs SSE for streaming LLM token output to a Next.js frontend. Which would you choose and why?</div>
+    <textarea class="q-answer" id="ans-25" placeholder="Write your answer here…" oninput="markAnswered(25)"></textarea>
+    <div class="q-status" id="status-25"><div class="status-dot"></div>Not answered</div>
+  </div>
+
+  <!-- ────────────────────────────────────────────── -->
+  <!-- SECTION 6: LLMs, MODELS & ADVANCED TOPICS -->
+  <!-- ────────────────────────────────────────────── -->
+  <div class="section-header">
+    <span class="section-tag">LLMs, Models & Advanced Topics</span>
+    <div class="section-line"></div>
+  </div>
+
+  <!-- Q26 MCQ -->
+  <div class="q-card" id="qcard-26">
+    <div class="q-meta">
+      <span class="q-num">Q26</span>
+      <span class="q-tag">Mistral AI</span>
+      <span class="q-difficulty diff-easy">Easy</span>
+    </div>
+    <div class="q-text">You used Mistral models in SalesPilot. Mistral's Mixture-of-Experts (MoE) architecture in Mixtral 8x7B activates how many expert networks per token?</div>
+    <div class="mcq-options" id="mcq-26">
+      <label class="mcq-opt" onclick="selectMCQ(26, 'A')"><input type="radio" name="q26"><div class="mcq-dot"></div>A. All 8 experts for every token</label>
+      <label class="mcq-opt" onclick="selectMCQ(26, 'B')"><input type="radio" name="q26"><div class="mcq-dot"></div>B. 2 experts per token out of 8</label>
+      <label class="mcq-opt" onclick="selectMCQ(26, 'C')"><input type="radio" name="q26"><div class="mcq-dot"></div>C. 1 expert per token, randomly selected</label>
+      <label class="mcq-opt" onclick="selectMCQ(26, 'D')"><input type="radio" name="q26"><div class="mcq-dot"></div>D. 4 experts per token, averaged</label>
+    </div>
+    <div class="q-status" id="status-26"><div class="status-dot"></div>Not answered</div>
+  </div>
+
+  <!-- Q27 -->
+  <div class="q-card" id="qcard-27">
+    <div class="q-meta">
+      <span class="q-num">Q27</span>
+      <span class="q-tag">Embeddings</span>
+      <span class="q-difficulty diff-medium">Medium</span>
+    </div>
+    <div class="q-text">Explain the difference between query-time and index-time embeddings. Should you use the same embedding model for both? What happens when you upgrade your embedding model — how do you handle the migration of existing Pinecone vectors?</div>
+    <textarea class="q-answer" id="ans-27" placeholder="Write your answer here…" oninput="markAnswered(27)"></textarea>
+    <div class="q-status" id="status-27"><div class="status-dot"></div>Not answered</div>
+  </div>
+
+  <!-- Q28 -->
+  <div class="q-card" id="qcard-28">
+    <div class="q-meta">
+      <span class="q-num">Q28</span>
+      <span class="q-tag">Fine-tuning vs RAG</span>
+      <span class="q-difficulty diff-medium">Medium</span>
+    </div>
+    <div class="q-text">A client asks: "Should we fine-tune an LLM on our product catalogue or use RAG?" List three criteria that would push you toward fine-tuning and three that would push you toward RAG, then give your recommendation for the SalesPilot use case.</div>
+    <textarea class="q-answer" id="ans-28" placeholder="Write your answer here…" oninput="markAnswered(28)"></textarea>
+    <div class="q-status" id="status-28"><div class="status-dot"></div>Not answered</div>
+  </div>
+
+  <!-- Q29 -->
+  <div class="q-card" id="qcard-29">
+    <div class="q-meta">
+      <span class="q-num">Q29</span>
+      <span class="q-tag">Guardrails</span>
+      <span class="q-difficulty diff-hard">Hard</span>
+    </div>
+    <div class="q-text">Describe a layered guardrails strategy for a B2B AI assistant: input validation, output validation, and runtime moderation. Name at least one open-source library (e.g. Guardrails AI, NeMo Guardrails) and explain how you'd integrate it into a FastAPI + LangChain stack.</div>
+    <textarea class="q-answer" id="ans-29" placeholder="Write your answer here…" oninput="markAnswered(29)"></textarea>
+    <div class="q-status" id="status-29"><div class="status-dot"></div>Not answered</div>
+  </div>
+
+  <!-- Q30 FINAL -->
+  <div class="q-card" id="qcard-30">
+    <div class="q-meta">
+      <span class="q-num">Q30</span>
+      <span class="q-tag">Open-Ended</span>
+      <span class="q-difficulty diff-hard">Hard</span>
+    </div>
+    <div class="q-text">Looking at your projects — SalesPilot, Clevergens, Meeting Intelligence — which one has the most complex AI architecture, and what is the single biggest technical debt or design decision you would change if you rebuilt it today?</div>
+    <textarea class="q-answer" id="ans-30" placeholder="Be specific — name the decision, the tradeoff, and your improved design…" oninput="markAnswered(30)"></textarea>
+    <div class="q-status" id="status-30"><div class="status-dot"></div>Not answered</div>
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="submit-row">
+    <button class="btn-submit" onclick="submitAssessment()">SUBMIT ASSESSMENT</button>
+    <span class="submit-hint" id="submitHint">0 / 30 answered</span>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="results-panel" id="resultsPanel">
+    <h2>Assessment <span>Complete</span></h2>
+    <div class="score-grid">
+      <div class="score-box green">
+        <div class="score-val" id="rAnswered">—</div>
+        <div class="score-lbl">Questions Answered</div>
+      </div>
+      <div class="score-box blue">
+        <div class="score-val" id="rMCQ">—</div>
+        <div class="score-lbl">MCQ Score</div>
+      </div>
+      <div class="score-box purple">
+        <div class="score-val" id="rTime">—</div>
+        <div class="score-lbl">Time Used</div>
+      </div>
+    </div>
+    <div class="breakdown-title">MCQ ANSWER KEY</div>
+    <ul class="breakdown-list" id="answerKey"></ul>
+    <div style="margin-top:24px; font-size:13px; color:var(--muted); line-height:1.7;">
+      <strong style="color:var(--text);">Self-evaluation guide:</strong> For open-ended questions, review your answers against the key concepts — specificity, real project references, trade-off analysis, and architectural reasoning. The strongest answers cite concrete decisions from your own work (SalesPilot, Clevergens, Meeting Intelligence) rather than generic definitions.
+    </div>
+  </div>
+
+</main>
+
+<script>
+  // ── STATE ──
+  const TOTAL_SECS = 30 * 60;
+  let secondsLeft = TOTAL_SECS;
+  let timerInterval = null;
+  let timerStarted = false;
+  let submittedAt = null;
+
+  const answeredSet = new Set();
+
+  // MCQ correct answers
+  const MCQ_CORRECT = { 3:'B', 7:'B', 12:'B', 17:'C', 22:'B', 26:'B' };
+  const mcqSelections = {};
+
+  // ── TIMER ──
+  function startTimer() {
+    if (timerStarted) return;
+    timerStarted = true;
+    timerInterval = setInterval(() => {
+      secondsLeft--;
+      updateTimerDisplay();
+      if (secondsLeft <= 0) {
+        clearInterval(timerInterval);
+        submitAssessment(true);
+      }
+    }, 1000);
+  }
+
+  function updateTimerDisplay() {
+    const m = Math.floor(secondsLeft / 60).toString().padStart(2,'0');
+    const s = (secondsLeft % 60).toString().padStart(2,'0');
+    const el = document.getElementById('timer');
+    el.textContent = m + ':' + s;
+    el.className = 'timer' + (secondsLeft < 300 ? ' urgent' : '');
+  }
+
+  // start timer on first interaction
+  document.addEventListener('click', startTimer, { once: true });
+  document.addEventListener('keydown', startTimer, { once: true });
+
+  // ── PROGRESS ──
+  function updateProgress() {
+    const pct = (answeredSet.size / 30) * 100;
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('submitHint').textContent = answeredSet.size + ' / 30 answered';
+  }
+
+  // ── MARK ANSWERED (textarea) ──
+  function markAnswered(n) {
+    const val = document.getElementById('ans-' + n).value.trim();
+    const card = document.getElementById('qcard-' + n);
+    const status = document.getElementById('status-' + n);
+    if (val.length > 10) {
+      answeredSet.add(n);
+      card.classList.add('answered');
+      status.classList.add('done');
+      status.innerHTML = '<div class="status-dot"></div>Answered';
+    } else {
+      answeredSet.delete(n);
+      card.classList.remove('answered');
+      status.classList.remove('done');
+      status.innerHTML = '<div class="status-dot"></div>Not answered';
+    }
+    updateProgress();
+  }
+
+  // ── MCQ SELECTION ──
+  function selectMCQ(qNum, choice) {
+    mcqSelections[qNum] = choice;
+    const container = document.getElementById('mcq-' + qNum);
+    container.querySelectorAll('.mcq-opt').forEach(opt => opt.classList.remove('selected'));
+    const opts = container.querySelectorAll('.mcq-opt');
+    const idx = ['A','B','C','D'].indexOf(choice);
+    if (idx >= 0) opts[idx].classList.add('selected');
+
+    answeredSet.add(qNum);
+    document.getElementById('qcard-' + qNum).classList.add('answered');
+    const status = document.getElementById('status-' + qNum);
+    status.classList.add('done');
+    status.innerHTML = '<div class="status-dot"></div>Answered · ' + choice;
+    updateProgress();
+  }
+
+  // ── SUBMIT ──
+  function submitAssessment(autoSubmit = false) {
+    if (!timerStarted) startTimer();
+    clearInterval(timerInterval);
+    submittedAt = TOTAL_SECS - secondsLeft;
+
+    const panel = document.getElementById('resultsPanel');
+    panel.classList.add('visible');
+
+    document.getElementById('rAnswered').textContent = answeredSet.size + '/30';
+
+    // MCQ score
+    let mcqCorrect = 0;
+    const mcqTotal = Object.keys(MCQ_CORRECT).length;
+    Object.entries(MCQ_CORRECT).forEach(([q, correct]) => {
+      if (mcqSelections[parseInt(q)] === correct) mcqCorrect++;
+    });
+    document.getElementById('rMCQ').textContent = mcqCorrect + '/' + mcqTotal;
+
+    // Time
+    const tm = Math.floor(submittedAt / 60).toString().padStart(2,'0');
+    const ts = (submittedAt % 60).toString().padStart(2,'0');
+    document.getElementById('rTime').textContent = tm + ':' + ts;
+
+    // Answer key
+    const keyHtml = Object.entries(MCQ_CORRECT).map(([q, ans]) => {
+      const picked = mcqSelections[parseInt(q)] || '—';
+      const correct = picked === ans;
+      return `<li class="breakdown-item">
+        <div class="breakdown-dot ${correct ? 'dot-green' : 'dot-warn'}"></div>
+        <span>Q${q.padStart(2,'0')}: Correct answer <strong>${ans}</strong> — you picked <strong>${picked}</strong> ${correct ? '✓' : '✗'}</span>
+      </li>`;
+    }).join('');
+    document.getElementById('answerKey').innerHTML = keyHtml;
+
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    if (autoSubmit) {
+      document.getElementById('timer').textContent = '00:00';
+    }
+  }
+</script>
+</body>
+</html>
