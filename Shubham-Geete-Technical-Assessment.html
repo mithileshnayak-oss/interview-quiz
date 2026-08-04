@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Technical Assessment — Shubham Geete — Platform / DevOps Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#12161C;
+  --ink-2:#454E5C;
+  --ink-3:#7A8494;
+  --paper:#EDF0F4;
+  --surface:#FFFFFF;
+  --line:#D3DAE3;
+  --core:#1F4E79;
+  --stretch:#9A5B08;
+  --pass:#0E6B5E;
+  --fail:#9E2B25;
+  --sans:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:16px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px 80px}
+
+/* ---------- masthead ---------- */
+.masthead{
+  border-bottom:2px solid var(--ink);
+  padding:34px 0 18px;
+  margin-bottom:0;
+}
+.eyebrow{
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--ink-3);
+  margin:0 0 10px;
+}
+.masthead h1{
+  font-size:clamp(26px,4.4vw,38px);
+  line-height:1.1;
+  font-weight:700;
+  letter-spacing:-.02em;
+  margin:0 0 6px;
+}
+.masthead .sub{color:var(--ink-2);margin:0;font-size:15px}
+
+/* ---------- meta strip ---------- */
+.strip{
+  display:flex;
+  flex-wrap:wrap;
+  gap:0;
+  border-bottom:1px solid var(--line);
+  background:var(--surface);
+}
+.strip .cell{
+  flex:1 1 150px;
+  padding:12px 16px;
+  border-right:1px solid var(--line);
+}
+.strip .cell:last-child{border-right:0}
+.strip .k{
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--ink-3);
+  display:block;
+}
+.strip .v{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--ink)}
+#clock.warn{color:var(--fail)}
+
+/* ---------- track legend (signature) ---------- */
+.tracks{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
+.track{background:var(--surface);padding:14px 16px}
+.track .tlabel{
+  font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  display:flex;align-items:center;gap:7px;margin-bottom:5px;
+}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+.dot.core{background:var(--core)}
+.dot.stretch{background:var(--stretch)}
+.track .tdesc{font-size:13px;color:var(--ink-2);line-height:1.45}
+
+/* ---------- progress ---------- */
+.progress{height:4px;background:var(--line);position:sticky;top:0;z-index:20}
+.progress .bar{height:100%;width:0;background:var(--ink);transition:width .25s ease}
+
+/* ---------- card ---------- */
+.card{background:var(--surface);border:1px solid var(--line);border-top:0;padding:26px 26px 22px}
+.qhead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.qnum{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink-3)}
+.badge{
+  font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  padding:3px 8px;border:1px solid;border-radius:2px;
+}
+.badge.core{color:var(--core);border-color:var(--core)}
+.badge.stretch{color:var(--stretch);border-color:var(--stretch)}
+.section-name{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.qtext{font-size:18px;line-height:1.45;font-weight:500;margin:12px 0 6px}
+.qctx{font-family:var(--mono);font-size:13px;color:var(--ink-2);background:var(--paper);border-left:3px solid var(--line);padding:10px 12px;margin:0 0 18px;white-space:pre-wrap;overflow-x:auto}
+
+.opts{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.opt{
+  display:flex;gap:12px;align-items:flex-start;
+  border:1px solid var(--line);background:var(--surface);
+  padding:13px 15px;cursor:pointer;text-align:left;font:inherit;color:inherit;
+  border-radius:3px;transition:border-color .12s,background .12s;
+}
+.opt:hover{border-color:var(--ink-3)}
+.opt:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.opt .letter{font-family:var(--mono);font-weight:600;font-size:13px;color:var(--ink-3);flex:none;padding-top:1px}
+.opt.sel{border-color:var(--ink);background:#F6F8FA;box-shadow:inset 0 0 0 1px var(--ink)}
+.opt.sel .letter{color:var(--ink)}
+.opt[disabled]{cursor:default}
+.opt.correct{border-color:var(--pass);background:#F0F7F5}
+.opt.correct .letter{color:var(--pass)}
+.opt.wrong{border-color:var(--fail);background:#FCF2F1}
+.opt.wrong .letter{color:var(--fail)}
+.mark{margin-left:auto;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;flex:none;padding-top:2px}
+.mark.ok{color:var(--pass)}
+.mark.no{color:var(--fail)}
+
+.rationale{margin-top:16px;border:1px dashed var(--line);padding:13px 15px;background:var(--paper)}
+.rationale .rlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:5px}
+.rationale p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.5}
+
+/* ---------- nav ---------- */
+.nav{display:flex;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-top:0;padding:16px 26px;flex-wrap:wrap}
+button.btn{
+  font-family:var(--sans);font-size:14px;font-weight:600;
+  padding:10px 18px;border-radius:3px;cursor:pointer;border:1px solid var(--ink);
+  background:var(--surface);color:var(--ink);transition:background .12s,color .12s;
+}
+button.btn:hover:not(:disabled){background:var(--ink);color:var(--surface)}
+button.btn.primary{background:var(--ink);color:var(--surface)}
+button.btn.primary:hover:not(:disabled){background:#000}
+button.btn:disabled{opacity:.35;cursor:not-allowed}
+button.btn:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.nav .spacer{margin-left:auto}
+.navnote{font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+
+/* ---------- jump grid ---------- */
+.grid{display:flex;flex-wrap:wrap;gap:5px;background:var(--surface);border:1px solid var(--line);border-top:0;padding:16px 26px 20px}
+.gcell{
+  width:32px;height:32px;font-family:var(--mono);font-size:12px;
+  border:1px solid var(--line);background:var(--surface);color:var(--ink-3);
+  cursor:pointer;border-radius:2px;padding:0;
+}
+.gcell:hover{border-color:var(--ink-3)}
+.gcell.answered{background:#E6EBF1;color:var(--ink);font-weight:600;border-color:#B6C1CF}
+.gcell.here{border-color:var(--ink);border-width:2px;color:var(--ink);font-weight:600}
+.gcell.st{border-bottom:3px solid var(--stretch)}
+
+/* ---------- results ---------- */
+.result{background:var(--surface);border:1px solid var(--line);border-top:0;padding:28px 26px}
+.result h2{font-size:24px;margin:0 0 4px;letter-spacing:-.01em}
+.result .rsub{color:var(--ink-2);font-size:14px;margin:0 0 24px}
+.readout{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:22px}
+.readout .pane{background:var(--surface);padding:18px}
+.readout .plabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.readout .pscore{font-family:var(--mono);font-size:34px;font-weight:600;line-height:1;letter-spacing:-.02em}
+.readout .pof{font-family:var(--mono);font-size:13px;color:var(--ink-3);margin-top:5px}
+.meter{height:6px;background:var(--line);margin-top:12px;border-radius:3px;overflow:hidden}
+.meter i{display:block;height:100%;width:0;transition:width .5s ease}
+.meter i.core{background:var(--core)}
+.meter i.stretch{background:var(--stretch)}
+
+table.bd{width:100%;border-collapse:collapse;margin-bottom:22px;font-size:14px}
+table.bd th,table.bd td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+table.bd th{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);border-bottom:1px solid var(--ink)}
+table.bd td.num{font-family:var(--mono);text-align:right;white-space:nowrap}
+table.bd tr.stretch-row td:first-child{border-left:3px solid var(--stretch);padding-left:10px}
+table.bd tr.core-row td:first-child{border-left:3px solid var(--core);padding-left:10px}
+
+.verdict{border:1px solid var(--ink);padding:18px 20px;margin-bottom:22px}
+.verdict .vlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:7px}
+.verdict h3{margin:0 0 8px;font-size:17px}
+.verdict p{margin:0 0 8px;font-size:14px;color:var(--ink-2);line-height:1.55}
+.verdict p:last-child{margin-bottom:0}
+
+.gapbox{background:var(--paper);border-left:3px solid var(--stretch);padding:16px 18px;margin-bottom:22px}
+.gapbox .vlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--stretch);margin-bottom:8px}
+.gapbox ul{margin:0;padding-left:18px;font-size:14px;color:var(--ink-2)}
+.gapbox li{margin-bottom:5px}
+
+.footer{font-family:var(--mono);font-size:11px;color:var(--ink-3);padding:18px 0 0;text-align:center;letter-spacing:.04em}
+
+@media (max-width:640px){
+  .tracks,.readout{grid-template-columns:1fr}
+  .card,.nav,.grid,.result{padding-left:18px;padding-right:18px}
+  .strip .cell{flex:1 1 50%;border-bottom:1px solid var(--line)}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+}
+</style>
+</head>
+<body>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Aavya · Technical Screening</p>
+    <h1>Platform &amp; DevOps Engineer — GCP, Kubernetes, OpenShift</h1>
+    <p class="sub">Candidate: Shubham Geete · 3+ yrs · Fulcrum Digital, NCS · Pune</p>
+  </header>
+
+  <div class="strip">
+    <div class="cell"><span class="k">Questions</span><span class="v" id="qcount">27</span></div>
+    <div class="cell"><span class="k">Time</span><span class="v" id="clock">45:00</span></div>
+    <div class="cell"><span class="k">Answered</span><span class="v" id="answered">0 / 27</span></div>
+    <div class="cell"><span class="k">Scoring</span><span class="v">Two-track</span></div>
+  </div>
+
+  <div class="tracks">
+    <div class="track">
+      <div class="tlabel"><span class="dot core"></span>Core — claimed on resume</div>
+      <div class="tdesc">GCP, Kubernetes, Docker, Terraform, CI/CD, Prometheus/Grafana. Expect competence here; a low score is disqualifying.</div>
+    </div>
+    <div class="track">
+      <div class="tlabel"><span class="dot stretch"></span>Stretch — not on resume</div>
+      <div class="tdesc">OpenShift, on-premises and disconnected clusters. Tests whether the candidate can reason from Kubernetes fundamentals, not recall.</div>
+    </div>
+  </div>
+
+  <main id="stage"></main>
+
+  <div class="nav" id="nav">
+    <button class="btn" id="prev">Previous</button>
+    <button class="btn" id="next">Next</button>
+    <span class="spacer"></span>
+    <span class="navnote" id="navnote"></span>
+    <button class="btn primary" id="submit">Finish and score</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <p class="footer">Answers are scored on submit. Nothing is transmitted — this file runs entirely in the browser.</p>
+</div>
+
+<script>
+const QUESTIONS = [
+/* ============ A. GCP ============ */
+{s:"GCP · Identity",t:"core",
+ q:"A workload on GKE needs read access to a Cloud Storage bucket. Security review forbids long-lived credentials anywhere in the cluster. What do you implement?",
+ o:["Create a service account key, store it as a Kubernetes Secret, and mount it into the pod",
+    "Grant the storage role to the node pool's service account so the pod inherits it",
+    "Enable Workload Identity and bind the Kubernetes service account to a Google service account",
+    "Give the nodes the cloud-platform scope and read credentials from the metadata server"],
+ a:2,
+ e:"Workload Identity issues short-lived, pod-scoped credentials with no key material at rest. Options B and D grant access to every pod on the node, which fails least privilege even though they technically work."},
+
+{s:"GCP · Cluster topology",t:"core",
+ q:"Requirement: the Kubernetes control plane must survive the loss of a single zone, and control plane upgrades must not interrupt API access. What do you provision?",
+ o:["A zonal cluster with node pools spread across three zones",
+    "A regional cluster",
+    "A zonal cluster with an external load balancer in front of the API endpoint",
+    "Two zonal clusters behind Multi-Cluster Ingress"],
+ a:1,
+ e:"Only a regional cluster replicates the control plane across zones, which is what gives both zonal survival and rolling upgrades without API downtime. Spreading nodes (A) protects workloads but leaves a single-zone control plane."},
+
+{s:"GCP · Networking",t:"core",
+ q:"New pods on a VPC-native GKE cluster are stuck Pending. Node CPU and memory are well under capacity. The pod event reads: no available IP addresses in range.",
+ o:["max-pods-per-node is set too low on the node pool",
+    "The secondary IP range allocated for pods is exhausted",
+    "The primary subnet range has no free addresses",
+    "Cluster autoscaler is disabled so no new nodes are being added"],
+ a:1,
+ e:"VPC-native clusters draw pod IPs from a secondary alias range sized at cluster creation. Exhausting it blocks pod scheduling even on empty nodes; the fix is adding an additional pod range, not adding nodes. The primary range (C) would block node creation, not pod IPs."},
+
+{s:"GCP · IAM",t:"core",
+ q:"A CI pipeline needs to push container images to one Artifact Registry repository and do nothing else. Which grant is correct?",
+ o:["roles/editor on the project",
+    "roles/artifactregistry.writer on that specific repository",
+    "roles/artifactregistry.admin at the project level",
+    "roles/owner with an IAM condition restricting it to business hours"],
+ a:1,
+ e:"Least privilege means the narrowest role at the narrowest resource. Admin at project level (C) allows repository deletion across the project; a time condition on owner (D) is not a scope restriction at all."},
+
+{s:"GCP · Cost",t:"core",
+ q:"To cut cost you move stateless inference workloads onto a Spot VM node pool. What must the workload design account for?",
+ o:["Nothing — GKE live-migrates pods off Spot nodes before reclamation",
+    "Nodes can be reclaimed with roughly 30 seconds notice, so the workload needs multiple replicas, PodDisruptionBudgets and tolerance for abrupt restarts",
+    "Spot node pools cannot run GPU-attached workloads",
+    "Spot pricing requires a committed use discount to be active"],
+ a:1,
+ e:"Spot capacity is preemptible with a short termination notice and no guaranteed rescheduling window. Handling it is a workload design problem — replica count, disruption budgets, graceful shutdown — not a platform setting."},
+
+/* ============ B. Kubernetes ============ */
+{s:"Kubernetes · Triage",t:"core",
+ q:"A pod has been in Pending state for ten minutes. What is your first diagnostic step?",
+ o:["kubectl logs on the pod to see why the process failed",
+    "kubectl describe pod and read the Events section",
+    "Restart the kubelet on the target node",
+    "Delete the pod and let the controller recreate it"],
+ a:1,
+ e:"Pending means no container has started, so there are no logs to read. Events carry the scheduler's actual reason: insufficient resources, unsatisfied node selector, unbound PVC, image pull backoff. Deleting the pod (D) destroys the evidence."},
+
+{s:"Kubernetes · Resources",t:"core",
+ q:"A container is configured with cpu requests 100m / limit 500m, and memory requests 256Mi / limit 256Mi. Which statement is accurate?",
+ o:["Exceeding the CPU limit terminates the pod",
+    "CPU is throttled at the limit; exceeding the memory limit results in an OOMKill",
+    "Both CPU and memory are throttled when the limit is reached",
+    "Requests are hard ceilings and limits are advisory"],
+ a:1,
+ e:"CPU is compressible and enforced by throttling; memory is not, so the kernel kills the container. This distinction drives the whole latency-versus-stability tradeoff in limit setting, and it is where most candidates reveal whether they have actually debugged a throttled service."},
+
+{s:"Kubernetes · Availability",t:"core",
+ q:"A Deployment has 3 replicas with maxUnavailable 1. A PodDisruptionBudget on the same selector specifies minAvailable 3. You drain a node during maintenance.",
+ o:["The drain proceeds normally because maxUnavailable permits one pod down",
+    "The drain blocks — the eviction API refuses because the budget can never be satisfied",
+    "The PDB triggers a scale-up to 4 replicas so the drain can proceed",
+    "maxUnavailable takes precedence over the PDB during a drain"],
+ a:1,
+ e:"minAvailable equal to replica count leaves zero disruption headroom, so voluntary evictions are denied and the drain hangs indefinitely. This is one of the most common self-inflicted causes of a stalled node upgrade."},
+
+{s:"Kubernetes · Storage",t:"core",
+ q:"A pod uses a PVC with ReadWriteOnce access mode backed by a zonal persistent disk. The pod is rescheduled onto a node in a different zone.",
+ o:["The pod starts and the volume is attached to the new node",
+    "The pod stays Pending because the volume cannot be attached from another zone",
+    "The volume is automatically replicated to the new zone",
+    "ReadWriteOnce permits simultaneous mounts, so both nodes attach it"],
+ a:1,
+ e:"Zonal disks are zone-bound; topology constraints must keep the pod in the disk's zone, or the storage class must be regional. This is exactly the failure that turns a routine node upgrade into an outage for a stateful workload."},
+
+{s:"Containers · Build",t:"core",
+ q:"A production image is 1.2 GB and image pulls are slowing rollouts. Which single change gives the largest reduction?",
+ o:["Rebuild with --squash on the same base image",
+    "Use a multi-stage build and copy only the compiled artifact and runtime dependencies into a slim or distroless base",
+    "Add a .dockerignore file",
+    "Compress the image with gzip before pushing"],
+ a:1,
+ e:"Multi-stage separates build toolchains from the runtime, which is where the bulk of the weight sits. Squashing (A) merges layers without removing content and hurts cache reuse; registries already compress layers (D)."},
+
+/* ============ C. Terraform ============ */
+{s:"Terraform · State",t:"core",
+ q:"Two engineers run terraform apply at the same time against the same GCS backend. What prevents the state from being corrupted?",
+ o:["Nothing — the last write wins and the state must be repaired manually",
+    "Backend state locking: the second apply waits for the lock or fails",
+    "Terraform merges both state files on write",
+    "Workspaces isolate each engineer automatically"],
+ a:1,
+ e:"The GCS backend acquires a lock for the duration of a write operation. Knowing this matters because the real interview follow-up is what you do when a lock is left stale after a crashed apply — force-unlock, and only after confirming no apply is running."},
+
+{s:"Terraform · Resource addressing",t:"core",
+ q:"A resource uses count = length(var.names). You remove the first entry from that list and run apply.",
+ o:["Only the resource matching the removed name is destroyed",
+    "Every subsequent resource shifts index and is destroyed and recreated",
+    "Terraform errors and refuses to plan",
+    "Nothing changes until state is refreshed"],
+ a:1,
+ e:"count keys resources by ordinal position, so removing an early element re-indexes everything after it. for_each keys by a stable string, which is why it is the correct choice for any collection that will change over time. This question separates people who have written modules from people who have only run them."},
+
+{s:"Terraform · Drift",t:"core",
+ q:"Someone edited a Terraform-managed firewall rule directly in the console. The next plan shows the difference. What is the correct response?",
+ o:["Remove the resource from state so Terraform stops tracking it",
+    "Decide whether the change is wanted: if yes, encode it in the configuration; if no, apply to revert. Either way the configuration stays the source of truth",
+    "Run terraform import to absorb the change",
+    "Taint the resource so it is replaced on the next apply"],
+ a:1,
+ e:"Drift is a decision, not a mechanical fix. Import (C) applies to unmanaged resources, and removing from state (A) abandons the resource entirely. The follow-up worth asking: how would you have prevented the console edit?"},
+
+{s:"Terraform · Module design",t:"core",
+ q:"What makes a Terraform module genuinely reusable across dev, staging and production?",
+ o:["Hardcode production values and copy the module directory per environment",
+    "Parameterise all environment-specific inputs, declare no provider or backend blocks inside the module, and expose outputs for consumers",
+    "Define the backend configuration inside the module so each caller gets isolated state",
+    "Keep local state alongside the module source"],
+ a:1,
+ e:"Provider and backend configuration belongs to the root module; embedding either makes the module uncallable in composition. Copying directories per environment (A) is the anti-pattern this question is designed to surface."},
+
+/* ============ D. CI/CD ============ */
+{s:"CI/CD · Credentials",t:"core",
+ q:"A GitLab CI pipeline must deploy to GCP. What is the correct authentication design?",
+ o:["Store the service account key JSON as a masked CI variable",
+    "Configure Workload Identity Federation so the pipeline exchanges its OIDC token for a short-lived Google credential",
+    "Add an SSH key to the runner and deploy over SSH",
+    "Use a long-lived personal access token belonging to the release engineer"],
+ a:1,
+ e:"OIDC federation removes stored key material entirely and scopes access to a specific project, branch or environment claim. Masked variables (A) are obfuscation, not protection — the key still exists and still needs rotating."},
+
+{s:"CI/CD · Supply chain",t:"core",
+ q:"Where does container image vulnerability scanning belong in a build-to-production pipeline?",
+ o:["After deployment to production but before traffic is shifted",
+    "Immediately after build, gating promotion of the image; the pipeline fails on threshold breach and deploys by digest thereafter",
+    "In a separate nightly job that reports findings to a dashboard",
+    "Inside the Dockerfile as a final RUN step"],
+ a:1,
+ e:"Scanning must gate promotion, not observe it, and deploying by digest guarantees the artifact that passed the scan is the artifact that runs. A nightly report (C) is useful telemetry but enforces nothing."},
+
+{s:"CI/CD · GitOps",t:"core",
+ q:"ArgoCD manages a production cluster. During an incident an engineer runs kubectl edit deployment to change a replica count. What happens?",
+ o:["The change persists — ArgoCD only acts when Git changes",
+    "ArgoCD reports the application as OutOfSync and, with self-heal enabled, reverts it; the fix must land in Git to persist",
+    "ArgoCD writes the live change back to the Git repository",
+    "ArgoCD ignores live cluster state entirely"],
+ a:1,
+ e:"Git is the declared desired state, so imperative edits are drift by definition. Understanding this is the difference between using GitOps and fighting it at 2 a.m."},
+
+/* ============ E. OpenShift (stretch) ============ */
+{s:"OpenShift · Security context",t:"stretch",
+ q:"A Deployment that runs fine on GKE fails on OpenShift with a security context error, or the container starts and immediately fails writing to disk. What is the root cause?",
+ o:["OpenShift blocks images sourced from outside Red Hat registries",
+    "The default restricted SCC assigns an arbitrary non-root UID, and the image expects to run as root or writes to root-owned paths",
+    "Every pod on OpenShift requires privileged: true",
+    "OpenShift only accepts workloads deployed via Helm"],
+ a:1,
+ e:"This is the single most common surprise when porting Kubernetes manifests to OpenShift. The correct fix is making the image UID-agnostic — group-writable paths, no hardcoded USER 0 — not granting anyuid. A candidate who reaches for a privileged SCC here is a real concern for a sovereign deployment."},
+
+{s:"OpenShift · Ingress",t:"stretch",
+ q:"How does an OpenShift Route relate to a Kubernetes Ingress?",
+ o:["Route is a renamed Ingress with identical behaviour",
+    "Route is an OpenShift resource that predates Ingress and supports edge, passthrough and re-encrypt TLS termination; Ingress objects are translated into Routes by the cluster",
+    "Routes only expose services inside the cluster",
+    "Ingress resources are not supported on OpenShift"],
+ a:1,
+ e:"Both work, and the three TLS termination modes are the practical reason teams keep using Routes. Ingress is accepted and converted, which is why a portable manifest set can target both platforms."},
+
+{s:"OpenShift · Operators",t:"stretch",
+ q:"You need to install and keep a cluster operator up to date on OpenShift. What is the intended mechanism?",
+ o:["helm install from the operator's public chart repository",
+    "Create a Subscription against a CatalogSource; the Operator Lifecycle Manager resolves dependencies, installs, and manages upgrades through install plans",
+    "Apply the operator's raw manifests and upgrade by reapplying newer manifests",
+    "Run oc adm operator install with the operator name"],
+ a:1,
+ e:"OLM is the whole reason operator lifecycle on OpenShift differs from vanilla Kubernetes, and it becomes central in disconnected environments where the catalog itself must be mirrored. Raw manifests (C) work but forfeit dependency resolution and upgrade management."},
+
+{s:"OpenShift · Node configuration",t:"stretch",
+ q:"You need a custom chrony configuration and a kernel argument applied to every worker node running RHCOS. How do you deliver it?",
+ o:["SSH to each node and edit the files under /etc",
+    "Create a MachineConfig targeting the worker MachineConfigPool and let the Machine Config Operator roll it out with controlled reboots",
+    "Run a privileged DaemonSet that writes to the host filesystem via hostPath",
+    "Rebuild the node image manually and reprovision each node"],
+ a:1,
+ e:"RHCOS is immutable and managed declaratively; manual edits are reverted on reboot. The MCO drains, applies and reboots nodes pool by pool. Reaching for SSH here is the clearest sign of someone who has only operated managed clusters."},
+
+{s:"OpenShift · Tenancy",t:"stretch",
+ q:"What is the difference between oc new-project and kubectl create namespace on OpenShift?",
+ o:["They are identical — project is only an alias",
+    "A Project is a namespace plus OpenShift-managed additions: default RBAC bindings, annotations that drive UID and SELinux allocation, and defaults applied from the project template",
+    "Projects cannot contain pods; they only group users",
+    "Namespaces do not exist on OpenShift"],
+ a:1,
+ e:"The Project wrapper is where multi-tenancy defaults come from, including the UID range that drives the SCC behaviour tested earlier. Creating a bare namespace skips those defaults and produces confusing permission failures later."},
+
+/* ============ F. On-prem & disconnected (stretch) ============ */
+{s:"Disconnected · Content",t:"stretch",
+ q:"An air-gapped OpenShift cluster needs a newer version of an operator. There is no egress to the internet and there will not be. What is the correct path?",
+ o:["Request a temporary firewall exception to registry.redhat.io for the duration of the upgrade",
+    "Mirror the operator catalog and images to the internal registry, publish a CatalogSource pointing at the mirror, and configure an ImageDigestMirrorSet so nodes resolve pulls to it",
+    "Run docker save on a connected machine and docker load the images onto each node",
+    "Operators cannot be updated in a disconnected cluster"],
+ a:1,
+ e:"Mirroring plus mirror configuration on the nodes is the entire disconnected workflow, and it is the hardest thing on this assessment to learn under client pressure. Loading images node by node (C) bypasses the registry and breaks on the next node scale-out. If the candidate answers this correctly, probe how they handled catalog pruning and mirror storage growth."},
+
+{s:"Disconnected · Upgrades",t:"stretch",
+ q:"How do you upgrade the cluster version itself in a disconnected environment?",
+ o:["Run oc adm upgrade — it retrieves the upgrade graph from the internet as normal",
+    "Mirror the target release payload, then upgrade to that release by image digest, or run a local update service to serve the upgrade graph internally",
+    "Reinstall the cluster at the newer version and migrate workloads",
+    "Update each node individually with the system package manager"],
+ a:1,
+ e:"The upgrade graph is an external service, so a disconnected cluster either targets a mirrored release digest directly or hosts the graph locally. Nodes are never patched independently of the cluster version — that breaks the operator-managed contract."},
+
+{s:"On-premises · Ownership",t:"stretch",
+ q:"Moving from managed GKE to a self-operated on-premises cluster, what becomes your responsibility that was previously hidden?",
+ o:["Nothing significant — the Kubernetes API is the same either way",
+    "etcd health and backup, control plane certificate lifecycle and rotation, load balancing and DNS for both the API and application ingress, the storage backend behind CSI, and node capacity and lifecycle",
+    "Only the worker nodes and their operating system",
+    "Only the network layer"],
+ a:1,
+ e:"This is the question that most cleanly separates a cloud-native engineer from a platform engineer. Certificate expiry and etcd are the two things that take on-premises clusters down, and neither appears anywhere in a managed-service career history."},
+
+/* ============ G. Observability ============ */
+{s:"Observability · Prometheus",t:"core",
+ q:"After adding a label containing the full request path, including object IDs, to an existing counter, Prometheus memory consumption grows until the process is killed. Why?",
+ o:["Prometheus cannot store string label values efficiently",
+    "Each distinct label value creates a separate time series, so an unbounded label multiplies series count and memory",
+    "The scrape interval is now too long for the volume of data",
+    "Grafana is caching query results in the Prometheus process"],
+ a:1,
+ e:"Cardinality is the primary operational constraint of any Prometheus deployment. Anyone who has actually run the stack at scale has broken it this way once; anyone who has only installed a Helm chart usually has not."},
+
+{s:"Observability · Alerting",t:"core",
+ q:"An alert firing on CPU above 80 percent for five minutes pages the on-call engineer most nights, with no corresponding user impact. What is the right fix?",
+ o:["Raise the threshold to 95 percent and keep the page",
+    "Page on user-visible symptoms such as error rate or SLO burn, and keep resource utilisation on dashboards rather than in pager rules",
+    "Route the alert to email so it stops paging",
+    "Remove monitoring for that service until the noise is investigated"],
+ a:1,
+ e:"Resource saturation is a cause, not a symptom, and high CPU on a healthy service is often correct behaviour. Threshold tuning (A) delays the same problem; silently rerouting (C) is how real incidents get missed."}
+];
+
+const TOTAL = QUESTIONS.length;
+const answers = new Array(TOTAL).fill(null);
+let cur = 0, graded = false, secondsLeft = 45 * 60;
+
+const stage = document.getElementById('stage');
+const grid  = document.getElementById('grid');
+const bar   = document.getElementById('bar');
+const LETTERS = ['A','B','C','D'];
+
+document.getElementById('qcount').textContent = TOTAL;
+document.getElementById('answered').textContent = '0 / ' + TOTAL;
+
+/* ---- timer ---- */
+const clock = document.getElementById('clock');
+const timer = setInterval(() => {
+  if (graded) { clearInterval(timer); return; }
+  secondsLeft--;
+  const m = Math.floor(Math.max(secondsLeft,0) / 60), s = Math.max(secondsLeft,0) % 60;
+  clock.textContent = m + ':' + String(s).padStart(2,'0');
+  if (secondsLeft <= 300) clock.classList.add('warn');
+  if (secondsLeft <= 0) { clearInterval(timer); grade(); }
+}, 1000);
+
+/* ---- render one question ---- */
+function render() {
+  const q = QUESTIONS[cur];
+  const badge = q.t === 'core'
+    ? '<span class="badge core">Core</span>'
+    : '<span class="badge stretch">Stretch</span>';
+
+  let html = '<section class="card">'
+    + '<div class="qhead"><span class="qnum">' + String(cur+1).padStart(2,'0') + ' / ' + TOTAL + '</span>'
+    + badge + '<span class="section-name">' + q.s + '</span></div>'
+    + '<p class="qtext">' + q.q + '</p>'
+    + '<ul class="opts">';
+
+  q.o.forEach((opt, i) => {
+    let cls = 'opt';
+    let mark = '';
+    if (answers[cur] === i) cls += ' sel';
+    if (graded) {
+      if (i === q.a) { cls += ' correct'; mark = '<span class="mark ok">Correct</span>'; }
+      else if (answers[cur] === i) { cls += ' wrong'; mark = '<span class="mark no">Chosen</span>'; }
+    }
+    html += '<li><button class="' + cls + '" data-i="' + i + '"' + (graded ? ' disabled' : '') + '>'
+          + '<span class="letter">' + LETTERS[i] + '</span><span>' + opt + '</span>' + mark
+          + '</button></li>';
+  });
+
+  html += '</ul>';
+  if (graded) {
+    html += '<div class="rationale"><div class="rlabel">Interviewer note</div><p>' + q.e + '</p></div>';
+  }
+  html += '</section>';
+  stage.innerHTML = html;
+
+  if (!graded) {
+    stage.querySelectorAll('.opt').forEach(b => {
+      b.addEventListener('click', () => {
+        answers[cur] = Number(b.dataset.i);
+        render(); paint();
+        if (cur < TOTAL - 1) setTimeout(() => { cur++; render(); paint(); }, 160);
+      });
+    });
+  }
+
+  document.getElementById('prev').disabled = cur === 0;
+  document.getElementById('next').disabled = cur === TOTAL - 1;
+  document.getElementById('navnote').textContent = graded ? 'Review mode' : (answers[cur] === null ? 'Not answered' : 'Answered');
+}
+
+/* ---- jump grid + progress ---- */
+function paint() {
+  const done = answers.filter(a => a !== null).length;
+  document.getElementById('answered').textContent = done + ' / ' + TOTAL;
+  bar.style.width = (done / TOTAL * 100) + '%';
+
+  grid.innerHTML = QUESTIONS.map((q, i) => {
+    let c = 'gcell';
+    if (answers[i] !== null) c += ' answered';
+    if (i === cur) c += ' here';
+    if (q.t === 'stretch') c += ' st';
+    return '<button class="' + c + '" data-i="' + i + '">' + (i+1) + '</button>';
+  }).join('');
+
+  grid.querySelectorAll('.gcell').forEach(b => {
+    b.addEventListener('click', () => { cur = Number(b.dataset.i); render(); paint(); });
+  });
+}
+
+document.getElementById('prev').addEventListener('click', () => { if (cur > 0) { cur--; render(); paint(); } });
+document.getElementById('next').addEventListener('click', () => { if (cur < TOTAL-1) { cur++; render(); paint(); } });
+document.getElementById('submit').addEventListener('click', () => {
+  const done = answers.filter(a => a !== null).length;
+  if (!graded && done < TOTAL && !confirm((TOTAL - done) + ' question(s) are unanswered. Score anyway?')) return;
+  grade();
+});
+
+/* ---- scoring ---- */
+function grade() {
+  if (graded) { window.scrollTo({top:0,behavior:'smooth'}); return; }
+  graded = true;
+  clearInterval(timer);
+
+  const bySection = {};
+  let coreC = 0, coreT = 0, strC = 0, strT = 0;
+
+  QUESTIONS.forEach((q, i) => {
+    const ok = answers[i] === q.a;
+    if (!bySection[q.s]) bySection[q.s] = {c:0, t:0, track:q.t};
+    bySection[q.s].t++;
+    if (ok) bySection[q.s].c++;
+    if (q.t === 'core') { coreT++; if (ok) coreC++; } else { strT++; if (ok) strC++; }
+  });
+
+  const corePct = Math.round(coreC / coreT * 100);
+  const strPct  = Math.round(strC / strT * 100);
+
+  let vTitle, vBody;
+  if (corePct >= 80 && strPct >= 50) {
+    vTitle = "Advance — strong across both tracks";
+    vBody = "Core fundamentals are solid and the candidate reasons correctly about OpenShift and on-premises problems he has not worked on. That combination is unusual at three years and worth moving quickly on. Confirm the stretch answers in a live session before making the offer — reasoning on paper is not the same as having recovered a cluster.";
+  } else if (corePct >= 80) {
+    vTitle = "Advance with a defined boundary";
+    vBody = "Core GCP, Kubernetes, Terraform and CI/CD are in good shape, which covers the majority of day-to-day workload. OpenShift and disconnected operations are not there. Hire into a role where someone else owns the on-premises and sovereign deployment path, budget three to six months of ramp, and do not place him alone on the client-facing cluster work.";
+  } else if (corePct >= 60) {
+    vTitle = "Borderline — mid-level with supervision";
+    vBody = "Gaps appear in areas the resume claims directly, which is the pattern worth probing rather than dismissing. Run a hands-on session before deciding: a broken pipeline or a failing deployment to debug live will resolve this faster than more questions. If hired, he needs a senior engineer reviewing his work for the first quarter.";
+  } else {
+    vTitle = "Below bar for this role";
+    vBody = "Core score is under sixty percent on skills stated on the resume. That is a claim-versus-depth gap rather than an unfamiliarity gap, and it is the risk profile most common at this experience band. Decline, or redirect to a more junior cloud operations position if one exists.";
+  }
+
+  const rows = Object.keys(bySection).map(k => {
+    const b = bySection[k];
+    return '<tr class="' + (b.track === 'core' ? 'core-row' : 'stretch-row') + '">'
+      + '<td>' + k + '</td>'
+      + '<td class="num">' + b.c + ' / ' + b.t + '</td>'
+      + '<td class="num">' + Math.round(b.c / b.t * 100) + '%</td></tr>';
+  }).join('');
+
+  stage.innerHTML =
+    '<section class="result">'
+    + '<h2>Assessment complete</h2>'
+    + '<p class="rsub">Shubham Geete · scored ' + (coreC + strC) + ' of ' + TOTAL + ' overall. Read the two tracks separately — the combined number is misleading for this role.</p>'
+
+    + '<div class="readout">'
+      + '<div class="pane"><div class="plabel"><span class="dot core"></span>Core — claimed skills</div>'
+        + '<div class="pscore">' + corePct + '%</div>'
+        + '<div class="pof">' + coreC + ' of ' + coreT + ' correct</div>'
+        + '<div class="meter"><i class="core" style="width:' + corePct + '%"></i></div></div>'
+      + '<div class="pane"><div class="plabel"><span class="dot stretch"></span>Stretch — OpenShift &amp; on-premises</div>'
+        + '<div class="pscore">' + strPct + '%</div>'
+        + '<div class="pof">' + strC + ' of ' + strT + ' correct</div>'
+        + '<div class="meter"><i class="stretch" style="width:' + strPct + '%"></i></div></div>'
+    + '</div>'
+
+    + '<table class="bd"><thead><tr><th>Section</th><th class="num">Score</th><th class="num">%</th></tr></thead><tbody>' + rows + '</tbody></table>'
+
+    + '<div class="verdict"><div class="vlabel">Hiring signal</div><h3>' + vTitle + '</h3><p>' + vBody + '</p></div>'
+
+    + '<div class="gapbox"><div class="vlabel">What the resume does not evidence</div><ul>'
+      + '<li>No OpenShift anywhere — the eight stretch questions test reasoning, not experience. Score them as potential, not capability.</li>'
+      + '<li>No on-premises or bare-metal work. Both employers indicate managed cloud, so etcd, certificates, load balancers and node lifecycle are unproven.</li>'
+      + '<li>No disconnected or air-gapped exposure. This is the highest-risk gap for a sovereign client deployment and cannot be learned mid-delivery.</li>'
+      + '<li>Azure is the primary cloud, GCP secondary. Verify GCP depth in the interview rather than accepting the resume ordering.</li>'
+      + '<li>GitHub Actions, not GitLab CI. Transferable, but the migration effort is real and should be named in the offer conversation.</li>'
+      + '<li>Three-plus years against a four-to-five year target, with an MBA in the timeline. Ask him to draw the actual timeline and say what he touched daily versus occasionally.</li>'
+    + '</ul></div>'
+
+    + '<p class="rsub" style="margin:0">Use Previous and Next, or the number grid, to review each question with the correct answer and interviewer note.</p>'
+    + '</section>';
+
+  bar.style.width = '100%';
+  document.getElementById('submit').textContent = 'Scored';
+  document.getElementById('submit').disabled = true;
+  paint();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+render();
+paint();
+</script>
+</body>
+</html>
