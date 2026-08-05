@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Technical Assessment — Ayush Surothiya — Platform / DevOps Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#12161C; --ink-2:#454E5C; --ink-3:#7A8494;
+  --paper:#EDF0F4; --surface:#FFFFFF; --line:#D3DAE3;
+  --core:#1F4E79; --stretch:#9A5B08;
+  --pass:#0E6B5E; --fail:#9E2B25;
+  --sans:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px 80px}
+
+.masthead{border-bottom:2px solid var(--ink);padding:34px 0 18px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin:0 0 10px}
+.masthead h1{font-size:clamp(26px,4.4vw,38px);line-height:1.1;font-weight:700;letter-spacing:-.02em;margin:0 0 6px}
+.masthead .sub{color:var(--ink-2);margin:0;font-size:15px}
+
+.strip{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--line);background:var(--surface)}
+.strip .cell{flex:1 1 150px;padding:12px 16px;border-right:1px solid var(--line)}
+.strip .cell:last-child{border-right:0}
+.strip .k{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:block}
+.strip .v{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--ink)}
+#clock.warn{color:var(--fail)}
+
+.tracks{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
+.track{background:var(--surface);padding:14px 16px}
+.track .tlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+.dot.core{background:var(--core)}
+.dot.stretch{background:var(--stretch)}
+.track .tdesc{font-size:13px;color:var(--ink-2);line-height:1.45}
+
+.progress{height:4px;background:var(--line);position:sticky;top:0;z-index:20}
+.progress .bar{height:100%;width:0;background:var(--ink);transition:width .25s ease}
+
+.card{background:var(--surface);border:1px solid var(--line);border-top:0;padding:26px 26px 22px}
+.qhead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.qnum{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink-3)}
+.badge{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border:1px solid;border-radius:2px}
+.badge.core{color:var(--core);border-color:var(--core)}
+.badge.stretch{color:var(--stretch);border-color:var(--stretch)}
+.section-name{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.qtext{font-size:18px;line-height:1.45;font-weight:500;margin:12px 0 18px}
+
+.opts{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.opt{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);background:var(--surface);padding:13px 15px;cursor:pointer;text-align:left;font:inherit;color:inherit;border-radius:3px;transition:border-color .12s,background .12s;width:100%}
+.opt:hover{border-color:var(--ink-3)}
+.opt:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.opt .letter{font-family:var(--mono);font-weight:600;font-size:13px;color:var(--ink-3);flex:none;padding-top:1px}
+.opt.sel{border-color:var(--ink);background:#F6F8FA;box-shadow:inset 0 0 0 1px var(--ink)}
+.opt.sel .letter{color:var(--ink)}
+.opt[disabled]{cursor:default}
+.opt.correct{border-color:var(--pass);background:#F0F7F5}
+.opt.correct .letter{color:var(--pass)}
+.opt.wrong{border-color:var(--fail);background:#FCF2F1}
+.opt.wrong .letter{color:var(--fail)}
+.mark{margin-left:auto;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;flex:none;padding-top:2px}
+.mark.ok{color:var(--pass)}
+.mark.no{color:var(--fail)}
+
+.rationale{margin-top:16px;border:1px dashed var(--line);padding:13px 15px;background:var(--paper)}
+.rationale .rlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:5px}
+.rationale p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.5}
+
+.nav{display:flex;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-top:0;padding:16px 26px;flex-wrap:wrap}
+button.btn{font-family:var(--sans);font-size:14px;font-weight:600;padding:10px 18px;border-radius:3px;cursor:pointer;border:1px solid var(--ink);background:var(--surface);color:var(--ink);transition:background .12s,color .12s}
+button.btn:hover:not(:disabled){background:var(--ink);color:var(--surface)}
+button.btn.primary{background:var(--ink);color:var(--surface)}
+button.btn.primary:hover:not(:disabled){background:#000}
+button.btn:disabled{opacity:.35;cursor:not-allowed}
+button.btn:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.nav .spacer{margin-left:auto}
+.navnote{font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+
+.grid{display:flex;flex-wrap:wrap;gap:5px;background:var(--surface);border:1px solid var(--line);border-top:0;padding:16px 26px 20px}
+.gcell{width:32px;height:32px;font-family:var(--mono);font-size:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink-3);cursor:pointer;border-radius:2px;padding:0}
+.gcell:hover{border-color:var(--ink-3)}
+.gcell.answered{background:#E6EBF1;color:var(--ink);font-weight:600;border-color:#B6C1CF}
+.gcell.here{border-color:var(--ink);border-width:2px;color:var(--ink);font-weight:600}
+.gcell.st{border-bottom:3px solid var(--stretch)}
+
+.result{background:var(--surface);border:1px solid var(--line);border-top:0;padding:28px 26px}
+.result h2{font-size:24px;margin:0 0 4px;letter-spacing:-.01em}
+.result .rsub{color:var(--ink-2);font-size:14px;margin:0 0 24px}
+.readout{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:22px}
+.readout .pane{background:var(--surface);padding:18px}
+.readout .plabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.readout .pscore{font-family:var(--mono);font-size:34px;font-weight:600;line-height:1;letter-spacing:-.02em}
+.readout .pof{font-family:var(--mono);font-size:13px;color:var(--ink-3);margin-top:5px}
+.meter{height:6px;background:var(--line);margin-top:12px;border-radius:3px;overflow:hidden}
+.meter i{display:block;height:100%;width:0;transition:width .5s ease}
+.meter i.core{background:var(--core)}
+.meter i.stretch{background:var(--stretch)}
+
+table.bd{width:100%;border-collapse:collapse;margin-bottom:22px;font-size:14px}
+table.bd th,table.bd td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+table.bd th{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);border-bottom:1px solid var(--ink)}
+table.bd td.num{font-family:var(--mono);text-align:right;white-space:nowrap}
+table.bd tr.stretch-row td:first-child{border-left:3px solid var(--stretch);padding-left:10px}
+table.bd tr.core-row td:first-child{border-left:3px solid var(--core);padding-left:10px}
+
+.verdict{border:1px solid var(--ink);padding:18px 20px;margin-bottom:22px}
+.verdict .vlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:7px}
+.verdict h3{margin:0 0 8px;font-size:17px}
+.verdict p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.55}
+
+.gapbox{background:var(--paper);border-left:3px solid var(--stretch);padding:16px 18px;margin-bottom:22px}
+.gapbox .vlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--stretch);margin-bottom:8px}
+.gapbox ul{margin:0;padding-left:18px;font-size:14px;color:var(--ink-2)}
+.gapbox li{margin-bottom:5px}
+
+.footer{font-family:var(--mono);font-size:11px;color:var(--ink-3);padding:18px 0 0;text-align:center;letter-spacing:.04em}
+
+@media (max-width:640px){
+  .tracks,.readout{grid-template-columns:1fr}
+  .card,.nav,.grid,.result{padding-left:18px;padding-right:18px}
+  .strip .cell{flex:1 1 50%;border-bottom:1px solid var(--line)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Aavya · Technical Screening</p>
+    <h1>Platform &amp; DevOps Engineer — GCP, OpenShift, on-premises</h1>
+    <p class="sub">Candidate: Ayush Surothiya · 4.5 yrs · Infosys, client Santander UK · scoped to the corrected JD</p>
+  </header>
+
+  <div class="strip">
+    <div class="cell"><span class="k">Questions</span><span class="v" id="qcount">32</span></div>
+    <div class="cell"><span class="k">Time</span><span class="v" id="clock">55:00</span></div>
+    <div class="cell"><span class="k">Answered</span><span class="v" id="answered">0 / 32</span></div>
+    <div class="cell"><span class="k">Scoring</span><span class="v">Two-track</span></div>
+  </div>
+
+  <div class="tracks">
+    <div class="track">
+      <div class="tlabel"><span class="dot core"></span>Evidenced on resume</div>
+      <div class="tdesc">OpenShift workloads, Linux/RHEL, networking and TLS, CI/CD, Terraform and Ansible, Prometheus/Grafana. He claims all of this in production. Expect high scores; weakness here is a claim-versus-depth problem.</div>
+    </div>
+    <div class="track">
+      <div class="tlabel"><span class="dot stretch"></span>Required by JD, absent from resume</div>
+      <div class="tdesc">GCP, Helm/Kustomize, ArgoCD GitOps, OpenShift cluster day-2, and disconnected operation. Tests transfer from AWS and from workload-level OpenShift into cluster-level ownership.</div>
+    </div>
+  </div>
+
+  <main id="stage"></main>
+
+  <div class="nav" id="nav">
+    <button class="btn" id="prev">Previous</button>
+    <button class="btn" id="next">Next</button>
+    <span class="spacer"></span>
+    <span class="navnote" id="navnote"></span>
+    <button class="btn primary" id="submit">Finish and score</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <p class="footer">Answers are scored on submit. Nothing is transmitted — this file runs entirely in the browser.</p>
+</div>
+
+<script>
+const QUESTIONS = [
+
+/* ===== A. OpenShift workloads — evidenced ===== */
+{s:"OpenShift · SCC",t:"core",
+ q:"A workload legitimately needs to bind a privileged port and mount a hostPath. What is the correct way to permit this on OpenShift?",
+ o:["Set privileged: true on the pod spec",
+    "Create a custom SCC granting only the specific capabilities required, and bind it to a dedicated service account via a RoleBinding",
+    "Add the service account to the anyuid SCC",
+    "Disable security context constraints for that namespace"],
+ a:1,
+ e:"A purpose-built SCC bound to one service account is least privilege. anyuid only relaxes the UID requirement and does not grant host access, so it is the wrong tool as well as too broad; privileged: true grants everything. Reaching for privileged or anyuid here is the answer to watch for in a regulated environment."},
+
+{s:"OpenShift · Routes",t:"core",
+ q:"An application must terminate mutual TLS itself, at the pod, with the router performing no decryption. Which Route configuration?",
+ o:["Edge termination with a custom certificate",
+    "Passthrough termination",
+    "Re-encrypt termination with the service CA",
+    "Routes cannot support this; an Ingress with a custom controller is required"],
+ a:1,
+ e:"Passthrough hands the TLS session straight to the pod, which is the only mode that preserves client certificates end to end. Edge terminates at the router; re-encrypt decrypts and opens a new session, so the client certificate is lost in both."},
+
+{s:"OpenShift · Deployment triggers",t:"core",
+ q:"A deployment should roll automatically whenever a new image is pushed to a tracked ImageStream tag. What provides that?",
+ o:["A CronJob that polls the registry and patches the deployment",
+    "An image trigger on the workload, referencing the ImageStream tag, which the cluster resolves to a digest and applies",
+    "A Jenkins webhook that runs oc rollout restart",
+    "Not possible without an external GitOps controller"],
+ a:1,
+ e:"Image triggers are one of the genuinely distinctive OpenShift features and resolve the tag to an immutable digest on update. A webhook (C) works but is external plumbing for something the platform does natively — worth asking which he actually used at Santander."},
+
+{s:"OpenShift · Volumes and UID",t:"core",
+ q:"A container gets permission denied writing to a mounted volume. The target directory is mode 0755 and owned by root. Why, and what is the fix?",
+ o:["SELinux blocks all volume writes on RHCOS; a custom policy is required",
+    "The pod runs as an arbitrary UID from the project's allocated range and is not the directory owner; make the path group-writable and set fsGroup so the volume is chowned to that group",
+    "OpenShift mounts all persistent volumes read-only by default",
+    "The pod needs the privileged SCC to write to any mounted volume"],
+ a:1,
+ e:"Arbitrary UID assignment plus fsGroup is the standard OpenShift storage permission pattern, and it is the second most common porting problem after SCC failures. Anyone who has actually deployed stateful workloads on OpenShift has hit this."},
+
+{s:"OpenShift · Zero downtime",t:"core",
+ q:"A rolling update reports success, but users see intermittent 502 responses throughout the rollout. Most likely cause?",
+ o:["maxSurge is set too high, overloading the router",
+    "Readiness probes are missing or pass before the application can serve, and terminating pods have no graceful shutdown, so the router forwards traffic to pods that cannot answer and drops in-flight requests",
+    "The Route is caching stale endpoints and needs to be recreated",
+    "The HorizontalPodAutoscaler is scaling down during the rollout"],
+ a:1,
+ e:"Zero downtime is a property of readiness probes, preStop hooks and connection draining, not of the deployment strategy itself. His resume claims zero-downtime deployments for Finacle microservices, so this question tests whether he built that or inherited it."},
+
+/* ===== B. OpenShift cluster day-2 — required, unproven ===== */
+{s:"Cluster day-2 · Node config",t:"stretch",
+ q:"Every worker node running RHCOS needs a custom kernel argument and a chrony configuration. How is that delivered?",
+ o:["SSH to each node and edit the files under /etc",
+    "Create a MachineConfig targeting the worker MachineConfigPool; the Machine Config Operator applies it and reboots nodes in a controlled sequence",
+    "Run a privileged DaemonSet that writes to the host filesystem",
+    "Rebuild the RHCOS image and reprovision every node"],
+ a:1,
+ e:"RHCOS is immutable and declaratively managed; manual edits are reverted. Reaching for SSH here signals someone who consumed a cluster rather than operated one — which is exactly the boundary this candidate's resume leaves ambiguous."},
+
+{s:"Cluster day-2 · Certificates",t:"stretch",
+ q:"A cluster was powered off for three months. On restart, nodes report NotReady and the API is partially unavailable. What has happened?",
+ o:["The cluster recovers automatically once all nodes finish booting",
+    "Kubelet client certificates expired while the cluster was down; pending certificate signing requests must be approved to rotate them, and control plane certificate recovery may be needed before the API is healthy",
+    "etcd data is corrupted and the cluster must be reinstalled",
+    "Cluster certificates do not expire, so the cause must be networking"],
+ a:1,
+ e:"Certificate expiry is one of the two things that reliably kill a self-managed cluster, and automatic rotation depends on a functioning control plane — which is exactly what is missing. This never surfaces on a managed cloud platform, which is why it is the sharpest test of genuine on-premises ownership."},
+
+{s:"Cluster day-2 · etcd",t:"stretch",
+ q:"On a self-managed OpenShift cluster, what is true about etcd?",
+ o:["etcd is managed by the platform and requires no operator intervention",
+    "Periodic etcd backups taken from a control plane node are your responsibility, and they are the only recovery path from quorum loss or a bad restore",
+    "etcd state is reconstructed from the running workloads if lost",
+    "Backing up the Git repository that ArgoCD syncs from is equivalent to backing up etcd"],
+ a:1,
+ e:"Option D is the seductive wrong answer, and worth discussing live: Git restores your manifests but not cluster identity, certificates, secrets you did not commit, or operator state. If he picks D, ask him what is in etcd that is not in Git."},
+
+{s:"Cluster day-2 · Operators",t:"stretch",
+ q:"What mechanism installs a cluster operator on OpenShift and manages its subsequent upgrades?",
+ o:["helm install from the operator's public chart repository",
+    "A Subscription against a CatalogSource, with the Operator Lifecycle Manager resolving dependencies and applying upgrades through install plans",
+    "Applying the operator's raw manifests and reapplying newer versions manually",
+    "The Machine Config Operator, which manages all cluster operators"],
+ a:1,
+ e:"OLM is central to OpenShift and becomes the hard part of disconnected operation, since the catalog itself must be mirrored. Raw manifests work but forfeit dependency resolution and upgrade management."},
+
+{s:"Cluster day-2 · Upgrades",t:"stretch",
+ q:"A cluster upgrade has stalled. One MachineConfigPool reports Degraded and no further nodes are updating. What is your first move?",
+ o:["Re-run the upgrade command to retry the stalled pool",
+    "Inspect the degraded pool and the node it is stuck on — most often the operator cannot drain it because a PodDisruptionBudget or a pod with no controller is blocking eviction",
+    "Roll the cluster version back to the previous release",
+    "Restore etcd from the most recent backup"],
+ a:1,
+ e:"Stuck drains are the single most common cause of a stalled OpenShift upgrade, and the fix is almost always a workload-side disruption budget, not a platform problem. Rolling back a cluster version (C) is generally not supported once the upgrade has begun, which makes it a useful distractor."},
+
+/* ===== C. Linux, networking, TLS — evidenced ===== */
+{s:"TLS · Trust chains",t:"core",
+ q:"A pod calling an internal HTTPS service fails with an unknown authority error. A browser on a corporate laptop trusts the same endpoint without complaint.",
+ o:["The certificate has expired and the browser is caching an older validation",
+    "The issuing internal CA or intermediate is not present in the pod's trust store; the CA bundle must be mounted or injected into the container",
+    "The service is using the wrong SNI hostname",
+    "The pod needs a client certificate before the server will present a valid chain"],
+ a:1,
+ e:"Corporate laptops carry the internal CA through device management; containers ship with a public trust bundle only. This is routine in banking and on-premises estates, and it is a good sign if he answers instantly."},
+
+{s:"Linux · systemd",t:"core",
+ q:"A service must restart on failure but stop retrying after repeated rapid failures, and must not start until the network is up and a specific filesystem is mounted. Where is that expressed?",
+ o:["A cron @reboot entry with a wrapper script that polls for the mount",
+    "The systemd unit: Restart=on-failure with StartLimitBurst and StartLimitIntervalSec, and ordering plus dependency on network-online.target and the relevant .mount unit",
+    "rc.local, executed after all mounts complete",
+    "A supervisord configuration, since systemd cannot express filesystem dependencies"],
+ a:1,
+ e:"His resume lists RHEL and systemd explicitly, so this should be immediate. The rate-limiting half of the question is the discriminator — plenty of people know Restart=on-failure but not that it needs a burst limit to avoid a crash loop hammering a dependency."},
+
+{s:"Linux · Patching",t:"core",
+ q:"You must patch and reboot a fleet of RHEL nodes hosting a clustered application, with no service interruption. What is the correct approach?",
+ o:["Run the update across all nodes in parallel via Ansible to minimise the maintenance window",
+    "Patch in waves that respect cluster quorum and disruption budgets: drain, patch, reboot, verify health, proceed — with a documented rollback path",
+    "Enable automatic updates so nodes patch themselves during off-peak hours",
+    "Reboot all nodes nightly so patches apply on a rolling basis"],
+ a:1,
+ e:"Wave-based patching with health verification between waves is the answer, and it connects directly to the stalled-upgrade question earlier. He claims automated OS patching in a 99.9 percent uptime environment, so probe how the waves were sequenced and who approved the window."},
+
+{s:"Networking · Source addresses",t:"core",
+ q:"An application behind a layer 4 load balancer sees every request as originating from the load balancer's address. Audit requirements demand the real client IP.",
+ o:["Impossible at layer 4; the application must be moved behind a layer 7 proxy",
+    "Enable the PROXY protocol between the balancer and the backend, or preserve the source address using direct server return or an equivalent local traffic policy",
+    "Configure source NAT on the load balancer",
+    "Assign the backends public addresses so traffic is not translated"],
+ a:1,
+ e:"PROXY protocol and source-preserving traffic policies both solve this, and the tradeoffs differ — one requires backend support, the other constrains scheduling and health checking. A candidate with real load balancer experience will name the tradeoff unprompted."},
+
+/* ===== D. CI/CD — evidenced ===== */
+{s:"GitLab CI · Pipeline rules",t:"core",
+ q:"A job must run only on merge request pipelines targeting the main branch, and never on tag or scheduled pipelines. How is that expressed?",
+ o:["only: [main] combined with except: [tags, schedules]",
+    "A rules: block with if conditions on the pipeline source being a merge request event and the merge request target branch being main",
+    "when: manual, so the job only runs if a reviewer triggers it",
+    "A separate pipeline definition file referenced from the merge request template"],
+ a:1,
+ e:"rules: superseded only/except years ago, and only/except cannot reliably express merge-request-target conditions. His resume lists GitLab CI third after Jenkins and GitHub Actions — this question tells you whether GitLab CI is real experience or a keyword."},
+
+{s:"CI/CD · Credentials",t:"core",
+ q:"A pipeline needs to deploy to a cloud project. What is the correct authentication design?",
+ o:["A long-lived service account key stored as a masked, protected CI variable",
+    "OIDC identity federation, where the pipeline exchanges its short-lived job token for temporary cloud credentials scoped to a branch or environment claim",
+    "A dedicated bastion host holding credentials, reached over SSH from the runner",
+    "Credentials retrieved at runtime from a vault using a static token held in CI variables"],
+ a:1,
+ e:"Federation removes stored key material entirely. Option D is the interesting distractor — it is a real improvement over A but still bottoms out in a long-lived secret, and a candidate who explains why is thinking correctly rather than pattern matching. He lists CyberArk, so ask how secrets actually reached his pipelines."},
+
+{s:"CI/CD · Supply chain",t:"core",
+ q:"Where does container image vulnerability scanning belong, and how should deployment reference the image?",
+ o:["After deployment to production, before traffic is shifted to the new version",
+    "Immediately after build, gating promotion — the pipeline fails on threshold breach, and deployment references the image by digest so the scanned artifact is the one that runs",
+    "In a scheduled nightly job that reports findings to a dashboard for triage",
+    "As a final RUN step inside the Dockerfile so scanning is part of the build"],
+ a:1,
+ e:"Scanning must gate promotion rather than observe it, and digest pinning closes the gap between what was scanned and what runs. In a regulated environment this should be second nature — his resume claims release stability and standardisation, so probe what the gates actually were."},
+
+/* ===== E. Terraform and Ansible — evidenced ===== */
+{s:"Terraform · Addressing",t:"core",
+ q:"A resource uses count = length(var.subnets). You remove the first element from that list and apply.",
+ o:["Only the resource corresponding to the removed element is destroyed",
+    "Every subsequent resource shifts index and is destroyed and recreated",
+    "Terraform detects the shift and refuses to plan until the list order is restored",
+    "Nothing changes until state is refreshed manually"],
+ a:1,
+ e:"count keys by ordinal position; for_each keys by a stable string, which is why it is correct for any collection that changes over time. This single question separates people who have written Terraform from people who have run it, more reliably than anything else on this assessment."},
+
+{s:"Terraform · Refactoring",t:"core",
+ q:"A resource needs to be renamed in the configuration — same infrastructure, new address. How do you avoid destroying and recreating it?",
+ o:["Taint the resource so Terraform replaces it cleanly on the next apply",
+    "Update the state address with a state move operation, or declare a moved block in the configuration",
+    "Import the resource under its new name after removing the old block",
+    "Rename it and accept the replacement — addresses cannot be changed"],
+ a:1,
+ e:"State moves and moved blocks are everyday refactoring tools once a codebase has any age. Import (C) technically works but requires manually destroying nothing and is error-prone; the fact that it half-works makes it a good distractor."},
+
+{s:"Ansible · Idempotence",t:"core",
+ q:"A playbook task uses a shell command to append a configuration line to a file. What is wrong with it?",
+ o:["Nothing, provided the task is guarded with a changed_when condition",
+    "It is not idempotent — every run appends the line again; a line-management or template module with a handler is the correct approach",
+    "The shell module is deprecated in favour of the command module",
+    "It requires privilege escalation, which shell does not support"],
+ a:1,
+ e:"Idempotence is the whole point of Ansible, and shell-based configuration edits are the most common way people give it up without noticing. Option A is a real technique but addresses reporting, not the underlying duplication."},
+
+{s:"Ansible · Dry runs",t:"core",
+ q:"What do check mode and diff mode give you, and where do they mislead?",
+ o:["A guaranteed preview — if check mode reports no changes, an actual run will make none",
+    "A dry run showing intended changes, but modules without check mode support and tasks whose behaviour depends on the results of earlier tasks can report inaccurately",
+    "The same execution as a normal run, with changes reverted at the end",
+    "A preview that only works for roles, not standalone tasks"],
+ a:1,
+ e:"Knowing the limitation matters more than knowing the flag. Anyone who has run check mode against a playbook with registered variables and conditional tasks has seen it produce a misleading result."},
+
+/* ===== F. Helm, Kustomize, ArgoCD — required, absent ===== */
+{s:"Packaging · Helm vs Kustomize",t:"stretch",
+ q:"How do Helm and Kustomize differ in approach?",
+ o:["Both render templates; Helm uses Go templating and Kustomize uses Jinja",
+    "Helm renders parameterised templates and tracks installed releases with revision history; Kustomize applies declarative patches to plain manifests, with no templating and no release state",
+    "Kustomize is a Helm plugin and cannot be used independently",
+    "They are functionally equivalent; Kustomize is the newer name for Helm's manifest renderer"],
+ a:1,
+ e:"The release-state distinction is what matters operationally — it determines whether rollback is a tool feature or a Git operation. Neither tool appears on his resume despite four and a half years deploying to OpenShift, so ask what he used instead: OpenShift templates, raw manifests, or a Jenkins job applying YAML."},
+
+{s:"Packaging · Failed release",t:"stretch",
+ q:"A Helm upgrade fails partway through and the release is left in a pending state. What is the correct recovery?",
+ o:["Delete the namespace and reinstall the release from scratch",
+    "Inspect the release history and roll back to the last known good revision; if the release is stuck pending, clear that state before retrying rather than editing live objects",
+    "Install the chart again under a new release name and delete the old one afterwards",
+    "Delete the secret holding the release metadata so Helm treats it as a fresh install"],
+ a:1,
+ e:"Option D circulates widely as a fix and is genuinely dangerous — it orphans live resources from any release history. A candidate who recognises that is thinking about state ownership rather than just clearing an error."},
+
+{s:"GitOps · Drift",t:"stretch",
+ q:"ArgoCD manages a production cluster. During an incident an engineer edits a Deployment directly with the CLI to raise the replica count.",
+ o:["The change persists, since ArgoCD only reconciles when the Git repository changes",
+    "ArgoCD marks the application out of sync and, with self-heal enabled, reverts it; the change must land in Git to survive",
+    "ArgoCD commits the live change back to Git to preserve the fix",
+    "ArgoCD ignores replica counts specifically, treating them as runtime state"],
+ a:1,
+ e:"Git is the declared desired state, so imperative fixes are drift by construction. The operationally interesting follow-up: how do you make an emergency change under GitOps at two in the morning, and what does your team actually do?"},
+
+{s:"GitOps · Ordering",t:"stretch",
+ q:"An application defines a custom resource definition and a custom resource that depends on it. A single sync fails because the resource type does not yet exist.",
+ o:["Configure the sync to retry until the definition is registered",
+    "Use sync phases and waves so the definition is applied and established in an earlier wave than the resource that consumes it",
+    "Split the definition and the resource into separate repositories with separate applications",
+    "Custom resources cannot be delivered through GitOps and must be applied manually first"],
+ a:1,
+ e:"Sync waves are the standard answer and generalise to any ordering dependency — namespaces before quotas, operators before their custom resources. Retry (A) often stumbles into working, which is why candidates who have only used ArgoCD casually tend to pick it."},
+
+/* ===== G. GCP — required, absent (AWS only) ===== */
+{s:"GCP · Workload identity",t:"stretch",
+ q:"On AWS you would let a pod assume an IAM role through the cluster's OIDC provider, with no stored keys. What is the equivalent on GKE?",
+ o:["Generate a service account key and mount it into the pod as a Kubernetes secret",
+    "Enable Workload Identity and bind the Kubernetes service account to a Google service account so the pod receives short-lived, pod-scoped credentials",
+    "Attach the required roles to the node pool's service account so pods inherit them",
+    "Front the workload with an identity-aware proxy that injects credentials"],
+ a:1,
+ e:"Directly tests whether AWS knowledge transfers, which is the right way to assess someone whose cloud experience is real but on another provider. Option C is the closest wrong answer — it works, but grants the permission to every pod on the node."},
+
+{s:"GCP · Networking",t:"stretch",
+ q:"Pods on a GKE cluster are stuck Pending with an event indicating no available addresses in range. Nodes have ample CPU and memory.",
+ o:["The node pool's maximum pods per node is set too low",
+    "The secondary IP range allocated for pods at cluster creation is exhausted; additional pod ranges must be added",
+    "The primary subnet has no free addresses, so no new nodes can join",
+    "Cluster autoscaling is disabled, so no capacity is being added"],
+ a:1,
+ e:"Pod addresses come from a secondary alias range sized at creation, and exhausting it blocks scheduling on nodes that look idle. The AWS analogue is ENI address limits per instance, so someone with real VPC experience should reason to it even without GKE exposure."},
+
+{s:"GCP · IAM model",t:"stretch",
+ q:"Coming from AWS accounts and service control policies, what is true about GCP's IAM hierarchy?",
+ o:["Roles granted at project level do not apply to resources within the project unless repeated",
+    "Policies are inherited down the organisation, folder, project and resource hierarchy and are additive; restricting access requires an explicit deny policy or organisation constraint rather than the absence of a grant",
+    "Inheritance works identically to AWS service control policies, which restrict rather than grant",
+    "There is no hierarchy; every resource carries an independent policy"],
+ a:1,
+ e:"Additive inheritance is the conceptual difference most likely to cause a real mistake for someone arriving from AWS, where SCPs subtract rather than add. Getting this wrong is expected and forgivable; the useful part is whether he reasons out loud about the difference."},
+
+/* ===== H. Disconnected — required, absent ===== */
+{s:"Disconnected · Content",t:"stretch",
+ q:"An air-gapped cluster needs a newer version of an operator. There is no route to the public internet and there will not be one.",
+ o:["Arrange a temporary firewall exception to the upstream registry for the duration of the change",
+    "Mirror the operator catalog and its images to the internal registry, publish a catalog source pointing at the mirror, and configure image mirror resolution so nodes pull from it",
+    "Export the images on a connected machine and load them onto each node's local container runtime",
+    "Operator versions cannot be changed in a disconnected cluster; the cluster must be rebuilt"],
+ a:1,
+ e:"Mirroring plus node-side mirror configuration is the whole disconnected workflow. Option C is the answer that reveals someone reasoning from Docker rather than from a cluster — it bypasses the registry and breaks on the next node that scales in. Banking estates often have restricted egress rather than true air gaps, so ask which he actually worked in."},
+
+{s:"Disconnected · Upgrades",t:"stretch",
+ q:"How is the cluster version itself upgraded with no internet egress?",
+ o:["The standard upgrade command retrieves the release graph directly; only image pulls need mirroring",
+    "Mirror the target release payload and upgrade to that release by digest, or host the update graph internally so the cluster can resolve upgrade paths",
+    "Upgrade the operating system packages on each node and let the cluster version follow",
+    "Stand up a new cluster at the target version and migrate workloads across"],
+ a:1,
+ e:"The upgrade graph is an external service, so a disconnected cluster either targets a mirrored digest or serves the graph locally. Option C is a meaningful red flag — patching nodes independently of the cluster version breaks the operator-managed contract."},
+
+/* ===== I. Observability — evidenced ===== */
+{s:"Observability · SLOs",t:"core",
+ q:"Why use multi-window, multi-burn-rate alerting on an error budget rather than a fixed error-rate threshold?",
+ o:["It is computationally cheaper and reduces load on the metrics backend",
+    "It catches both fast burns that will exhaust the budget within hours and slow burns that accumulate over days, while suppressing pages for blips that consume negligible budget",
+    "It is the only alerting form that supports multiple severity levels",
+    "There is no practical difference; burn rate is a presentational choice for dashboards"],
+ a:1,
+ e:"The JD asks him to define SLOs rather than consume them, and this is the question that separates the two. His resume claims SLA and SLO work plus a 25 percent MTTR reduction, so ask what the SLO actually was, who agreed it, and what the error budget policy did when it was exhausted."},
+
+{s:"Observability · Cardinality",t:"core",
+ q:"A label carrying the full request path, including object identifiers, is added to an existing counter. Prometheus memory grows until the process is killed.",
+ o:["Prometheus stores string label values inefficiently and needs a recording rule to compact them",
+    "Every distinct label value creates a separate time series, so an unbounded label multiplies series count and memory consumption",
+    "The scrape interval is now too short for the volume of data being returned",
+    "The metrics endpoint is returning duplicate samples that Prometheus is buffering"],
+ a:1,
+ e:"Cardinality is the primary operational constraint of any Prometheus deployment. Anyone who has run it at volume has broken it this way; if he says it never happened, ask how many series his instance carried and what the retention was."}
+];
+
+const TOTAL = QUESTIONS.length;
+const answers = new Array(TOTAL).fill(null);
+let cur = 0, graded = false, secondsLeft = 55 * 60;
+
+const stage = document.getElementById('stage');
+const grid  = document.getElementById('grid');
+const bar   = document.getElementById('bar');
+const LETTERS = ['A','B','C','D'];
+
+document.getElementById('qcount').textContent = TOTAL;
+document.getElementById('answered').textContent = '0 / ' + TOTAL;
+
+const clock = document.getElementById('clock');
+const timer = setInterval(() => {
+  if (graded) { clearInterval(timer); return; }
+  secondsLeft--;
+  const m = Math.floor(Math.max(secondsLeft,0)/60), s = Math.max(secondsLeft,0)%60;
+  clock.textContent = m + ':' + String(s).padStart(2,'0');
+  if (secondsLeft <= 300) clock.classList.add('warn');
+  if (secondsLeft <= 0) { clearInterval(timer); grade(); }
+}, 1000);
+
+function render() {
+  const q = QUESTIONS[cur];
+  const badge = q.t === 'core'
+    ? '<span class="badge core">Evidenced</span>'
+    : '<span class="badge stretch">Gap</span>';
+
+  let html = '<section class="card">'
+    + '<div class="qhead"><span class="qnum">' + String(cur+1).padStart(2,'0') + ' / ' + TOTAL + '</span>'
+    + badge + '<span class="section-name">' + q.s + '</span></div>'
+    + '<p class="qtext">' + q.q + '</p><ul class="opts">';
+
+  q.o.forEach((opt, i) => {
+    let cls = 'opt', mark = '';
+    if (answers[cur] === i) cls += ' sel';
+    if (graded) {
+      if (i === q.a) { cls += ' correct'; mark = '<span class="mark ok">Correct</span>'; }
+      else if (answers[cur] === i) { cls += ' wrong'; mark = '<span class="mark no">Chosen</span>'; }
+    }
+    html += '<li><button class="' + cls + '" data-i="' + i + '"' + (graded ? ' disabled' : '') + '>'
+          + '<span class="letter">' + LETTERS[i] + '</span><span>' + opt + '</span>' + mark + '</button></li>';
+  });
+
+  html += '</ul>';
+  if (graded) html += '<div class="rationale"><div class="rlabel">Interviewer note</div><p>' + q.e + '</p></div>';
+  html += '</section>';
+  stage.innerHTML = html;
+
+  if (!graded) {
+    stage.querySelectorAll('.opt').forEach(b => {
+      b.addEventListener('click', () => {
+        answers[cur] = Number(b.dataset.i);
+        render(); paint();
+        if (cur < TOTAL - 1) setTimeout(() => { cur++; render(); paint(); }, 160);
+      });
+    });
+  }
+
+  document.getElementById('prev').disabled = cur === 0;
+  document.getElementById('next').disabled = cur === TOTAL - 1;
+  document.getElementById('navnote').textContent = graded ? 'Review mode' : (answers[cur] === null ? 'Not answered' : 'Answered');
+}
+
+function paint() {
+  const done = answers.filter(a => a !== null).length;
+  document.getElementById('answered').textContent = done + ' / ' + TOTAL;
+  bar.style.width = (done / TOTAL * 100) + '%';
+  grid.innerHTML = QUESTIONS.map((q, i) => {
+    let c = 'gcell';
+    if (answers[i] !== null) c += ' answered';
+    if (i === cur) c += ' here';
+    if (q.t === 'stretch') c += ' st';
+    return '<button class="' + c + '" data-i="' + i + '">' + (i+1) + '</button>';
+  }).join('');
+  grid.querySelectorAll('.gcell').forEach(b => {
+    b.addEventListener('click', () => { cur = Number(b.dataset.i); render(); paint(); });
+  });
+}
+
+document.getElementById('prev').addEventListener('click', () => { if (cur > 0) { cur--; render(); paint(); } });
+document.getElementById('next').addEventListener('click', () => { if (cur < TOTAL-1) { cur++; render(); paint(); } });
+document.getElementById('submit').addEventListener('click', () => {
+  const done = answers.filter(a => a !== null).length;
+  if (!graded && done < TOTAL && !confirm((TOTAL - done) + ' question(s) are unanswered. Score anyway?')) return;
+  grade();
+});
+
+function grade() {
+  if (graded) { window.scrollTo({top:0,behavior:'smooth'}); return; }
+  graded = true; clearInterval(timer);
+
+  const bySection = {};
+  let coreC = 0, coreT = 0, strC = 0, strT = 0;
+  QUESTIONS.forEach((q, i) => {
+    const ok = answers[i] === q.a;
+    if (!bySection[q.s]) bySection[q.s] = {c:0, t:0, track:q.t};
+    bySection[q.s].t++; if (ok) bySection[q.s].c++;
+    if (q.t === 'core') { coreT++; if (ok) coreC++; } else { strT++; if (ok) strC++; }
+  });
+
+  const corePct = Math.round(coreC/coreT*100);
+  const strPct  = Math.round(strC/strT*100);
+
+  let vTitle, vBody;
+  if (corePct >= 85 && strPct >= 55) {
+    vTitle = "Advance quickly — closest match seen so far";
+    vBody = "Production OpenShift depth, a Linux and networking foundation, and enough transfer into GCP, GitOps and cluster day-2 to make the remaining gaps a matter of weeks rather than quarters. This is the platform-engineer-moving-up profile the role was scoped for. Move fast, and use the offer conversation to name the GCP and ArgoCD ramp honestly rather than glossing it.";
+  } else if (corePct >= 85) {
+    vTitle = "Advance — strong platform base, defined ramp";
+    vBody = "The evidenced side is solid: he has genuinely operated OpenShift workloads in a regulated environment and the Linux, TLS and networking answers back that up. GCP, Helm and Kustomize, ArgoCD and disconnected operation are not there. All four are learnable by someone with this foundation, but they total three to six months, so either pair him with existing GCP capability or accept that the sovereign deployment path needs another owner initially.";
+  } else if (corePct >= 65) {
+    vTitle = "Borderline — probe the operator-versus-consumer boundary";
+    vBody = "Gaps appear inside areas the resume claims directly, which usually means he worked alongside a platform that someone else owned. That is common on a large systems-integrator account and is not disqualifying, but it changes the level. Run a live session before deciding: give him a failing deployment and a stalled rollout to debug on screen share.";
+  } else {
+    vTitle = "Below bar — claim and depth do not line up";
+    vBody = "Under sixty-five percent on skills stated as production experience across four and a half years. The resume reads as authored around a target role rather than around the work, and the interview should confirm that before you invest further panel time.";
+  }
+
+  const rows = Object.keys(bySection).map(k => {
+    const b = bySection[k];
+    return '<tr class="' + (b.track === 'core' ? 'core-row' : 'stretch-row') + '">'
+      + '<td>' + k + '</td><td class="num">' + b.c + ' / ' + b.t + '</td>'
+      + '<td class="num">' + Math.round(b.c/b.t*100) + '%</td></tr>';
+  }).join('');
+
+  stage.innerHTML =
+    '<section class="result">'
+    + '<h2>Assessment complete</h2>'
+    + '<p class="rsub">Ayush Surothiya · ' + (coreC + strC) + ' of ' + TOTAL + ' overall. Read the tracks separately — his gap is the inverse of a cloud-native candidate\u2019s, and a combined score hides that.</p>'
+    + '<div class="readout">'
+      + '<div class="pane"><div class="plabel"><span class="dot core"></span>Evidenced on resume</div>'
+        + '<div class="pscore">' + corePct + '%</div><div class="pof">' + coreC + ' of ' + coreT + ' correct</div>'
+        + '<div class="meter"><i class="core" style="width:' + corePct + '%"></i></div></div>'
+      + '<div class="pane"><div class="plabel"><span class="dot stretch"></span>Required by JD, absent</div>'
+        + '<div class="pscore">' + strPct + '%</div><div class="pof">' + strC + ' of ' + strT + ' correct</div>'
+        + '<div class="meter"><i class="stretch" style="width:' + strPct + '%"></i></div></div>'
+    + '</div>'
+    + '<table class="bd"><thead><tr><th>Section</th><th class="num">Score</th><th class="num">%</th></tr></thead><tbody>' + rows + '</tbody></table>'
+    + '<div class="verdict"><div class="vlabel">Hiring signal</div><h3>' + vTitle + '</h3><p>' + vBody + '</p></div>'
+    + '<div class="gapbox"><div class="vlabel">Gaps against the JD as written</div><ul>'
+      + '<li><strong>No GCP at all.</strong> AWS only — EC2, S3, IAM, CloudWatch. Concepts transfer, the console and the IAM model do not. This is the largest single gap.</li>'
+      + '<li><strong>No Helm and no Kustomize anywhere on the resume</strong>, despite four and a half years deploying to OpenShift. Ask directly what he used instead; the answer tells you how the deployments were actually shaped.</li>'
+      + '<li><strong>No ArgoCD or GitOps.</strong> The JD makes GitOps the delivery model, so this is a working-practice change, not just a new tool.</li>'
+      + '<li><strong>OpenShift language is workload-level, not cluster-level.</strong> Deployed and managed workloads, migrated services — no upgrades, MachineConfig, OLM, etcd or certificate rotation. Treat cluster day-2 as unproven until the day-2 section says otherwise.</li>'
+      + '<li><strong>No disconnected or air-gapped work stated.</strong> Santander UK almost certainly had restricted egress and proxy-only access, which is adjacent and worth surfacing — but it is not the same as mirroring a catalog.</li>'
+      + '<li><strong>One employer, one client, one estate for the full four and a half years.</strong> Deep but narrow. Probe how he behaves when the platform is not already built and standards do not already exist.</li>'
+      + '<li><strong>Five percentage claims with no baselines</strong> — deployment frequency, MTTR, manual effort, uptime, reliability. Pick one and ask how it was measured.</li>'
+    + '</ul></div>'
+    + '<p class="rsub" style="margin:0">Use Previous and Next, or the number grid, to review each question with the correct answer and interviewer note.</p>'
+    + '</section>';
+
+  bar.style.width = '100%';
+  document.getElementById('submit').textContent = 'Scored';
+  document.getElementById('submit').disabled = true;
+  paint();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+render(); paint();
+</script>
+</body>
+</html>
