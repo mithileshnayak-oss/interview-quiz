@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DevOps / Platform Engineer Quiz — Hrishabh Mishra</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&family=Geist:wght@400;500;600;700&display=swap');
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#070B14;--bg2:#0C1121;--bg3:#111827;
+      --border:#1E2D48;--border2:#273D5E;
+      --indigo:#818CF8;--indigo2:#6366F1;
+      --ind-lt:rgba(129,140,248,0.1);--ind-xlt:rgba(129,140,248,0.05);
+      --violet:#C084FC;--vlt:rgba(192,132,252,0.1);
+      --amber:#FCD34D;--amb-lt:rgba(252,211,77,0.1);
+      --red:#F87171;--red-lt:rgba(248,113,113,0.1);
+      --green:#34D399;--grn-lt:rgba(52,211,153,0.1);
+      --text:#E2E8F5;--muted:#3D5173;
+      --mono:'Geist Mono',monospace;--sans:'Geist',sans-serif;
+    }
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden}
+    body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(129,140,248,0.012) 3px,rgba(129,140,248,0.012) 4px);pointer-events:none;z-index:0}
+    .hdr{position:sticky;top:0;z-index:200;background:rgba(7,11,20,0.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 40px}
+    .hdr-l{display:flex;align-items:center;gap:14px}
+    .logo{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--bg);background:var(--indigo);padding:3px 10px;border-radius:4px;letter-spacing:.06em}
+    .hdr-title{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.04em}
+    .hdr-r{display:flex;align-items:center;gap:14px}
+    .jd-badge{font-family:var(--mono);font-size:10px;font-weight:500;color:var(--violet);border:1px solid rgba(192,132,252,.35);background:var(--vlt);padding:3px 9px;border-radius:3px;letter-spacing:.05em}
+    .tmr{font-family:var(--mono);font-size:19px;font-weight:600;color:var(--amber);min-width:52px;text-align:right}
+    .tmr.urgent{color:var(--red);animation:fl .75s ease-in-out infinite}
+    @keyframes fl{0%,100%{opacity:1}50%{opacity:.45}}
+    .prog{height:2px;background:var(--border);z-index:1;position:relative}
+    .prog-f{height:100%;background:linear-gradient(90deg,var(--indigo2),var(--violet));transition:width .4s cubic-bezier(.4,0,.2,1)}
+    .main{max-width:820px;margin:0 auto;padding:36px 20px 100px;position:relative;z-index:1}
+    .hero{border:1px solid var(--border2);border-radius:14px;padding:34px 38px;margin-bottom:40px;background:linear-gradient(135deg,var(--bg2) 0%,var(--bg3) 100%);position:relative;overflow:hidden}
+    .hero::after{content:'';position:absolute;top:-80px;right:-80px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(129,140,248,.1) 0%,transparent 70%);pointer-events:none}
+    .hero-eye{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--indigo);margin-bottom:10px}
+    .hero h1{font-size:24px;font-weight:700;line-height:1.2;margin-bottom:10px}
+    .hero h1 em{color:var(--indigo);font-style:normal}
+    .hero p{font-size:14px;color:var(--muted);line-height:1.65;margin-bottom:22px;max-width:540px}
+    .hero-tags{display:flex;gap:8px;flex-wrap:wrap}
+    .htag{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.05em;padding:4px 10px;border-radius:3px;border:1px solid}
+    .ht-i{color:var(--indigo);border-color:rgba(129,140,248,.4);background:var(--ind-lt)}
+    .ht-v{color:var(--violet);border-color:rgba(192,132,252,.35);background:var(--vlt)}
+    .ht-s{color:#38BDF8;border-color:rgba(56,189,248,.35);background:rgba(56,189,248,.1)}
+    .ht-a{color:var(--amber);border-color:rgba(252,211,77,.35);background:var(--amb-lt)}
+    .jd-match{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:40px}
+    .jdm-title{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+    .jdm-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+    .jdm-lbl{width:220px;flex-shrink:0;color:#94A3B8;font-family:var(--mono);font-size:11px}
+    .jdm-track{flex:1;background:var(--border);border-radius:2px;height:5px}
+    .jdm-fill{height:100%;border-radius:2px;background:var(--indigo)}
+    .jdm-pct{font-family:var(--mono);font-size:11px;color:var(--muted);width:40px;text-align:right}
+    .sec{display:flex;align-items:center;gap:12px;margin:40px 0 16px}
+    .sec-pill{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--indigo);background:var(--ind-lt);border:1px solid rgba(129,140,248,.3);padding:3px 10px;border-radius:3px;white-space:nowrap}
+    .sec-line{flex:1;height:1px;background:var(--border)}
+    .sec-cnt{font-family:var(--mono);font-size:10px;color:var(--muted);white-space:nowrap}
+    .jd-tag{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.07em;padding:2px 7px;border-radius:20px;background:var(--vlt);color:var(--violet);border:1px solid rgba(192,132,252,.3)}
+    .qcard{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:20px 22px;margin-bottom:12px;position:relative;transition:border-color .2s}
+    .qcard::before{content:'';position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:0 2px 2px 0;background:var(--border2);transition:background .3s}
+    .qcard.answered::before{background:var(--green)}
+    .qcard.incorrect::before{background:var(--red)}
+    .qcard.answered{border-color:rgba(52,211,153,.25)}
+    .qcard.incorrect{border-color:rgba(248,113,113,.2)}
+    .qmeta{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+    .qnum{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--bg);background:var(--indigo);padding:2px 8px;border-radius:3px;min-width:34px;text-align:center}
+    .qtag{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+    .qdiff{margin-left:auto;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.1em;padding:2px 8px;border-radius:20px;text-transform:uppercase}
+    .dh{color:var(--red);background:var(--red-lt);border:1px solid rgba(248,113,113,.3)}
+    .dm{color:var(--amber);background:var(--amb-lt);border:1px solid rgba(252,211,77,.3)}
+    .qtext{font-size:15px;font-weight:600;color:var(--text);line-height:1.55;margin-bottom:16px}
+    .qtext code{font-family:var(--mono);font-size:12.5px;background:var(--ind-lt);color:var(--indigo);padding:1px 6px;border-radius:3px}
+    .opts{display:flex;flex-direction:column;gap:8px}
+    .opt{display:flex;align-items:flex-start;gap:11px;padding:11px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:14px;line-height:1.5;color:#64748B;transition:border-color .15s,background .15s;user-select:none}
+    .opt:hover:not(.locked){border-color:var(--indigo2);background:var(--ind-xlt);color:var(--text)}
+    .opt code{font-family:var(--mono);font-size:12px;background:var(--ind-lt);color:var(--indigo);padding:1px 5px;border-radius:3px}
+    .ok{font-family:var(--mono);font-size:11px;font-weight:600;min-width:22px;height:22px;border-radius:3px;background:var(--border2);color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all .15s}
+    .opt.correct-pick{border-color:var(--green);background:var(--grn-lt);color:var(--text)}
+    .opt.correct-pick .ok{background:#059669;color:#fff}
+    .opt.wrong-pick{border-color:var(--red);background:var(--red-lt);color:var(--text)}
+    .opt.wrong-pick .ok{background:#DC2626;color:#fff}
+    .opt.reveal-right{border-color:var(--green);background:var(--grn-lt);color:var(--text)}
+    .opt.reveal-right .ok{background:#059669;color:#fff}
+    .expl{display:none;margin-top:12px;padding:12px 16px;border-radius:8px;font-size:13px;line-height:1.7}
+    .expl.show{display:block}
+    .expl code{font-family:var(--mono);font-size:12px;background:rgba(0,0,0,.4);padding:1px 5px;border-radius:3px}
+    .expl-ok{background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.2);color:#6EE7B7}
+    .expl-bad{background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.2);color:#FCA5A5}
+    .fbar{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(7,11,20,.97);backdrop-filter:blur(10px);border-top:1px solid var(--border);padding:12px 40px;display:flex;align-items:center;justify-content:space-between}
+    .fstats{display:flex;gap:20px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+    .fstats span{color:var(--indigo);font-weight:600}
+    .fstats .ft{color:var(--amber)}
+    .btn-sub{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:11px 26px;background:var(--indigo2);color:#fff;border:none;border-radius:5px;cursor:pointer;transition:background .2s,transform .1s}
+    .btn-sub:hover{background:var(--indigo);transform:translateY(-1px)}
+    .results{display:none;background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:36px;margin-top:40px}
+    .results.show{display:block}
+    .rtitle{font-size:22px;font-weight:700;margin-bottom:4px}
+    .rtitle span{color:var(--indigo)}
+    .rsub{font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:28px}
+    .sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:26px}
+    .sbox{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center}
+    .sbox .sv{font-family:var(--mono);font-size:26px;font-weight:600}
+    .sbox .sl{font-size:11px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.08em;font-family:var(--mono)}
+    .sbox.ind .sv{color:var(--indigo)}
+    .sbox.grn .sv{color:var(--green)}
+    .sbox.amb .sv{color:var(--amber)}
+    .sbox.red .sv{color:var(--red)}
+    .verdict{padding:15px 18px;border-radius:9px;font-size:15px;font-weight:600;margin-bottom:24px;border:1px solid}
+    .v-ex{background:rgba(129,140,248,.08);border-color:rgba(129,140,248,.3);color:#A5B4FC}
+    .v-good{background:rgba(52,211,153,.07);border-color:rgba(52,211,153,.25);color:var(--green)}
+    .v-ok{background:rgba(252,211,77,.07);border-color:rgba(252,211,77,.3);color:var(--amber)}
+    .v-try{background:rgba(248,113,113,.07);border-color:rgba(248,113,113,.3);color:var(--red)}
+    .sb-head{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+    .sb-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+    .sb-name{width:240px;flex-shrink:0;color:#64748B;font-size:12px;font-family:var(--mono)}
+    .sb-track{flex:1;background:var(--border);border-radius:2px;height:6px}
+    .sb-fill{height:100%;border-radius:2px;background:var(--indigo);transition:width .6s cubic-bezier(.4,0,.2,1)}
+    .sb-num{font-family:var(--mono);font-size:11px;color:var(--muted);width:36px;text-align:right}
+    @media(max-width:600px){.hdr{padding:0 14px}.hero{padding:22px 18px}.main{padding:20px 12px 90px}.sgrid{grid-template-columns:repeat(2,1fr)}.fbar{padding:10px 14px}.fstats{gap:10px;font-size:11px}.jd-badge{display:none}}
+  </style>
+</head>
+<body>
+<header class="hdr">
+  <div class="hdr-l">
+    <span class="logo">PLATFORM//EVAL</span>
+    <span class="hdr-title">DEVOPS ENGINEER · HRISHABH MISHRA · JD-MAPPED</span>
+  </div>
+  <div class="hdr-r">
+    <span class="jd-badge">JD: GKE + OpenShift + GitOps</span>
+    <div class="tmr" id="tmrDisp">30:00</div>
+  </div>
+</header>
+<div class="prog"><div class="prog-f" id="progF" style="width:0%"></div></div>
+
+<main class="main">
+  <div class="hero">
+    <div class="hero-eye">DevOps / Platform Engineer Assessment</div>
+    <h1>30 Questions · <em>Hard &amp; Medium</em> · JD-Matched</h1>
+    <p>Every question maps directly to a specific job description requirement — OpenShift SCCs/OLM/MachineConfig, GKE/GCP Workload Identity, GitLab CI/ArgoCD/GitOps, Terraform/Ansible IaC, air-gapped/disconnected operations, Prometheus SLO definition, RBAC/secrets, and production incident RCA.</p>
+    <div class="hero-tags">
+      <span class="htag ht-i">OpenShift · SCCs · OLM</span>
+      <span class="htag ht-v">GKE · GCP IAM · VPC</span>
+      <span class="htag ht-s">GitLab CI · ArgoCD · GitOps</span>
+      <span class="htag ht-a">Terraform · Ansible</span>
+      <span class="htag ht-i">Air-Gapped · Mirrored Registry</span>
+      <span class="htag ht-v">Prometheus · Grafana · SLOs</span>
+    </div>
+  </div>
+
+  <div class="jd-match">
+    <div class="jdm-title">JD Requirement Coverage — Questions per area</div>
+    <div class="jdm-row"><div class="jdm-lbl">OpenShift / OLM / SCCs / MachineConfig</div><div class="jdm-track"><div class="jdm-fill" style="width:100%"></div></div><div class="jdm-pct">Q1–6</div></div>
+    <div class="jdm-row"><div class="jdm-lbl">GKE / GCP IAM / VPC</div><div class="jdm-track"><div class="jdm-fill" style="width:100%"></div></div><div class="jdm-pct">Q7–10</div></div>
+    <div class="jdm-row"><div class="jdm-lbl">GitLab CI / ArgoCD / Helm / Kustomize</div><div class="jdm-track"><div class="jdm-fill" style="width:100%"></div></div><div class="jdm-pct">Q11–14</div></div>
+    <div class="jdm-row"><div class="jdm-lbl">Terraform / Ansible Roles</div><div class="jdm-track"><div class="jdm-fill" style="width:100%"></div></div><div class="jdm-pct">Q15–18</div></div>
+    <div class="jdm-row"><div class="jdm-lbl">Air-Gapped / Disconnected / ICSP</div><div class="jdm-track"><div class="jdm-fill" style="width:100%"></div></div><div class="jdm-pct">Q19–22</div></div>
+    <div class="jdm-row"><div class="jdm-lbl">Prometheus / Grafana / SLOs / Alerting</div><div class="jdm-track"><div class="jdm-fill" style="width:100%"></div></div><div class="jdm-pct">Q23–26</div></div>
+    <div class="jdm-row"><div class="jdm-lbl">RBAC / Secrets Management / Prod Incidents</div><div class="jdm-track"><div class="jdm-fill" style="width:100%"></div></div><div class="jdm-pct">Q27–30</div></div>
+  </div>
+
+  <div class="sec"><span class="sec-pill">OpenShift · OLM · SCCs · MachineConfig</span><div class="sec-line"></div><span class="sec-cnt">Q1–Q6</span></div>
+  <div class="qcard" id="qc-1">
+    <div class="qmeta"><span class="qnum">Q01</span><span class="qtag">SCCs</span><span class="jd-tag">JD: SCCs</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">A pod on OpenShift fails with <code>is forbidden: unable to validate against any security context constraint</code>. The pod spec sets <code>runAsUser: 1000</code>. What is the correct remediation sequence?</div>
+    <div class="opts" id="o-1">
+      <div class="opt" onclick="pick(1,'A')"><span class="ok">A</span>Identify the minimum-privilege SCC the workload needs, then bind it to the pod's service account via <code>oc adm policy add-scc-to-user &lt;scc&gt; -z &lt;sa&gt; -n &lt;ns&gt;</code>. Never assign <code>privileged</code> unless genuinely required</div>
+      <div class="opt" onclick="pick(1,'B')"><span class="ok">B</span>Remove <code>runAsUser: 1000</code> from the pod spec — OpenShift auto-assigns UIDs and custom UIDs are unsupported</div>
+      <div class="opt" onclick="pick(1,'C')"><span class="ok">C</span>Set <code>allowPrivilegeEscalation: true</code> in the pod securityContext — this bypasses SCC UID validation</div>
+      <div class="opt" onclick="pick(1,'D')"><span class="ok">D</span>Assign the <code>privileged</code> SCC to the default service account — the fastest fix for SCC admission errors</div>
+    </div>
+    <div class="expl" id="ex-1"></div>
+  </div>
+
+  <div class="qcard" id="qc-2">
+    <div class="qmeta"><span class="qnum">Q02</span><span class="qtag">OLM / Operators</span><span class="jd-tag">JD: Operators/OLM</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">You need to install a community Operator into namespace <code>my-app</code> (not <code>openshift-operators</code>). What is the correct OLM resource sequence and what does <code>OperatorGroup</code> control?</div>
+    <div class="opts" id="o-2">
+      <div class="opt" onclick="pick(2,'A')"><span class="ok">A</span>Create a namespace-scoped <code>OperatorGroup</code> in <code>my-app</code> with <code>targetNamespaces: [my-app]</code>, then create a <code>Subscription</code> in the same namespace. <code>OperatorGroup</code> defines the Operator's watch scope — without it OLM rejects the Subscription</div>
+      <div class="opt" onclick="pick(2,'B')"><span class="ok">B</span>Apply the Operator YAML directly with <code>oc apply</code> — OperatorGroup is only required for cluster-scoped operators</div>
+      <div class="opt" onclick="pick(2,'C')"><span class="ok">C</span>Operators can only be installed into <code>openshift-operators</code> — namespace-scoped OLM installs are unsupported</div>
+      <div class="opt" onclick="pick(2,'D')"><span class="ok">D</span>Install via <code>helm install</code> — OLM cannot target restricted namespaces</div>
+    </div>
+    <div class="expl" id="ex-2"></div>
+  </div>
+
+  <div class="qcard" id="qc-3">
+    <div class="qmeta"><span class="qnum">Q03</span><span class="qtag">MachineConfig</span><span class="jd-tag">JD: MachineConfig</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">You need to push <code>net.ipv4.tcp_max_syn_backlog=4096</code> to all worker nodes on an on-premises OpenShift cluster. What resource do you use, and what happens to nodes after you apply it?</div>
+    <div class="opts" id="o-3">
+      <div class="opt" onclick="pick(3,'A')"><span class="ok">A</span>Create a ConfigMap in <code>kube-system</code> — the node agent reads it automatically</div>
+      <div class="opt" onclick="pick(3,'B')"><span class="ok">B</span>Create a <code>MachineConfig</code> targeting the <code>worker</code> MachineConfigPool. MCO applies it by draining and rebooting each worker node in a rolling sequence — cordoned, updated, then uncordoned</div>
+      <div class="opt" onclick="pick(3,'C')"><span class="ok">C</span>Run an Ansible playbook against all workers via SSH — MachineConfig only manages RHCOS image updates</div>
+      <div class="opt" onclick="pick(3,'D')"><span class="ok">D</span>Deploy a DaemonSet with an init container running <code>sysctl -w</code> — the standard Kubernetes pattern</div>
+    </div>
+    <div class="expl" id="ex-3"></div>
+  </div>
+
+  <div class="qcard" id="qc-4">
+    <div class="qmeta"><span class="qnum">Q04</span><span class="qtag">Routes & TLS</span><span class="jd-tag">JD: TLS/Certs</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">You need to expose an app on OpenShift with edge TLS termination using a custom certificate. What is the correct OpenShift resource and how does it differ from a Kubernetes Ingress?</div>
+    <div class="opts" id="o-4">
+      <div class="opt" onclick="pick(4,'A')"><span class="ok">A</span>TLS termination requires Istio Gateway — native Routes do not support custom certificates</div>
+      <div class="opt" onclick="pick(4,'B')"><span class="ok">B</span>OpenShift uses standard Kubernetes Ingress only — Routes are a legacy concept removed in OCP 4.x</div>
+      <div class="opt" onclick="pick(4,'C')"><span class="ok">C</span>OpenShift uses a <code>Route</code> resource. For edge TLS: set <code>tls.termination: edge</code> and provide <code>certificate</code> and <code>key</code> in the Route spec. OCP 4.x also accepts standard Ingress objects and converts them to Routes internally via the Ingress Operator</div>
+      <div class="opt" onclick="pick(4,'D')"><span class="ok">D</span>Use a <code>Service</code> of type <code>LoadBalancer</code> with a TLS annotation — OpenShift's cloud provider handles certificate attachment</div>
+    </div>
+    <div class="expl" id="ex-4"></div>
+  </div>
+
+  <div class="qcard" id="qc-5">
+    <div class="qmeta"><span class="qnum">Q05</span><span class="qtag">Certificate Rotation</span><span class="jd-tag">JD: Cert Rotation</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">An on-premises OpenShift cluster's internal certificates expire in 5 days. What is the native auto-rotation mechanism and what are two common causes of failure?</div>
+    <div class="opts" id="o-5">
+      <div class="opt" onclick="pick(5,'A')"><span class="ok">A</span>Redeploy the cluster — in-place renewal is not supported</div>
+      <div class="opt" onclick="pick(5,'B')"><span class="ok">B</span>Manually regenerate with <code>openssl</code> — OpenShift does not auto-rotate certificates</div>
+      <div class="opt" onclick="pick(5,'C')"><span class="ok">C</span>Install cert-manager — the only supported rotation mechanism on OCP 4.x</div>
+      <div class="opt" onclick="pick(5,'D')"><span class="ok">D</span>OpenShift cluster Operators auto-rotate internal certs via the cluster CA. Common failures: (1) NTP clock skew causes certificates to appear expired before actual expiry; (2) nodes offline long enough for kubelet certs to expire before rotation completes. Recovery: <code>oc get csr | grep Pending</code> then approve, and check <code>oc get co</code></div>
+    </div>
+    <div class="expl" id="ex-5"></div>
+  </div>
+
+  <div class="qcard" id="qc-6">
+    <div class="qmeta"><span class="qnum">Q06</span><span class="qtag">Disconnected Upgrade</span><span class="jd-tag">JD: Air-Gapped</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">You are upgrading an on-premises OCP 4.13 cluster to 4.14 in a disconnected environment. What must be prepared before running the upgrade command?</div>
+    <div class="opts" id="o-6">
+      <div class="opt" onclick="pick(6,'A')"><span class="ok">A</span>Mirror the 4.14 release images to the internal registry using <code>oc-mirror</code>, update the <code>ImageContentSourcePolicy</code> or <code>ImageDigestMirrorSet</code>, then run <code>oc adm upgrade --to-image &lt;mirrored-digest&gt;</code>. Without this the upgrade fails immediately with image pull errors</div>
+      <div class="opt" onclick="pick(6,'B')"><span class="ok">B</span>Reinstall with the 4.14 ISO — in-place upgrades are unsupported in disconnected environments</div>
+      <div class="opt" onclick="pick(6,'C')"><span class="ok">C</span>Temporarily open internet access, upgrade, then re-close firewall rules</div>
+      <div class="opt" onclick="pick(6,'D')"><span class="ok">D</span>Run <code>oc adm upgrade --to-latest</code> — OpenShift pulls images during the upgrade</div>
+    </div>
+    <div class="expl" id="ex-6"></div>
+  </div>
+
+  <div class="sec"><span class="sec-pill">GKE · GCP · IAM · VPC</span><div class="sec-line"></div><span class="sec-cnt">Q7–Q10</span></div>
+  <div class="qcard" id="qc-7">
+    <div class="qmeta"><span class="qnum">Q07</span><span class="qtag">Workload Identity</span><span class="jd-tag">JD: GCP IAM</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">A GKE pod needs to write to Cloud Storage without a service account key file. What is the correct GCP-native approach and why is it preferred?</div>
+    <div class="opts" id="o-7">
+      <div class="opt" onclick="pick(7,'A')"><span class="ok">A</span>Mount the GCP service account JSON key as a Kubernetes Secret — Kubernetes encrypts secrets at rest</div>
+      <div class="opt" onclick="pick(7,'B')"><span class="ok">B</span>Set <code>GOOGLE_APPLICATION_CREDENTIALS</code> to a mounted key file path — standard GCP authentication</div>
+      <div class="opt" onclick="pick(7,'C')"><span class="ok">C</span>Assign the Storage Admin role to the GKE node pool's default service account — pods inherit the permissions</div>
+      <div class="opt" onclick="pick(7,'D')"><span class="ok">D</span>Use <strong>Workload Identity</strong>: annotate the Kubernetes ServiceAccount with <code>iam.gke.io/gcp-service-account</code> and bind it to the GCP SA. Pods receive short-lived tokens automatically — no key file to rotate, leak, or commit to Git</div>
+    </div>
+    <div class="expl" id="ex-7"></div>
+  </div>
+
+  <div class="qcard" id="qc-8">
+    <div class="qmeta"><span class="qnum">Q08</span><span class="qtag">GKE Private Cluster</span><span class="jd-tag">JD: GCP VPC</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">A GKE private cluster (no public node IPs) needs pods to pull images from Docker Hub. What GCP feature enables outbound internet for private nodes?</div>
+    <div class="opts" id="o-8">
+      <div class="opt" onclick="pick(8,'A')"><span class="ok">A</span>Use a LoadBalancer Service with <code>externalTrafficPolicy: Local</code> — this enables node-level egress</div>
+      <div class="opt" onclick="pick(8,'B')"><span class="ok">B</span>Configure <strong>Cloud NAT</strong> on the VPC subnet — it provides outbound internet via SNAT for instances without public IPs. For production, also consider mirroring images to Artifact Registry to eliminate the runtime internet dependency</div>
+      <div class="opt" onclick="pick(8,'C')"><span class="ok">C</span>Enable Cloud CDN on the VPC — it caches Docker Hub images at GCP PoPs and serves them to private nodes</div>
+      <div class="opt" onclick="pick(8,'D')"><span class="ok">D</span>Private clusters cannot pull from Docker Hub — all images must be baked into node OS images</div>
+    </div>
+    <div class="expl" id="ex-8"></div>
+  </div>
+
+  <div class="qcard" id="qc-9">
+    <div class="qmeta"><span class="qnum">Q09</span><span class="qtag">Cost Optimisation</span><span class="jd-tag">JD: Resource Optimisation</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">GKE cluster costs doubled. <code>kubectl top nodes</code> shows 8% average CPU utilisation. Which combination of actions most directly addresses this?</div>
+    <div class="opts" id="o-9">
+      <div class="opt" onclick="pick(9,'A')"><span class="ok">A</span>Switch to GKE Autopilot — it always costs less than Standard mode</div>
+      <div class="opt" onclick="pick(9,'B')"><span class="ok">B</span>Delete idle namespaces — they still consume node capacity</div>
+      <div class="opt" onclick="pick(9,'C')"><span class="ok">C</span>Upgrade to a larger machine type — bigger nodes are more cost-efficient per CPU</div>
+      <div class="opt" onclick="pick(9,'D')"><span class="ok">D</span>Enable Cluster Autoscaler, set accurate pod <code>requests</code>/<code>limits</code>, use Vertical Pod Autoscaler to right-size requests, and move non-critical workloads to Spot/Preemptible nodes (60–91% cheaper). 8% utilisation means pods are massively over-requesting</div>
+    </div>
+    <div class="expl" id="ex-9"></div>
+  </div>
+
+  <div class="qcard" id="qc-10">
+    <div class="qmeta"><span class="qnum">Q10</span><span class="qtag">NetworkPolicy Egress</span><span class="jd-tag">JD: Network Policies</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">Pods in namespace <code>frontend</code> must only egress to pods in namespace <code>backend</code> on port 8080, and be blocked from all other destinations. Which describes the correct NetworkPolicy structure?</div>
+    <div class="opts" id="o-10">
+      <div class="opt" onclick="pick(10,'A')"><span class="ok">A</span>NetworkPolicy with <code>policyTypes: [Egress]</code>, <code>podSelector: {}</code> (all frontend pods), <code>egress: [{to: [{namespaceSelector: {matchLabels: {kubernetes.io/metadata.name: backend}}}], ports: [{port: 8080}]}]</code>. A single egress rule with no other rules implicitly blocks all remaining egress</div>
+      <div class="opt" onclick="pick(10,'B')"><span class="ok">B</span>Create a GCP VPC firewall rule allowing port 8080 between the two subnets</div>
+      <div class="opt" onclick="pick(10,'C')"><span class="ok">C</span>Use Istio AuthorizationPolicy — Kubernetes NetworkPolicy does not support cross-namespace egress filtering</div>
+      <div class="opt" onclick="pick(10,'D')"><span class="ok">D</span>Set <code>policyTypes: [Ingress]</code> on the backend namespace — GKE only supports ingress rules for cross-namespace traffic</div>
+    </div>
+    <div class="expl" id="ex-10"></div>
+  </div>
+
+  <div class="sec"><span class="sec-pill">GitLab CI · ArgoCD · GitOps</span><div class="sec-line"></div><span class="sec-cnt">Q11–Q14</span></div>
+  <div class="qcard" id="qc-11">
+    <div class="qmeta"><span class="qnum">Q11</span><span class="qtag">GitLab CI Pipeline</span><span class="jd-tag">JD: GitLab CI</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">A GitLab CI pipeline must build → test → scan → deploy, but deploy only when BOTH test AND scan pass AND only on the <code>main</code> branch. What keyword combination enforces this?</div>
+    <div class="opts" id="o-11">
+      <div class="opt" onclick="pick(11,'A')"><span class="ok">A</span>Use <code>needs: [test, scan]</code> on deploy (explicit DAG dependency — fails if either upstream fails) combined with <code>rules: [{if: '$CI_COMMIT_BRANCH == "main"'}]</code>. <code>needs:</code> is more explicit than stage ordering and supports cross-stage dependencies</div>
+      <div class="opt" onclick="pick(11,'B')"><span class="ok">B</span>Use <code>when: manual</code> on deploy — a human approves after reviewing results</div>
+      <div class="opt" onclick="pick(11,'C')"><span class="ok">C</span>Use <code>allow_failure: false</code> on test and scan — this propagates failures to all downstream jobs</div>
+      <div class="opt" onclick="pick(11,'D')"><span class="ok">D</span>Add <code>only: [main]</code> to deploy — GitLab automatically blocks it when any earlier stage fails</div>
+    </div>
+    <div class="expl" id="ex-11"></div>
+  </div>
+
+  <div class="qcard" id="qc-12">
+    <div class="qmeta"><span class="qnum">Q12</span><span class="qtag">ArgoCD Drift</span><span class="jd-tag">JD: ArgoCD GitOps</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">ArgoCD auto-sync is enabled. A developer manually patches a Deployment causing OutOfSync. What happens next, and how do you handle fields legitimately managed outside Git (e.g. HPA-managed replicas)?</div>
+    <div class="opts" id="o-12">
+      <div class="opt" onclick="pick(12,'A')"><span class="ok">A</span>ArgoCD never reverts manual changes — OutOfSync only sends a notification</div>
+      <div class="opt" onclick="pick(12,'B')"><span class="ok">B</span>OutOfSync is permanent until resolved by a Git push — auto-sync only applies to new Application installs</div>
+      <div class="opt" onclick="pick(12,'C')"><span class="ok">C</span>With auto-sync enabled, ArgoCD reverts the cluster to Git state. For fields managed outside Git: use <code>ignoreDifferences</code> with <code>jqPathExpressions</code> targeting <code>spec.replicas</code> (for HPA) or controller-managed annotations. Also configure <code>syncOptions: [RespectIgnoreDifferences=true]</code></div>
+      <div class="opt" onclick="pick(12,'D')"><span class="ok">D</span>Delete and recreate the ArgoCD Application — the recommended recovery for drift</div>
+    </div>
+    <div class="expl" id="ex-12"></div>
+  </div>
+
+  <div class="qcard" id="qc-13">
+    <div class="qmeta"><span class="qnum">Q13</span><span class="qtag">Helm vs Kustomize</span><span class="jd-tag">JD: Helm & Kustomize</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">When would you choose Kustomize over Helm for managing dev/staging/prod differences, and what is Kustomize's core structural concept?</div>
+    <div class="opts" id="o-13">
+      <div class="opt" onclick="pick(13,'A')"><span class="ok">A</span>Kustomize doesn't support multi-environment deployments — use separate Git branches per environment</div>
+      <div class="opt" onclick="pick(13,'B')"><span class="ok">B</span>Kustomize is only for single-environment deployments — Helm handles multi-environment config better in all cases</div>
+      <div class="opt" onclick="pick(13,'C')"><span class="ok">C</span>Kustomize wraps <code>helm template</code> and stores rendered output in Git — it is a Helm post-processor</div>
+      <div class="opt" onclick="pick(13,'D')"><span class="ok">D</span>Kustomize uses a <strong>base + overlays</strong> pattern: define base manifests once, then per-environment overlay directories patch only the differences (replicas, image tags, resource limits). Choose Kustomize for plain YAML in Git without templating overhead — ArgoCD applies overlays natively</div>
+    </div>
+    <div class="expl" id="ex-13"></div>
+  </div>
+
+  <div class="qcard" id="qc-14">
+    <div class="qmeta"><span class="qnum">Q14</span><span class="qtag">Zero-Downtime Deploy</span><span class="jd-tag">JD: Zero-Downtime</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">In a GitOps flow via ArgoCD, what Deployment strategy achieves zero-downtime and what are its two critical application requirements?</div>
+    <div class="opts" id="o-14">
+      <div class="opt" onclick="pick(14,'A')"><span class="ok">A</span>Use <code>RollingUpdate</code> with <code>maxUnavailable: 0</code> and <code>maxSurge: 1</code>. Two critical requirements: (1) the app handles SIGTERM gracefully within <code>terminationGracePeriodSeconds</code>, and (2) the new version is backwards-compatible with the old during the overlap window — no breaking DB schema changes</div>
+      <div class="opt" onclick="pick(14,'B')"><span class="ok">B</span>Set <code>maxUnavailable: 100%</code> and <code>maxSurge: 100%</code> — creates all new pods before deleting old ones</div>
+      <div class="opt" onclick="pick(14,'C')"><span class="ok">C</span>Use <code>Recreate</code> — terminates old pods cleanly before starting new ones</div>
+      <div class="opt" onclick="pick(14,'D')"><span class="ok">D</span>Use <code>Recreate</code> with a PodDisruptionBudget — PDB prevents all pods being terminated simultaneously</div>
+    </div>
+    <div class="expl" id="ex-14"></div>
+  </div>
+
+  <div class="sec"><span class="sec-pill">Terraform · Ansible · IaC</span><div class="sec-line"></div><span class="sec-cnt">Q15–Q18</span></div>
+  <div class="qcard" id="qc-15">
+    <div class="qmeta"><span class="qnum">Q15</span><span class="qtag">Terraform State Lock</span><span class="jd-tag">JD: Terraform from scratch</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">Two engineers simultaneously run <code>terraform apply</code> on the same workspace. What can happen and what is the prevention mechanism?</div>
+    <div class="opts" id="o-15">
+      <div class="opt" onclick="pick(15,'A')"><span class="ok">A</span>Concurrent applies can corrupt the state file — both engineers read stale state, apply divergent changes, last write wins, leaving state inconsistent with actual infrastructure. Fix: <strong>remote backend with state locking</strong> (S3 + DynamoDB, GCS with locks, or Terraform Cloud). The lock atomically prevents a second apply while the first runs</div>
+      <div class="opt" onclick="pick(15,'B')"><span class="ok">B</span>Terraform detects concurrent applies and queues the second run — no configuration needed</div>
+      <div class="opt" onclick="pick(15,'C')"><span class="ok">C</span>Use separate <code>terraform workspace</code> per engineer — separate workspaces have separate state files</div>
+      <div class="opt" onclick="pick(15,'D')"><span class="ok">D</span>Run <code>terraform apply -lock=false</code> to skip locking — this prevents deadlocks when two engineers run simultaneously</div>
+    </div>
+    <div class="expl" id="ex-15"></div>
+  </div>
+
+  <div class="qcard" id="qc-16">
+    <div class="qmeta"><span class="qnum">Q16</span><span class="qtag">Terraform Module Design</span><span class="jd-tag">JD: Reusable modules</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">Hrishabh built reusable Terraform modules. Which three principles best characterise a well-designed module?</div>
+    <div class="opts" id="o-16">
+      <div class="opt" onclick="pick(16,'A')"><span class="ok">A</span>Combine all resources into one large module to reduce the number of <code>terraform apply</code> runs</div>
+      <div class="opt" onclick="pick(16,'B')"><span class="ok">B</span>Use <code>count</code> and <code>for_each</code> everywhere; avoid variables.tf — hardcoded values are more predictable</div>
+      <div class="opt" onclick="pick(16,'C')"><span class="ok">C</span>Single responsibility (one module = one logical resource group), typed variables with descriptions and <code>validation</code> blocks, and <strong>pinned version references</strong> (<code>?ref=v1.2.0</code> not <code>main</code>) so upstream changes don't silently break consumers</div>
+      <div class="opt" onclick="pick(16,'D')"><span class="ok">D</span>Store state locally within the module — remote state adds complexity</div>
+    </div>
+    <div class="expl" id="ex-16"></div>
+  </div>
+
+  <div class="qcard" id="qc-17">
+    <div class="qmeta"><span class="qnum">Q17</span><span class="qtag">Ansible Roles</span><span class="jd-tag">JD: Ansible roles</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">The JD requires writing Ansible roles from scratch. What is the purpose of the <code>handlers/</code> directory and what is its key efficiency behaviour?</div>
+    <div class="opts" id="o-17">
+      <div class="opt" onclick="pick(17,'A')"><span class="ok">A</span>Handlers are error-handling tasks that run when main tasks fail — the Ansible equivalent of try/catch</div>
+      <div class="opt" onclick="pick(17,'B')"><span class="ok">B</span>Handlers run before main tasks to pre-configure dependencies — the Ansible equivalent of init containers</div>
+      <div class="opt" onclick="pick(17,'C')"><span class="ok">C</span>Handlers are tasks triggered by <code>notify</code>. Key behaviour: no matter how many tasks notify the same handler in one play, it runs <strong>exactly once</strong> at the end — preventing multiple restarts when several config tasks all notify <code>restart nginx</code></div>
+      <div class="opt" onclick="pick(17,'D')"><span class="ok">D</span>Handlers run in parallel with main tasks — they offload non-critical operations to reduce playbook time</div>
+    </div>
+    <div class="expl" id="ex-17"></div>
+  </div>
+
+  <div class="qcard" id="qc-18">
+    <div class="qmeta"><span class="qnum">Q18</span><span class="qtag">Terraform Drift</span><span class="jd-tag">JD: IaC</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">A cloud engineer manually added a GCP firewall rule via the Console. Terraform state doesn't reflect this. What does <code>terraform plan</code> show and what are the two options to resolve it?</div>
+    <div class="opts" id="o-18">
+      <div class="opt" onclick="pick(18,'A')"><span class="ok">A</span><code>terraform plan</code> shows no changes — Terraform compares code to state file only, not actual cloud resources</div>
+      <div class="opt" onclick="pick(18,'B')"><span class="ok">B</span>After <code>terraform refresh</code>, plan shows the manual rule as a pending <strong>destroy</strong> (exists in cloud but not in code). Two options: (1) <code>terraform import</code> the rule and add it to HCL — makes it IaC-managed; (2) delete the rule from cloud and recreate via Terraform. Never apply without reviewing the plan</div>
+      <div class="opt" onclick="pick(18,'C')"><span class="ok">C</span>Run <code>terraform state push</code> — this updates the state to match cloud without changing resources</div>
+      <div class="opt" onclick="pick(18,'D')"><span class="ok">D</span>Delete the state file and re-import everything — drift is best resolved with a full state rebuild</div>
+    </div>
+    <div class="expl" id="ex-18"></div>
+  </div>
+
+  <div class="sec"><span class="sec-pill">Air-Gapped · Mirrored Registry · Offline Ops</span><div class="sec-line"></div><span class="sec-cnt">Q19–Q22</span></div>
+  <div class="qcard" id="qc-19">
+    <div class="qmeta"><span class="qnum">Q19</span><span class="qtag">ICSP / Mirror</span><span class="jd-tag">JD: Air-Gapped</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">You are configuring an air-gapped OpenShift cluster. All images must be served from <code>registry.internal.corp</code>. What resource redirects pulls from <code>registry.redhat.io</code> to the internal mirror?</div>
+    <div class="opts" id="o-19">
+      <div class="opt" onclick="pick(19,'A')"><span class="ok">A</span>Edit <code>/etc/containers/registries.conf</code> on each node manually — no Kubernetes resource configures container runtime registry mirrors</div>
+      <div class="opt" onclick="pick(19,'B')"><span class="ok">B</span>Create an <code>ImageContentSourcePolicy</code> (ICSP) or its successors <code>ImageDigestMirrorSet</code> / <code>ImageTagMirrorSet</code> (OCP 4.13+). MCO updates <code>/etc/containers/registries.conf</code> on every node via a rolling reboot — plan for the reboot window in production</div>
+      <div class="opt" onclick="pick(19,'C')"><span class="ok">C</span>Set a <code>REGISTRY_MIRROR</code> environment variable on the API server — all nodes inherit the setting</div>
+      <div class="opt" onclick="pick(19,'D')"><span class="ok">D</span>Create a ConfigMap in <code>openshift-config</code> with a registry mirror map — OpenShift reads it at pod scheduling time</div>
+    </div>
+    <div class="expl" id="ex-19"></div>
+  </div>
+
+  <div class="qcard" id="qc-20">
+    <div class="qmeta"><span class="qnum">Q20</span><span class="qtag">Offline Operator Catalog</span><span class="jd-tag">JD: Offline Catalogs</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">In a disconnected environment, default OperatorHub CatalogSources point to <code>registry.redhat.io</code> (unreachable). How do you provide Operator catalog content offline?</div>
+    <div class="opts" id="o-20">
+      <div class="opt" onclick="pick(20,'A')"><span class="ok">A</span>Set <code>spec.sourceType: grpc</code> on default CatalogSources pointing to an internal proxy that forwards requests to Red Hat</div>
+      <div class="opt" onclick="pick(20,'B')"><span class="ok">B</span>Install Operators manually via <code>oc apply -f bundle.yaml</code> — catalogs are unnecessary in disconnected environments</div>
+      <div class="opt" onclick="pick(20,'C')"><span class="ok">C</span>Disable default CatalogSources, mirror the operator index image using <code>oc-mirror</code> to the internal registry, and create a custom <code>CatalogSource</code> pointing to the mirrored index. OLM serves operator metadata from the local image — no internet access required</div>
+      <div class="opt" onclick="pick(20,'D')"><span class="ok">D</span>Install a dedicated internet-connected proxy server — OLM requires live access to operator metadata</div>
+    </div>
+    <div class="expl" id="ex-20"></div>
+  </div>
+
+  <div class="qcard" id="qc-21">
+    <div class="qmeta"><span class="qnum">Q21</span><span class="qtag">PXE / Bare Metal IPI</span><span class="jd-tag">JD: On-Prem OpenShift</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">In an OpenShift bare-metal IPI installation, what component serves PXE to booting nodes and what triggers the OS installation on disk?</div>
+    <div class="opts" id="o-21">
+      <div class="opt" onclick="pick(21,'A')"><span class="ok">A</span>Nodes boot from a pre-burned USB drive — bare-metal IPI does not use PXE</div>
+      <div class="opt" onclick="pick(21,'B')"><span class="ok">B</span>The Bootstrap VM (with Metal3/Ironic) serves DHCP, TFTP, and RHCOS live kernel via PXE. Nodes receive their Ignition config over HTTP from the Bootstrap, install RHCOS to disk, and reboot. The Bootstrap is decommissioned after the first 3 control plane nodes are healthy</div>
+      <div class="opt" onclick="pick(21,'C')"><span class="ok">C</span>The Kubernetes scheduler assigns Ignition configs based on node hardware labels</div>
+      <div class="opt" onclick="pick(21,'D')"><span class="ok">D</span>Nodes PXE-boot from Red Hat's online Assisted Installer — bare-metal IPI requires internet access</div>
+    </div>
+    <div class="expl" id="ex-21"></div>
+  </div>
+
+  <div class="qcard" id="qc-22">
+    <div class="qmeta"><span class="qnum">Q22</span><span class="qtag">RHCOS Patching</span><span class="jd-tag">JD: Air-Gapped Patching</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">The security team requires weekly OS patching of RHCOS nodes without internet egress. Why does <code>dnf update</code> fail, and what is the correct patching workflow?</div>
+    <div class="opts" id="o-22">
+      <div class="opt" onclick="pick(22,'A')"><span class="ok">A</span>Use Ansible to push RPM packages via SSH — RHCOS uses rpm-ostree layering that accepts Ansible-managed package overlays</div>
+      <div class="opt" onclick="pick(22,'B')"><span class="ok">B</span>RHCOS nodes do not require patching — immutable OS design makes vulnerabilities unexploitable</div>
+      <div class="opt" onclick="pick(22,'C')"><span class="ok">C</span>RHCOS is an immutable OS — <code>dnf update</code> is not available. Patching is done through <strong>cluster upgrades</strong>: mirror the new release images containing updated RHCOS content to the internal registry, then trigger the cluster upgrade. MCO applies the new OS layer via rolling node reboots. Weekly patching = weekly oc-mirror runs + controlled upgrade cadence</div>
+      <div class="opt" onclick="pick(22,'D')"><span class="ok">D</span>SSH into each node and run <code>rpm-ostree upgrade</code> — this applies pending layers without a full cluster upgrade</div>
+    </div>
+    <div class="expl" id="ex-22"></div>
+  </div>
+
+  <div class="sec"><span class="sec-pill">Prometheus · Grafana · SLOs</span><div class="sec-line"></div><span class="sec-cnt">Q23–Q26</span></div>
+  <div class="qcard" id="qc-23">
+    <div class="qmeta"><span class="qnum">Q23</span><span class="qtag">SLO Components</span><span class="jd-tag">JD: Define SLOs</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">The JD requires you to define SLOs, not just consume dashboards. Define SLI, SLO, and Error Budget and explain how they relate operationally.</div>
+    <div class="opts" id="o-23">
+      <div class="opt" onclick="pick(23,'A')"><span class="ok">A</span>SLOs are only relevant for external-facing services — internal platform components like the Kubernetes API server do not need SLOs</div>
+      <div class="opt" onclick="pick(23,'B')"><span class="ok">B</span><strong>SLI</strong>: quantitative measure of service behaviour — e.g. proportion of requests completing under 200ms. <strong>SLO</strong>: target for the SLI over a window — e.g. 99% of requests under 200ms over 30 days. <strong>Error Budget</strong>: allowed unreliability — 99% SLO = 1% budget = 7.2 hours/month. When exhausted, feature work pauses and reliability takes priority</div>
+      <div class="opt" onclick="pick(23,'C')"><span class="ok">C</span>SLI = the Grafana panel; SLO = the Prometheus alert threshold; Error Budget = allowed 5xx errors per day</div>
+      <div class="opt" onclick="pick(23,'D')"><span class="ok">D</span>SLI = service uptime percentage; SLO = the SLI rounded to two decimal places; Error Budget = remaining uptime before breach</div>
+    </div>
+    <div class="expl" id="ex-23"></div>
+  </div>
+
+  <div class="qcard" id="qc-24">
+    <div class="qmeta"><span class="qnum">Q24</span><span class="qtag">PromQL Error Rate</span><span class="jd-tag">JD: Prometheus</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">Write the PromQL expression that alerts when HTTP 5xx error rate exceeds 1% of total requests over the last 5 minutes, per service.</div>
+    <div class="opts" id="o-24">
+      <div class="opt" onclick="pick(24,'A')"><span class="ok">A</span><code>http_requests_total{status="500"} &gt; 0.01</code></div>
+      <div class="opt" onclick="pick(24,'B')"><span class="ok">B</span><code>sum(rate(http_requests_total{status=~"5.."}[5m])) by (service) / sum(rate(http_requests_total[5m])) by (service) &gt; 0.01</code> — <code>rate()</code> handles counter resets; <code>by (service)</code> gives per-service granularity; threshold 0.01 = 1%</div>
+      <div class="opt" onclick="pick(24,'C')"><span class="ok">C</span><code>count(http_requests_total{status=~"5.."}) / count(http_requests_total) &gt; 0.01</code></div>
+      <div class="opt" onclick="pick(24,'D')"><span class="ok">D</span><code>increase(http_requests_total{status=~"5.."}[5m]) &gt; 1</code></div>
+    </div>
+    <div class="expl" id="ex-24"></div>
+  </div>
+
+  <div class="qcard" id="qc-25">
+    <div class="qmeta"><span class="qnum">Q25</span><span class="qtag">Alert Fatigue</span><span class="jd-tag">JD: Define Alerts</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">The on-call team receives 200+ alerts per night causing fatigue and missed real incidents. What three structural Prometheus/Alertmanager changes fix this without missing real incidents?</div>
+    <div class="opts" id="o-25">
+      <div class="opt" onclick="pick(25,'A')"><span class="ok">A</span>Increase all alert thresholds — higher thresholds mean fewer alerts</div>
+      <div class="opt" onclick="pick(25,'B')"><span class="ok">B</span>Route all alerts to email — less disruptive than PagerDuty</div>
+      <div class="opt" onclick="pick(25,'C')"><span class="ok">C</span>Add <code>for: 5m</code> to all alert rules (eliminates transient spikes); alert on <strong>SLO burn-rate</strong> instead of individual infrastructure metrics (replaces 20 alerts with 1 meaningful one); configure Alertmanager <code>group_by</code> and <code>inhibit_rules</code> (suppress downstream alerts when a root-cause alert is already firing — e.g. suppress all pod alerts when a node is NotReady)</div>
+      <div class="opt" onclick="pick(25,'D')"><span class="ok">D</span>Disable alerting outside business hours — engineers can't respond at night</div>
+    </div>
+    <div class="expl" id="ex-25"></div>
+  </div>
+
+  <div class="qcard" id="qc-26">
+    <div class="qmeta"><span class="qnum">Q26</span><span class="qtag">EFK vs Loki</span><span class="jd-tag">JD: Log Aggregation</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">Hrishabh deployed EFK Stack. What is the primary operational challenge of Elasticsearch at high log volume, and what is a common alternative architecture?</div>
+    <div class="opts" id="o-26">
+      <div class="opt" onclick="pick(26,'A')"><span class="ok">A</span>Elasticsearch is not open source — it requires a paid Red Hat subscription on OpenShift</div>
+      <div class="opt" onclick="pick(26,'B')"><span class="ok">B</span>Elasticsearch doesn't support JSON logs — it only indexes plain text</div>
+      <div class="opt" onclick="pick(26,'C')"><span class="ok">C</span>Elasticsearch's main challenge at scale: it indexes <strong>all fields by default</strong>, consuming significant CPU/memory, and requires ILM, shard tuning, and JVM heap configuration. Alternative: <strong>Loki + Grafana</strong> — only indexes labels (namespace, pod, container), reducing storage 10-50x. Trade-off: full-text search is slower in Loki</div>
+      <div class="opt" onclick="pick(26,'D')"><span class="ok">D</span>Elasticsearch requires dedicated bare-metal nodes — it cannot run in containers in production</div>
+    </div>
+    <div class="expl" id="ex-26"></div>
+  </div>
+
+  <div class="sec"><span class="sec-pill">Security · RBAC · Production Incidents</span><div class="sec-line"></div><span class="sec-cnt">Q27–Q30</span></div>
+  <div class="qcard" id="qc-27">
+    <div class="qmeta"><span class="qnum">Q27</span><span class="qtag">RBAC Design</span><span class="jd-tag">JD: RBAC</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">A developer should view Pods and Deployments in namespace <code>app-prod</code> but not create/delete, and must have no Secrets access. What RBAC resources do you create?</div>
+    <div class="opts" id="o-27">
+      <div class="opt" onclick="pick(27,'A')"><span class="ok">A</span>Assign the built-in <code>view</code> ClusterRole — it grants read-only access to most resources</div>
+      <div class="opt" onclick="pick(27,'B')"><span class="ok">B</span>Create a ClusterRole with get/list verbs and a second ClusterRole denying create/delete on Secrets — RBAC supports permission subtraction</div>
+      <div class="opt" onclick="pick(27,'C')"><span class="ok">C</span>Create a namespace-scoped <code>Role</code> in <code>app-prod</code> with rules for <code>pods</code> and <code>deployments</code> with <code>verbs: [get, list, watch]</code>. Omit <code>secrets</code> entirely — RBAC is deny-by-default. Bind via namespace-scoped <code>RoleBinding</code>. The built-in <code>view</code> ClusterRole (C) includes Secrets access, violating the requirement</div>
+      <div class="opt" onclick="pick(27,'D')"><span class="ok">D</span>Use NetworkPolicy to restrict the developer's namespace access — RBAC is only for service-to-service permissions</div>
+    </div>
+    <div class="expl" id="ex-27"></div>
+  </div>
+
+  <div class="qcard" id="qc-28">
+    <div class="qmeta"><span class="qnum">Q28</span><span class="qtag">Secrets in GitOps</span><span class="jd-tag">JD: Secrets Management</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">Kubernetes Secrets are base64-encoded. A GitOps flow requires storing secrets in Git. What are two production-grade approaches, and what does each encrypt?</div>
+    <div class="opts" id="o-28">
+      <div class="opt" onclick="pick(28,'A')"><span class="ok">A</span>Store secrets as environment variables in GitLab CI/CD settings — they are never written to Git</div>
+      <div class="opt" onclick="pick(28,'B')"><span class="ok">B</span>(1) <strong>Sealed Secrets</strong>: encrypt with the cluster's public key into <code>SealedSecret</code> CRDs safe to commit to Git — only the cluster controller can decrypt. (2) <strong>External Secrets Operator</strong>: store values in AWS Secrets Manager / GCP Secret Manager / Vault; <code>ExternalSecret</code> CRDs reference the external path — the actual value never touches Git</div>
+      <div class="opt" onclick="pick(28,'C')"><span class="ok">C</span>Use a private Git repository — base64 in private repos is secure since only authorized engineers have access</div>
+      <div class="opt" onclick="pick(28,'D')"><span class="ok">D</span>Store as ConfigMaps — ConfigMaps are encrypted at rest in etcd unlike Secrets</div>
+    </div>
+    <div class="expl" id="ex-28"></div>
+  </div>
+
+  <div class="qcard" id="qc-29">
+    <div class="qmeta"><span class="qnum">Q29</span><span class="qtag">Production Incident</span><span class="jd-tag">JD: Prod Incident RCA</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">50% of GKE pods enter <code>CrashLoopBackOff</code> after a config-only change. What is your diagnostic sequence in the first 5 minutes?</div>
+    <div class="opts" id="o-29">
+      <div class="opt" onclick="pick(29,'A')"><span class="ok">A</span>Minute 1-2: <code>kubectl describe pod &lt;crashing&gt;</code> — exit code and last state. Minute 2-3: <code>kubectl logs &lt;pod&gt; --previous</code> — what does the app print on crash? Minute 3-4: compare the changed ConfigMap/env vars via Git diff. Minute 4-5: if root cause found — rollback; if not — rollback first, investigate after. Communicate status at minute 2, not after full diagnosis</div>
+      <div class="opt" onclick="pick(29,'B')"><span class="ok">B</span>Check Prometheus CPU and memory metrics — CrashLoopBackOff is always caused by resource exhaustion</div>
+      <div class="opt" onclick="pick(29,'C')"><span class="ok">C</span>Immediately roll back — investigating wastes time when rollback is always fastest</div>
+      <div class="opt" onclick="pick(29,'D')"><span class="ok">D</span>Delete all crashing pods — Kubernetes reschedules them and they may succeed on a different node</div>
+    </div>
+    <div class="expl" id="ex-29"></div>
+  </div>
+
+  <div class="qcard" id="qc-30">
+    <div class="qmeta"><span class="qnum">Q30</span><span class="qtag">Istio mTLS vs NeuVector</span><span class="jd-tag">JD: Security Controls</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">Hrishabh configured Istio mTLS and NeuVector at OS3Infotech. In a zero-trust model, what does each specifically secure and how are they complementary?</div>
+    <div class="opts" id="o-30">
+      <div class="opt" onclick="pick(30,'A')"><span class="ok">A</span><strong>Istio mTLS</strong>: secures the <em>network path between services</em> — mutual certificate authentication, encrypted traffic, AuthorizationPolicy. <strong>NeuVector</strong>: secures <em>inside the container</em> at runtime — process behaviour monitoring, anomaly detection (unexpected processes or network connections), zero-drift policy enforcement. Complementary: Istio secures the channel; NeuVector secures the workload</div>
+      <div class="opt" onclick="pick(30,'B')"><span class="ok">B</span>Istio mTLS and NeuVector are identical tools — only one is needed</div>
+      <div class="opt" onclick="pick(30,'C')"><span class="ok">C</span>mTLS encrypts etcd data at rest; NeuVector encrypts pod-to-pod traffic</div>
+      <div class="opt" onclick="pick(30,'D')"><span class="ok">D</span>mTLS provides RBAC between services; NeuVector manages TLS certificates for ingress traffic</div>
+    </div>
+    <div class="expl" id="ex-30"></div>
+  </div>
+
+
+  <div class="results" id="resultsPanel">
+    <div class="rtitle">Assessment <span>Complete</span></div>
+    <div class="rsub" id="rSub"></div>
+    <div class="sgrid">
+      <div class="sbox ind"><div class="sv" id="rScore">—</div><div class="sl">Score</div></div>
+      <div class="sbox grn"><div class="sv" id="rPct">—</div><div class="sl">Accuracy</div></div>
+      <div class="sbox amb"><div class="sv" id="rTime">—</div><div class="sl">Time</div></div>
+      <div class="sbox red"><div class="sv" id="rWrong">—</div><div class="sl">Incorrect</div></div>
+    </div>
+    <div class="verdict" id="verdBox"></div>
+    <div class="sb-head">Score by JD requirement area</div>
+    <div id="secBD"></div>
+  </div>
+</main>
+
+<div class="fbar">
+  <div class="fstats">
+    <span>ANSWERED <span id="fA">0</span>/30</span>
+    <span>CORRECT <span id="fC">0</span></span>
+    <span class="ft" id="fT">30:00</span>
+  </div>
+  <button class="btn-sub" onclick="submitAll()">SUBMIT &rarr; RESULTS</button>
+</div>
+
+<script>
+const ANS={1:'A',2:'A',3:'B',4:'C',5:'D',6:'A',7:'D',8:'B',9:'D',10:'A',11:'A',12:'C',13:'D',14:'A',15:'A',16:'C',17:'C',18:'B',19:'B',20:'C',21:'B',22:'C',23:'B',24:'B',25:'C',26:'C',27:'C',28:'B',29:'A',30:'A'};
+const EX={1:`SCC admission is OpenShift's security gateway. Use <code>oc adm policy scc-subject-review -f pod.yaml</code> to identify the minimum SCC needed. <code>privileged</code> (originally A) bypasses all container isolation — a security anti-pattern. Removing runAsUser (originally B) breaks workloads depending on a specific UID. <code>allowPrivilegeEscalation</code> (originally D) is unrelated to UID validation.`,2:`OLM requires three resources: CatalogSource (catalog), OperatorGroup (defines watch scope), and Subscription (requests an operator). Without a namespace-scoped OperatorGroup, OLM rejects the Subscription. OLM also rejects two OperatorGroups in one namespace — check for existing ones first.`,3:`MachineConfig is the declarative RHCOS node configuration API. After applying, MCO calculates the rendered config, cordons each worker, reboots it to activate the sysctl change, and uncordons. A DaemonSet init container (B) also works but resets on node reboot without a continuously running DaemonSet, and is not GitOps-friendly.`,4:`Route is OpenShift's Layer 7 routing resource managed by the Ingress Operator (HAProxy). Three TLS modes: edge (terminate at router), passthrough (TLS reaches the pod), reencrypt (terminate and re-encrypt). OCP 4.x accepts standard Kubernetes Ingress too — the Ingress Operator converts them to Routes automatically.`,5:`OpenShift's cluster PKI is fully operator-managed. NTP sync is critical — clock skew of 10+ minutes causes valid certificates to be rejected. Offline nodes miss the rotation window and need manual CSR approval on reconnect. Check cluster operator health first: oc get co shows if any operator is Degraded, which often blocks cert rotation.`,6:`oc-mirror is the modern tool (OCP 4.10+) for mirroring release payloads. It generates correct ICSP/IDMS manifests automatically. --to-latest (A) in a disconnected cluster queries update.openshift.io and pulls from quay.io — both unreachable in air-gapped environments.`,7:`Workload Identity is GCP-recommended. Short-lived tokens are issued via the projected service account token mechanism and expire automatically. Key files (B, C) don't expire, can be leaked via Git, and require manual rotation. Node pool SA permissions (A) violate least-privilege — all pods on the node inherit them regardless of need.`,8:`Cloud NAT is GCP's managed NAT gateway providing SNAT for private VM instances. It supports connection tracking, configurable port allocation, and logging. The production best practice is also mirroring images to Artifact Registry — this eliminates runtime internet dependency, speeds up pulls, and provides a security audit trail.`,9:`8% CPU utilisation is a symptom of over-provisioned pod requests — the scheduler reserves CPU that pods never use. Cluster Autoscaler removes underutilised nodes; correct requests enable efficient bin-packing; VPA right-sizes requests based on actual usage. GKE Autopilot (A) is not always cheaper — at high steady-state load, Standard with proper autoscaling can cost less.`,10:`NetworkPolicy with policyTypes: [Egress] and one explicit egress rule creates an implicit deny-all-other-egress. The namespaceSelector uses the auto-set kubernetes.io/metadata.name label (K8s 1.21+). GKE requires --enable-network-policy on the cluster — NetworkPolicies are no-ops if the CNI doesn't enforce them. VPC firewall rules (B) operate at the node network layer and don't provide pod-level isolation within a node.`,11:`needs: creates an explicit DAG — deploy fails if test or scan fail, regardless of stage order. rules: if is the modern replacement for only:/except: and supports complex boolean conditions. only: [main] (A) restricts the branch but doesn't create an explicit job dependency — stage-based ordering propagates failures but is less explicit. needs: + rules: is the idiomatic GitLab CI pattern for conditional deployment gates.`,12:`Auto-sync is ArgoCD's GitOps guarantee — it continuously converges the cluster to Git. ignoreDifferences tells ArgoCD to skip specific fields during sync comparison, preventing it from reverting legitimate external changes. For production: also configure syncPolicy.automated.prune: false to prevent accidental resource deletion, and sync windows to gate deploys to business hours.`,13:`Kustomize's base/overlays pattern stores raw YAML — kubectl diff -k overlays/prod shows exact changes before apply, with no rendering step. ArgoCD has native Kustomize support. Choose Helm when you need complex conditional templating, consume community charts, or want chart-level versioning. Many teams use both: Helm for third-party apps, Kustomize for their own services.`,14:`maxUnavailable: 0 ensures zero pods go down before at least one new pod passes its readiness probe. Application requirements are often forgotten: SIGTERM handling to drain in-flight requests, and backwards compatibility during rollout — a DB migration that drops a column the old version reads will crash old pods during the rolling update.`,15:`Terraform state is a single source of truth. DynamoDB locking uses a conditional write to atomically acquire the lock — only one process holds it at a time. -lock=false (B) disables protection and should only be used in specific recovery scenarios (e.g. clearing a stale lock from a crashed apply). Separate workspaces (D) help but don't solve cases where both engineers need to apply the same environment.`,16:`Single responsibility makes modules composable and testable. Typed variables with validation catch wrong inputs at plan time. Version pinning is the most operationally critical: ?ref=main means a maintainer's change silently breaks all consumers on the next terraform init. Use semantic versioning (v1.2.0) and a CHANGELOG. Always include outputs.tf so consumers can reference module results.`,17:`Handlers are idempotent deferred actions. If 5 tasks notify 'restart nginx', nginx restarts once at the end — not 5 times. They execute in definition order, not notification order. A handler not notified never runs. Use listen: topics to allow multiple handlers to respond to one notification.`,18:`terraform refresh syncs the state file with actual cloud resources. The delta between updated state and code is shown in plan. terraform import brings an existing resource under management without destroying it. terraform state push (B) papers over drift without resolving it and can cause silent corruption. The key discipline: always run plan before apply, and review drift carefully.`,19:`ICSP/IDMS/ITMS are declarative CRDs that MCO translates into node-level CRI-O configuration. Applying them triggers a rolling node reboot — the documented side effect that surprises many engineers. oc-mirror automatically generates the correct ICSP/IDMS manifests as part of its mirroring output. In OCP 4.13+ prefer ImageDigestMirrorSet (requires digest-based pulls, more secure) or ImageTagMirrorSet for tag-based pulls.`,20:`Complete workflow: (1) oc-mirror mirrors index image and operator bundle images. (2) oc patch operatorhub cluster --type merge -p '{"spec":{"disableAllDefaultSources":true}}'. (3) Create CatalogSource spec.image pointing to mirrored index. OLM's grpc catalog server serves operator metadata from the local image — fully offline.`,21:`Metal3/Ironic manages the bare-metal provisioning lifecycle. The Ignition config contains disk partitioning, network config, systemd units, and cluster join credentials. After the node reboots from disk, it joins the cluster normally. In disconnected environments, all Bootstrap content must be served from internal infrastructure.`,22:`RHCOS uses rpm-ostree: an atomic image-based OS where the root filesystem is read-only. dnf is not available. rpm-ostree upgrade (A) technically works but pulls from ostree remotes — unreachable in disconnected environments, and bypasses cluster upgrade lifecycle management. OpenShift upgrades atomically update both cluster software and the OS layer with rollback capability.`,23:`The error budget is the operational decision gate. It makes reliability a first-class concern: teams invest in reliability before the budget runs out. SLIs should measure what users experience (latency, error rate) — not proxy metrics like CPU. Platform teams should define SLOs for internal customers too — the K8s API server, internal registry, and CI/CD pipelines all have downstream SLA implications.`,24:`rate() computes per-second rate of change over the time window, correctly handling counter resets on pod restarts. sum() by (service) aggregates across all pod instances. The division gives the error rate ratio. B: count() counts time series not requests — wrong semantics. C: compares a cumulative counter to 0.01 — meaningless. D: increase() gives absolute count not rate — no percentage comparison. Also add for: 5m to the alert rule to avoid transient spikes.`,25:`for: duration is the highest-impact single change. SLO burn-rate alerting replaces threshold alerts with error budget consumption rate — one alert tells you the SLO is in danger without requiring knowledge of 20 individual resource metrics. Inhibition rules prevent alert storms: one NotReady node fires one alert and inhibits 100 downstream CrashLoopBackOff and OOMKilled alerts from pods on that node.`,26:`Elasticsearch's strength (full inverted index) is also its cost burden. For Kubernetes logs where 95% of queries filter by label, full-text indexing is unnecessary overhead. Loki uses the same label model as Prometheus — a natural fit for Prometheus/Grafana teams. OCP Logging Operator supports both EFK and LokiStack as backends in OCP 4.11+.`,27:`RBAC is deny-by-default — you only grant explicit permissions. The built-in view ClusterRole includes secrets in its resource list. A custom Role with only pods and deployments ensures secrets are never accessible. Use RoleBinding (namespace-scoped) not ClusterRoleBinding — cluster bindings grant access across ALL namespaces. Audit with: kubectl auth can-i --list --as=developer --namespace=app-prod`,28:`Sealed Secrets are cluster-bound — a SealedSecret for cluster A cannot be decrypted by cluster B without key replication. ESO supports cross-cluster secrets, secret rotation on a configurable interval, and integrates with enterprise vault infrastructure. Private repos (C) provide security through obscurity — a single compromised credential exposes all secrets. ConfigMaps (B) have no RBAC differentiation from regular config.`,29:`Exit codes reveal failure category without reading logs: exit 1 = application error, exit 137 = OOMKilled, exit 143 = SIGTERM not handled. --previous logs show the last crash output before the pod restarted. The config diff isolates exactly what changed. Rollback (B) is valid but 3 minutes of diagnosis often reveals the root cause and prevents rolling back to an already-degraded state. Status communication at minute 2 is non-negotiable.`,30:`Zero-trust requires securing both the path (Istio) and the endpoint (NeuVector). Istio cannot see inside a container process — it only observes network traffic. NeuVector cannot shape L7 traffic between services — it only observes what runs inside the container. Together: Istio AuthorizationPolicy ensures only authorised services communicate; NeuVector zero-drift policy ensures a compromised service cannot run unexpected processes or make unexpected network connections.`};
+const SECS=[{name:`OpenShift · OLM · SCCs · MachineConfig`,qs:[1,2,3,4,5,6]},{name:`GKE · GCP · IAM · VPC`,qs:[7,8,9,10]},{name:`GitLab CI · ArgoCD · GitOps`,qs:[11,12,13,14]},{name:`Terraform · Ansible · IaC`,qs:[15,16,17,18]},{name:`Air-Gapped · Mirrored Registry · Offline Ops`,qs:[19,20,21,22]},{name:`Prometheus · Grafana · SLOs`,qs:[23,24,25,26]},{name:`Security · RBAC · Production Incidents`,qs:[27,28,29,30]}];
+let secs=1800,usedSecs=0,tInt=null,tStarted=false,submitted=false;
+const picks={},locked={};let corr=0,ansTotal=0;
+function startTimer(){
+  if(tStarted)return;tStarted=true;
+  tInt=setInterval(()=>{
+    secs--;usedSecs++;
+    const m=String(Math.floor(secs/60)).padStart(2,'0'),s=String(secs%60).padStart(2,'0'),d=m+':'+s;
+    document.getElementById('tmrDisp').textContent=d;
+    document.getElementById('fT').textContent=d;
+    document.getElementById('tmrDisp').className='tmr'+(secs<300?' urgent':'');
+    if(secs<=0){clearInterval(tInt);submitAll(true);}
+  },1000);
+}
+document.addEventListener('click',startTimer,{once:true});
+document.addEventListener('keydown',startTimer,{once:true});
+function pick(n,choice){
+  if(locked[n]||submitted)return;
+  locked[n]=true;picks[n]=choice;ansTotal++;
+  const correct=ANS[n],isOk=choice===correct;
+  if(isOk)corr++;
+  const opts=document.querySelectorAll('#o-'+n+' .opt');
+  ['A','B','C','D'].forEach((k,i)=>{
+    opts[i].classList.add('locked');
+    if(k===choice&&isOk)opts[i].classList.add('correct-pick');
+    if(k===choice&&!isOk)opts[i].classList.add('wrong-pick');
+    if(k===correct&&!isOk)opts[i].classList.add('reveal-right');
+  });
+  document.getElementById('qc-'+n).classList.add(isOk?'answered':'incorrect');
+  const ex=document.getElementById('ex-'+n);
+  ex.innerHTML='<strong>'+(isOk?'✓ Correct':'✗ Incorrect — Correct: '+correct)+'</strong> — '+EX[n];
+  ex.className='expl show '+(isOk?'expl-ok':'expl-bad');
+  document.getElementById('fA').textContent=ansTotal;
+  document.getElementById('fC').textContent=corr;
+  document.getElementById('progF').style.width=(ansTotal/30*100)+'%';
+  if(ansTotal===30&&!submitted)setTimeout(()=>submitAll(),500);
+}
+function submitAll(auto=false){
+  if(submitted)return;submitted=true;clearInterval(tInt);usedSecs=1800-secs;
+  const panel=document.getElementById('resultsPanel');panel.classList.add('show');
+  document.getElementById('rScore').textContent=corr+'/30';
+  document.getElementById('rPct').textContent=Math.round(corr/30*100)+'%';
+  document.getElementById('rWrong').textContent=ansTotal-corr;
+  const um=String(Math.floor(usedSecs/60)).padStart(2,'0'),us=String(usedSecs%60).padStart(2,'0');
+  document.getElementById('rTime').textContent=um+':'+us;
+  const pct=corr/30*100;
+  const vb=document.getElementById('verdBox');
+  if(pct>=80){vb.className='verdict v-ex';vb.textContent='⚡ Excellent — Strong depth across OpenShift, GKE, GitOps, and production security. JD requirements well covered.';}
+  else if(pct>=65){vb.className='verdict v-good';vb.textContent='✓ Good — Solid platform engineering foundations. Review air-gapped operations, SLO definition, and OpenShift ICSP/OLM specifics.';}
+  else if(pct>=50){vb.className='verdict v-ok';vb.textContent='◎ Developing — Core Kubernetes knowledge present. JD-specific gaps in disconnected environments, SCC depth, and Terraform state management.';}
+  else{vb.className='verdict v-try';vb.textContent='↺ Review Needed — Study OpenShift MachineConfig/ICSP, Workload Identity, ArgoCD sync semantics, and PromQL rate() patterns before the interview.';}
+  document.getElementById('rSub').textContent=ansTotal+' of 30 answered  ·  '+corr+' correct  ·  '+(ansTotal-corr)+' incorrect';
+  const bd=document.getElementById('secBD');
+  bd.innerHTML=SECS.map(sec=>{
+    const got=sec.qs.filter(q=>picks[q]===ANS[q]).length;
+    const p=Math.round(got/sec.qs.length*100);
+    const c=p>=80?'#818CF8':p>=60?'#34D399':p>=40?'#FCD34D':'#F87171';
+    return '<div class="sb-row"><div class="sb-name">'+sec.name+'</div><div class="sb-track"><div class="sb-fill" style="width:'+p+'%;background:'+c+'"></div></div><div class="sb-num">'+got+'/'+sec.qs.length+'</div></div>';
+  }).join('');
+  panel.scrollIntoView({behavior:'smooth',block:'start'});
+}
+</script>
+</body>
+</html>
