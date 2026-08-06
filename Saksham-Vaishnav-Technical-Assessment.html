@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Technical Assessment — Saksham Vaishnav — Platform / DevOps Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#12161C; --ink-2:#454E5C; --ink-3:#7A8494;
+  --paper:#EDF0F4; --surface:#FFFFFF; --line:#D3DAE3;
+  --core:#1F4E79; --stretch:#9A5B08;
+  --pass:#0E6B5E; --fail:#9E2B25;
+  --sans:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px 80px}
+
+.masthead{border-bottom:2px solid var(--ink);padding:34px 0 18px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin:0 0 10px}
+.masthead h1{font-size:clamp(26px,4.4vw,38px);line-height:1.1;font-weight:700;letter-spacing:-.02em;margin:0 0 6px}
+.masthead .sub{color:var(--ink-2);margin:0;font-size:15px}
+
+.strip{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--line);background:var(--surface)}
+.strip .cell{flex:1 1 150px;padding:12px 16px;border-right:1px solid var(--line)}
+.strip .cell:last-child{border-right:0}
+.strip .k{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:block}
+.strip .v{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--ink)}
+#clock.warn{color:var(--fail)}
+
+.tracks{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
+.track{background:var(--surface);padding:14px 16px}
+.track .tlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+.dot.core{background:var(--core)}
+.dot.stretch{background:var(--stretch)}
+.track .tdesc{font-size:13px;color:var(--ink-2);line-height:1.45}
+
+.progress{height:4px;background:var(--line);position:sticky;top:0;z-index:20}
+.progress .bar{height:100%;width:0;background:var(--ink);transition:width .25s ease}
+
+.card{background:var(--surface);border:1px solid var(--line);border-top:0;padding:26px 26px 22px}
+.qhead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.qnum{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink-3)}
+.badge{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border:1px solid;border-radius:2px}
+.badge.core{color:var(--core);border-color:var(--core)}
+.badge.stretch{color:var(--stretch);border-color:var(--stretch)}
+.section-name{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.qtext{font-size:18px;line-height:1.45;font-weight:500;margin:12px 0 18px}
+
+.opts{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.opt{display:flex;gap:12px;align-items:center;border:1px solid var(--line);background:var(--surface);padding:13px 15px;cursor:pointer;text-align:left;font:inherit;color:inherit;border-radius:3px;transition:border-color .12s,background .12s;width:100%}
+.opt:hover{border-color:var(--ink-3)}
+.opt:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.opt .letter{font-family:var(--mono);font-weight:600;font-size:13px;color:var(--ink-3);flex:none}
+.opt.sel{border-color:var(--ink);background:#F6F8FA;box-shadow:inset 0 0 0 1px var(--ink)}
+.opt.sel .letter{color:var(--ink)}
+.opt[disabled]{cursor:default}
+.opt.correct{border-color:var(--pass);background:#F0F7F5}
+.opt.correct .letter{color:var(--pass)}
+.opt.wrong{border-color:var(--fail);background:#FCF2F1}
+.opt.wrong .letter{color:var(--fail)}
+.mark{margin-left:auto;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;flex:none}
+.mark.ok{color:var(--pass)}
+.mark.no{color:var(--fail)}
+
+.rationale{margin-top:16px;border:1px dashed var(--line);padding:13px 15px;background:var(--paper)}
+.rationale .rlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:5px}
+.rationale p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.5}
+
+.nav{display:flex;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-top:0;padding:16px 26px;flex-wrap:wrap}
+button.btn{font-family:var(--sans);font-size:14px;font-weight:600;padding:10px 18px;border-radius:3px;cursor:pointer;border:1px solid var(--ink);background:var(--surface);color:var(--ink);transition:background .12s,color .12s}
+button.btn:hover:not(:disabled){background:var(--ink);color:var(--surface)}
+button.btn.primary{background:var(--ink);color:var(--surface)}
+button.btn.primary:hover:not(:disabled){background:#000}
+button.btn:disabled{opacity:.35;cursor:not-allowed}
+button.btn:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.nav .spacer{margin-left:auto}
+.navnote{font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+
+.grid{display:flex;flex-wrap:wrap;gap:5px;background:var(--surface);border:1px solid var(--line);border-top:0;padding:16px 26px 20px}
+.gcell{width:32px;height:32px;font-family:var(--mono);font-size:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink-3);cursor:pointer;border-radius:2px;padding:0}
+.gcell:hover{border-color:var(--ink-3)}
+.gcell.answered{background:#E6EBF1;color:var(--ink);font-weight:600;border-color:#B6C1CF}
+.gcell.here{border-color:var(--ink);border-width:2px;color:var(--ink);font-weight:600}
+.gcell.st{border-bottom:3px solid var(--stretch)}
+
+.result{background:var(--surface);border:1px solid var(--line);border-top:0;padding:28px 26px}
+.result h2{font-size:24px;margin:0 0 4px;letter-spacing:-.01em}
+.result .rsub{color:var(--ink-2);font-size:14px;margin:0 0 24px}
+.readout{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:22px}
+.readout .pane{background:var(--surface);padding:18px}
+.readout .plabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.readout .pscore{font-family:var(--mono);font-size:34px;font-weight:600;line-height:1;letter-spacing:-.02em}
+.readout .pof{font-family:var(--mono);font-size:13px;color:var(--ink-3);margin-top:5px}
+.meter{height:6px;background:var(--line);margin-top:12px;border-radius:3px;overflow:hidden}
+.meter i{display:block;height:100%;width:0;transition:width .5s ease}
+.meter i.core{background:var(--core)}
+.meter i.stretch{background:var(--stretch)}
+
+table.bd{width:100%;border-collapse:collapse;margin-bottom:22px;font-size:14px}
+table.bd th,table.bd td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+table.bd th{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);border-bottom:1px solid var(--ink)}
+table.bd td.num{font-family:var(--mono);text-align:right;white-space:nowrap}
+table.bd tr.stretch-row td:first-child{border-left:3px solid var(--stretch);padding-left:10px}
+table.bd tr.core-row td:first-child{border-left:3px solid var(--core);padding-left:10px}
+
+.verdict{border:1px solid var(--ink);padding:18px 20px;margin-bottom:22px}
+.verdict .vlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:7px}
+.verdict h3{margin:0 0 8px;font-size:17px}
+.verdict p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.55}
+
+.gapbox{background:var(--paper);border-left:3px solid var(--stretch);padding:16px 18px;margin-bottom:22px}
+.gapbox .vlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--stretch);margin-bottom:8px}
+.gapbox ul{margin:0;padding-left:18px;font-size:14px;color:var(--ink-2)}
+.gapbox li{margin-bottom:6px}
+
+.footer{font-family:var(--mono);font-size:11px;color:var(--ink-3);padding:18px 0 0;text-align:center;letter-spacing:.04em}
+
+@media (max-width:640px){
+  .tracks,.readout{grid-template-columns:1fr}
+  .card,.nav,.grid,.result{padding-left:18px;padding-right:18px}
+  .strip .cell{flex:1 1 50%;border-bottom:1px solid var(--line)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Aavya · Technical Screening</p>
+    <h1>Platform &amp; DevOps Engineer — GCP, OpenShift, on-premises</h1>
+    <p class="sub">Candidate: Saksham Vaishnav · ~3 yrs · Softinator Techlabs · scoped to the corrected JD</p>
+  </header>
+
+  <div class="strip">
+    <div class="cell"><span class="k">Questions</span><span class="v" id="qcount">32</span></div>
+    <div class="cell"><span class="k">Time</span><span class="v" id="clock">45:00</span></div>
+    <div class="cell"><span class="k">Answered</span><span class="v" id="answered">0 / 32</span></div>
+    <div class="cell"><span class="k">Scoring</span><span class="v">Two-track</span></div>
+  </div>
+
+  <div class="tracks">
+    <div class="track">
+      <div class="tlabel"><span class="dot core"></span>Claimed with specifics</div>
+      <div class="tdesc">Terraform, Kubernetes, ArgoCD, Helm, GitHub Actions and Jenkins, Checkov and Snyk, Prometheus, Python and Boto3. Named in detail on the resume. Weakness here is a depth problem, not a knowledge gap.</div>
+    </div>
+    <div class="track">
+      <div class="tlabel"><span class="dot stretch"></span>Claimed thinly, or absent</div>
+      <div class="tdesc">GCP services, OpenShift at cluster level, on-premises and disconnected operation, Ansible, Kustomize, GitLab CI. Either named without detail or missing entirely against the JD.</div>
+    </div>
+  </div>
+
+  <main id="stage"></main>
+
+  <div class="nav" id="nav">
+    <button class="btn" id="prev">Previous</button>
+    <button class="btn" id="next">Next</button>
+    <span class="spacer"></span>
+    <span class="navnote" id="navnote"></span>
+    <button class="btn primary" id="submit">Finish and score</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <p class="footer">Answers are scored on submit. Nothing is transmitted — this file runs entirely in the browser.</p>
+</div>
+
+<script>
+const QUESTIONS = [
+
+/* ===== Terraform — claimed heavily ===== */
+{s:"Terraform · Addressing",t:"core",
+ q:"A resource uses count over a list. You remove the first element and apply.",
+ o:["Only that resource is destroyed","Every later resource is recreated","Plan fails until order is restored","No change until refresh"],
+ a:1,
+ e:"count keys by ordinal position, so removing an early element re-indexes everything after it. for_each keys by a stable string. He claims reusable multi-cloud modules, so this should be instant."},
+
+{s:"Terraform · Refactoring",t:"core",
+ q:"You need to rename a resource in code without destroying the infrastructure.",
+ o:["Taint it before applying","State move, or a moved block","Destroy and recreate","Import under the new name"],
+ a:1,
+ e:"Everyday refactoring once a module set has any age. Import half-works, which is why it is a good distractor."},
+
+{s:"Terraform · State",t:"core",
+ q:"Two engineers apply simultaneously against the same remote backend.",
+ o:["Last write wins","State lock blocks the second","The two states merge","Workspaces isolate them"],
+ a:1,
+ e:"Follow up live: what do you do when a lock is left stale after a crashed apply?"},
+
+{s:"Terraform · Modules",t:"core",
+ q:"What must a reusable module NOT contain?",
+ o:["Input variables","Provider and backend blocks","Outputs","Locals"],
+ a:1,
+ e:"Provider and backend belong to the root module; embedding either makes the module uncallable in composition. He claims authoring reusable modules that cut onboarding by 40 percent, so this is a direct check on that claim."},
+
+/* ===== Kubernetes ===== */
+{s:"Kubernetes · Triage",t:"core",
+ q:"A pod has been Pending for ten minutes. First step?",
+ o:["kubectl logs on the pod","describe pod, read Events","Restart the kubelet","Delete and let it recreate"],
+ a:1,
+ e:"Pending means no container started, so there are no logs. Deleting destroys the evidence."},
+
+{s:"Kubernetes · Resources",t:"core",
+ q:"A container exceeds its CPU limit, then its memory limit. What happens?",
+ o:["Both are throttled","CPU throttled, memory OOMKilled","Both terminate the pod","Pod is evicted both times"],
+ a:1,
+ e:"CPU is compressible, memory is not. This distinction drives every limit-setting decision and anyone who has debugged a throttled service knows it."},
+
+{s:"Kubernetes · Availability",t:"core",
+ q:"Three replicas, PodDisruptionBudget minAvailable 3. You drain a node.",
+ o:["Drain proceeds normally","Evictions denied, drain hangs","Deployment scales to four","PDB ignored during drain"],
+ a:1,
+ e:"Zero disruption headroom, so voluntary eviction is refused. The most common self-inflicted cause of a stalled node upgrade."},
+
+{s:"Kubernetes · Rollouts",t:"core",
+ q:"A rolling update reports success but users see intermittent 502s throughout.",
+ o:["maxSurge set too high","Missing readiness probe and graceful shutdown","Stale ingress endpoint cache","HPA scaling down mid-rollout"],
+ a:1,
+ e:"Zero downtime is a property of readiness probes, preStop hooks and connection draining — not of the deployment strategy. He claims a zero-downtime ALB weighted migration, so probe how he verified it."},
+
+/* ===== OpenShift cluster level — claimed, needs verifying ===== */
+{s:"OpenShift · SCC",t:"stretch",
+ q:"A container that runs fine elsewhere fails on OpenShift, unable to write to its data directory.",
+ o:["Non-Red Hat images are blocked","Restricted SCC assigns an arbitrary UID","It needs privileged: true","OpenShift requires Helm"],
+ a:1,
+ e:"The most common porting surprise on OpenShift. Anyone who has deployed there has met it within their first week."},
+
+{s:"OpenShift · SCC design",t:"stretch",
+ q:"A workload legitimately needs a hostPath mount and a privileged port. Correct approach?",
+ o:["Set privileged: true","Custom SCC bound to one service account","Add the service account to anyuid","Disable SCCs for the namespace"],
+ a:1,
+ e:"anyuid only relaxes the UID rule and does not grant host access, so it is wrong as well as broad. Reaching for privileged is the answer to watch in a regulated environment."},
+
+{s:"OpenShift · Node config",t:"stretch",
+ q:"A kernel argument must be applied to every RHCOS worker node.",
+ o:["SSH to each node and edit /etc","MachineConfig on the worker pool","Privileged DaemonSet writing hostPath","Rebuild the node image"],
+ a:1,
+ e:"RHCOS is immutable; manual edits revert on reboot. He claims engineering OpenShift clusters with Terraform — if he has never touched MachineConfig, that claim is about provisioning infrastructure underneath a cluster, not operating the cluster."},
+
+{s:"OpenShift · Operators",t:"stretch",
+ q:"How is a cluster operator installed and kept upgraded on OpenShift?",
+ o:["helm install from a chart repo","Subscription against a CatalogSource","Apply and reapply raw manifests","oc adm operator install"],
+ a:1,
+ e:"OLM is central to OpenShift and becomes the hard part of disconnected operation, since the catalog must be mirrored."},
+
+{s:"OpenShift · Upgrades",t:"stretch",
+ q:"A cluster upgrade stalls. One MachineConfigPool reports Degraded.",
+ o:["Re-run the upgrade to retry","Check the stuck node — drain is blocked","Roll back the cluster version","Restore etcd from backup"],
+ a:1,
+ e:"Stuck drains, usually a disruption budget, are the most common cause. Rolling back a version mid-upgrade is generally unsupported, which makes it a useful distractor."},
+
+/* ===== GitOps, Helm ===== */
+{s:"GitOps · Drift",t:"core",
+ q:"Under ArgoCD, an engineer edits a live Deployment during an incident.",
+ o:["The change persists","Marked OutOfSync; self-heal reverts it","ArgoCD commits it back to Git","Replica counts are always ignored"],
+ a:1,
+ e:"He claims ArgoCD eliminated manual deployment errors, so this should be reflexive. Follow up: how does your team make an emergency change at 2 a.m.?"},
+
+{s:"GitOps · Ordering",t:"core",
+ q:"A sync fails because a custom resource is applied before its definition exists.",
+ o:["Retry until it succeeds","Sync waves","Split into two repositories","Apply definitions manually first"],
+ a:1,
+ e:"Sync waves generalise to any ordering dependency. Retry often stumbles into working, which is why casual ArgoCD users pick it."},
+
+{s:"Packaging · Helm vs Kustomize",t:"core",
+ q:"How do Helm and Kustomize differ?",
+ o:["Both template, different syntax","Helm templates with release history; Kustomize patches, no state","Kustomize is a Helm plugin","Functionally equivalent"],
+ a:1,
+ e:"Release state is the operational difference — it decides whether rollback is a tool feature or a Git operation. He lists Helm but not Kustomize, which the JD requires."},
+
+{s:"Packaging · Failed release",t:"core",
+ q:"A Helm upgrade fails and the release is stuck in a pending state.",
+ o:["Delete the namespace and reinstall","Roll back to the last good revision","Reinstall under a new release name","Delete the release metadata secret"],
+ a:1,
+ e:"Option D circulates widely as a fix and orphans live resources from all release history. Recognising that shows he thinks about state ownership."},
+
+/* ===== GCP — thin on resume ===== */
+{s:"GCP · Workload identity",t:"stretch",
+ q:"On AWS a pod assumes an IAM role via the cluster's OIDC provider. The GKE equivalent?",
+ o:["Service account key in a Secret","Workload Identity","Node pool service account","Identity-Aware Proxy"],
+ a:1,
+ e:"Tests whether AWS knowledge transfers. Option C works but grants the permission to every pod on the node."},
+
+{s:"GCP · Networking",t:"stretch",
+ q:"GKE pods stuck Pending: no available addresses in range. Nodes have spare capacity.",
+ o:["max-pods-per-node too low","Pod secondary range exhausted","Primary subnet full","Autoscaler disabled"],
+ a:1,
+ e:"Pod addresses come from a secondary alias range sized at creation. The AWS analogue is ENI address limits, so real VPC experience should reason to it."},
+
+{s:"GCP · IAM model",t:"stretch",
+ q:"Compared with AWS accounts and service control policies, GCP IAM:",
+ o:["Has no inheritance","Inherits down the hierarchy, additively","Works identically to SCPs","Project roles do not reach resources"],
+ a:1,
+ e:"Additive inheritance versus subtractive SCPs is the difference most likely to cause a real mistake for someone arriving from AWS. His resume lists GCP with no services named at all, so treat this as a genuine gap."},
+
+{s:"GCP · Storage",t:"stretch",
+ q:"He optimised S3 storage tiers on AWS. The GCP equivalent for lifecycle tiering is:",
+ o:["Persistent Disk","Cloud Storage with lifecycle rules and storage classes","Filestore","Bigtable"],
+ a:1,
+ e:"Basic service literacy. Getting this wrong while claiming GCP on the resume is the clearest possible signal that GCP is a keyword rather than experience."},
+
+/* ===== CI/CD and DevSecOps — his differentiator ===== */
+{s:"CI/CD · Supply chain",t:"core",
+ q:"Where does image vulnerability scanning belong?",
+ o:["After deploying to production","After build, gating promotion, deploy by digest","A nightly reporting job","A final RUN step in the Dockerfile"],
+ a:1,
+ e:"Scanning must gate rather than observe, and digest pinning guarantees the scanned artifact is the one that runs. He claims shift-left security, so this is a direct check."},
+
+{s:"CI/CD · Credentials",t:"core",
+ q:"A pipeline needs to deploy to a cloud project. Correct authentication?",
+ o:["Key in a masked CI variable","OIDC federation, short-lived token","SSH via a credential-holding bastion","Static vault token in CI variables"],
+ a:1,
+ e:"Option D is the interesting distractor — better than A, but still bottoms out in a long-lived secret. He lists Vault and Secrets Manager, so ask how secrets actually reached his pipelines."},
+
+{s:"DevSecOps · Tooling",t:"core",
+ q:"He lists both Checkov and Snyk. What do they scan?",
+ o:["The same thing, different vendors","Checkov scans IaC config; Snyk scans dependencies and images","Both scan containers only","Both scan Terraform only"],
+ a:1,
+ e:"A fair do-you-know-your-own-tools check. Confusing the two means the integration was configured for him rather than by him."},
+
+/* ===== Observability ===== */
+{s:"Observability · Cardinality",t:"core",
+ q:"A label carrying request paths with object IDs is added. Prometheus memory grows until it is killed.",
+ o:["String labels are stored inefficiently","Each label value creates a new series","Scrape interval too short","Duplicate samples being buffered"],
+ a:1,
+ e:"The primary operational constraint of any Prometheus deployment. If he says this never happened, ask how many series his instance carried."},
+
+{s:"Observability · Alerting",t:"core",
+ q:"An alert on CPU above 80 percent pages nightly with no user impact.",
+ o:["Raise the threshold to 95 percent","Page on user symptoms and SLO burn","Route it to email instead","Remove the alert"],
+ a:1,
+ e:"Saturation is a cause, not a symptom. The JD asks him to define SLOs rather than consume them, and his resume mentions MTTR but no SLO."},
+
+/* ===== On-prem, disconnected, Ansible, GitLab ===== */
+{s:"Disconnected · Content",t:"stretch",
+ q:"An air-gapped cluster needs a newer operator version. No internet egress, ever.",
+ o:["Request a temporary firewall exception","Mirror the catalog and images, configure mirror resolution","Export and load images on each node","Not possible offline"],
+ a:1,
+ e:"Option C is the answer that reveals someone reasoning from Docker rather than a cluster — it bypasses the registry and breaks on the next node that scales in. Nothing on his resume suggests any restricted-egress exposure."},
+
+{s:"Disconnected · Upgrades",t:"stretch",
+ q:"Upgrading the cluster version itself with no internet egress:",
+ o:["Standard upgrade command still works","Mirror the release payload, upgrade by digest","Patch nodes with the package manager","Rebuild the cluster at the new version"],
+ a:1,
+ e:"The upgrade graph is an external service. Option C is a red flag — patching nodes independently of the cluster version breaks the operator-managed contract."},
+
+{s:"On-premises · Ownership",t:"stretch",
+ q:"Moving from managed Kubernetes to a self-operated on-premises cluster, what becomes yours?",
+ o:["Nothing materially new","etcd backups, certificate rotation, DNS and load balancing, storage, node lifecycle","Only the worker nodes","Only the network layer"],
+ a:1,
+ e:"Certificate expiry and etcd are what kill self-managed clusters, and neither appears in a managed-cloud career. His entire experience is EKS and cloud-provisioned OpenShift, so this is the largest structural gap on the JD."},
+
+{s:"Ansible · Idempotence",t:"stretch",
+ q:"A playbook appends a config line using a shell command. The problem?",
+ o:["None, if guarded with changed_when","Not idempotent — reruns duplicate the line","shell is deprecated","It needs privilege escalation"],
+ a:1,
+ e:"Ansible is absent from his resume and required by the JD. Option A addresses reporting, not the underlying duplication, which makes it the thoughtful wrong answer."},
+
+{s:"GitLab CI · Rules",t:"stretch",
+ q:"A job must run only on merge request pipelines targeting main.",
+ o:["only and except keywords","rules with if on pipeline source and target branch","when: manual","A separate pipeline file"],
+ a:1,
+ e:"only/except was superseded years ago and cannot reliably express merge-request-target conditions. He has GitHub Actions and Jenkins; our pipelines are GitLab CI."},
+
+/* ===== Judgment — his automation strength ===== */
+{s:"Automation · Judgment",t:"core",
+ q:"He wrote Boto3 Lambda functions for snapshot lifecycle management. What should be considered first?",
+ o:["A cron job on an EC2 instance","A managed backup or lifecycle policy","Custom code is the only option","Manual snapshots on a schedule"],
+ a:1,
+ e:"His scripting is a genuine strength, and this tests judgement rather than skill: does he reach for code when the platform already offers the capability? A candidate who says he chose Lambda deliberately, and explains why, scores full marks in the live discussion regardless of the option picked."}
+];
+
+const TOTAL = QUESTIONS.length;
+const answers = new Array(TOTAL).fill(null);
+let cur = 0, graded = false, secondsLeft = 45 * 60;
+
+const stage = document.getElementById('stage');
+const grid  = document.getElementById('grid');
+const bar   = document.getElementById('bar');
+const LETTERS = ['A','B','C','D'];
+
+document.getElementById('qcount').textContent = TOTAL;
+document.getElementById('answered').textContent = '0 / ' + TOTAL;
+
+const clock = document.getElementById('clock');
+const timer = setInterval(() => {
+  if (graded) { clearInterval(timer); return; }
+  secondsLeft--;
+  const m = Math.floor(Math.max(secondsLeft,0)/60), s = Math.max(secondsLeft,0)%60;
+  clock.textContent = m + ':' + String(s).padStart(2,'0');
+  if (secondsLeft <= 300) clock.classList.add('warn');
+  if (secondsLeft <= 0) { clearInterval(timer); grade(); }
+}, 1000);
+
+function render() {
+  const q = QUESTIONS[cur];
+  const badge = q.t === 'core'
+    ? '<span class="badge core">Claimed</span>'
+    : '<span class="badge stretch">Thin / absent</span>';
+
+  let html = '<section class="card">'
+    + '<div class="qhead"><span class="qnum">' + String(cur+1).padStart(2,'0') + ' / ' + TOTAL + '</span>'
+    + badge + '<span class="section-name">' + q.s + '</span></div>'
+    + '<p class="qtext">' + q.q + '</p><ul class="opts">';
+
+  q.o.forEach((opt, i) => {
+    let cls = 'opt', mark = '';
+    if (answers[cur] === i) cls += ' sel';
+    if (graded) {
+      if (i === q.a) { cls += ' correct'; mark = '<span class="mark ok">Correct</span>'; }
+      else if (answers[cur] === i) { cls += ' wrong'; mark = '<span class="mark no">Chosen</span>'; }
+    }
+    html += '<li><button class="' + cls + '" data-i="' + i + '"' + (graded ? ' disabled' : '') + '>'
+          + '<span class="letter">' + LETTERS[i] + '</span><span>' + opt + '</span>' + mark + '</button></li>';
+  });
+
+  html += '</ul>';
+  if (graded) html += '<div class="rationale"><div class="rlabel">Interviewer note</div><p>' + q.e + '</p></div>';
+  html += '</section>';
+  stage.innerHTML = html;
+
+  if (!graded) {
+    stage.querySelectorAll('.opt').forEach(b => {
+      b.addEventListener('click', () => {
+        answers[cur] = Number(b.dataset.i);
+        render(); paint();
+        if (cur < TOTAL - 1) setTimeout(() => { cur++; render(); paint(); }, 160);
+      });
+    });
+  }
+
+  document.getElementById('prev').disabled = cur === 0;
+  document.getElementById('next').disabled = cur === TOTAL - 1;
+  document.getElementById('navnote').textContent = graded ? 'Review mode' : (answers[cur] === null ? 'Not answered' : 'Answered');
+}
+
+function paint() {
+  const done = answers.filter(a => a !== null).length;
+  document.getElementById('answered').textContent = done + ' / ' + TOTAL;
+  bar.style.width = (done / TOTAL * 100) + '%';
+  grid.innerHTML = QUESTIONS.map((q, i) => {
+    let c = 'gcell';
+    if (answers[i] !== null) c += ' answered';
+    if (i === cur) c += ' here';
+    if (q.t === 'stretch') c += ' st';
+    return '<button class="' + c + '" data-i="' + i + '">' + (i+1) + '</button>';
+  }).join('');
+  grid.querySelectorAll('.gcell').forEach(b => {
+    b.addEventListener('click', () => { cur = Number(b.dataset.i); render(); paint(); });
+  });
+}
+
+document.getElementById('prev').addEventListener('click', () => { if (cur > 0) { cur--; render(); paint(); } });
+document.getElementById('next').addEventListener('click', () => { if (cur < TOTAL-1) { cur++; render(); paint(); } });
+document.getElementById('submit').addEventListener('click', () => {
+  const done = answers.filter(a => a !== null).length;
+  if (!graded && done < TOTAL && !confirm((TOTAL - done) + ' question(s) are unanswered. Score anyway?')) return;
+  grade();
+});
+
+function grade() {
+  if (graded) { window.scrollTo({top:0,behavior:'smooth'}); return; }
+  graded = true; clearInterval(timer);
+
+  const bySection = {};
+  let coreC = 0, coreT = 0, strC = 0, strT = 0;
+  QUESTIONS.forEach((q, i) => {
+    const ok = answers[i] === q.a;
+    if (!bySection[q.s]) bySection[q.s] = {c:0, t:0, track:q.t};
+    bySection[q.s].t++; if (ok) bySection[q.s].c++;
+    if (q.t === 'core') { coreT++; if (ok) coreC++; } else { strT++; if (ok) strC++; }
+  });
+
+  const corePct = Math.round(coreC/coreT*100);
+  const strPct  = Math.round(strC/strT*100);
+
+  let vTitle, vBody;
+  if (corePct >= 85 && strPct >= 60) {
+    vTitle = "Advance — unusually broad and it holds up";
+    vBody = "The claimed skills survive probing and he reasons well into GCP, OpenShift cluster operations and disconnected environments. At three years that is genuinely uncommon; the residual gap is on-premises exposure, which is a matter of months with the right pairing. Confirm the strongest answers in a live session, because breadth this wide at this tenure warrants one round of verification.";
+  } else if (corePct >= 85) {
+    vTitle = "Advance at mid-level — breadth is real, depth is cloud-shaped";
+    vBody = "He knows his tools and the Terraform, Kubernetes, ArgoCD and pipeline answers back the resume up. What he does not have is anything below the managed-cloud line: OpenShift at cluster level, on-premises ownership, disconnected operation. Hire for the GCP and GitOps half of the JD, keep him away from the sovereign cluster path initially, and expect six months before he can own on-premises work.";
+  } else if (corePct >= 65) {
+    vTitle = "Borderline — the breadth is wider than the depth";
+    vBody = "Gaps inside his own stated skills is the pattern to expect when a resume names this many technologies at three years. It usually means real exposure on a team where each tool was someone else's primary responsibility. Not disqualifying, but run a hands-on session before deciding: a Terraform refactor and a broken pipeline on screen share will settle it in twenty minutes.";
+  } else {
+    vTitle = "Below bar — claims and depth do not reconcile";
+    vBody = "Under sixty-five percent on skills named in detail on his own resume. Given the number of technologies listed, this reads as a document assembled around a target role. Decline for this position; there may be a more junior cloud automation role where his Python and cost-optimisation work is the main event.";
+  }
+
+  const rows = Object.keys(bySection).map(k => {
+    const b = bySection[k];
+    return '<tr class="' + (b.track === 'core' ? 'core-row' : 'stretch-row') + '">'
+      + '<td>' + k + '</td><td class="num">' + b.c + ' / ' + b.t + '</td>'
+      + '<td class="num">' + Math.round(b.c/b.t*100) + '%</td></tr>';
+  }).join('');
+
+  stage.innerHTML =
+    '<section class="result">'
+    + '<h2>Assessment complete</h2>'
+    + '<p class="rsub">Saksham Vaishnav · ' + (coreC + strC) + ' of ' + TOTAL + ' overall. On paper he covers more of the JD than either other candidate — the tracks exist to find out how much of that is depth.</p>'
+    + '<div class="readout">'
+      + '<div class="pane"><div class="plabel"><span class="dot core"></span>Claimed with specifics</div>'
+        + '<div class="pscore">' + corePct + '%</div><div class="pof">' + coreC + ' of ' + coreT + ' correct</div>'
+        + '<div class="meter"><i class="core" style="width:' + corePct + '%"></i></div></div>'
+      + '<div class="pane"><div class="plabel"><span class="dot stretch"></span>Claimed thinly, or absent</div>'
+        + '<div class="pscore">' + strPct + '%</div><div class="pof">' + strC + ' of ' + strT + ' correct</div>'
+        + '<div class="meter"><i class="stretch" style="width:' + strPct + '%"></i></div></div>'
+    + '</div>'
+    + '<table class="bd"><thead><tr><th>Section</th><th class="num">Score</th><th class="num">%</th></tr></thead><tbody>' + rows + '</tbody></table>'
+    + '<div class="verdict"><div class="vlabel">Hiring signal</div><h3>' + vTitle + '</h3><p>' + vBody + '</p></div>'
+    + '<div class="gapbox"><div class="vlabel">Read the resume alongside the score</div><ul>'
+      + '<li><strong>GCP is named without a single service.</strong> AWS lists fifteen; GCP appears only as the words themselves. The JD requires GKE, IAM, VPC, Cloud Storage and Cloud Monitoring — treat all five as unproven.</li>'
+      + '<li><strong>The central claim needs unpacking:</strong> engineering highly available OpenShift clusters with Terraform across AWS and GCP. There is no managed OpenShift on GCP, so ask precisely what Terraform provisioned and who ran the installer. This is likely infrastructure underneath a cluster, not the cluster itself.</li>'
+      + '<li><strong>97.8 percent uptime is stated as an achievement.</strong> That is roughly eight days of annual downtime. Ask what it was measured against — either the figure is honest and poor, or he has not worked out what it means. Both are worth knowing.</li>'
+      + '<li><strong>Everything is managed cloud.</strong> EKS, ECS Fargate, RDS, Lambda. No RHEL, no systemd, no patching, no bare metal. The on-premises half of this role has no foundation in his history.</li>'
+      + '<li><strong>Missing against the JD:</strong> Ansible, Kustomize, GitLab CI, and any disconnected or air-gapped exposure.</li>'
+      + '<li><strong>Genuine differentiators worth crediting:</strong> Python and Boto3 automation, SQL query optimisation, Infracost in the pipeline with per-PR cost analysis, and Checkov plus Snyk gating. The cost-engineering work in particular is more than most candidates at any level bring.</li>'
+      + '<li><strong>Calibrate the tenure.</strong> Degree completed August 2023, first role September 2023 — so all three years are with one employer, and the AWS certification listed is the free foundational course, dated two months ago.</li>'
+    + '</ul></div>'
+    + '<p class="rsub" style="margin:0">Use Previous and Next, or the number grid, to review each question with the correct answer and interviewer note.</p>'
+    + '</section>';
+
+  bar.style.width = '100%';
+  document.getElementById('submit').textContent = 'Scored';
+  document.getElementById('submit').disabled = true;
+  paint();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+render(); paint();
+</script>
+</body>
+</html>
