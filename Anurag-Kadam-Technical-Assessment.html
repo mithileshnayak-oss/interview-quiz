@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Technical Assessment — Anurag Kadam — Full Stack Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#12161C; --ink-2:#454E5C; --ink-3:#7A8494;
+  --paper:#EDF0F4; --surface:#FFFFFF; --line:#D3DAE3;
+  --core:#1F4E79; --stretch:#9A5B08;
+  --pass:#0E6B5E; --fail:#9E2B25;
+  --sans:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px 80px}
+.masthead{border-bottom:2px solid var(--ink);padding:34px 0 18px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin:0 0 10px}
+.masthead h1{font-size:clamp(26px,4.4vw,38px);line-height:1.1;font-weight:700;letter-spacing:-.02em;margin:0 0 6px}
+.masthead .sub{color:var(--ink-2);margin:0;font-size:15px}
+.strip{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--line);background:var(--surface)}
+.strip .cell{flex:1 1 150px;padding:12px 16px;border-right:1px solid var(--line)}
+.strip .cell:last-child{border-right:0}
+.strip .k{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:block}
+.strip .v{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--ink)}
+#clock.warn{color:var(--fail)}
+.tracks{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
+.track{background:var(--surface);padding:14px 16px}
+.track .tlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+.dot.core{background:var(--core)}
+.dot.stretch{background:var(--stretch)}
+.track .tdesc{font-size:13px;color:var(--ink-2);line-height:1.45}
+.progress{height:4px;background:var(--line);position:sticky;top:0;z-index:20}
+.progress .bar{height:100%;width:0;background:var(--ink);transition:width .25s ease}
+.card{background:var(--surface);border:1px solid var(--line);border-top:0;padding:26px 26px 22px}
+.qhead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.qnum{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink-3)}
+.badge{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border:1px solid;border-radius:2px}
+.badge.core{color:var(--core);border-color:var(--core)}
+.badge.stretch{color:var(--stretch);border-color:var(--stretch)}
+.section-name{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.qtext{font-size:18px;line-height:1.45;font-weight:500;margin:12px 0 18px}
+.opts{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.opt{display:flex;gap:12px;align-items:center;border:1px solid var(--line);background:var(--surface);padding:13px 15px;cursor:pointer;text-align:left;font:inherit;color:inherit;border-radius:3px;transition:border-color .12s,background .12s;width:100%}
+.opt:hover{border-color:var(--ink-3)}
+.opt:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.opt .letter{font-family:var(--mono);font-weight:600;font-size:13px;color:var(--ink-3);flex:none}
+.opt.sel{border-color:var(--ink);background:#F6F8FA;box-shadow:inset 0 0 0 1px var(--ink)}
+.opt.sel .letter{color:var(--ink)}
+.opt[disabled]{cursor:default}
+.opt.correct{border-color:var(--pass);background:#F0F7F5}
+.opt.correct .letter{color:var(--pass)}
+.opt.wrong{border-color:var(--fail);background:#FCF2F1}
+.opt.wrong .letter{color:var(--fail)}
+.mark{margin-left:auto;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;flex:none}
+.mark.ok{color:var(--pass)}
+.mark.no{color:var(--fail)}
+.rationale{margin-top:16px;border:1px dashed var(--line);padding:13px 15px;background:var(--paper)}
+.rationale .rlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:5px}
+.rationale p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.5}
+.nav{display:flex;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-top:0;padding:16px 26px;flex-wrap:wrap}
+button.btn{font-family:var(--sans);font-size:14px;font-weight:600;padding:10px 18px;border-radius:3px;cursor:pointer;border:1px solid var(--ink);background:var(--surface);color:var(--ink);transition:background .12s,color .12s}
+button.btn:hover:not(:disabled){background:var(--ink);color:var(--surface)}
+button.btn.primary{background:var(--ink);color:var(--surface)}
+button.btn:disabled{opacity:.35;cursor:not-allowed}
+button.btn:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.nav .spacer{margin-left:auto}
+.navnote{font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+.grid{display:flex;flex-wrap:wrap;gap:5px;background:var(--surface);border:1px solid var(--line);border-top:0;padding:16px 26px 20px}
+.gcell{width:32px;height:32px;font-family:var(--mono);font-size:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink-3);cursor:pointer;border-radius:2px;padding:0}
+.gcell:hover{border-color:var(--ink-3)}
+.gcell.answered{background:#E6EBF1;color:var(--ink);font-weight:600;border-color:#B6C1CF}
+.gcell.here{border-color:var(--ink);border-width:2px;color:var(--ink);font-weight:600}
+.gcell.st{border-bottom:3px solid var(--stretch)}
+.result{background:var(--surface);border:1px solid var(--line);border-top:0;padding:28px 26px}
+.result h2{font-size:24px;margin:0 0 4px;letter-spacing:-.01em}
+.result .rsub{color:var(--ink-2);font-size:14px;margin:0 0 24px}
+.readout{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:22px}
+.readout .pane{background:var(--surface);padding:18px}
+.readout .plabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.readout .pscore{font-family:var(--mono);font-size:34px;font-weight:600;line-height:1;letter-spacing:-.02em}
+.readout .pof{font-family:var(--mono);font-size:13px;color:var(--ink-3);margin-top:5px}
+.meter{height:6px;background:var(--line);margin-top:12px;border-radius:3px;overflow:hidden}
+.meter i{display:block;height:100%;width:0;transition:width .5s ease}
+.meter i.core{background:var(--core)}
+.meter i.stretch{background:var(--stretch)}
+table.bd{width:100%;border-collapse:collapse;margin-bottom:22px;font-size:14px}
+table.bd th,table.bd td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+table.bd th{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);border-bottom:1px solid var(--ink)}
+table.bd td.num{font-family:var(--mono);text-align:right;white-space:nowrap}
+table.bd tr.stretch-row td:first-child{border-left:3px solid var(--stretch);padding-left:10px}
+table.bd tr.core-row td:first-child{border-left:3px solid var(--core);padding-left:10px}
+.verdict{border:1px solid var(--ink);padding:18px 20px;margin-bottom:22px}
+.verdict .vlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:7px}
+.verdict h3{margin:0 0 8px;font-size:17px}
+.verdict p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.55}
+.gapbox{background:var(--paper);border-left:3px solid var(--stretch);padding:16px 18px;margin-bottom:22px}
+.gapbox .vlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--stretch);margin-bottom:8px}
+.gapbox ul{margin:0;padding-left:18px;font-size:14px;color:var(--ink-2)}
+.gapbox li{margin-bottom:6px}
+.footer{font-family:var(--mono);font-size:11px;color:var(--ink-3);padding:18px 0 0;text-align:center;letter-spacing:.04em}
+@media (max-width:640px){
+  .tracks,.readout{grid-template-columns:1fr}
+  .card,.nav,.grid,.result{padding-left:18px;padding-right:18px}
+  .strip .cell{flex:1 1 50%;border-bottom:1px solid var(--line)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Aavya · Technical Screening</p>
+    <h1>Full Stack Engineer — agent platform, regulated client</h1>
+    <p class="sub">Candidate: Anurag Kadam · 3 yrs · Mindcrew Technologies · scoped to the banking engagement</p>
+  </header>
+
+  <div class="strip">
+    <div class="cell"><span class="k">Questions</span><span class="v" id="qcount">32</span></div>
+    <div class="cell"><span class="k">Time</span><span class="v" id="clock">50:00</span></div>
+    <div class="cell"><span class="k">Answered</span><span class="v" id="answered">0 / 32</span></div>
+    <div class="cell"><span class="k">Scoring</span><span class="v">Two-track</span></div>
+  </div>
+
+  <div class="tracks">
+    <div class="track">
+      <div class="tlabel"><span class="dot core"></span>Evidenced on resume</div>
+      <div class="tdesc">React, TypeScript, Next.js, state management, REST and webhooks, auth, multi-role RBAC, approval workflows, English and Spanish localisation. Seven shipped applications back this up.</div>
+    </div>
+    <div class="track">
+      <div class="tlabel"><span class="dot stretch"></span>Required by the engagement, absent</div>
+      <div class="tdesc">Python and FastAPI, PostgreSQL depth, retrieval and embedding concepts, traceability data modelling, and working inside a locked-down client environment with no public package access.</div>
+    </div>
+  </div>
+
+  <main id="stage"></main>
+
+  <div class="nav" id="nav">
+    <button class="btn" id="prev">Previous</button>
+    <button class="btn" id="next">Next</button>
+    <span class="spacer"></span>
+    <span class="navnote" id="navnote"></span>
+    <button class="btn primary" id="submit">Finish and score</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <p class="footer">Answers are scored on submit. Nothing is transmitted — this file runs entirely in the browser.</p>
+</div>
+
+<script>
+const QUESTIONS = [
+
+/* ===== React, Next.js, TypeScript ===== */
+{s:"Next.js · Boundaries",t:"core",
+ q:"What does the \"use client\" directive actually do in the App Router?",
+ o:["Makes the file execute only in the browser","Marks where client rendering begins; everything imported below it becomes a client component too","Disables server rendering across the application","Enables React hooks to run on the server"],
+ a:1,
+ e:"Client components still render on the server for the initial HTML. The first option is the common misconception and leads people to over-mark files, shipping far more JavaScript than needed."},
+
+{s:"React · Hydration",t:"core",
+ q:"The console reports a hydration mismatch on a dashboard page.",
+ o:["A missing key prop somewhere in a list","Server and client produced different markup — typically Date.now(), a random value, or reading window during render","A Tailwind class not present in the build","Too many state updates in an effect"],
+ a:1,
+ e:"Three years of Next.js work should have produced this error repeatedly. Dates rendered without a fixed locale or timezone are the usual culprit."},
+
+{s:"TypeScript · Boundaries",t:"core",
+ q:"An external API returns JSON. How do you get genuine type safety at that boundary?",
+ o:["Cast the response with as to the expected interface","Parse against a runtime schema and infer the static type from it","Declare the interface and rely on the documented contract","Type it as any and check the fields you use"],
+ a:1,
+ e:"Casting is a promise to the compiler that nothing enforces. He integrated a third-party credit API, so the boundary problem is one he has met whether or not he solved it this way."},
+
+{s:"React · Large lists",t:"core",
+ q:"A review screen renders 400 items and scrolling stutters badly.",
+ o:["Wrap the array in useMemo","Virtualise so only visible rows mount","Move the whole page to a Server Component","Debounce the scroll handler"],
+ a:1,
+ e:"Only windowing changes the amount of DOM work. Directly relevant — a generated document with hundreds of individually reviewable statements is exactly this shape."},
+
+{s:"Next.js · Data freshness",t:"core",
+ q:"A page must reflect newly approved content within about a minute, with no redeploy.",
+ o:["Poll from the client on an interval","Time-based revalidation on the route, or on-demand revalidation triggered when content is approved","Rebuild and redeploy on each approval","Disable caching and render every request from scratch"],
+ a:1,
+ e:"On-demand revalidation triggered by the approval event is the precise answer. Disabling caching works and discards the reason for using the framework."},
+
+/* ===== State and UI architecture ===== */
+{s:"State · Architecture",t:"core",
+ q:"You list Redux Toolkit and Zustand. In a large application, where should server data, form state and interface state live?",
+ o:["All three in one global store for consistency","Server data in a query layer with its own caching and invalidation; form state local to the form; interface state in a small store or context","Everything in React context","All state encoded in the URL"],
+ a:1,
+ e:"Putting server data in Redux means hand-writing caching, invalidation and loading states that a query library already solves. Someone who has shipped seven applications should have opinions here."},
+
+{s:"Forms · Performance",t:"core",
+ q:"A 40-field intake form re-renders the entire tree on every keystroke.",
+ o:["Debounce every input handler","Use field-level subscriptions or uncontrolled inputs so only the changed field re-renders","Wrap the form in memo","Split into 40 components each holding its own useState"],
+ a:1,
+ e:"His CRM and loan-application work is form-heavy, so this should be familiar ground. Debouncing masks the symptom and introduces input lag."},
+
+{s:"UX · Optimistic updates",t:"core",
+ q:"You update the UI optimistically and the server rejects the change.",
+ o:["Leave the optimistic state; the next refresh will correct it","Roll back to the previous state and surface the error — the mutation needs an explicit rollback path","Reload the page","Retry silently until it succeeds"],
+ a:1,
+ e:"In an approval workflow, an optimistic state left uncorrected means a reviewer believes they approved something they did not. This is a correctness question dressed as a UX one."},
+
+/* ===== API, auth, webhooks ===== */
+{s:"Webhooks · Safety",t:"core",
+ q:"You built Stripe webhook handling. What makes a webhook endpoint safe?",
+ o:["Accept only requests from the provider IP range","Verify the signature, and treat delivery as at-least-once so the handler must be idempotent","Respond 200 immediately and process later without recording anything","Poll the provider API instead of accepting webhooks"],
+ a:1,
+ e:"He shipped Stripe checkout, subscriptions and webhook handling, so this is squarely his own work. Duplicate delivery is guaranteed rather than exceptional, and handlers that are not idempotent double-charge."},
+
+{s:"Auth · Verification",t:"core",
+ q:"You use Auth0 or Clerk. What does the frontend actually verify?",
+ o:["The frontend validates the token signature and grants access accordingly","The frontend decodes the token for display only; the server must verify signature, issuer, audience and expiry on every request","The provider handles server-side verification automatically","A session cookie makes verification unnecessary"],
+ a:1,
+ e:"A managed auth provider issues the token; it does not verify it for your API. This is where integrations of this kind most often go wrong."},
+
+{s:"API · Long work",t:"core",
+ q:"A request triggers work that takes several minutes to complete.",
+ o:["Run it synchronously and raise the timeout","Accept the request, return 202 with a job identifier, and let the client poll or receive a callback","Schedule it on a cron running every minute","Stream the response and hold the connection open"],
+ a:1,
+ e:"Document generation takes minutes, so this pattern is central to the engagement rather than incidental."},
+
+{s:"API · Pagination",t:"core",
+ q:"A list paginates while records are being inserted. Users see duplicated and skipped rows.",
+ o:["Offset pagination with page numbers","Cursor or keyset pagination anchored on a stable sort key","Fetch everything and paginate client side","Reset to page one on every poll"],
+ a:1,
+ e:"Offsets shift when rows are inserted before the current page. Standard for any admin list over changing data."},
+
+/* ===== RBAC and workflow — strongest transfer ===== */
+{s:"Authorisation · Enforcement",t:"core",
+ q:"Your real-estate platform had four portals: admin, agent, borrower, co-borrower. Where is authorisation actually enforced?",
+ o:["Route guards on each portal","Server side on every request; the portals are presentation and cannot grant anything","By hiding navigation items per role","By deploying each portal separately"],
+ a:1,
+ e:"Four distinct portals is the most relevant thing on his resume for this engagement, which has analyst and QA sign-off gates. Anyone who answers otherwise on a financial application is a concern."},
+
+{s:"Authorisation · Scope",t:"core",
+ q:"An agent may view only the borrowers they personally onboarded. Why is a role check insufficient?",
+ o:["It is sufficient — check for the agent role","The rule depends on the relationship between the actor and the specific record, so authorisation must evaluate resource attributes, not just the role","Create one role per agent","Filter the list in the UI for that agent"],
+ a:1,
+ e:"The step from role-based to resource-scoped authorisation. His own project description implies he solved this; the question is whether he can articulate why it is a different class of problem."},
+
+{s:"Workflow · State",t:"core",
+ q:"Your CRM had a pre-approval workflow. How should the approval state be modelled if an auditor may later ask who approved what and when?",
+ o:["A boolean approved column on the record","An explicit current state plus an append-only history of transitions recording actor, timestamp and previous state","A status text column overwritten on each change","Delete and recreate the record at each stage"],
+ a:1,
+ e:"An overwritten status column destroys exactly the evidence an audit needs. This engagement requires mandatory sign-off gates with retained history, so it is a direct requirement rather than good practice."},
+
+{s:"Concurrency · Reviewers",t:"core",
+ q:"Two reviewers open the same item and both submit changes.",
+ o:["Last write wins is acceptable for review workflows","Optimistic concurrency — carry a version or updated_at and include it in the update predicate, rejecting stale writes","Increase the session timeout","Lock the table during any edit"],
+ a:1,
+ e:"Silent overwrite in a review workflow means one reviewer's assessment vanishes with no trace. Recognising this as a data-layer problem rather than a UX one is the signal."},
+
+/* ===== Localisation ===== */
+{s:"i18n · String handling",t:"core",
+ q:"You shipped an English and Spanish product. What breaks when translated strings are assembled by concatenating fragments?",
+ o:["Nothing, provided both languages are covered","Word order and pluralisation differ by language; you need interpolation with named placeholders and plural rules","Only right-to-left languages are affected","Only the bundle size increases"],
+ a:1,
+ e:"He built bilingual English and Spanish interfaces, and the engagement is bilingual too. Concatenation is the bug translators find and developers do not."},
+
+{s:"i18n · Data model",t:"core",
+ q:"A content record has 20 fields, six of which need translating. How do you store both languages?",
+ o:["Duplicate the whole record per language","Locale-scoped values for the six translated fields, with the remaining fields stored once against a shared record","Translate on render through a translation service","A separate database per language"],
+ a:1,
+ e:"Duplicating records forks the relationship graph and doubles every future change. This is where localisation stops being an interface concern and becomes a schema decision."},
+
+{s:"i18n · Staleness",t:"core",
+ q:"The English source is revised after the Spanish version was already approved.",
+ o:["Copy the English text into the Spanish record automatically","Mark the Spanish version stale relative to the source and route it for re-translation, keeping the approved version live until replaced","Unpublish both versions until they match","Nothing — the two locales are independent"],
+ a:1,
+ e:"Translation staleness is what an auditor finds when two languages state different requirements. No single correct policy, so a reasoned answer passes."},
+
+/* ===== Relational database — thin ===== */
+{s:"Database · N+1",t:"stretch",
+ q:"A page lists 50 records and each row displays its owner. What happens naively, and what is the fix?",
+ o:["One query per row is correct and keeps each query simple","The N+1 problem — 51 queries; fix by loading the relation in the same query or batching","Only an issue in document databases","Add an index on the owner table"],
+ a:1,
+ e:"He lists Prisma and MongoDB. The most useful single database question available — anyone who has built an application with related data has met it. Adding an index makes 51 fast queries rather than one."},
+
+{s:"Database · Relationships",t:"stretch",
+ q:"Records carry many tags, and each tag applies to many records. How do you model it relationally?",
+ o:["A comma-separated text column","A join table holding both foreign keys, unique on the pair","An array of tag names embedded on the record","A separate table per tag"],
+ a:1,
+ e:"Foundational relational modelling. His primary database is MongoDB, where embedding is often correct, so the answer reveals whether he can switch models rather than carry one across."},
+
+{s:"Database · Transactions",t:"stretch",
+ q:"Approving a document must update its state and write an audit record. Both or neither.",
+ o:["Sequential writes with error checks after each","A transaction covering both, committed once","A retry queue for the second write","A unique constraint spanning both tables"],
+ a:1,
+ e:"MongoDB-first developers frequently have never written a multi-document transaction. Directly required by any sign-off gate with an audit trail."},
+
+{s:"Database · Choice",t:"stretch",
+ q:"When would you choose PostgreSQL over MongoDB for this platform?",
+ o:["MongoDB is preferable — the schema will change during the build","When data is highly interrelated, integrity matters, and you need joins, constraints and transactional guarantees across entities","There is no practical difference at this scale","PostgreSQL cannot store flexible document structures"],
+ a:1,
+ e:"The engagement specifies PostgreSQL or Azure SQL. Documents, versions, statements and citations are a densely interrelated graph, which is the textbook case for relational. Note that the fourth option is false — Postgres has jsonb."},
+
+/* ===== Python and FastAPI ===== */
+{s:"Python · FastAPI",t:"stretch",
+ q:"How does FastAPI validate incoming request bodies?",
+ o:["Manual checks written in each route handler","From Python type hints and Pydantic models, validated at runtime, with an OpenAPI schema generated automatically","Through decorators that check types at import time","By loading JSON Schema files from disk"],
+ a:1,
+ e:"The backend on this engagement is Python and FastAPI, and he has no Python at all. Conceptually this is the same runtime-validation idea as the TypeScript boundary question, so a candidate who connects the two is showing transfer."},
+
+{s:"Python · Concurrency",t:"stretch",
+ q:"A service makes many calls to a slow external model API. Why does async matter?",
+ o:["It makes the external API respond faster","The calls are I/O-bound and slow; async lets one worker handle many concurrent waits instead of blocking a thread per request","It is required in order to use type hints","It reduces the cost of each call"],
+ a:1,
+ e:"A service that blocks a worker for every model call collapses under a handful of concurrent users. He will not have Python specifics, but the concurrency concept transfers directly from Node."},
+
+/* ===== Retrieval and agents ===== */
+{s:"Retrieval · Context limits",t:"stretch",
+ q:"A document corpus totals roughly 500,000 tokens. Why retrieve selected passages rather than send the whole corpus to the model?",
+ o:["Retrieval improves the quality of the generated prose","The corpus far exceeds the model context window, so only the relevant passages can physically be sent","It is a licensing requirement of the model provider","It avoids needing a database"],
+ a:1,
+ e:"The context window is a hard limit, not a cost optimisation. This single constraint determines the entire architecture, so understanding it changes how he would build the interface on top."},
+
+{s:"Retrieval · Embeddings",t:"stretch",
+ q:"What is a vector store used for?",
+ o:["Storing model weights for local inference","Storing embeddings so semantically similar passages can be found by similarity rather than keyword match","Caching API responses to reduce cost","Replacing the relational database"],
+ a:1,
+ e:"Basic domain literacy. Not knowing it is expected; the useful part is whether he reasons well once it is explained."},
+
+{s:"Retrieval · Chunking",t:"stretch",
+ q:"Why does chunk size matter when indexing documents for retrieval?",
+ o:["Smaller chunks are always better because more fit in the context","Too large dilutes relevance and wastes context; too small loses surrounding meaning — it is a tuning tradeoff measured against real queries","Chunk size only affects storage cost","Chunk size is fixed by the model and not a choice"],
+ a:1,
+ e:"A genuine engineering tradeoff with no default answer, which is why teams re-embed a corpus several times during a build."},
+
+{s:"Generation · Grounding",t:"stretch",
+ q:"The system produces a requirement that appears in none of the source documents. What is the systemic fix?",
+ o:["Rewrite the prompt to instruct the model not to invent things","Ground generation in retrieved passages and require every statement to carry a citation, so unciteable statements are flagged rather than shipped","Use a larger model","Rely on human proofreading before sign-off"],
+ a:1,
+ e:"Prompt instructions reduce the rate; they do not make it auditable. The requirement on this engagement is that every generated statement is traceable to an exact source, which is an architectural answer rather than a prompting one."},
+
+/* ===== Traceability and constrained environment ===== */
+{s:"Traceability · Model",t:"stretch",
+ q:"Every generated statement must be auditable back to its exact source. What does the data model need?",
+ o:["A confidence score stored per paragraph","Per-statement citation rows recording source document identifier, version and location within it","The full prompt and response written to a log file","The entire source corpus stored alongside each output"],
+ a:1,
+ e:"Traceability is a schema requirement, not a logging one — and the version matters, because a citation must remain valid after the source document is revised."},
+
+{s:"Environment · Dependencies",t:"stretch",
+ q:"Development happens on client-provided machines with no access to public package registries.",
+ o:["Request a temporary exception to reach the public registry during the build","Use the internal artifact proxy with a whitelisting process, and submit the full dependency list for security approval before day one","Commit the installed dependency folder into the repository","Development is not practical under that constraint"],
+ a:1,
+ e:"Dependency approval is the single most common first-sprint blocker in bank environments, with a lead time measured in weeks. Anticipating it rather than discovering it is the difference between week one and week four."},
+
+{s:"Environment · Data boundaries",t:"stretch",
+ q:"No client data may leave the client environment. What does that rule out?",
+ o:["Nothing, provided all traffic is encrypted in transit","Any hosted third-party service that processes client content — external analytics, error reporting that captures payloads, translation or embedding APIs outside the tenant","Only email and file sharing","Only large file uploads"],
+ a:1,
+ e:"The subtle cases are the dangerous ones. An error reporter that captures request bodies exfiltrates client content without anyone deciding to. Worth discussing live regardless of the answer."}
+];
+
+/* Randomise option order so the correct answer is not always in one position. */
+(function shuffleOptions(){
+  QUESTIONS.forEach(q => {
+    const correct = q.o[q.a];
+    for (let i = q.o.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [q.o[i], q.o[j]] = [q.o[j], q.o[i]];
+    }
+    q.a = q.o.indexOf(correct);
+  });
+})();
+
+const TOTAL = QUESTIONS.length;
+const answers = new Array(TOTAL).fill(null);
+let cur = 0, graded = false, secondsLeft = 50 * 60;
+
+const stage = document.getElementById('stage');
+const grid  = document.getElementById('grid');
+const bar   = document.getElementById('bar');
+const LETTERS = ['A','B','C','D'];
+
+document.getElementById('qcount').textContent = TOTAL;
+document.getElementById('answered').textContent = '0 / ' + TOTAL;
+
+const clock = document.getElementById('clock');
+const timer = setInterval(() => {
+  if (graded) { clearInterval(timer); return; }
+  secondsLeft--;
+  const m = Math.floor(Math.max(secondsLeft,0)/60), s = Math.max(secondsLeft,0)%60;
+  clock.textContent = m + ':' + String(s).padStart(2,'0');
+  if (secondsLeft <= 300) clock.classList.add('warn');
+  if (secondsLeft <= 0) { clearInterval(timer); grade(); }
+}, 1000);
+
+function render() {
+  const q = QUESTIONS[cur];
+  const badge = q.t === 'core'
+    ? '<span class="badge core">Evidenced</span>'
+    : '<span class="badge stretch">New domain</span>';
+
+  let html = '<section class="card">'
+    + '<div class="qhead"><span class="qnum">' + String(cur+1).padStart(2,'0') + ' / ' + TOTAL + '</span>'
+    + badge + '<span class="section-name">' + q.s + '</span></div>'
+    + '<p class="qtext">' + q.q + '</p><ul class="opts">';
+
+  q.o.forEach((opt, i) => {
+    let cls = 'opt', mark = '';
+    if (answers[cur] === i) cls += ' sel';
+    if (graded) {
+      if (i === q.a) { cls += ' correct'; mark = '<span class="mark ok">Correct</span>'; }
+      else if (answers[cur] === i) { cls += ' wrong'; mark = '<span class="mark no">Chosen</span>'; }
+    }
+    html += '<li><button class="' + cls + '" data-i="' + i + '"' + (graded ? ' disabled' : '') + '>'
+          + '<span class="letter">' + LETTERS[i] + '</span><span>' + opt + '</span>' + mark + '</button></li>';
+  });
+
+  html += '</ul>';
+  if (graded) html += '<div class="rationale"><div class="rlabel">Interviewer note</div><p>' + q.e + '</p></div>';
+  html += '</section>';
+  stage.innerHTML = html;
+
+  if (!graded) {
+    stage.querySelectorAll('.opt').forEach(b => {
+      b.addEventListener('click', () => {
+        answers[cur] = Number(b.dataset.i);
+        render(); paint();
+        if (cur < TOTAL - 1) setTimeout(() => { cur++; render(); paint(); }, 160);
+      });
+    });
+  }
+
+  document.getElementById('prev').disabled = cur === 0;
+  document.getElementById('next').disabled = cur === TOTAL - 1;
+  document.getElementById('navnote').textContent = graded ? 'Review mode' : (answers[cur] === null ? 'Not answered' : 'Answered');
+}
+
+function paint() {
+  const done = answers.filter(a => a !== null).length;
+  document.getElementById('answered').textContent = done + ' / ' + TOTAL;
+  bar.style.width = (done / TOTAL * 100) + '%';
+  grid.innerHTML = QUESTIONS.map((q, i) => {
+    let c = 'gcell';
+    if (answers[i] !== null) c += ' answered';
+    if (i === cur) c += ' here';
+    if (q.t === 'stretch') c += ' st';
+    return '<button class="' + c + '" data-i="' + i + '">' + (i+1) + '</button>';
+  }).join('');
+  grid.querySelectorAll('.gcell').forEach(b => {
+    b.addEventListener('click', () => { cur = Number(b.dataset.i); render(); paint(); });
+  });
+}
+
+document.getElementById('prev').addEventListener('click', () => { if (cur > 0) { cur--; render(); paint(); } });
+document.getElementById('next').addEventListener('click', () => { if (cur < TOTAL-1) { cur++; render(); paint(); } });
+document.getElementById('submit').addEventListener('click', () => {
+  const done = answers.filter(a => a !== null).length;
+  if (!graded && done < TOTAL && !confirm((TOTAL - done) + ' question(s) are unanswered. Score anyway?')) return;
+  grade();
+});
+
+function grade() {
+  if (graded) { window.scrollTo({top:0,behavior:'smooth'}); return; }
+  graded = true; clearInterval(timer);
+
+  const bySection = {};
+  let coreC = 0, coreT = 0, strC = 0, strT = 0;
+  QUESTIONS.forEach((q, i) => {
+    const ok = answers[i] === q.a;
+    if (!bySection[q.s]) bySection[q.s] = {c:0, t:0, track:q.t};
+    bySection[q.s].t++; if (ok) bySection[q.s].c++;
+    if (q.t === 'core') { coreT++; if (ok) coreC++; } else { strT++; if (ok) strC++; }
+  });
+
+  const corePct = Math.round(coreC/coreT*100);
+  const strPct  = Math.round(strC/strT*100);
+
+  let vTitle, vBody;
+  if (corePct >= 85 && strPct >= 55) {
+    vTitle = "Advance — strong interface hire with real transfer";
+    vBody = "The shipped work holds up and he reasons soundly into retrieval, traceability and the constraints of a locked-down environment. At three years that is unusual. He would own the review interface rather than the Python services, but he could grow toward the middle of the stack faster than most.";
+  } else if (corePct >= 85) {
+    vTitle = "Advance for the interface seat only";
+    vBody = "React, TypeScript, multi-role authorisation, approval workflows and bilingual interfaces are all genuinely evidenced, and that is a real match for the review and sign-off surface of this platform. Python, retrieval and the data layer are not there. Hire him to own the frontend, keep Python services with someone else, and expect the bank environment to be a genuine adjustment.";
+  } else if (corePct >= 65) {
+    vTitle = "Borderline — the shipped work outruns the fundamentals";
+    vBody = "Misses inside React, authorisation or workflow modelling matter more than the new-domain score, because those are the areas his seven applications should have taught him. Run a hands-on session on a real component before deciding.";
+  } else {
+    vTitle = "Below bar for this engagement";
+    vBody = "Under sixty-five percent on his own primary stack. Given this client places engineers inside a regulated environment with limited supervision, that is not a gap to close on the job.";
+  }
+
+  const rows = Object.keys(bySection).map(k => {
+    const b = bySection[k];
+    return '<tr class="' + (b.track === 'core' ? 'core-row' : 'stretch-row') + '">'
+      + '<td>' + k + '</td><td class="num">' + b.c + ' / ' + b.t + '</td>'
+      + '<td class="num">' + Math.round(b.c/b.t*100) + '%</td></tr>';
+  }).join('');
+
+  stage.innerHTML =
+    '<section class="result">'
+    + '<h2>Assessment complete</h2>'
+    + '<p class="rsub">Anurag Kadam · ' + (coreC + strC) + ' of ' + TOTAL + ' overall. Scoped to the banking engagement, not the CMS build.</p>'
+    + '<div class="readout">'
+      + '<div class="pane"><div class="plabel"><span class="dot core"></span>Evidenced on resume</div>'
+        + '<div class="pscore">' + corePct + '%</div><div class="pof">' + coreC + ' of ' + coreT + ' correct</div>'
+        + '<div class="meter"><i class="core" style="width:' + corePct + '%"></i></div></div>'
+      + '<div class="pane"><div class="plabel"><span class="dot stretch"></span>Required, absent</div>'
+        + '<div class="pscore">' + strPct + '%</div><div class="pof">' + strC + ' of ' + strT + ' correct</div>'
+        + '<div class="meter"><i class="stretch" style="width:' + strPct + '%"></i></div></div>'
+    + '</div>'
+    + '<table class="bd"><thead><tr><th>Section</th><th class="num">Score</th><th class="num">%</th></tr></thead><tbody>' + rows + '</tbody></table>'
+    + '<div class="verdict"><div class="vlabel">Hiring signal</div><h3>' + vTitle + '</h3><p>' + vBody + '</p></div>'
+    + '<div class="gapbox"><div class="vlabel">Fit against the engagement</div><ul>'
+      + '<li><strong>Three things on his resume map unusually well.</strong> A four-role portal system with RBAC, a pre-approval workflow, and a bilingual English and Spanish product. The platform needs analyst and QA sign-off gates and bilingual output, so this is closer than it first appears.</li>'
+      + '<li><strong>No Python anywhere.</strong> The backend on this engagement is Python with FastAPI. If the seat includes services, this is disqualifying rather than a ramp; if it is the review interface, it does not matter much.</li>'
+      + '<li><strong>MongoDB is his database, with Prisma listed alongside it.</strong> Prisma is used overwhelmingly against SQL, so ask whether he ran it over Postgres or the Mongo connector. The engagement specifies PostgreSQL or Azure SQL, and the document-version-statement-citation graph is densely relational.</li>'
+      + '<li><strong>No retrieval, embeddings, vector stores or document parsing.</strong> Expected, and the four questions here measure absorption rather than knowledge.</li>'
+      + '<li><strong>No regulated or restricted-environment experience.</strong> Seven applications for small and mid-size clients is different work from a bank virtual desktop with no package registry, DLP on document ingestion and per-consultant monitoring. Probe how he responds to that constraint rather than whether he has met it.</li>'
+      + '<li><strong>Verifiable and recent.</strong> Live demo links on three projects, a company-wide award in October 2024, and the most current stack in the batch — Next.js, Prisma, Shadcn, Zustand, Clerk. Open the demos before the interview.</li>'
+      + '<li><strong>Three years, one employer, graduated 2023.</strong> The lightest experience of the shortlist. For a client-site engagement with limited supervision, weigh independence carefully.</li>'
+    + '</ul></div>'
+    + '<p class="rsub" style="margin:0">Use Previous and Next, or the number grid, to review each question with the correct answer and interviewer note.</p>'
+    + '</section>';
+
+  bar.style.width = '100%';
+  document.getElementById('submit').textContent = 'Scored';
+  document.getElementById('submit').disabled = true;
+  paint();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+render(); paint();
+</script>
+</body>
+</html>
