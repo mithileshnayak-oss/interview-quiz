@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Technical Assessment — Koyna Khare — Full Stack Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#12161C; --ink-2:#454E5C; --ink-3:#7A8494;
+  --paper:#EDF0F4; --surface:#FFFFFF; --line:#D3DAE3;
+  --core:#1F4E79; --stretch:#9A5B08;
+  --pass:#0E6B5E; --fail:#9E2B25;
+  --sans:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px 80px}
+.masthead{border-bottom:2px solid var(--ink);padding:34px 0 18px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin:0 0 10px}
+.masthead h1{font-size:clamp(26px,4.4vw,38px);line-height:1.1;font-weight:700;letter-spacing:-.02em;margin:0 0 6px}
+.masthead .sub{color:var(--ink-2);margin:0;font-size:15px}
+.strip{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--line);background:var(--surface)}
+.strip .cell{flex:1 1 150px;padding:12px 16px;border-right:1px solid var(--line)}
+.strip .cell:last-child{border-right:0}
+.strip .k{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:block}
+.strip .v{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--ink)}
+#clock.warn{color:var(--fail)}
+.tracks{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
+.track{background:var(--surface);padding:14px 16px}
+.track .tlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+.dot.core{background:var(--core)}
+.dot.stretch{background:var(--stretch)}
+.track .tdesc{font-size:13px;color:var(--ink-2);line-height:1.45}
+.progress{height:4px;background:var(--line);position:sticky;top:0;z-index:20}
+.progress .bar{height:100%;width:0;background:var(--ink);transition:width .25s ease}
+.card{background:var(--surface);border:1px solid var(--line);border-top:0;padding:26px 26px 22px}
+.qhead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.qnum{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink-3)}
+.badge{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border:1px solid;border-radius:2px}
+.badge.core{color:var(--core);border-color:var(--core)}
+.badge.stretch{color:var(--stretch);border-color:var(--stretch)}
+.section-name{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.qtext{font-size:18px;line-height:1.45;font-weight:500;margin:12px 0 18px}
+.opts{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.opt{display:flex;gap:12px;align-items:center;border:1px solid var(--line);background:var(--surface);padding:13px 15px;cursor:pointer;text-align:left;font:inherit;color:inherit;border-radius:3px;transition:border-color .12s,background .12s;width:100%}
+.opt:hover{border-color:var(--ink-3)}
+.opt:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.opt .letter{font-family:var(--mono);font-weight:600;font-size:13px;color:var(--ink-3);flex:none}
+.opt.sel{border-color:var(--ink);background:#F6F8FA;box-shadow:inset 0 0 0 1px var(--ink)}
+.opt.sel .letter{color:var(--ink)}
+.opt[disabled]{cursor:default}
+.opt.correct{border-color:var(--pass);background:#F0F7F5}
+.opt.correct .letter{color:var(--pass)}
+.opt.wrong{border-color:var(--fail);background:#FCF2F1}
+.opt.wrong .letter{color:var(--fail)}
+.mark{margin-left:auto;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;flex:none}
+.mark.ok{color:var(--pass)}
+.mark.no{color:var(--fail)}
+.rationale{margin-top:16px;border:1px dashed var(--line);padding:13px 15px;background:var(--paper)}
+.rationale .rlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:5px}
+.rationale p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.5}
+.nav{display:flex;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-top:0;padding:16px 26px;flex-wrap:wrap}
+button.btn{font-family:var(--sans);font-size:14px;font-weight:600;padding:10px 18px;border-radius:3px;cursor:pointer;border:1px solid var(--ink);background:var(--surface);color:var(--ink);transition:background .12s,color .12s}
+button.btn:hover:not(:disabled){background:var(--ink);color:var(--surface)}
+button.btn.primary{background:var(--ink);color:var(--surface)}
+button.btn:disabled{opacity:.35;cursor:not-allowed}
+button.btn:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.nav .spacer{margin-left:auto}
+.navnote{font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+.grid{display:flex;flex-wrap:wrap;gap:5px;background:var(--surface);border:1px solid var(--line);border-top:0;padding:16px 26px 20px}
+.gcell{width:32px;height:32px;font-family:var(--mono);font-size:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink-3);cursor:pointer;border-radius:2px;padding:0}
+.gcell:hover{border-color:var(--ink-3)}
+.gcell.answered{background:#E6EBF1;color:var(--ink);font-weight:600;border-color:#B6C1CF}
+.gcell.here{border-color:var(--ink);border-width:2px;color:var(--ink);font-weight:600}
+.gcell.st{border-bottom:3px solid var(--stretch)}
+.result{background:var(--surface);border:1px solid var(--line);border-top:0;padding:28px 26px}
+.result h2{font-size:24px;margin:0 0 4px;letter-spacing:-.01em}
+.result .rsub{color:var(--ink-2);font-size:14px;margin:0 0 24px}
+.readout{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:22px}
+.readout .pane{background:var(--surface);padding:18px}
+.readout .plabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.readout .pscore{font-family:var(--mono);font-size:34px;font-weight:600;line-height:1;letter-spacing:-.02em}
+.readout .pof{font-family:var(--mono);font-size:13px;color:var(--ink-3);margin-top:5px}
+.meter{height:6px;background:var(--line);margin-top:12px;border-radius:3px;overflow:hidden}
+.meter i{display:block;height:100%;width:0;transition:width .5s ease}
+.meter i.core{background:var(--core)}
+.meter i.stretch{background:var(--stretch)}
+table.bd{width:100%;border-collapse:collapse;margin-bottom:22px;font-size:14px}
+table.bd th,table.bd td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+table.bd th{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);border-bottom:1px solid var(--ink)}
+table.bd td.num{font-family:var(--mono);text-align:right;white-space:nowrap}
+table.bd tr.stretch-row td:first-child{border-left:3px solid var(--stretch);padding-left:10px}
+table.bd tr.core-row td:first-child{border-left:3px solid var(--core);padding-left:10px}
+.verdict{border:1px solid var(--ink);padding:18px 20px;margin-bottom:22px}
+.verdict .vlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:7px}
+.verdict h3{margin:0 0 8px;font-size:17px}
+.verdict p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.55}
+.gapbox{background:var(--paper);border-left:3px solid var(--stretch);padding:16px 18px;margin-bottom:22px}
+.gapbox .vlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--stretch);margin-bottom:8px}
+.gapbox ul{margin:0;padding-left:18px;font-size:14px;color:var(--ink-2)}
+.gapbox li{margin-bottom:6px}
+.footer{font-family:var(--mono);font-size:11px;color:var(--ink-3);padding:18px 0 0;text-align:center;letter-spacing:.04em}
+@media (max-width:640px){
+  .tracks,.readout{grid-template-columns:1fr}
+  .card,.nav,.grid,.result{padding-left:18px;padding-right:18px}
+  .strip .cell{flex:1 1 50%;border-bottom:1px solid var(--line)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Aavya · Technical Screening</p>
+    <h1>Full Stack Engineer — agent platform, regulated client</h1>
+    <p class="sub">Candidate: Koyna Khare · 3.5 yrs · HB WEBSOL · strongest profile in the pipeline</p>
+  </header>
+
+  <div class="strip">
+    <div class="cell"><span class="k">Questions</span><span class="v" id="qcount">32</span></div>
+    <div class="cell"><span class="k">Time</span><span class="v" id="clock">55:00</span></div>
+    <div class="cell"><span class="k">Answered</span><span class="v" id="answered">0 / 32</span></div>
+    <div class="cell"><span class="k">Depth</span><span class="v">Senior</span></div>
+  </div>
+
+  <div class="tracks">
+    <div class="track">
+      <div class="tlabel"><span class="dot core"></span>Evidenced — pitched at senior level</div>
+      <div class="tdesc">React and performance, TypeScript, Next.js, PostgreSQL and indexing, Spring Boot with JPA, payments, GraphQL, and RAG fundamentals. She claims all of it with specifics, so these run harder than a standard screen.</div>
+    </div>
+    <div class="track">
+      <div class="tlabel"><span class="dot stretch"></span>Claimed thinly, or absent</div>
+      <div class="tdesc">Python and FastAPI (listed with no supporting project), retrieval at production scale, traceability and audit modelling, and working inside a locked-down client environment.</div>
+    </div>
+  </div>
+
+  <main id="stage"></main>
+
+  <div class="nav" id="nav">
+    <button class="btn" id="prev">Previous</button>
+    <button class="btn" id="next">Next</button>
+    <span class="spacer"></span>
+    <span class="navnote" id="navnote"></span>
+    <button class="btn primary" id="submit">Finish and score</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <p class="footer">Answers are scored on submit. Nothing is transmitted — this file runs entirely in the browser.</p>
+</div>
+
+<script>
+const QUESTIONS = [
+
+/* ===== React and performance ===== */
+{s:"React · Large datasets",t:"core",
+ q:"A dashboard renders 10,000 records. You add pagination and it is still slow on first paint. What else is likely wrong?",
+ o:["Pagination needs a smaller page size","The parent re-renders the whole tree: rows are not memoised and callbacks are recreated each render, so virtualise and stabilise props","The CSS layout engine is the bottleneck","Images need compressing"],
+ a:1,
+ e:"She claims exactly this work — pagination and lazy loading on 10K record datasets, 4s down to under 2s. Pagination limits rows fetched; it does nothing about a parent that re-renders everything on each state change."},
+
+{s:"React · Memoisation",t:"core",
+ q:"A chart re-renders on every parent state change even though its underlying data has not moved.",
+ o:["Debounce the parent state updates","Memoise the chart and make its data and config props referentially stable with useMemo","Render the chart in a portal","Convert it to a class component"],
+ a:1,
+ e:"Memoising a component achieves nothing if a new object or array literal is passed on every render. She built a chart dashboard handling 5MB datasets, so referential stability should be second nature."},
+
+{s:"React · Design systems",t:"core",
+ q:"You own a component library used by three separate client projects. What is the main risk?",
+ o:["Bundle size across consumers","Coupling — a breaking change ripples into every consumer, so it needs versioning, a deprecation path and release discipline","Inconsistent colour tokens","There is no significant risk"],
+ a:1,
+ e:"She architected a design system adopted across three projects and claims it set standards for fifteen engineers. Whether she thought about versioning tells you if she owned it or just built it."},
+
+{s:"Performance · Metrics",t:"core",
+ q:"You reduced page load from four seconds to under two. Which metric tells you the interface actually responds to the user?",
+ o:["Largest Contentful Paint","Interaction to Next Paint","Cumulative Layout Shift","Time to First Byte"],
+ a:1,
+ e:"LCP measures when the main content appears; INP measures responsiveness to input. A page can paint in under two seconds and still feel frozen. This distinguishes measured optimisation from a stopwatch."},
+
+{s:"React · Code splitting",t:"core",
+ q:"You lazy-load a route-level component. What must you handle beyond the loading state?",
+ o:["Nothing else is required","An error boundary for chunk load failures — a stale client after a new deploy will request a chunk that no longer exists","Only a spinner","Preload every chunk anyway to be safe"],
+ a:1,
+ e:"The failure nobody anticipates until it happens in production. She lists lazy loading as a specific technique, so this probes whether it was applied or understood."},
+
+/* ===== TypeScript and Next.js ===== */
+{s:"TypeScript · Boundaries",t:"core",
+ q:"An external API returns JSON. How do you get genuine type safety at that boundary?",
+ o:["Cast the response with as to the declared interface","Parse against a runtime schema and infer the static type from the schema","Declare the interface and rely on the API contract","Type it as unknown and cast after one field check"],
+ a:1,
+ e:"Casting is a promise to the compiler that nothing enforces. Standard at senior level and a fair floor for someone listing TypeScript across production work."},
+
+{s:"Next.js · Server Components",t:"core",
+ q:"What can a Server Component not do?",
+ o:["Fetch data directly","Hold state, run effects, or use browser APIs — it renders once on the server","Import other components","Query a database"],
+ a:1,
+ e:"Server Components render once and never hydrate. Knowing what forces a client boundary is what keeps bundle size down, and she built VisuMind in Next.js with TypeScript."},
+
+{s:"Next.js · Boundaries",t:"core",
+ q:"What does the \"use client\" directive do?",
+ o:["Makes the file execute only in the browser","Marks where client rendering begins; everything imported below it becomes a client component too","Disables server rendering for the application","Allows hooks to run on the server"],
+ a:1,
+ e:"Client components still render on the server for the initial HTML. The first option is the common misconception."},
+
+/* ===== PostgreSQL and SQL ===== */
+{s:"Postgres · Indexing",t:"core",
+ q:"A query filters on status and orders by created_at. Which index serves it best?",
+ o:["Two separate single-column indexes","One composite index on (status, created_at)","An index on created_at alone","No index; the planner will combine what exists"],
+ a:1,
+ e:"Composite in predicate-then-sort order satisfies both the filter and the ordering from one index. She explicitly claims database indexing strategies, so this is a direct check."},
+
+{s:"Postgres · Expression indexes",t:"core",
+ q:"There is a B-tree index on the email column, but a query filtering on lower(email) does not use it.",
+ o:["The index is corrupted and needs rebuilding","A function applied to the column prevents use of a plain index; an expression index on lower(email) is required","Postgres cannot index text columns effectively","The table needs vacuuming"],
+ a:1,
+ e:"The sharpest indexing question here. Anyone who has genuinely tuned Postgres queries has been caught by a function wrapping an indexed column, usually in a case-insensitive lookup."},
+
+{s:"Postgres · Query plans",t:"core",
+ q:"EXPLAIN ANALYZE shows a sequential scan on a large table for an equality filter.",
+ o:["Normal for large tables","No usable index exists for that predicate, so every row is being read","The table needs partitioning","The connection pool is exhausted"],
+ a:1,
+ e:"Reading a plan is the difference between measuring and guessing. She claims a 40 percent improvement in API response times, so ask how it was measured."},
+
+{s:"SQL · Outer joins",t:"core",
+ q:"You LEFT JOIN a child table and use COUNT(*) grouped by parent. Parents with no children return 1 rather than 0.",
+ o:["That is correct behaviour for a left join","COUNT(*) counts the null-padded row; count the joined table column instead","Switch to an inner join","Add a HAVING clause to filter them out"],
+ a:1,
+ e:"An extremely common bug that produces silently wrong reports rather than errors. This is the single best SQL discriminator on the sheet."},
+
+{s:"Postgres · Deep pagination",t:"core",
+ q:"On a 10,000-record dataset, OFFSET 9000 LIMIT 20 is noticeably slow. Why?",
+ o:["Network transfer of the skipped rows","The database still reads and discards every skipped row; keyset pagination anchored on a sort key avoids the scan","A missing index on the primary key","Too many columns in the select"],
+ a:1,
+ e:"Directly on her stated work — pagination over 10K record datasets. Offset pagination is fine at page two and degrades badly deeper in, which is exactly where a dashboard user goes."},
+
+/* ===== Java, Spring Boot, JPA ===== */
+{s:"JPA · Fetch strategy",t:"core",
+ q:"You load 50 orders and then read each order's customer inside a loop.",
+ o:["Hibernate caches the customers, so this is one query","The N+1 problem — fix with a join fetch, an entity graph, or batch fetching","Add an index on the customer table","Switch to native SQL for everything"],
+ a:1,
+ e:"The N+1 problem in its JPA form. She lists JPA and Hibernate on production payment work, so this should be immediate."},
+
+{s:"Spring · Transaction proxies",t:"core",
+ q:"A method annotated Transactional calls another Transactional method on the same class instance. What happens to the second annotation?",
+ o:["Both run in the same transaction as intended","The self-invocation bypasses the proxy, so the inner annotation is ignored entirely","A compilation error is raised","The outer transaction rolls back automatically"],
+ a:1,
+ e:"The classic Spring proxy trap, and the one that most reliably separates people who have debugged Spring in production from people who have configured it. A silent failure with no error."},
+
+{s:"JPA · Lazy loading",t:"core",
+ q:"A LazyInitializationException is thrown when serialising an entity in a controller.",
+ o:["A missing dependency in the build","A lazily-loaded association is accessed after the persistence context closed; fetch it in the query or map to a DTO","An incorrect database driver","A thread-safety problem in the repository"],
+ a:1,
+ e:"The other Hibernate rite of passage. Mapping to a DTO is the answer that shows she has settled on a pattern rather than reaching for eager fetching everywhere."},
+
+{s:"Spring Security · Enforcement",t:"core",
+ q:"Where is authorisation actually enforced in a Spring Boot API using JWT?",
+ o:["In each controller with conditional checks","In a security filter validating the token, plus request or method level authorisation — and the server verifies signature, issuer and expiry on every request","In the frontend route guard","Through database row permissions"],
+ a:1,
+ e:"She built Spring Security with JWT across payment applications. The critical half is that the server verifies every request; a token issued by a provider is not a token verified by your API."},
+
+/* ===== Payments ===== */
+{s:"Payments · Webhooks",t:"core",
+ q:"You integrated Razorpay, PayPal and Stripe. What makes webhook handling safe?",
+ o:["Accepting requests only from the provider IP range","Verifying the signature and treating delivery as at-least-once, so the handler must be idempotent","Returning 200 immediately and processing later without recording the event","Polling the provider API instead of accepting webhooks"],
+ a:1,
+ e:"Duplicate delivery is guaranteed rather than exceptional. She claims zero payment failures post-deployment across three gateways, so this is her own ground."},
+
+{s:"Payments · Source of truth",t:"core",
+ q:"What guarantees a completed payment is recorded exactly once?",
+ o:["The browser redirect back to your success page","The webhook as source of truth, with the provider event id under a unique constraint so replays cannot double-record","Polling the provider every minute for new charges","Comprehensive logging of every request"],
+ a:1,
+ e:"The redirect can be lost, duplicated or forged; only the signed server-to-server event is authoritative. A unique constraint on the event id makes idempotency a database guarantee rather than application discipline."},
+
+/* ===== GraphQL ===== */
+{s:"GraphQL · Resolver N+1",t:"core",
+ q:"A GraphQL query requests 50 posts each with its author, and the server issues 51 database queries.",
+ o:["Expected — resolvers necessarily run per field","The resolver N+1 problem; batch the author lookups with a data loader within the request","Add an index on the author table","Restrict query depth to prevent it"],
+ a:1,
+ e:"GraphQL makes N+1 the default rather than an accident, because each field resolves independently. She lists GraphQL, so this is a fair check on whether it was used at any depth."},
+
+{s:"GraphQL · Caching",t:"core",
+ q:"What does GraphQL trade away compared with REST?",
+ o:["Nothing — it is strictly better","HTTP caching by URL, since queries usually POST to a single endpoint; caching moves into the client or a persisted-query layer","Type safety at the boundary","The ability to authorise requests"],
+ a:1,
+ e:"The tradeoff people skip when advocating for GraphQL. Naming caching unprompted indicates real use rather than familiarity."},
+
+/* ===== RAG fundamentals ===== */
+{s:"Retrieval · Context limits",t:"core",
+ q:"A document corpus totals roughly 500,000 tokens. Why retrieve passages rather than send the corpus?",
+ o:["Retrieval improves the quality of generated prose","The corpus far exceeds the model context window, so only selected passages can physically be sent","It is a licensing requirement","It removes the need for a database"],
+ a:1,
+ e:"She built a RAG pipeline end to end, which makes her the only candidate assessed who should find this trivial. A miss here would call the whole VisuMind claim into question."},
+
+{s:"Retrieval · Chunking",t:"core",
+ q:"Why does chunk size matter when indexing documents?",
+ o:["Smaller is always better because more chunks fit the context","Too large dilutes relevance and wastes context; too small severs surrounding meaning — it is a tuning decision measured against real queries","It only affects storage cost","It is fixed by the embedding model"],
+ a:1,
+ e:"She claims optimised chunked embedding storage with sub-two-second responses. Ask what she tuned it against, since the answer reveals whether there was an evaluation loop or just a feel."},
+
+{s:"Retrieval · Embedding models",t:"core",
+ q:"You switch to a different embedding model. What has to happen to the existing index?",
+ o:["Nothing — embeddings are portable between models","The entire corpus must be re-embedded; vectors from different models occupy different spaces and are not comparable","Only newly added documents need embedding","The stored vectors can be converted mathematically"],
+ a:1,
+ e:"A practical consequence anyone who has maintained a vector index has met. It also explains why a build budget assumes the corpus is embedded several times."},
+
+/* ===== RAG at production scale — stretch ===== */
+{s:"Retrieval · Quality",t:"stretch",
+ q:"Retrieval returns passages that are semantically similar but factually wrong for the question asked. What actually improves it?",
+ o:["A larger generation model","Hybrid keyword and vector search, a reranking stage, and metadata filtering — measured against a labelled evaluation set","Retrieving more chunks per query","A longer and more detailed prompt"],
+ a:1,
+ e:"Pure vector similarity fails on exact identifiers, product codes and negations, which is precisely what a specification corpus is full of. Her project was a portfolio build, so production-grade retrieval concerns are the honest stretch here."},
+
+{s:"Retrieval · Evaluation",t:"stretch",
+ q:"You change the chunking strategy. How do you know retrieval got better rather than different?",
+ o:["The generated answers read better in spot checks","A labelled evaluation set with retrieval metrics measured before and after; without one, every change is a guess","Fewer user complaints over the following weeks","Lower average query latency"],
+ a:1,
+ e:"The discipline that separates a working demo from a system anyone can improve. If she has an evaluation loop, that is a significant differentiator for this engagement."},
+
+/* ===== Python and FastAPI — listed, unproven ===== */
+{s:"Python · FastAPI",t:"stretch",
+ q:"How does FastAPI validate incoming request bodies?",
+ o:["Manual checks written into each route handler","From Python type hints and Pydantic models, validated at runtime, with an OpenAPI schema generated from them","Through decorators evaluated at import time","By loading JSON Schema files from disk"],
+ a:1,
+ e:"She lists FastAPI under tools and Python as a language, with no Python project anywhere. Conceptually this mirrors the TypeScript boundary question, so connecting the two shows real transfer even without Python depth."},
+
+{s:"Python · Concurrency",t:"stretch",
+ q:"A service makes many slow calls to an external model API. Why does async matter?",
+ o:["It makes the external API respond faster","The calls are I/O-bound; async lets one worker handle many concurrent waits instead of blocking a thread per request","It is required in order to use type hints","It reduces the token cost of each call"],
+ a:1,
+ e:"A service blocking a worker per model call collapses under a handful of concurrent users. The concept transfers directly from Node, which she has, so watch whether she reasons across rather than reaching for Java threading."},
+
+/* ===== Traceability and audit ===== */
+{s:"Traceability · Citations",t:"stretch",
+ q:"Every generated statement must be auditable back to its exact source, and source documents get revised over time.",
+ o:["Store a confidence score against each paragraph","Per-statement citation rows pointing at a specific document version and location, so revising a source cannot invalidate an approved statement","Write the full prompt and response to an audit log","Store a snapshot of the whole corpus with each output"],
+ a:1,
+ e:"The version is the crux. A citation pointing at a document rather than a version silently breaks the moment that document is revised, which is exactly what an auditor will find. This is the single most important stretch question here."},
+
+{s:"Audit · Workflow state",t:"stretch",
+ q:"An auditor may later ask who approved a document and when. How should approval state be stored?",
+ o:["A boolean approved column on the record","An explicit current state plus append-only transition rows recording actor, timestamp and previous state","A status column updated in place at each stage","Timestamps for created and last modified"],
+ a:1,
+ e:"An overwritten status column destroys the exact evidence an audit requires. This engagement mandates sign-off gates that survive review, so it is a hard requirement rather than good practice."},
+
+/* ===== Regulated environment ===== */
+{s:"Environment · Dependencies",t:"stretch",
+ q:"Development happens on client machines with no access to public package registries.",
+ o:["Request a temporary exception for the duration of the build","Use the internal artifact proxy and its whitelisting process, submitting the full dependency list for security approval before day one","Commit the installed dependency directory into the repository","Development is impractical under that constraint"],
+ a:1,
+ e:"Dependency approval is the most common first-sprint blocker in bank environments, with a lead time in weeks. Anticipating it is the difference between starting in week one and week four."},
+
+{s:"Environment · Data boundaries",t:"stretch",
+ q:"No client data may leave the client environment. What does that rule out?",
+ o:["Nothing, provided traffic is encrypted in transit","Any hosted third-party service that processes client content — including external embedding and model APIs, error reporting that captures payloads, and analytics","Only email and file sharing","Only bulk exports"],
+ a:1,
+ e:"The most pointed question on this assessment for her specifically. Her RAG pipeline used the hosted OpenAI API — precisely the pattern that is disallowed here. Whether she sees that immediately tells you how well her retrieval experience will transfer into a bank tenant."}
+];
+
+/* Randomise option order so the correct answer is not always in one position. */
+(function shuffleOptions(){
+  QUESTIONS.forEach(q => {
+    const correct = q.o[q.a];
+    for (let i = q.o.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [q.o[i], q.o[j]] = [q.o[j], q.o[i]];
+    }
+    q.a = q.o.indexOf(correct);
+  });
+})();
+
+const TOTAL = QUESTIONS.length;
+const answers = new Array(TOTAL).fill(null);
+let cur = 0, graded = false, secondsLeft = 55 * 60;
+
+const stage = document.getElementById('stage');
+const grid  = document.getElementById('grid');
+const bar   = document.getElementById('bar');
+const LETTERS = ['A','B','C','D'];
+
+document.getElementById('qcount').textContent = TOTAL;
+document.getElementById('answered').textContent = '0 / ' + TOTAL;
+
+const clock = document.getElementById('clock');
+const timer = setInterval(() => {
+  if (graded) { clearInterval(timer); return; }
+  secondsLeft--;
+  const m = Math.floor(Math.max(secondsLeft,0)/60), s = Math.max(secondsLeft,0)%60;
+  clock.textContent = m + ':' + String(s).padStart(2,'0');
+  if (secondsLeft <= 300) clock.classList.add('warn');
+  if (secondsLeft <= 0) { clearInterval(timer); grade(); }
+}, 1000);
+
+function render() {
+  const q = QUESTIONS[cur];
+  const badge = q.t === 'core'
+    ? '<span class="badge core">Evidenced</span>'
+    : '<span class="badge stretch">Stretch</span>';
+
+  let html = '<section class="card">'
+    + '<div class="qhead"><span class="qnum">' + String(cur+1).padStart(2,'0') + ' / ' + TOTAL + '</span>'
+    + badge + '<span class="section-name">' + q.s + '</span></div>'
+    + '<p class="qtext">' + q.q + '</p><ul class="opts">';
+
+  q.o.forEach((opt, i) => {
+    let cls = 'opt', mark = '';
+    if (answers[cur] === i) cls += ' sel';
+    if (graded) {
+      if (i === q.a) { cls += ' correct'; mark = '<span class="mark ok">Correct</span>'; }
+      else if (answers[cur] === i) { cls += ' wrong'; mark = '<span class="mark no">Chosen</span>'; }
+    }
+    html += '<li><button class="' + cls + '" data-i="' + i + '"' + (graded ? ' disabled' : '') + '>'
+          + '<span class="letter">' + LETTERS[i] + '</span><span>' + opt + '</span>' + mark + '</button></li>';
+  });
+
+  html += '</ul>';
+  if (graded) html += '<div class="rationale"><div class="rlabel">Interviewer note</div><p>' + q.e + '</p></div>';
+  html += '</section>';
+  stage.innerHTML = html;
+
+  if (!graded) {
+    stage.querySelectorAll('.opt').forEach(b => {
+      b.addEventListener('click', () => {
+        answers[cur] = Number(b.dataset.i);
+        render(); paint();
+        if (cur < TOTAL - 1) setTimeout(() => { cur++; render(); paint(); }, 160);
+      });
+    });
+  }
+
+  document.getElementById('prev').disabled = cur === 0;
+  document.getElementById('next').disabled = cur === TOTAL - 1;
+  document.getElementById('navnote').textContent = graded ? 'Review mode' : (answers[cur] === null ? 'Not answered' : 'Answered');
+}
+
+function paint() {
+  const done = answers.filter(a => a !== null).length;
+  document.getElementById('answered').textContent = done + ' / ' + TOTAL;
+  bar.style.width = (done / TOTAL * 100) + '%';
+  grid.innerHTML = QUESTIONS.map((q, i) => {
+    let c = 'gcell';
+    if (answers[i] !== null) c += ' answered';
+    if (i === cur) c += ' here';
+    if (q.t === 'stretch') c += ' st';
+    return '<button class="' + c + '" data-i="' + i + '">' + (i+1) + '</button>';
+  }).join('');
+  grid.querySelectorAll('.gcell').forEach(b => {
+    b.addEventListener('click', () => { cur = Number(b.dataset.i); render(); paint(); });
+  });
+}
+
+document.getElementById('prev').addEventListener('click', () => { if (cur > 0) { cur--; render(); paint(); } });
+document.getElementById('next').addEventListener('click', () => { if (cur < TOTAL-1) { cur++; render(); paint(); } });
+document.getElementById('submit').addEventListener('click', () => {
+  const done = answers.filter(a => a !== null).length;
+  if (!graded && done < TOTAL && !confirm((TOTAL - done) + ' question(s) are unanswered. Score anyway?')) return;
+  grade();
+});
+
+function grade() {
+  if (graded) { window.scrollTo({top:0,behavior:'smooth'}); return; }
+  graded = true; clearInterval(timer);
+
+  const bySection = {};
+  let coreC = 0, coreT = 0, strC = 0, strT = 0;
+  QUESTIONS.forEach((q, i) => {
+    const ok = answers[i] === q.a;
+    if (!bySection[q.s]) bySection[q.s] = {c:0, t:0, track:q.t};
+    bySection[q.s].t++; if (ok) bySection[q.s].c++;
+    if (q.t === 'core') { coreT++; if (ok) coreC++; } else { strT++; if (ok) strC++; }
+  });
+
+  const corePct = Math.round(coreC/coreT*100);
+  const strPct  = Math.round(strC/strT*100);
+
+  let vTitle, vBody;
+  if (corePct >= 85 && strPct >= 60) {
+    vTitle = "Move now — best available candidate";
+    vBody = "The claims survive senior-level questioning and she reasons well into production retrieval, audit modelling and the constraints of a locked-down environment. Nobody else assessed has built a RAG pipeline, worked across Postgres and Spring, and shipped a design system. Her summary is written for a consulting firm, so she is interviewing elsewhere. Compress the process and get an offer in front of her.";
+  } else if (corePct >= 85) {
+    vTitle = "Advance — strong hire, ramp on the new domain";
+    vBody = "React, Postgres, Spring and payments all hold up at senior level, which is more verified breadth than anyone else in the pipeline. Production retrieval concerns, traceability modelling and the bank environment are less developed, which is expected given the RAG work was a portfolio project. All of it is learnable on this foundation within a quarter.";
+  } else if (corePct >= 70) {
+    vTitle = "Strong on paper, thinner in places than the resume implies";
+    vBody = "A resume this dense with specific figures sets a high bar, and misses inside Postgres, Spring or React matter more here than the stretch score. Identify which area came back weak and probe it live rather than declining on the number alone.";
+  } else {
+    vTitle = "Claims and depth do not reconcile";
+    vBody = "Under seventy percent on a stack described in unusual detail across production work. Given the volume of quantified claims on the resume, take this seriously and verify with a hands-on session before proceeding further.";
+  }
+
+  const rows = Object.keys(bySection).map(k => {
+    const b = bySection[k];
+    return '<tr class="' + (b.track === 'core' ? 'core-row' : 'stretch-row') + '">'
+      + '<td>' + k + '</td><td class="num">' + b.c + ' / ' + b.t + '</td>'
+      + '<td class="num">' + Math.round(b.c/b.t*100) + '%</td></tr>';
+  }).join('');
+
+  stage.innerHTML =
+    '<section class="result">'
+    + '<h2>Assessment complete</h2>'
+    + '<p class="rsub">Koyna Khare · ' + (coreC + strC) + ' of ' + TOTAL + ' overall. The evidenced track was pitched at senior level because her resume claims this depth explicitly.</p>'
+    + '<div class="readout">'
+      + '<div class="pane"><div class="plabel"><span class="dot core"></span>Evidenced — senior level</div>'
+        + '<div class="pscore">' + corePct + '%</div><div class="pof">' + coreC + ' of ' + coreT + ' correct</div>'
+        + '<div class="meter"><i class="core" style="width:' + corePct + '%"></i></div></div>'
+      + '<div class="pane"><div class="plabel"><span class="dot stretch"></span>Thin or absent</div>'
+        + '<div class="pscore">' + strPct + '%</div><div class="pof">' + strC + ' of ' + strT + ' correct</div>'
+        + '<div class="meter"><i class="stretch" style="width:' + strPct + '%"></i></div></div>'
+    + '</div>'
+    + '<table class="bd"><thead><tr><th>Section</th><th class="num">Score</th><th class="num">%</th></tr></thead><tbody>' + rows + '</tbody></table>'
+    + '<div class="verdict"><div class="vlabel">Hiring signal</div><h3>' + vTitle + '</h3><p>' + vBody + '</p></div>'
+    + '<div class="gapbox"><div class="vlabel">Read the resume alongside the score</div><ul>'
+      + '<li><strong>She is the only candidate across twenty resumes who has built a RAG pipeline.</strong> File parsing, embeddings, semantic retrieval, chunked storage, in Next.js and TypeScript. Everyone else scores that section as pure transfer.</li>'
+      + '<li><strong>Move fast.</strong> Her summary states she is seeking a Senior Associate role in a digital integration or advisory environment — written for a consulting firm, not for you. She is actively interviewing elsewhere.</li>'
+      + '<li><strong>Python is listed, FastAPI sits under Tools and Cloud, and no Python project appears anywhere.</strong> Treat Python as unproven regardless of the listing, and ask directly what she has written in it.</li>'
+      + '<li><strong>The RAG work is a portfolio project, not client delivery.</strong> Valuable and rare, but ask what would change at production scale — evaluation sets, reranking, hybrid search, and re-embedding cost.</li>'
+      + '<li><strong>Her retrieval pipeline used the hosted OpenAI API.</strong> Inside a bank tenant with no data egress, that exact pattern is disallowed. Question 32 tests whether she sees it; if she does not, walk her there and watch the recovery.</li>'
+      + '<li><strong>Two figures do not reconcile.</strong> She mentors three to five junior engineers but claims to have established standards for fifteen-plus. Ask her to describe the team structure; it may simply be two different groups.</li>'
+      + '<li><strong>She started at HB WEBSOL in December 2022, five months before her degree completed in May 2023.</strong> Ordinary and worth one neutral question, asked early.</li>'
+      + '<li><strong>Salesforce PD1 certification is genuinely irrelevant here</strong> and suggests the resume is being aimed at more than one kind of role. Not a concern, but a signal about how broadly she is searching.</li>'
+    + '</ul></div>'
+    + '<p class="rsub" style="margin:0">Use Previous and Next, or the number grid, to review each question with the correct answer and interviewer note.</p>'
+    + '</section>';
+
+  bar.style.width = '100%';
+  document.getElementById('submit').textContent = 'Scored';
+  document.getElementById('submit').disabled = true;
+  paint();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+render(); paint();
+</script>
+</body>
+</html>
