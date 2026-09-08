@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Technical Assessment — Pradeep Dubey — Senior Data Scientist (Telecom)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#12161C; --ink-2:#454E5C; --ink-3:#7A8494;
+  --paper:#EDF0F4; --surface:#FFFFFF; --line:#D3DAE3;
+  --core:#1F4E79; --stretch:#9A5B08;
+  --pass:#0E6B5E; --fail:#9E2B25;
+  --sans:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px 80px}
+.masthead{border-bottom:2px solid var(--ink);padding:34px 0 18px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin:0 0 10px}
+.masthead h1{font-size:clamp(26px,4.4vw,38px);line-height:1.1;font-weight:700;letter-spacing:-.02em;margin:0 0 6px}
+.masthead .sub{color:var(--ink-2);margin:0;font-size:15px}
+.strip{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--line);background:var(--surface)}
+.strip .cell{flex:1 1 150px;padding:12px 16px;border-right:1px solid var(--line)}
+.strip .cell:last-child{border-right:0}
+.strip .k{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:block}
+.strip .v{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--ink)}
+#clock.warn{color:var(--fail)}
+.tracks{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
+.track{background:var(--surface);padding:14px 16px}
+.track .tlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+.dot.core{background:var(--core)}
+.dot.stretch{background:var(--stretch)}
+.track .tdesc{font-size:13px;color:var(--ink-2);line-height:1.45}
+.progress{height:4px;background:var(--line);position:sticky;top:0;z-index:20}
+.progress .bar{height:100%;width:0;background:var(--ink);transition:width .25s ease}
+.card{background:var(--surface);border:1px solid var(--line);border-top:0;padding:26px 26px 22px}
+.qhead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.qnum{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink-3)}
+.badge{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border:1px solid;border-radius:2px}
+.badge.core{color:var(--core);border-color:var(--core)}
+.badge.stretch{color:var(--stretch);border-color:var(--stretch)}
+.section-name{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.qtext{font-size:18px;line-height:1.45;font-weight:500;margin:12px 0 18px}
+.opts{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.opt{display:flex;gap:12px;align-items:center;border:1px solid var(--line);background:var(--surface);padding:13px 15px;cursor:pointer;text-align:left;font:inherit;color:inherit;border-radius:3px;transition:border-color .12s,background .12s;width:100%}
+.opt:hover{border-color:var(--ink-3)}
+.opt:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.opt .letter{font-family:var(--mono);font-weight:600;font-size:13px;color:var(--ink-3);flex:none}
+.opt.sel{border-color:var(--ink);background:#F6F8FA;box-shadow:inset 0 0 0 1px var(--ink)}
+.opt.sel .letter{color:var(--ink)}
+.opt[disabled]{cursor:default}
+.opt.correct{border-color:var(--pass);background:#F0F7F5}
+.opt.correct .letter{color:var(--pass)}
+.opt.wrong{border-color:var(--fail);background:#FCF2F1}
+.opt.wrong .letter{color:var(--fail)}
+.mark{margin-left:auto;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;flex:none}
+.mark.ok{color:var(--pass)}
+.mark.no{color:var(--fail)}
+.rationale{margin-top:16px;border:1px dashed var(--line);padding:13px 15px;background:var(--paper)}
+.rationale .rlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:5px}
+.rationale p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.5}
+.nav{display:flex;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-top:0;padding:16px 26px;flex-wrap:wrap}
+button.btn{font-family:var(--sans);font-size:14px;font-weight:600;padding:10px 18px;border-radius:3px;cursor:pointer;border:1px solid var(--ink);background:var(--surface);color:var(--ink);transition:background .12s,color .12s}
+button.btn:hover:not(:disabled){background:var(--ink);color:var(--surface)}
+button.btn.primary{background:var(--ink);color:var(--surface)}
+button.btn:disabled{opacity:.35;cursor:not-allowed}
+button.btn:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.nav .spacer{margin-left:auto}
+.navnote{font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+.grid{display:flex;flex-wrap:wrap;gap:5px;background:var(--surface);border:1px solid var(--line);border-top:0;padding:16px 26px 20px}
+.gcell{width:32px;height:32px;font-family:var(--mono);font-size:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink-3);cursor:pointer;border-radius:2px;padding:0}
+.gcell:hover{border-color:var(--ink-3)}
+.gcell.answered{background:#E6EBF1;color:var(--ink);font-weight:600;border-color:#B6C1CF}
+.gcell.here{border-color:var(--ink);border-width:2px;color:var(--ink);font-weight:600}
+.gcell.st{border-bottom:3px solid var(--stretch)}
+.result{background:var(--surface);border:1px solid var(--line);border-top:0;padding:28px 26px}
+.result h2{font-size:24px;margin:0 0 4px;letter-spacing:-.01em}
+.result .rsub{color:var(--ink-2);font-size:14px;margin:0 0 24px}
+.readout{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:22px}
+.readout .pane{background:var(--surface);padding:18px}
+.readout .plabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.readout .pscore{font-family:var(--mono);font-size:34px;font-weight:600;line-height:1;letter-spacing:-.02em}
+.readout .pof{font-family:var(--mono);font-size:13px;color:var(--ink-3);margin-top:5px}
+.meter{height:6px;background:var(--line);margin-top:12px;border-radius:3px;overflow:hidden}
+.meter i{display:block;height:100%;width:0;transition:width .5s ease}
+.meter i.core{background:var(--core)}
+.meter i.stretch{background:var(--stretch)}
+table.bd{width:100%;border-collapse:collapse;margin-bottom:22px;font-size:14px}
+table.bd th,table.bd td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+table.bd th{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);border-bottom:1px solid var(--ink)}
+table.bd td.num{font-family:var(--mono);text-align:right;white-space:nowrap}
+table.bd tr.stretch-row td:first-child{border-left:3px solid var(--stretch);padding-left:10px}
+table.bd tr.core-row td:first-child{border-left:3px solid var(--core);padding-left:10px}
+.verdict{border:1px solid var(--ink);padding:18px 20px;margin-bottom:22px}
+.verdict .vlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:7px}
+.verdict h3{margin:0 0 8px;font-size:17px}
+.verdict p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.55}
+.gapbox{background:var(--paper);border-left:3px solid var(--stretch);padding:16px 18px;margin-bottom:22px}
+.gapbox .vlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--stretch);margin-bottom:8px}
+.gapbox ul{margin:0;padding-left:18px;font-size:14px;color:var(--ink-2)}
+.gapbox li{margin-bottom:6px}
+.footer{font-family:var(--mono);font-size:11px;color:var(--ink-3);padding:18px 0 0;text-align:center;letter-spacing:.04em}
+@media (max-width:640px){
+  .tracks,.readout{grid-template-columns:1fr}
+  .card,.nav,.grid,.result{padding-left:18px;padding-right:18px}
+  .strip .cell{flex:1 1 50%;border-bottom:1px solid var(--line)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Aavya · Technical Screening</p>
+    <h1>Senior Data Scientist — GenAI &amp; ML, Telecom domain</h1>
+    <p class="sub">Candidate: Pradeep Dubey · 2+ yrs · upGrad / 3K Technologies · strong GenAI builder, junior for a senior title</p>
+  </header>
+
+  <div class="strip">
+    <div class="cell"><span class="k">Questions</span><span class="v" id="qcount">30</span></div>
+    <div class="cell"><span class="k">Time</span><span class="v" id="clock">50:00</span></div>
+    <div class="cell"><span class="k">Answered</span><span class="v" id="answered">0 / 30</span></div>
+    <div class="cell"><span class="k">Depth</span><span class="v">Senior</span></div>
+  </div>
+
+  <div class="tracks">
+    <div class="track">
+      <div class="tlabel"><span class="dot core"></span>Evidenced — claimed with specifics</div>
+      <div class="tdesc">RAG and agentic orchestration (LangGraph, AutoGen, MCP), prompt engineering, fine-tuning (LoRA/QLoRA), deep learning (CNN/RNN/LSTM), Python, FastAPI, AWS, and vector stores. He documents all of it with metrics, so these run at senior depth.</div>
+    </div>
+    <div class="track">
+      <div class="tlabel"><span class="dot stretch"></span>Thin, absent, or new domain</div>
+      <div class="tdesc">Telecom use cases (churn, network, fraud), big-data pipelines (Spark/Hive) and streaming (Kafka/Flink), Kubernetes and production MLOps at scale, classical ML on tabular telco data, and mentoring at the senior level.</div>
+    </div>
+  </div>
+
+  <main id="stage"></main>
+
+  <div class="nav" id="nav">
+    <button class="btn" id="prev">Previous</button>
+    <button class="btn" id="next">Next</button>
+    <span class="spacer"></span>
+    <span class="navnote" id="navnote"></span>
+    <button class="btn primary" id="submit">Finish and score</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <p class="footer">Answers are scored on submit. Nothing is transmitted — this file runs entirely in the browser.</p>
+</div>
+
+<script>
+const QUESTIONS = [
+
+/* ===== RAG fundamentals ===== */
+{s:"Retrieval · Context limits",t:"core",
+ q:"A policy corpus totals roughly 800,000 tokens. Why retrieve passages rather than send the whole corpus to the model?",
+ o:["Retrieval improves the fluency of the generated answer","The corpus far exceeds any model context window, so only selected passages can physically be sent","It is a licensing requirement of the model provider","It removes the need for a vector database"],
+ a:1,
+ e:"He converted 1,000+ insurance policy PDFs into embeddings for semantic search, and claims 9 RAG variants. This is the floor — a miss here would call the whole RAG claim into question."},
+
+{s:"Retrieval · Chunking",t:"core",
+ q:"Why does chunk size matter when indexing documents for retrieval?",
+ o:["Smaller is always better because more chunks fit the context","Too large dilutes relevance and wastes context; too small severs surrounding meaning — it is a tuning decision measured against real queries","It only affects storage cost","It is fixed by the embedding model"],
+ a:1,
+ e:"He lists Standard, Corrective, Adaptive, Self-RAG and more. Ask what he tuned chunk size against — the answer reveals whether there was an evaluation loop or just a feel."},
+
+{s:"Retrieval · Embedding models",t:"core",
+ q:"You switch to a different embedding model. What must happen to the existing index?",
+ o:["Nothing — embeddings are portable across models","The entire corpus must be re-embedded; vectors from different models occupy different spaces and are not comparable","Only newly added documents need embedding","The stored vectors can be converted mathematically"],
+ a:1,
+ e:"A practical consequence anyone maintaining Qdrant or ChromaDB in production has met. He lists both, so this should be immediate."},
+
+{s:"Retrieval · Hybrid search",t:"core",
+ q:"Semantic search returns passages that are topically similar but miss the exact policy number a user asked about. What fixes it?",
+ o:["A larger generation model","Hybrid keyword and vector search plus metadata filtering, so exact identifiers are matched literally rather than by similarity","Retrieving more chunks per query","A longer system prompt"],
+ a:1,
+ e:"Pure vector similarity fails on exact identifiers, product codes and negations — precisely what a policy or telco-plan corpus is full of. He claims confidence-ranked responses, so ask how exact matches are handled."},
+
+/* ===== Agentic systems ===== */
+{s:"Agents · Orchestration",t:"core",
+ q:"In his 3-agent LangGraph fact-checker (Extractor → Verifier → Orchestrator), what does modelling state as typed objects between nodes actually buy you?",
+ o:["Faster inference per node","Predictable, validated hand-offs — each node's input and output are enforced, so a malformed intermediate fails loudly instead of corrupting downstream steps","Lower token cost","It removes the need for error handling"],
+ a:1,
+ e:"He explicitly claims Pydantic-typed state throughout the graph. This checks whether that was a deliberate reliability choice or incidental."},
+
+{s:"Agents · Loops and cost",t:"core",
+ q:"His verifier loops up to 3× generating new search queries until authoritative evidence is found. What is the main production risk of an unbounded version of this pattern?",
+ o:["The model forgets earlier context","Runaway cost and latency — each iteration is more LLM and search calls, so loops need hard caps, budgets and a fallback verdict","The vector store fills up","Token limits are exceeded on the first pass"],
+ a:1,
+ e:"He does cap at 3 iterations and tracks per-stage cost, which is the right instinct. Confirm he reasons about the cost/accuracy tradeoff rather than just knowing the number."},
+
+{s:"Agents · Tool calling",t:"core",
+ q:"What is the reliability advantage of structured tool/function calling over parsing a tool request out of free-text model output?",
+ o:["It is faster to generate","The model emits a schema-constrained call the runtime can validate and dispatch directly, eliminating brittle text parsing and malformed-argument failures","It uses fewer tokens","It works without an API key"],
+ a:1,
+ e:"He lists tool/function calling, structured outputs and MCP. This separates 'used the feature' from 'understands why it is more robust'."},
+
+/* ===== Fine-tuning ===== */
+{s:"Fine-tuning · LoRA",t:"core",
+ q:"QLoRA fine-tunes a model in 4-bit. What is the core idea that makes this fit on a single consumer GPU?",
+ o:["It trains only the final output layer","The base weights are frozen and quantised to 4-bit, and only small low-rank adapter matrices are trained, so the trainable parameter count and memory collapse","It reduces the dataset to 4-bit precision","It skips backpropagation entirely"],
+ a:1,
+ e:"He fine-tuned LLaMA-3 on 100K ChatDoctor samples with Unsloth + 4-bit QLoRA. This is his own project, so he should explain it cleanly."},
+
+{s:"Fine-tuning · When",t:"core",
+ q:"For adapting a model to a new domain's tone and format, when is fine-tuning the right tool over RAG?",
+ o:["Always — fine-tuning is strictly better","When you need to change behaviour, style or format rather than inject fresh facts; RAG is for knowledge that changes and must be cited, fine-tuning for stable behaviour","Only when the corpus is small","Only when latency does not matter"],
+ a:1,
+ e:"He has shipped both RAG and fine-tuning. Knowing which problem each solves — facts vs behaviour — is a senior-level distinction and a fair check on someone who lists both."},
+
+/* ===== Deep learning ===== */
+{s:"Deep learning · CNN",t:"core",
+ q:"In his ResNet50 + LSTM image-captioning model, what is the role of transfer learning with the pretrained ResNet50 encoder?",
+ o:["It generates the captions directly","It provides learned visual feature representations, so the model does not learn vision from scratch and needs far less data and compute to converge","It replaces the LSTM decoder","It performs the BLEU evaluation"],
+ a:1,
+ e:"The JD names CNNs explicitly. This is his project, so a crisp encoder/decoder explanation is expected."},
+
+{s:"Deep learning · Sequence models",t:"core",
+ q:"Why did LSTMs largely replace vanilla RNNs for longer sequences before transformers?",
+ o:["They are simpler to implement","Gating lets them carry information across many steps and mitigate the vanishing-gradient problem that cripples plain RNNs on long sequences","They do not need backpropagation","They use less memory"],
+ a:1,
+ e:"He lists RNN, LSTM and CNN. A standard fundamentals check for a role requiring deep-learning depth."},
+
+{s:"Deep learning · Overfitting",t:"core",
+ q:"A model reaches 98% training accuracy and 71% validation accuracy. What is happening and what is the first move?",
+ o:["Underfitting — train longer","Overfitting — the model memorised the training set; add regularisation, dropout, more data or augmentation, and stop on validation loss","The learning rate is too low","The test set is mislabelled"],
+ a:1,
+ e:"Foundational, and non-negotiable for anyone claiming predictive modelling and statistical experience across production work."},
+
+/* ===== Python and FastAPI ===== */
+{s:"Python · FastAPI",t:"core",
+ q:"How does FastAPI validate incoming request bodies?",
+ o:["Manual checks written into each route handler","From Python type hints and Pydantic models, validated at runtime, with an OpenAPI schema generated automatically","Through decorators evaluated at import time","By loading JSON Schema files from disk"],
+ a:1,
+ e:"He built FastAPI backends with SSE and JWT across the Expert AI platform. This should be immediate given the Pydantic usage he claims elsewhere."},
+
+{s:"Python · Async",t:"core",
+ q:"A service makes many slow calls to an external model API. Why does async I/O matter here?",
+ o:["It makes the external API respond faster","The calls are I/O-bound; async lets one worker handle many concurrent waits instead of blocking a thread per request","It is required to use type hints","It reduces the token cost of each call"],
+ a:1,
+ e:"He lists async programming and built streaming (SSE) services. A worker blocking per model call collapses under concurrency — a real concern for a real-time telco assistant."},
+
+{s:"Python · Streaming",t:"core",
+ q:"He delivered real-time token streaming via Server-Sent Events. What makes SSE a fit for LLM streaming over plain request/response?",
+ o:["It is bidirectional like WebSockets","It is a one-way server-to-client stream over HTTP that pushes tokens as they are generated, with automatic reconnection and no polling","It caches responses at the CDN","It compresses the payload"],
+ a:1,
+ e:"He claims SSE-backed streaming on two platforms. Confirm he understands why SSE suits unidirectional token push specifically."},
+
+/* ===== MLOps ===== */
+{s:"MLOps · Containers",t:"core",
+ q:"Why containerise an ML inference service with Docker before deploying?",
+ o:["It makes the model more accurate","It pins the runtime, dependencies and model artifacts into a reproducible image, so the environment is identical across dev, CI and production","It reduces model size","It removes the need for a GPU"],
+ a:1,
+ e:"He lists Docker, CI/CD and MLOps. A baseline reproducibility question for a role that owns production deployment."},
+
+{s:"MLOps · Tracking",t:"core",
+ q:"What does MLflow give you that ad-hoc notebooks and filenames do not?",
+ o:["Faster training","A tracked record of parameters, metrics, artifacts and model versions per run, so experiments are comparable and a deployed model is traceable to how it was produced","Automatic hyperparameter tuning","A managed GPU cluster"],
+ a:1,
+ e:"He lists MLflow under MLOps tooling. The JD wants end-to-end lifecycle management, so experiment traceability is directly relevant."},
+
+{s:"MLOps · Cost control",t:"core",
+ q:"Across his platforms he claims per-model cost tracking, spend caps and rate limits. Why are these first-class concerns in an LLM product rather than afterthoughts?",
+ o:["They improve answer quality","Per-request LLM spend is variable and user-driven, so without caps and quotas a handful of heavy users or a loop can produce unbounded cost","They are required by the model provider","They reduce latency"],
+ a:1,
+ e:"This is genuine strength — he built spend caps, quotas and token/cost tracking repeatedly. A good place to let him talk about production discipline."},
+
+/* ===== Cloud ===== */
+{s:"Cloud · AWS",t:"core",
+ q:"He deployed on AWS Bedrock and S3. What does Bedrock provide that self-hosting a model does not?",
+ o:["Cheaper inference always","Managed API access to foundation models without provisioning or operating GPU infrastructure, with data staying inside the AWS account boundary","Automatic fine-tuning of any model","A frontend framework"],
+ a:1,
+ e:"He lists AWS (Bedrock, S3, SageMaker) and shipped on it. The JD accepts AWS/GCP/Azure, so this is evidenced — confirm the depth."},
+
+/* ===== Vector stores ===== */
+{s:"Vector stores · Index choice",t:"core",
+ q:"Why do production vector databases use an approximate nearest-neighbour index (e.g. HNSW) rather than exact search?",
+ o:["Exact search returns wrong results","Exact nearest-neighbour over millions of high-dimensional vectors is too slow; ANN trades a little recall for order-of-magnitude faster queries","Approximate search uses less disk","It is the only method embeddings support"],
+ a:1,
+ e:"He lists Qdrant and ChromaDB. A fair check on whether he understands the recall/latency tradeoff behind the tools he names."},
+
+/* ===== Telecom domain — stretch ===== */
+{s:"Telecom · Churn",t:"stretch",
+ q:"You are asked to build a churn model on a telco subscriber base where roughly 3% of customers churn per month. What is the first modelling problem to address?",
+ o:["Choosing between TensorFlow and PyTorch","Severe class imbalance — accuracy is meaningless at 3% positives; you need resampling or class weights and must optimise for precision/recall or AUC-PR, not accuracy","Picking the right chunk size","Whether to use RAG"],
+ a:1,
+ e:"He has no telecom work and his experience skews GenAI over classical tabular ML. Class imbalance is the defining trait of churn, fraud and network-anomaly problems here. Whether he reaches for it unprompted is the tell."},
+
+{s:"Telecom · Fraud",t:"stretch",
+ q:"For real-time telecom fraud detection on call/usage streams, why is a purely supervised classifier often insufficient?",
+ o:["Supervised models are always inaccurate","Fraud patterns shift and novel fraud has no labels; you need anomaly detection or semi-supervised methods alongside, plus a feedback loop as new fraud is confirmed","Streaming data cannot be classified","It requires a larger LLM"],
+ a:1,
+ e:"A domain-shaped question. His strength is LLM pipelines, not streaming anomaly detection on tabular telco events. Watch whether he reasons about label scarcity and drift."},
+
+{s:"Telecom · Usage modelling",t:"stretch",
+ q:"Modelling monthly data-usage patterns to flag customers likely to exceed plan limits is fundamentally which kind of problem?",
+ o:["A retrieval problem","A time-series / regression problem on per-subscriber sequences, where seasonality and trend per customer matter more than a single global model","A prompt-engineering problem","A fine-tuning problem"],
+ a:1,
+ e:"His resume has no time-series or forecasting work. This checks whether he can frame a classic telco analytics task correctly rather than reaching for a GenAI tool."},
+
+/* ===== Big data and streaming — stretch ===== */
+{s:"Big data · Spark",t:"stretch",
+ q:"You must engineer features over billions of call-detail records nightly. Why Spark rather than pandas on one machine?",
+ o:["Spark has better charts","The data far exceeds one machine's memory; Spark distributes the computation across a cluster and processes partitions in parallel","pandas cannot read CSV at scale","Spark is required by scikit-learn"],
+ a:1,
+ e:"PySpark and Hadoop are listed on his resume but no project demonstrates them. Telco datasets are exactly where distributed processing becomes mandatory — probe for real cluster experience."},
+
+{s:"Streaming · Kafka",t:"stretch",
+ q:"A real-time inference service must consume a high-throughput event stream. What does a log-based broker like Kafka provide that a direct API call does not?",
+ o:["Lower model latency","Durable, replayable, partitioned event delivery that decouples producers from consumers and absorbs load spikes, so a slow consumer does not drop events","Automatic model training","Built-in vector search"],
+ a:1,
+ e:"The JD lists Kafka/Flink as preferred. He has SSE and Redis but no Kafka/Flink. This is a genuine gap for real-time telco pipelines — see if the concept transfers."},
+
+/* ===== Kubernetes / scale — stretch ===== */
+{s:"Scale · Kubernetes",t:"stretch",
+ q:"Your inference service must autoscale with traffic and survive node failures. What does Kubernetes give you that Docker alone does not?",
+ o:["A smaller image","Orchestration — scheduling, horizontal autoscaling, self-healing restarts and rolling deploys across a cluster of nodes","A faster model","A vector database"],
+ a:1,
+ e:"Docker, FastAPI and MLflow are present; Kubernetes appears nowhere on the resume. For a role owning production scalability this is a real gap — check whether he can reason about orchestration even without hands-on K8s."},
+
+{s:"Scale · Latency",t:"stretch",
+ q:"The JD asks to optimise model latency for real-time and edge use. For a large model on a tight latency budget, which lever is usually tried first?",
+ o:["Retraining from scratch","Quantisation, distillation or a smaller model, plus batching and caching — reduce the compute per request before scaling hardware","Adding more prompt examples","Switching cloud providers"],
+ a:1,
+ e:"He has done model-level cost work but not edge/latency optimisation on tabular or vision models at scale. A reasonable stretch that rewards transfer from his quantisation exposure (QLoRA)."},
+
+/* ===== Evaluation and drift — stretch ===== */
+{s:"Production ML · Drift",t:"stretch",
+ q:"A churn model deployed six months ago is quietly getting less accurate although the code has not changed. What is the most likely cause?",
+ o:["A library upgrade","Data or concept drift — the input distribution or the churn behaviour itself has shifted since training, so the model needs monitoring and periodic retraining","A slow database","A memory leak"],
+ a:1,
+ e:"Monitoring and retraining are core to the JD's lifecycle-management requirement. His deployments are recent and LLM-centric, so ask how he would detect silent degradation on a tabular model."},
+
+{s:"Production ML · Evaluation",t:"stretch",
+ q:"You change a RAG system's chunking strategy. How do you know retrieval got better rather than just different?",
+ o:["The answers read better in a few spot checks","A labelled evaluation set with retrieval metrics measured before and after; without one, every change is a guess","Fewer complaints over the next few weeks","Lower average latency"],
+ a:1,
+ e:"The discipline that separates a working demo from an improvable system. If he has an evaluation loop for his RAG work, that is a real differentiator; if not, it is the honest stretch."},
+
+/* ===== Mentorship — stretch ===== */
+{s:"Leadership · Mentoring",t:"stretch",
+ q:"The role expects mentoring junior data scientists. With two years of experience and a TA background, what is the honest framing of his readiness here?",
+ o:["Fully ready to lead a senior team","Emerging — teaching aptitude from the TA and NSS-lead roles is real, but he has not yet mentored data scientists professionally, so this grows into the role rather than arriving with it","Not a concern at any level","Irrelevant to the position"],
+ a:1,
+ e:"The TA (NLP) role and NSS leadership are genuine signals of teaching aptitude, but there is no professional DS mentoring on the resume. This is a maturity gap, expected at his tenure, not a red flag."}
+];
+
+/* Randomise option order so the correct answer is not always in one position. */
+(function shuffleOptions(){
+  QUESTIONS.forEach(q => {
+    const correct = q.o[q.a];
+    for (let i = q.o.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [q.o[i], q.o[j]] = [q.o[j], q.o[i]];
+    }
+    q.a = q.o.indexOf(correct);
+  });
+})();
+
+const TOTAL = QUESTIONS.length;
+const answers = new Array(TOTAL).fill(null);
+let cur = 0, graded = false, secondsLeft = 50 * 60;
+
+const stage = document.getElementById('stage');
+const grid  = document.getElementById('grid');
+const bar   = document.getElementById('bar');
+const LETTERS = ['A','B','C','D'];
+
+document.getElementById('qcount').textContent = TOTAL;
+document.getElementById('answered').textContent = '0 / ' + TOTAL;
+
+const clock = document.getElementById('clock');
+const timer = setInterval(() => {
+  if (graded) { clearInterval(timer); return; }
+  secondsLeft--;
+  const m = Math.floor(Math.max(secondsLeft,0)/60), s = Math.max(secondsLeft,0)%60;
+  clock.textContent = m + ':' + String(s).padStart(2,'0');
+  if (secondsLeft <= 300) clock.classList.add('warn');
+  if (secondsLeft <= 0) { clearInterval(timer); grade(); }
+}, 1000);
+
+function render() {
+  const q = QUESTIONS[cur];
+  const badge = q.t === 'core'
+    ? '<span class="badge core">Evidenced</span>'
+    : '<span class="badge stretch">Stretch</span>';
+
+  let html = '<section class="card">'
+    + '<div class="qhead"><span class="qnum">' + String(cur+1).padStart(2,'0') + ' / ' + TOTAL + '</span>'
+    + badge + '<span class="section-name">' + q.s + '</span></div>'
+    + '<p class="qtext">' + q.q + '</p><ul class="opts">';
+
+  q.o.forEach((opt, i) => {
+    let cls = 'opt', mark = '';
+    if (answers[cur] === i) cls += ' sel';
+    if (graded) {
+      if (i === q.a) { cls += ' correct'; mark = '<span class="mark ok">Correct</span>'; }
+      else if (answers[cur] === i) { cls += ' wrong'; mark = '<span class="mark no">Chosen</span>'; }
+    }
+    html += '<li><button class="' + cls + '" data-i="' + i + '"' + (graded ? ' disabled' : '') + '>'
+          + '<span class="letter">' + LETTERS[i] + '</span><span>' + opt + '</span>' + mark + '</button></li>';
+  });
+
+  html += '</ul>';
+  if (graded) html += '<div class="rationale"><div class="rlabel">Interviewer note</div><p>' + q.e + '</p></div>';
+  html += '</section>';
+  stage.innerHTML = html;
+
+  if (!graded) {
+    stage.querySelectorAll('.opt').forEach(b => {
+      b.addEventListener('click', () => {
+        answers[cur] = Number(b.dataset.i);
+        render(); paint();
+        if (cur < TOTAL - 1) setTimeout(() => { cur++; render(); paint(); }, 160);
+      });
+    });
+  }
+
+  document.getElementById('prev').disabled = cur === 0;
+  document.getElementById('next').disabled = cur === TOTAL - 1;
+  document.getElementById('navnote').textContent = graded ? 'Review mode' : (answers[cur] === null ? 'Not answered' : 'Answered');
+}
+
+function paint() {
+  const done = answers.filter(a => a !== null).length;
+  document.getElementById('answered').textContent = done + ' / ' + TOTAL;
+  bar.style.width = (done / TOTAL * 100) + '%';
+  grid.innerHTML = QUESTIONS.map((q, i) => {
+    let c = 'gcell';
+    if (answers[i] !== null) c += ' answered';
+    if (i === cur) c += ' here';
+    if (q.t === 'stretch') c += ' st';
+    return '<button class="' + c + '" data-i="' + i + '">' + (i+1) + '</button>';
+  }).join('');
+  grid.querySelectorAll('.gcell').forEach(b => {
+    b.addEventListener('click', () => { cur = Number(b.dataset.i); render(); paint(); });
+  });
+}
+
+document.getElementById('prev').addEventListener('click', () => { if (cur > 0) { cur--; render(); paint(); } });
+document.getElementById('next').addEventListener('click', () => { if (cur < TOTAL-1) { cur++; render(); paint(); } });
+document.getElementById('submit').addEventListener('click', () => {
+  const done = answers.filter(a => a !== null).length;
+  if (!graded && done < TOTAL && !confirm((TOTAL - done) + ' question(s) are unanswered. Score anyway?')) return;
+  grade();
+});
+
+function grade() {
+  if (graded) { window.scrollTo({top:0,behavior:'smooth'}); return; }
+  graded = true; clearInterval(timer);
+
+  const bySection = {};
+  let coreC = 0, coreT = 0, strC = 0, strT = 0;
+  QUESTIONS.forEach((q, i) => {
+    const ok = answers[i] === q.a;
+    if (!bySection[q.s]) bySection[q.s] = {c:0, t:0, track:q.t};
+    bySection[q.s].t++; if (ok) bySection[q.s].c++;
+    if (q.t === 'core') { coreT++; if (ok) coreC++; } else { strT++; if (ok) strC++; }
+  });
+
+  const corePct = Math.round(coreC/coreT*100);
+  const strPct  = Math.round(strC/strT*100);
+
+  let vTitle, vBody;
+  if (corePct >= 85 && strPct >= 60) {
+    vTitle = "Advance now — but for the right level";
+    vBody = "The GenAI and agentic claims hold up under senior questioning, and he reasons into telecom framing, big-data and production ML he has not actually done — which is the best possible signal that the domain gap is learnable. The honest move is to advance him fast, but calibrate the offer to a mid-to-senior GenAI Engineer track rather than the full Senior Data Scientist mandate, and pair him with someone who owns the telco/classical-ML side.";
+  } else if (corePct >= 85) {
+    vTitle = "Strong GenAI hire, ramp on domain and scale";
+    vBody = "RAG, agents, fine-tuning, deep learning, Python and AWS all hold at senior depth — more verified GenAI breadth than most candidates for this role. Telecom use cases, big-data pipelines, streaming and Kubernetes came back thin, which is exactly what the resume predicts. All learnable on this foundation, but not on day one, so hire against a ramp plan rather than the full brief.";
+  } else if (corePct >= 65) {
+    vTitle = "Depth is real but narrower than the title needs";
+    vBody = "The evidenced GenAI track came back solid but with gaps, and this role is senior and telecom-specific. Identify which core area (retrieval, deep learning, Python, MLOps) came back weak and probe it live. The stretch score matters less — the domain was always going to be new.";
+  } else {
+    vTitle = "Claims and depth do not fully reconcile";
+    vBody = "Under sixty-five percent on the very areas the resume describes in the most detail. Given the volume of quantified GenAI claims, take this seriously and verify with a hands-on session — a live RAG or agent build — before proceeding.";
+  }
+
+  const rows = Object.keys(bySection).map(k => {
+    const b = bySection[k];
+    return '<tr class="' + (b.track === 'core' ? 'core-row' : 'stretch-row') + '">'
+      + '<td>' + k + '</td><td class="num">' + b.c + ' / ' + b.t + '</td>'
+      + '<td class="num">' + Math.round(b.c/b.t*100) + '%</td></tr>';
+  }).join('');
+
+  stage.innerHTML =
+    '<section class="result">'
+    + '<h2>Assessment complete</h2>'
+    + '<p class="rsub">Pradeep Dubey · ' + (coreC + strC) + ' of ' + TOTAL + ' overall. The evidenced track was pitched at senior level because his resume claims this GenAI depth explicitly; the stretch track probes the telecom domain and production scale he has not worked in.</p>'
+    + '<div class="readout">'
+      + '<div class="pane"><div class="plabel"><span class="dot core"></span>Evidenced — GenAI &amp; ML core</div>'
+        + '<div class="pscore">' + corePct + '%</div><div class="pof">' + coreC + ' of ' + coreT + ' correct</div>'
+        + '<div class="meter"><i class="core" style="width:' + corePct + '%"></i></div></div>'
+      + '<div class="pane"><div class="plabel"><span class="dot stretch"></span>Telecom, scale &amp; leadership</div>'
+        + '<div class="pscore">' + strPct + '%</div><div class="pof">' + strC + ' of ' + strT + ' correct</div>'
+        + '<div class="meter"><i class="stretch" style="width:' + strPct + '%"></i></div></div>'
+    + '</div>'
+    + '<table class="bd"><thead><tr><th>Section</th><th class="num">Score</th><th class="num">%</th></tr></thead><tbody>' + rows + '</tbody></table>'
+    + '<div class="verdict"><div class="vlabel">Hiring signal</div><h3>' + vTitle + '</h3><p>' + vBody + '</p></div>'
+    + '<div class="gapbox"><div class="vlabel">Read the resume alongside the score</div><ul>'
+      + '<li><strong>The JD asks for 6–9 years; he has 2+.</strong> This is the single largest mismatch. The GenAI depth is real, but the title and its mentoring mandate assume a seniority he has not yet reached — consider the role level before the technical score.</li>'
+      + '<li><strong>No telecom domain anywhere.</strong> His work is edtech, travel, insurance and recruitment. Churn, fraud, network and usage modelling are all new — the stretch track shows whether he can frame them, not whether he has done them.</li>'
+      + '<li><strong>His strength is GenAI, not classical tabular ML.</strong> The role\'s telco core (imbalanced churn, fraud anomaly detection, usage forecasting) is regression/time-series/anomaly work. Probe whether he reaches for the right classical tools or defaults to an LLM.</li>'
+      + '<li><strong>PySpark and Hadoop are listed but never used in a project.</strong> Telco-scale feature engineering lives on Spark. Treat big data as unproven and ask directly what he has actually run on a cluster.</li>'
+      + '<li><strong>No Kafka, Flink or Kubernetes.</strong> He has SSE, Redis, Docker and MLflow — solid, but not the streaming or orchestration stack a real-time, autoscaling telco platform needs. Question 24 and 26 test whether the concepts transfer.</li>'
+      + '<li><strong>The cost-discipline work is genuinely strong.</strong> Spend caps, quotas, per-model cost tracking and rate limiting appear across every platform he built. For an LLM product this is rare maturity — lean on it.</li>'
+      + '<li><strong>The entire team was laid off after a product shutdown.</strong> Stated plainly on the resume; a neutral, early question, not a concern.</li>'
+      + '<li><strong>Best fit is a mid-to-senior GenAI Engineer, not a Senior Data Scientist owning telco analytics.</strong> If the team needs the RAG/agent build, he is a strong hire; if it needs churn and network models on day one, he is a ramp, not a plug-in.</li>'
+    + '</ul></div>'
+    + '<p class="rsub" style="margin:0">Use Previous and Next, or the number grid, to review each question with the correct answer and interviewer note.</p>'
+    + '</section>';
+
+  bar.style.width = '100%';
+  document.getElementById('submit').textContent = 'Scored';
+  document.getElementById('submit').disabled = true;
+  paint();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+render(); paint();
+</script>
+</body>
+</html>
