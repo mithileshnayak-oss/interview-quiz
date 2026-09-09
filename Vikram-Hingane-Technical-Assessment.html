@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Technical Assessment — Vikram Hingane — Senior Data Scientist (Telecom)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#12161C; --ink-2:#454E5C; --ink-3:#7A8494;
+  --paper:#EDF0F4; --surface:#FFFFFF; --line:#D3DAE3;
+  --core:#1F4E79; --stretch:#9A5B08;
+  --pass:#0E6B5E; --fail:#9E2B25;
+  --sans:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px 80px}
+.masthead{border-bottom:2px solid var(--ink);padding:34px 0 18px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin:0 0 10px}
+.masthead h1{font-size:clamp(26px,4.4vw,38px);line-height:1.1;font-weight:700;letter-spacing:-.02em;margin:0 0 6px}
+.masthead .sub{color:var(--ink-2);margin:0;font-size:15px}
+.strip{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--line);background:var(--surface)}
+.strip .cell{flex:1 1 150px;padding:12px 16px;border-right:1px solid var(--line)}
+.strip .cell:last-child{border-right:0}
+.strip .k{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:block}
+.strip .v{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--ink)}
+#clock.warn{color:var(--fail)}
+.tracks{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
+.track{background:var(--surface);padding:14px 16px}
+.track .tlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+.dot.core{background:var(--core)}
+.dot.stretch{background:var(--stretch)}
+.track .tdesc{font-size:13px;color:var(--ink-2);line-height:1.45}
+.progress{height:4px;background:var(--line);position:sticky;top:0;z-index:20}
+.progress .bar{height:100%;width:0;background:var(--ink);transition:width .25s ease}
+.card{background:var(--surface);border:1px solid var(--line);border-top:0;padding:26px 26px 22px}
+.qhead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.qnum{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink-3)}
+.badge{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border:1px solid;border-radius:2px}
+.badge.core{color:var(--core);border-color:var(--core)}
+.badge.stretch{color:var(--stretch);border-color:var(--stretch)}
+.section-name{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.qtext{font-size:18px;line-height:1.45;font-weight:500;margin:12px 0 18px}
+.opts{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.opt{display:flex;gap:12px;align-items:center;border:1px solid var(--line);background:var(--surface);padding:13px 15px;cursor:pointer;text-align:left;font:inherit;color:inherit;border-radius:3px;transition:border-color .12s,background .12s;width:100%}
+.opt:hover{border-color:var(--ink-3)}
+.opt:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.opt .letter{font-family:var(--mono);font-weight:600;font-size:13px;color:var(--ink-3);flex:none}
+.opt.sel{border-color:var(--ink);background:#F6F8FA;box-shadow:inset 0 0 0 1px var(--ink)}
+.opt.sel .letter{color:var(--ink)}
+.opt[disabled]{cursor:default}
+.opt.correct{border-color:var(--pass);background:#F0F7F5}
+.opt.correct .letter{color:var(--pass)}
+.opt.wrong{border-color:var(--fail);background:#FCF2F1}
+.opt.wrong .letter{color:var(--fail)}
+.mark{margin-left:auto;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;flex:none}
+.mark.ok{color:var(--pass)}
+.mark.no{color:var(--fail)}
+.rationale{margin-top:16px;border:1px dashed var(--line);padding:13px 15px;background:var(--paper)}
+.rationale .rlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:5px}
+.rationale p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.5}
+.nav{display:flex;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-top:0;padding:16px 26px;flex-wrap:wrap}
+button.btn{font-family:var(--sans);font-size:14px;font-weight:600;padding:10px 18px;border-radius:3px;cursor:pointer;border:1px solid var(--ink);background:var(--surface);color:var(--ink);transition:background .12s,color .12s}
+button.btn:hover:not(:disabled){background:var(--ink);color:var(--surface)}
+button.btn.primary{background:var(--ink);color:var(--surface)}
+button.btn:disabled{opacity:.35;cursor:not-allowed}
+button.btn:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.nav .spacer{margin-left:auto}
+.navnote{font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+.grid{display:flex;flex-wrap:wrap;gap:5px;background:var(--surface);border:1px solid var(--line);border-top:0;padding:16px 26px 20px}
+.gcell{width:32px;height:32px;font-family:var(--mono);font-size:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink-3);cursor:pointer;border-radius:2px;padding:0}
+.gcell:hover{border-color:var(--ink-3)}
+.gcell.answered{background:#E6EBF1;color:var(--ink);font-weight:600;border-color:#B6C1CF}
+.gcell.here{border-color:var(--ink);border-width:2px;color:var(--ink);font-weight:600}
+.gcell.st{border-bottom:3px solid var(--stretch)}
+.result{background:var(--surface);border:1px solid var(--line);border-top:0;padding:28px 26px}
+.result h2{font-size:24px;margin:0 0 4px;letter-spacing:-.01em}
+.result .rsub{color:var(--ink-2);font-size:14px;margin:0 0 24px}
+.readout{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:22px}
+.readout .pane{background:var(--surface);padding:18px}
+.readout .plabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.readout .pscore{font-family:var(--mono);font-size:34px;font-weight:600;line-height:1;letter-spacing:-.02em}
+.readout .pof{font-family:var(--mono);font-size:13px;color:var(--ink-3);margin-top:5px}
+.meter{height:6px;background:var(--line);margin-top:12px;border-radius:3px;overflow:hidden}
+.meter i{display:block;height:100%;width:0;transition:width .5s ease}
+.meter i.core{background:var(--core)}
+.meter i.stretch{background:var(--stretch)}
+table.bd{width:100%;border-collapse:collapse;margin-bottom:22px;font-size:14px}
+table.bd th,table.bd td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+table.bd th{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);border-bottom:1px solid var(--ink)}
+table.bd td.num{font-family:var(--mono);text-align:right;white-space:nowrap}
+table.bd tr.stretch-row td:first-child{border-left:3px solid var(--stretch);padding-left:10px}
+table.bd tr.core-row td:first-child{border-left:3px solid var(--core);padding-left:10px}
+.verdict{border:1px solid var(--ink);padding:18px 20px;margin-bottom:22px}
+.verdict .vlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:7px}
+.verdict h3{margin:0 0 8px;font-size:17px}
+.verdict p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.55}
+.gapbox{background:var(--paper);border-left:3px solid var(--stretch);padding:16px 18px;margin-bottom:22px}
+.gapbox .vlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--stretch);margin-bottom:8px}
+.gapbox ul{margin:0;padding-left:18px;font-size:14px;color:var(--ink-2)}
+.gapbox li{margin-bottom:6px}
+.footer{font-family:var(--mono);font-size:11px;color:var(--ink-3);padding:18px 0 0;text-align:center;letter-spacing:.04em}
+@media (max-width:640px){
+  .tracks,.readout{grid-template-columns:1fr}
+  .card,.nav,.grid,.result{padding-left:18px;padding-right:18px}
+  .strip .cell{flex:1 1 50%;border-bottom:1px solid var(--line)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Aavya · Technical Screening</p>
+    <h1>Senior Data Scientist — ML, GenAI &amp; Vision, Telecom domain</h1>
+    <p class="sub">Candidate: Vikram Hingane · ~4 yrs · Bebo Technologies / IIPH · broad ML+CV+GenAI, junior tenure for a senior title</p>
+  </header>
+
+  <div class="strip">
+    <div class="cell"><span class="k">Questions</span><span class="v" id="qcount">30</span></div>
+    <div class="cell"><span class="k">Time</span><span class="v" id="clock">50:00</span></div>
+    <div class="cell"><span class="k">Answered</span><span class="v" id="answered">0 / 30</span></div>
+    <div class="cell"><span class="k">Depth</span><span class="v">Senior</span></div>
+  </div>
+
+  <div class="tracks">
+    <div class="track">
+      <div class="tlabel"><span class="dot core"></span>Evidenced — claimed on the resume</div>
+      <div class="tdesc">Classical ML and statistics (regression, t-test / chi-square / ANOVA / VIF), computer-vision segmentation (U-Net, Mask R-CNN), RAG (Pinecone, GPT-4o, hallucination scoring), Python, and cloud deployment. Broader than a pure-GenAI profile, so pitched at senior depth.</div>
+    </div>
+    <div class="track">
+      <div class="tlabel"><span class="dot stretch"></span>Thin, absent, or new domain</div>
+      <div class="tdesc">Telecom use cases (churn, fraud, network), big-data at scale (Scala/PySpark listed but not shown in a project), streaming (Kafka/Flink), Kubernetes and production MLOps, and mentoring at senior level. Also two resume tells: a duplicated project objective and a mixed AWS/Azure cloud story.</div>
+    </div>
+  </div>
+
+  <main id="stage"></main>
+
+  <div class="nav" id="nav">
+    <button class="btn" id="prev">Previous</button>
+    <button class="btn" id="next">Next</button>
+    <span class="spacer"></span>
+    <span class="navnote" id="navnote"></span>
+    <button class="btn primary" id="submit">Finish and score</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <p class="footer">Answers are scored on submit. Nothing is transmitted — this file runs entirely in the browser.</p>
+</div>
+
+<script>
+const QUESTIONS = [
+
+/* ===== Classical ML & statistics — his edge ===== */
+{s:"Stats · Multicollinearity",t:"core",
+ q:"You list VIF among your statistical tools. A feature shows a VIF of 12. What does that tell you and what is the usual response?",
+ o:["The feature is highly predictive and should be weighted more","Severe multicollinearity — the feature is largely explained by others; drop it, combine features, or use regularisation","The feature has high variance and needs scaling","The p-value is below 0.05"],
+ a:1,
+ e:"He lists t-test, chi-square, ANOVA and VIF. VIF is a clean check of whether the stats are used or just listed — a high VIF is redundancy, not importance."},
+
+{s:"Stats · Test choice",t:"core",
+ q:"You want to test whether malnutrition rate differs across four districts. Which test fits, and what is the null hypothesis?",
+ o:["A paired t-test; null is that two means are equal","One-way ANOVA; null is that all district means are equal","Chi-square goodness-of-fit; null is a uniform distribution","Linear regression; null is a zero slope"],
+ a:1,
+ e:"Comparing a continuous outcome across 3+ groups is textbook one-way ANOVA. He led the malnutrition analytics, so this should be immediate."},
+
+{s:"ML · Imbalance",t:"core",
+ q:"Child-malnutrition cases are a small minority of records. Why is overall accuracy a misleading metric here?",
+ o:["Accuracy cannot be computed on imbalanced data","A model predicting 'no malnutrition' for everyone scores high accuracy while catching zero real cases — precision, recall or AUC-PR are needed","Accuracy only works for regression","Accuracy requires a balanced test set to be defined"],
+ a:1,
+ e:"His malnutrition-detection work is inherently imbalanced. This is the same problem shape as telecom churn and fraud, so it doubles as a domain-transfer check."},
+
+{s:"ML · Predict vs cause",t:"core",
+ q:"Your model finds that a feature strongly predicts malnutrition, and a government stakeholder wants to act on it. What is the key caveat you must raise?",
+ o:["The feature needs to be normalised first","Predictive association is not causation — acting on a correlate may not change the outcome, and confounders must be considered before a policy claim","The model must reach 95% accuracy before use","The feature should be removed to avoid overfitting"],
+ a:1,
+ e:"He generated insights for government policy. The predict-vs-cause distinction is a senior-level judgement and directly relevant to real-world impact."},
+
+{s:"ML · Validation",t:"core",
+ q:"For the electricity-consumption forecasting model, why is a plain random train/test split risky, and what is better?",
+ o:["Random splits are always fine for regression","Time-ordered data leaks future into training under a random split; use a chronological split or time-series cross-validation","Use a larger test set — 50/50","Shuffle more times and average"],
+ a:1,
+ e:"Consumption forecasting is time-series. Whether he reaches for temporal validation reveals if he treated it as such or as generic tabular regression — and it is exactly the discipline telco usage forecasting needs."},
+
+{s:"ML · Overfitting",t:"core",
+ q:"A model reaches strong training accuracy but disappoints on held-out data. What is happening and what is the first move?",
+ o:["Underfitting — train longer","Overfitting — regularise, add or clean data, simplify the model, and stop on validation performance","The learning rate is too high","The test set is too small to trust"],
+ a:1,
+ e:"Foundational and non-negotiable for anyone claiming senior ML across production work."},
+
+/* ===== Computer vision ===== */
+{s:"Vision · Architectures",t:"core",
+ q:"You used both U-Net and Mask R-CNN for wound segmentation. What is the core difference in what they produce?",
+ o:["They are the same; Mask R-CNN is just newer","U-Net does per-pixel semantic segmentation; Mask R-CNN does instance segmentation — it separates and detects individual objects, adding bounding boxes","U-Net is for classification, Mask R-CNN for regression","Mask R-CNN cannot do segmentation, only detection"],
+ a:1,
+ e:"His own project. Semantic vs instance segmentation is the fundamental distinction, and he claims both — this should be crisp."},
+
+{s:"Vision · Evaluation",t:"core",
+ q:"How would you measure whether your wound-segmentation model is actually good, beyond eyeballing outputs?",
+ o:["Training loss alone","An overlap metric such as IoU or Dice against annotated masks on a held-out set","Accuracy over all pixels","The number of epochs trained"],
+ a:1,
+ e:"Pixel accuracy is misleading when the object is small against a large background; IoU/Dice are the standard. Checks segmentation rigour."},
+
+{s:"Vision · Data",t:"core",
+ q:"You applied augmentation to improve robustness. On clinical wound images, which augmentation would you be most cautious about?",
+ o:["Horizontal flips","Aggressive colour or hue shifts, since wound colour carries clinical meaning and distorting it can teach the model the wrong signal","Small rotations","Random crops that keep the wound in frame"],
+ a:1,
+ e:"Augmentation must preserve label-relevant signal. Colour is diagnostic for wounds — a thoughtful answer shows he understands domain-aware augmentation, not just a library call."},
+
+/* ===== GenAI / RAG ===== */
+{s:"RAG · Why retrieve",t:"core",
+ q:"In your two-pager RAG system, documents are chunked, embedded and stored in Pinecone. Why retrieve passages rather than send whole documents to GPT?",
+ o:["It improves the writing style of the output","The source documents far exceed the model context window, so only selected relevant passages can be sent — and it grounds the answer in citable text","Pinecone is required by GPT-4o","It removes the need for prompts"],
+ a:1,
+ e:"He built this. The floor for the RAG claim — a shaky answer here would undercut the whole project."},
+
+{s:"RAG · Chunking",t:"core",
+ q:"Retrieval keeps returning passages that are topically related but miss the specific financial figure the user asked for. What is the likely fix?",
+ o:["A bigger generation model","Smaller or structure-aware chunks plus hybrid keyword/metadata filtering, so exact figures and deal identifiers are matched rather than approximated","More epochs of fine-tuning","A longer system prompt"],
+ a:1,
+ e:"His corpus is financial (CIM docs, portfolios). Pure semantic similarity misses exact numbers and identifiers — a real failure mode he should recognise."},
+
+{s:"RAG · Hallucination",t:"core",
+ q:"You evaluated the system with 'factual accuracy and hallucination scores.' What is the most defensible way to actually measure hallucination?",
+ o:["Ask the same model if it hallucinated","Check whether each claim in the answer is supported by the retrieved source passages — grounding/faithfulness against evidence, with human review on a sample","Count the tokens in the response","Measure response latency"],
+ a:1,
+ e:"This is where GenAI rigour separates from hand-waving. Grounding answers against retrieved evidence is the substance behind a 'hallucination score.'"},
+
+{s:"RAG · Embeddings",t:"core",
+ q:"You switch to a different embedding model for the Pinecone index. What must happen to the existing vectors?",
+ o:["Nothing — embeddings are portable","The whole corpus must be re-embedded; vectors from different models live in different spaces and are not comparable","Only new documents need re-embedding","They can be mathematically converted"],
+ a:1,
+ e:"A practical consequence of maintaining a vector index. He runs Pinecone, so this should be known."},
+
+/* ===== Python / deployment ===== */
+{s:"Backend · FastAPI",t:"core",
+ q:"Your RAG middleware is FastAPI. How does FastAPI validate an incoming request body?",
+ o:["Manual if-checks in each route","From Python type hints and Pydantic models at runtime, with an OpenAPI schema generated automatically","By reading a JSON Schema file","Validation happens only in the frontend"],
+ a:1,
+ e:"He names FastAPI and Flask. A basic check that the backend claim is hands-on."},
+
+{s:"Backend · Latency",t:"core",
+ q:"A RAG request feels slow. Retrieval is fast but the LLM call dominates. Which levers actually reduce perceived latency?",
+ o:["Retrain the embedding model","Stream tokens to the UI, cache repeated queries, and shrink the prompt/context — reduce and hide the model time rather than the retrieval time","Add more vectors to Pinecone","Increase the chunk size"],
+ a:1,
+ e:"Tests whether he can locate the real bottleneck (generation, not retrieval) and knows streaming/caching as mitigations — relevant to the JD's real-time requirement."},
+
+/* ===== MLOps ===== */
+{s:"MLOps · Containers",t:"core",
+ q:"Why containerise an inference service with Docker before deploying it?",
+ o:["It makes the model more accurate","It pins runtime, dependencies and artifacts into a reproducible image so the environment is identical across dev, CI and production","It reduces the model's parameter count","It removes the need for a GPU"],
+ a:1,
+ e:"He lists ML-Ops, Git and Docker. Baseline reproducibility for a role that owns deployment."},
+
+{s:"MLOps · Monitoring",t:"core",
+ q:"A model deployed months ago is quietly losing accuracy though the code hasn't changed. Most likely cause?",
+ o:["A library upgrade","Data or concept drift — the input distribution or the target relationship has shifted since training; it needs monitoring and periodic retraining","A memory leak","A slow network"],
+ a:1,
+ e:"Monitoring and retraining are core to the JD's lifecycle requirement. His deployments are recent, so probe how he'd detect silent decay."},
+
+/* ===== MCP / agentic ===== */
+{s:"Agentic · MCP",t:"core",
+ q:"You list MCP and agentic workflows. In plain terms, what problem does MCP address?",
+ o:["It compresses model weights","It standardises how a model connects to external tools and data sources, so integrations follow one protocol instead of bespoke glue per tool","It replaces the need for a vector database","It is a fine-tuning method"],
+ a:1,
+ e:"Watch whether MCP is hands-on or a buzzword. A concrete 'where I used it and what it connected to' is the tell."},
+
+{s:"Agentic · Cost",t:"core",
+ q:"An agentic workflow makes multiple LLM calls per request. What is the main production risk to design against?",
+ o:["The model forgets its training","Unbounded cost and latency from chained/looping calls — it needs step caps, budgets, timeouts and fallbacks","The vector store overflows","The prompt gets too short"],
+ a:1,
+ e:"Agentic pipelines multiply cost. Whether he designs guardrails separates a demo from a production system."},
+
+/* ===== Telecom domain — stretch ===== */
+{s:"Telecom · Churn",t:"stretch",
+ q:"Build a churn model where ~3% of subscribers churn monthly. What is the first modelling problem to confront?",
+ o:["Choosing a deep-learning framework","Severe class imbalance — optimise for precision/recall or AUC-PR with resampling or class weights, not accuracy","Picking the chunk size","Whether to use RAG"],
+ a:1,
+ e:"No telecom on the resume, but his malnutrition work is the same imbalanced-rare-event shape. Reward him for connecting the two."},
+
+{s:"Telecom · Fraud",t:"stretch",
+ q:"For real-time telecom fraud detection on usage streams, why is a purely supervised classifier often insufficient?",
+ o:["Supervised models can't handle numbers","Fraud drifts and novel fraud has no labels; anomaly or semi-supervised methods plus a confirmed-fraud feedback loop are needed alongside","Streaming data can't be modelled","It needs a bigger LLM"],
+ a:1,
+ e:"Domain-shaped. His experience is batch analytics, not streaming anomaly detection — watch whether he reasons about label scarcity and drift."},
+
+{s:"Telecom · Networks",t:"stretch",
+ q:"Network engineers want to forecast cell-tower congestion from historical traffic. How would you frame it?",
+ o:["A classification problem with two classes","A per-site time-series forecasting problem, where seasonality, trend and spatial correlation between towers matter more than one global model","A retrieval problem over documents","A prompt-engineering problem"],
+ a:1,
+ e:"Tests transfer from his consumption-forecasting work to a telco framing. His time-series exposure is the bridge — see if he uses it."},
+
+/* ===== Big data / streaming — stretch ===== */
+{s:"Big data · Spark",t:"stretch",
+ q:"You need to engineer features over billions of call-detail records nightly. Why Spark rather than pandas on one machine?",
+ o:["Spark has nicer plots","The data exceeds one machine's memory; Spark distributes computation across a cluster and processes partitions in parallel","pandas can't read large CSVs","Spark is required by scikit-learn"],
+ a:1,
+ e:"Scala and PySpark are listed but no project demonstrates cluster work. Telco CDR volumes are exactly where distributed processing is mandatory — probe for real, not listed, experience."},
+
+{s:"Streaming · Kafka",t:"stretch",
+ q:"A real-time inference service must consume a high-throughput event stream. What does a log-based broker like Kafka provide that direct API calls do not?",
+ o:["Lower model latency","Durable, replayable, partitioned delivery that decouples producers from consumers and absorbs load spikes, so a slow consumer doesn't drop events","Automatic model training","Built-in vector search"],
+ a:1,
+ e:"No Kafka/Flink anywhere on the resume. A genuine gap for real-time telco pipelines — see whether the concept transfers even without hands-on use."},
+
+{s:"Scale · Kubernetes",t:"stretch",
+ q:"Your inference service must autoscale with traffic and self-heal on node failure. What does Kubernetes add over Docker alone?",
+ o:["A smaller image","Orchestration — scheduling, horizontal autoscaling, self-healing restarts and rolling deploys across a cluster of nodes","A faster model","A managed vector database"],
+ a:1,
+ e:"Docker is present; Kubernetes is nowhere. For a role owning production scalability this is a real gap — check whether he can reason about orchestration regardless."},
+
+{s:"Scale · Latency",t:"stretch",
+ q:"The JD asks to optimise a large model for real-time or edge use. Which lever is usually tried first?",
+ o:["Retraining from scratch","Quantisation, distillation or a smaller model, plus batching and caching — cut compute per request before scaling hardware","Adding more prompt examples","Switching cloud providers"],
+ a:1,
+ e:"He hasn't done edge/latency optimisation, but transfer-learning and deployment exposure make this a fair stretch."},
+
+/* ===== Resume-integrity checks — stretch ===== */
+{s:"Integrity · Cloud story",t:"stretch",
+ q:"Interviewer framing: his summary says he deploys on AWS, but the two-pager project deployed on Azure. What is the right way to treat this?",
+ o:["Assume the resume is wrong and move on","Ask him to walk through what he actually deployed and where — clarify real hands-on cloud experience rather than assuming either claim","Reject the candidate for inconsistency","Ignore it; cloud is interchangeable"],
+ a:1,
+ e:"Not a gotcha — a clarification. Mixed cloud claims are common; the interview should resolve which platforms he has genuinely operated, given the JD accepts AWS/GCP/Azure."},
+
+{s:"Integrity · Duplicated objective",t:"stretch",
+ q:"Interviewer framing: the Malnutrition project's objective text is copied verbatim from the wound-detection project. Best interview move?",
+ o:["Call it out as dishonesty immediately","Ask him to describe the malnutrition project from scratch — objective, data, method — and judge whether it comes back specific and coherent","Skip the project entirely","Assume the resume was AI-generated and end the interview"],
+ a:1,
+ e:"A copy-paste error is not proof of anything, but it warrants verification. Have him reconstruct the work live; specificity settles it."},
+
+/* ===== Mentorship — stretch ===== */
+{s:"Leadership · Mentoring",t:"stretch",
+ q:"The role expects mentoring junior data scientists. With ~4 years and short tenures, what is the honest framing of his readiness?",
+ o:["Fully ready to run a senior team","Emerging — he has led project-level analytics, but sustained mentoring of data scientists isn't evidenced, so this grows into the role rather than arriving with it","Not relevant to the position","A disqualifying weakness"],
+ a:1,
+ e:"He led state-level analytics projects, which is real ownership, but there's no evidence of sustained DS mentoring. A maturity gap consistent with his tenure, not a red flag."}
+];
+
+/* Randomise option order so the correct answer isn't always in one position. */
+(function shuffleOptions(){
+  QUESTIONS.forEach(q => {
+    const correct = q.o[q.a];
+    for (let i = q.o.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [q.o[i], q.o[j]] = [q.o[j], q.o[i]];
+    }
+    q.a = q.o.indexOf(correct);
+  });
+})();
+
+const TOTAL = QUESTIONS.length;
+const answers = new Array(TOTAL).fill(null);
+let cur = 0, graded = false, secondsLeft = 50 * 60;
+
+const stage = document.getElementById('stage');
+const grid  = document.getElementById('grid');
+const bar   = document.getElementById('bar');
+const LETTERS = ['A','B','C','D'];
+
+document.getElementById('qcount').textContent = TOTAL;
+document.getElementById('answered').textContent = '0 / ' + TOTAL;
+
+const clock = document.getElementById('clock');
+const timer = setInterval(() => {
+  if (graded) { clearInterval(timer); return; }
+  secondsLeft--;
+  const m = Math.floor(Math.max(secondsLeft,0)/60), s = Math.max(secondsLeft,0)%60;
+  clock.textContent = m + ':' + String(s).padStart(2,'0');
+  if (secondsLeft <= 300) clock.classList.add('warn');
+  if (secondsLeft <= 0) { clearInterval(timer); grade(); }
+}, 1000);
+
+function render() {
+  const q = QUESTIONS[cur];
+  const badge = q.t === 'core'
+    ? '<span class="badge core">Evidenced</span>'
+    : '<span class="badge stretch">Stretch</span>';
+
+  let html = '<section class="card">'
+    + '<div class="qhead"><span class="qnum">' + String(cur+1).padStart(2,'0') + ' / ' + TOTAL + '</span>'
+    + badge + '<span class="section-name">' + q.s + '</span></div>'
+    + '<p class="qtext">' + q.q + '</p><ul class="opts">';
+
+  q.o.forEach((opt, i) => {
+    let cls = 'opt', mark = '';
+    if (answers[cur] === i) cls += ' sel';
+    if (graded) {
+      if (i === q.a) { cls += ' correct'; mark = '<span class="mark ok">Correct</span>'; }
+      else if (answers[cur] === i) { cls += ' wrong'; mark = '<span class="mark no">Chosen</span>'; }
+    }
+    html += '<li><button class="' + cls + '" data-i="' + i + '"' + (graded ? ' disabled' : '') + '>'
+          + '<span class="letter">' + LETTERS[i] + '</span><span>' + opt + '</span>' + mark + '</button></li>';
+  });
+
+  html += '</ul>';
+  if (graded) html += '<div class="rationale"><div class="rlabel">Interviewer note</div><p>' + q.e + '</p></div>';
+  html += '</section>';
+  stage.innerHTML = html;
+
+  if (!graded) {
+    stage.querySelectorAll('.opt').forEach(b => {
+      b.addEventListener('click', () => {
+        answers[cur] = Number(b.dataset.i);
+        render(); paint();
+        if (cur < TOTAL - 1) setTimeout(() => { cur++; render(); paint(); }, 160);
+      });
+    });
+  }
+
+  document.getElementById('prev').disabled = cur === 0;
+  document.getElementById('next').disabled = cur === TOTAL - 1;
+  document.getElementById('navnote').textContent = graded ? 'Review mode' : (answers[cur] === null ? 'Not answered' : 'Answered');
+}
+
+function paint() {
+  const done = answers.filter(a => a !== null).length;
+  document.getElementById('answered').textContent = done + ' / ' + TOTAL;
+  bar.style.width = (done / TOTAL * 100) + '%';
+  grid.innerHTML = QUESTIONS.map((q, i) => {
+    let c = 'gcell';
+    if (answers[i] !== null) c += ' answered';
+    if (i === cur) c += ' here';
+    if (q.t === 'stretch') c += ' st';
+    return '<button class="' + c + '" data-i="' + i + '">' + (i+1) + '</button>';
+  }).join('');
+  grid.querySelectorAll('.gcell').forEach(b => {
+    b.addEventListener('click', () => { cur = Number(b.dataset.i); render(); paint(); });
+  });
+}
+
+document.getElementById('prev').addEventListener('click', () => { if (cur > 0) { cur--; render(); paint(); } });
+document.getElementById('next').addEventListener('click', () => { if (cur < TOTAL-1) { cur++; render(); paint(); } });
+document.getElementById('submit').addEventListener('click', () => {
+  const done = answers.filter(a => a !== null).length;
+  if (!graded && done < TOTAL && !confirm((TOTAL - done) + ' question(s) are unanswered. Score anyway?')) return;
+  grade();
+});
+
+function grade() {
+  if (graded) { window.scrollTo({top:0,behavior:'smooth'}); return; }
+  graded = true; clearInterval(timer);
+
+  const bySection = {};
+  let coreC = 0, coreT = 0, strC = 0, strT = 0;
+  QUESTIONS.forEach((q, i) => {
+    const ok = answers[i] === q.a;
+    if (!bySection[q.s]) bySection[q.s] = {c:0, t:0, track:q.t};
+    bySection[q.s].t++; if (ok) bySection[q.s].c++;
+    if (q.t === 'core') { coreT++; if (ok) coreC++; } else { strT++; if (ok) strC++; }
+  });
+
+  const corePct = Math.round(coreC/coreT*100);
+  const strPct  = Math.round(strC/strT*100);
+
+  let vTitle, vBody;
+  if (corePct >= 85 && strPct >= 60) {
+    vTitle = "Advance — the most complete profile for this role so far";
+    vBody = "The classical-ML, statistics, vision and RAG claims all hold under senior questioning, and he reasons credibly into telecom framing, big-data and streaming he hasn't done — the strongest signal that the domain gap is learnable. Unlike a pure-GenAI candidate he already has the tabular-ML and forecasting foundation telco analytics runs on. Advance him, but calibrate the offer to his ~4 years rather than the full 6\u20139 senior mandate, and confirm the resume tells (cloud story, duplicated objective) resolved cleanly.";
+  } else if (corePct >= 85) {
+    vTitle = "Strong technical hire, ramp on domain and scale";
+    vBody = "Breadth across ML, stats, vision and RAG holds at senior depth \u2014 broader verified ground than most candidates for this role. Telecom, big-data-at-scale, streaming and Kubernetes came back thin, exactly as the resume predicts. All learnable on this foundation but not day-one, so hire against a ramp plan rather than the full brief.";
+  } else if (corePct >= 65) {
+    vTitle = "Real depth, but narrower than the claims suggest";
+    vBody = "The evidenced track came back solid-with-gaps. Identify which core area (stats, vision, RAG, validation) was weak and probe it live. If the gap is in the classical-ML/stats block, that matters most \u2014 it's the part that makes him a fit for telco analytics over a pure GenAI profile.";
+  } else {
+    vTitle = "Claims and demonstrated depth don't fully reconcile";
+    vBody = "Under sixty-five percent on the areas the resume describes in most detail. Combined with the duplicated project objective, take this seriously and verify with a hands-on session \u2014 a live model or RAG walkthrough \u2014 before proceeding.";
+  }
+
+  const rows = Object.keys(bySection).map(k => {
+    const b = bySection[k];
+    return '<tr class="' + (b.track === 'core' ? 'core-row' : 'stretch-row') + '">'
+      + '<td>' + k + '</td><td class="num">' + b.c + ' / ' + b.t + '</td>'
+      + '<td class="num">' + Math.round(b.c/b.t*100) + '%</td></tr>';
+  }).join('');
+
+  stage.innerHTML =
+    '<section class="result">'
+    + '<h2>Assessment complete</h2>'
+    + '<p class="rsub">Vikram Hingane \u00B7 ' + (coreC + strC) + ' of ' + TOTAL + ' overall. The evidenced track was pitched at senior level because his resume claims this breadth explicitly; the stretch track probes the telecom domain, production scale, and two resume tells.</p>'
+    + '<div class="readout">'
+      + '<div class="pane"><div class="plabel"><span class="dot core"></span>Evidenced \u2014 ML, stats, vision, RAG</div>'
+        + '<div class="pscore">' + corePct + '%</div><div class="pof">' + coreC + ' of ' + coreT + ' correct</div>'
+        + '<div class="meter"><i class="core" style="width:' + corePct + '%"></i></div></div>'
+      + '<div class="pane"><div class="plabel"><span class="dot stretch"></span>Telecom, scale &amp; integrity</div>'
+        + '<div class="pscore">' + strPct + '%</div><div class="pof">' + strC + ' of ' + strT + ' correct</div>'
+        + '<div class="meter"><i class="stretch" style="width:' + strPct + '%"></i></div></div>'
+    + '</div>'
+    + '<table class="bd"><thead><tr><th>Section</th><th class="num">Score</th><th class="num">%</th></tr></thead><tbody>' + rows + '</tbody></table>'
+    + '<div class="verdict"><div class="vlabel">Hiring signal</div><h3>' + vTitle + '</h3><p>' + vBody + '</p></div>'
+    + '<div class="gapbox"><div class="vlabel">Read the resume alongside the score</div><ul>'
+      + '<li><strong>The JD asks for 6\u20139 years; he has ~4.</strong> Still the largest mismatch. The breadth is real, but the senior title and its mentoring mandate assume a seniority just above his tenure \u2014 weigh role level before the technical score.</li>'
+      + '<li><strong>He is a better telco-analytics fit than a pure-GenAI candidate.</strong> Real tabular ML, statistics (ANOVA/VIF/chi-square) and forecasting are exactly what churn, fraud and usage modelling need. This is his genuine edge \u2014 lean on Section 2.</li>'
+      + '<li><strong>No telecom domain anywhere.</strong> His work is healthcare imaging, public-health analytics and a finance RAG tool. The stretch track shows whether he frames telco problems correctly, not whether he\u2019s done them.</li>'
+      + '<li><strong>Scala/PySpark are listed but never shown in a project.</strong> Telco call-detail volumes are where distributed processing becomes mandatory. Treat big data as unproven and ask what he has actually run on a cluster.</li>'
+      + '<li><strong>No Kafka, Flink or Kubernetes.</strong> He has Docker, Flask/FastAPI and cloud deployment \u2014 solid, but not the streaming or orchestration stack a real-time, autoscaling telco platform needs.</li>'
+      + '<li><strong>Two resume tells to resolve, not to reject on.</strong> The malnutrition objective is copy-pasted from the wound-detection project, and the cloud story is mixed (AWS in the summary, Azure in the project). Have him reconstruct the malnutrition work live and walk through real deployments.</li>'
+      + '<li><strong>Best fit is a mid-to-senior Data Scientist who spans ML and GenAI</strong> \u2014 strong if the team wants breadth across tabular ML, vision and RAG; a ramp, not a plug-in, if it needs telco churn/network models and big-data pipelines on day one.</li>'
+    + '</ul></div>'
+    + '<p class="rsub" style="margin:0">Use Previous and Next, or the number grid, to review each question with the correct answer and interviewer note.</p>'
+    + '</section>';
+
+  bar.style.width = '100%';
+  document.getElementById('submit').textContent = 'Scored';
+  document.getElementById('submit').disabled = true;
+  paint();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+render(); paint();
+</script>
+</body>
+</html>
