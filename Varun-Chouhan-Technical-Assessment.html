@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Technical Assessment — Varun Chouhan — Senior Data Scientist (Telecom)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#12161C; --ink-2:#454E5C; --ink-3:#7A8494;
+  --paper:#EDF0F4; --surface:#FFFFFF; --line:#D3DAE3;
+  --core:#1F4E79; --stretch:#9A5B08;
+  --pass:#0E6B5E; --fail:#9E2B25;
+  --sans:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px 80px}
+.masthead{border-bottom:2px solid var(--ink);padding:34px 0 18px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin:0 0 10px}
+.masthead h1{font-size:clamp(26px,4.4vw,38px);line-height:1.1;font-weight:700;letter-spacing:-.02em;margin:0 0 6px}
+.masthead .sub{color:var(--ink-2);margin:0;font-size:15px}
+.difficulty{display:inline-block;margin-top:12px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--fail);border:1px solid var(--fail);padding:3px 10px;border-radius:2px}
+.strip{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--line);background:var(--surface)}
+.strip .cell{flex:1 1 150px;padding:12px 16px;border-right:1px solid var(--line)}
+.strip .cell:last-child{border-right:0}
+.strip .k{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:block}
+.strip .v{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--ink)}
+#clock.warn{color:var(--fail)}
+.tracks{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
+.track{background:var(--surface);padding:14px 16px}
+.track .tlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+.dot.core{background:var(--core)}
+.dot.stretch{background:var(--stretch)}
+.track .tdesc{font-size:13px;color:var(--ink-2);line-height:1.45}
+.progress{height:4px;background:var(--line);position:sticky;top:0;z-index:20}
+.progress .bar{height:100%;width:0;background:var(--ink);transition:width .25s ease}
+.card{background:var(--surface);border:1px solid var(--line);border-top:0;padding:26px 26px 22px}
+.qhead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.qnum{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink-3)}
+.badge{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border:1px solid;border-radius:2px}
+.badge.core{color:var(--core);border-color:var(--core)}
+.badge.stretch{color:var(--stretch);border-color:var(--stretch)}
+.section-name{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.qtext{font-size:18px;line-height:1.45;font-weight:500;margin:12px 0 18px}
+.opts{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.opt{display:flex;gap:12px;align-items:center;border:1px solid var(--line);background:var(--surface);padding:13px 15px;cursor:pointer;text-align:left;font:inherit;color:inherit;border-radius:3px;transition:border-color .12s,background .12s;width:100%}
+.opt:hover{border-color:var(--ink-3)}
+.opt:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.opt .letter{font-family:var(--mono);font-weight:600;font-size:13px;color:var(--ink-3);flex:none;align-self:flex-start;margin-top:1px}
+.opt.sel{border-color:var(--ink);background:#F6F8FA;box-shadow:inset 0 0 0 1px var(--ink)}
+.opt.sel .letter{color:var(--ink)}
+.opt[disabled]{cursor:default}
+.opt.correct{border-color:var(--pass);background:#F0F7F5}
+.opt.correct .letter{color:var(--pass)}
+.opt.wrong{border-color:var(--fail);background:#FCF2F1}
+.opt.wrong .letter{color:var(--fail)}
+.mark{margin-left:auto;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;flex:none;align-self:flex-start}
+.mark.ok{color:var(--pass)}
+.mark.no{color:var(--fail)}
+.rationale{margin-top:16px;border:1px dashed var(--line);padding:13px 15px;background:var(--paper)}
+.rationale .rlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:5px}
+.rationale p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.5}
+.nav{display:flex;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-top:0;padding:16px 26px;flex-wrap:wrap}
+button.btn{font-family:var(--sans);font-size:14px;font-weight:600;padding:10px 18px;border-radius:3px;cursor:pointer;border:1px solid var(--ink);background:var(--surface);color:var(--ink);transition:background .12s,color .12s}
+button.btn:hover:not(:disabled){background:var(--ink);color:var(--surface)}
+button.btn.primary{background:var(--ink);color:var(--surface)}
+button.btn:disabled{opacity:.35;cursor:not-allowed}
+button.btn:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.nav .spacer{margin-left:auto}
+.navnote{font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+.grid{display:flex;flex-wrap:wrap;gap:5px;background:var(--surface);border:1px solid var(--line);border-top:0;padding:16px 26px 20px}
+.gcell{width:32px;height:32px;font-family:var(--mono);font-size:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink-3);cursor:pointer;border-radius:2px;padding:0}
+.gcell:hover{border-color:var(--ink-3)}
+.gcell.answered{background:#E6EBF1;color:var(--ink);font-weight:600;border-color:#B6C1CF}
+.gcell.here{border-color:var(--ink);border-width:2px;color:var(--ink);font-weight:600}
+.gcell.st{border-bottom:3px solid var(--stretch)}
+.result{background:var(--surface);border:1px solid var(--line);border-top:0;padding:28px 26px}
+.result h2{font-size:24px;margin:0 0 4px;letter-spacing:-.01em}
+.result .rsub{color:var(--ink-2);font-size:14px;margin:0 0 24px}
+.readout{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:22px}
+.readout .pane{background:var(--surface);padding:18px}
+.readout .plabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.readout .pscore{font-family:var(--mono);font-size:34px;font-weight:600;line-height:1;letter-spacing:-.02em}
+.readout .pof{font-family:var(--mono);font-size:13px;color:var(--ink-3);margin-top:5px}
+.meter{height:6px;background:var(--line);margin-top:12px;border-radius:3px;overflow:hidden}
+.meter i{display:block;height:100%;width:0;transition:width .5s ease}
+.meter i.core{background:var(--core)}
+.meter i.stretch{background:var(--stretch)}
+table.bd{width:100%;border-collapse:collapse;margin-bottom:22px;font-size:14px}
+table.bd th,table.bd td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+table.bd th{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);border-bottom:1px solid var(--ink)}
+table.bd td.num{font-family:var(--mono);text-align:right;white-space:nowrap}
+table.bd tr.stretch-row td:first-child{border-left:3px solid var(--stretch);padding-left:10px}
+table.bd tr.core-row td:first-child{border-left:3px solid var(--core);padding-left:10px}
+.verdict{border:1px solid var(--ink);padding:18px 20px;margin-bottom:22px}
+.verdict .vlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:7px}
+.verdict h3{margin:0 0 8px;font-size:17px}
+.verdict p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.55}
+.gapbox{background:var(--paper);border-left:3px solid var(--stretch);padding:16px 18px;margin-bottom:22px}
+.gapbox .vlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--stretch);margin-bottom:8px}
+.gapbox ul{margin:0;padding-left:18px;font-size:14px;color:var(--ink-2)}
+.gapbox li{margin-bottom:6px}
+.footer{font-family:var(--mono);font-size:11px;color:var(--ink-3);padding:18px 0 0;text-align:center;letter-spacing:.04em}
+@media (max-width:640px){
+  .tracks,.readout{grid-template-columns:1fr}
+  .card,.nav,.grid,.result{padding-left:18px;padding-right:18px}
+  .strip .cell{flex:1 1 50%;border-bottom:1px solid var(--line)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Aavya · Technical Screening</p>
+    <h1>Senior Data Scientist — GenAI, ML &amp; Telecom</h1>
+    <p class="sub">Candidate: Varun Chouhan · ~1.5 yrs · Junior Software Engineer (AI), Bankai Infotech · applied-GenAI focus</p>
+    <span class="difficulty">Hard · Senior-level depth</span>
+  </header>
+
+  <div class="strip">
+    <div class="cell"><span class="k">Questions</span><span class="v" id="qcount">30</span></div>
+    <div class="cell"><span class="k">Time</span><span class="v" id="clock">55:00</span></div>
+    <div class="cell"><span class="k">Answered</span><span class="v" id="answered">0 / 30</span></div>
+    <div class="cell"><span class="k">Pass mark</span><span class="v">70%</span></div>
+  </div>
+
+  <div class="tracks">
+    <div class="track">
+      <div class="tlabel"><span class="dot core"></span>Evidenced — applied GenAI &amp; systems</div>
+      <div class="tdesc">RAG pipelines, LangChain/LangGraph orchestration, prompt engineering, embeddings and vector search, Elasticsearch, workflow composition, REST/AWS deployment. He builds these daily, so questions here are pitched hard — deep enough that surface familiarity is not enough.</div>
+    </div>
+    <div class="track">
+      <div class="tlabel"><span class="dot stretch"></span>Required by the JD, thin on the resume</div>
+      <div class="tdesc">Classical ML and statistics, deep learning and CNNs, model training and evaluation from scratch, telecom use cases (churn, fraud, network), big-data pipelines (Spark/Hive), Kubernetes and MLOps at scale, and mentoring. The senior mandate leans heavily on this ground.</div>
+    </div>
+  </div>
+
+  <main id="stage"></main>
+
+  <div class="nav" id="nav">
+    <button class="btn" id="prev">Previous</button>
+    <button class="btn" id="next">Next</button>
+    <span class="spacer"></span>
+    <span class="navnote" id="navnote"></span>
+    <button class="btn primary" id="submit">Finish and score</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <p class="footer">Answers are scored on submit. Nothing is transmitted — this file runs entirely in the browser.</p>
+</div>
+
+<script>
+const QUESTIONS = [
+
+/* ===== RAG — hard, he builds these ===== */
+{s:"RAG · Retrieval failure",t:"core",
+ q:"Your enterprise RAG answers a specific question with confidently wrong detail. Retrieval logs show the correct chunk was NOT in the top-k, though it exists in the index. Which change most directly addresses this?",
+ o:["Raise the LLM temperature so it explores more","Increase k and add a reranker (or hybrid lexical+dense retrieval) so the relevant chunk is actually surfaced and promoted above near-duplicates","Switch to a larger generation model","Lower the chunk overlap to store more chunks"],
+ a:1,
+ e:"This is a retrieval-recall failure, not a generation failure. A bigger LLM cannot use a chunk it never received. Reranking and hybrid retrieval fix top-k recall. He runs RAG on Elasticsearch daily, so this should be immediate."},
+
+{s:"RAG · Chunking",t:"core",
+ q:"A financial-document RAG keeps splitting a table's header from its rows across chunk boundaries, so retrieved context is unusable. What is the most robust fix?",
+ o:["Reduce chunk size uniformly","Use structure-aware / layout-aware chunking that keeps a table (and its header) intact as a unit, rather than fixed-size character splits","Increase temperature","Embed the whole document as one vector"],
+ a:1,
+ e:"Fixed-size splitting is blind to document structure. Layout-aware chunking preserves semantic units. His fintech work is document-heavy, so a naive splitter is a real trap."},
+
+{s:"RAG · Evaluation",t:"core",
+ q:"You want to prove a chunking change improved retrieval, not just changed it. What is the minimum rigorous setup?",
+ o:["Read a few answers and judge if they seem better","A labelled eval set of queries with known relevant chunks, measuring retrieval metrics (recall@k, MRR/nDCG) before and after","Count hallucinations in production over a week","Compare average response latency"],
+ a:1,
+ e:"Without a labelled set and retrieval metrics, every change is a guess. Recall@k and nDCG are the standard. Separates a demo-builder from someone who can improve a system defensibly."},
+
+{s:"Embeddings · Semantic search",t:"core",
+ q:"Your semantic search returns passages about the right topic but misses queries containing exact product codes and negations ('NOT eligible'). Why, and what helps?",
+ o:["The embedding model is undertrained; fine-tune it","Dense embeddings capture topical similarity but blur exact tokens and negation; add lexical/BM25 hybrid search and metadata filters for exact matches","Increase vector dimensionality","Use cosine instead of dot product"],
+ a:1,
+ e:"A known limitation of pure dense retrieval — exact identifiers and negation are where it fails. Hybrid retrieval is the fix. He lists embeddings and semantic search, so this tests real understanding."},
+
+{s:"Vector DB · Elasticsearch",t:"core",
+ q:"You use Elasticsearch as the vector store. For approximate nearest-neighbour search over millions of vectors, what is the tradeoff you are accepting versus exact search?",
+ o:["None — ANN is exact","ANN (e.g. HNSW) trades a small amount of recall for order-of-magnitude faster queries; you tune parameters to balance recall against latency","ANN uses less disk but is slower","ANN only works for low dimensions"],
+ a:1,
+ e:"He names Elasticsearch as his vector DB. The recall/latency tradeoff behind ANN indexes is the substance under the tool name."},
+
+/* ===== LangChain / orchestration / agentic ===== */
+{s:"Orchestration · Agent loops",t:"core",
+ q:"Your LLM-driven workflow composer occasionally enters a loop, re-planning the same step and burning tokens. Beyond a step cap, what is the more principled safeguard?",
+ o:["A larger context window","Detect repeated states / no-progress (e.g. same tool+args), and enforce budgets, timeouts and a deterministic fallback path when progress stalls","Increase temperature to escape the loop","Switch models mid-run"],
+ a:1,
+ e:"A hard cap is the blunt fix; detecting no-progress and enforcing budgets/fallbacks is the robust one. His job is literally converting requirements into executable workflows, so loop-safety is directly relevant."},
+
+{s:"Orchestration · Structured output",t:"core",
+ q:"You need an LLM to emit a workflow spec your engine executes. Free-text parsing keeps breaking on malformed output. What is the strongest reliability improvement?",
+ o:["Add more few-shot examples and hope","Constrain generation to a schema (function calling / JSON-schema / grammar-constrained decoding) and validate before execution, rejecting or repairing invalid specs","Post-process with regex","Ask the model to 'be careful'"],
+ a:1,
+ e:"Schema-constrained generation plus validation is how you make LLM output executable safely. Regex and few-shot are brittle. This is the core of his composable-workflow work."},
+
+{s:"LLMs · Open-source serving",t:"core",
+ q:"You self-host LLaMA/Mistral via Hugging Face for cost reasons. Under concurrent load, throughput collapses. Which technique most directly raises serving throughput?",
+ o:["Switch to CPU inference","Continuous/dynamic batching with an optimized serving stack (e.g. vLLM-style paged attention) to share the GPU across concurrent requests","Increase max_tokens per request","Add more prompt examples"],
+ a:1,
+ e:"Naive per-request inference wastes the GPU. Continuous batching and paged-attention serving are how open-model hosting scales. He deploys open-source LLMs, so cost/throughput should be familiar."},
+
+{s:"Prompting · Consistency",t:"core",
+ q:"Your evaluation shows the same prompt yields inconsistent structured answers across runs. Which combination best improves determinism WITHOUT retraining?",
+ o:["Raise temperature and top_p","Lower temperature toward 0, pin the model version, constrain the output schema, and add a validation-and-retry loop","Add more system-prompt adjectives like 'accurate'","Increase max_tokens"],
+ a:1,
+ e:"Determinism comes from decoding settings, version pinning and schema constraints — not from exhortation. He lists prompt strategies and evaluation workflows, so this is on-target and hard."},
+
+/* ===== Systems / deployment ===== */
+{s:"Serving · Latency",t:"core",
+ q:"A user-facing RAG endpoint must feel fast. Retrieval is 40ms; the LLM call is 3s. Which changes actually improve PERCEIVED latency?",
+ o:["Optimize the vector index further","Stream tokens as they generate, cache frequent queries/answers, and trim prompt/context length — attack the 3s generation, not the 40ms retrieval","Add more Elasticsearch shards","Precompute all possible answers"],
+ a:1,
+ e:"He must locate the real bottleneck (generation) and know streaming/caching/context-trimming. Optimizing the 40ms retrieval is effort in the wrong place. Directly relevant to the JD's real-time requirement."},
+
+{s:"Multitenancy · Isolation",t:"core",
+ q:"Your traceability platform stores execution traces per tenant in a shared index. What is the primary risk, and the standard mitigation?",
+ o:["Storage cost; compress the index","Cross-tenant data leakage; enforce tenant-scoped access at query time (filters/aliases or per-tenant indices) plus authz, never relying on the UI to filter","Slow queries; add caching","Log size; rotate logs"],
+ a:1,
+ e:"He built multitenant traceability with tenant-level isolation. The real risk is leakage, and the fix is enforced server-side scoping, not client-side filtering. Tests whether the isolation claim is deeply understood."},
+
+{s:"Deployment · Availability",t:"core",
+ q:"You deployed 'scalable AI services on AWS with low latency and high availability.' Which pairing genuinely delivers high availability for a stateless inference service?",
+ o:["A single large EC2 instance with a big GPU","Multiple instances across availability zones behind a load balancer with health checks and autoscaling","A bigger instance type","A cron job that restarts the service nightly"],
+ a:1,
+ e:"HA means surviving instance/AZ failure — redundancy across zones, not a bigger box. He claims HA deployments, so this checks the substance behind the phrase."},
+
+/* ===== Classical ML — his stated but thin ground ===== */
+{s:"ML · His recommender",t:"core",
+ q:"Your job recommender uses TF-IDF + cosine similarity. A recruiter complains common words dominate the matches. What is TF-IDF already supposed to do, and what would you check?",
+ o:["TF-IDF ignores common words entirely; the bug is elsewhere","IDF should down-weight terms frequent across all documents; check stop-word handling, sublinear TF scaling, and whether the corpus IDF is computed over the right document set","Switch to raw term counts","Increase the vector dimension"],
+ a:1,
+ e:"This is his own project. TF-IDF's IDF term exists precisely to suppress corpus-common words; if they still dominate, the pipeline (stopwords, normalization, IDF corpus) is misconfigured. A fair, hard check on a claimed ML project."},
+
+{s:"ML · Similarity metric",t:"core",
+ q:"For matching sparse TF-IDF vectors of very different document lengths, why is cosine similarity generally preferred over Euclidean distance?",
+ o:["Cosine is faster to compute always","Cosine measures angle, so it is invariant to vector magnitude/length — a short and long job description on the same topic still match; Euclidean is dominated by length differences","Euclidean cannot handle sparse vectors","They are equivalent for TF-IDF"],
+ a:1,
+ e:"He applied cosine similarity for candidate-job matching. Understanding WHY (magnitude invariance for varying document lengths) separates use from understanding."},
+
+/* ===== Deep learning / CNN — JD-required, absent from resume ===== */
+{s:"Deep learning · CNNs",t:"stretch",
+ q:"The JD explicitly requires CNNs. Fundamentally, what property of convolutional layers makes them efficient for spatial data versus fully-connected layers?",
+ o:["They have more parameters for capacity","Parameter sharing and local receptive fields — the same small kernel slides across the input, giving translation-invariant feature detection with far fewer parameters","They avoid activation functions","They require no training data"],
+ a:1,
+ e:"His resume shows no CNN or deep-learning training work — it is all LLM application. The JD names CNNs directly. This is a required-but-absent fundamental; see whether he knows it conceptually."},
+
+{s:"Deep learning · Training",t:"stretch",
+ q:"You train a deep network and the training loss plateaus high from the start and barely moves. Which cause is most consistent with that symptom?",
+ o:["The model is overfitting","Learning rate too low or vanishing gradients / poor initialization / dead activations — the optimizer is barely updating weights","The test set is too small","Too much dropout at inference"],
+ a:1,
+ e:"A high, flat training loss is an optimization failure (LR, init, gradients), distinct from overfitting. His resume has no from-scratch model training, so this probes real DL depth versus API usage."},
+
+{s:"Deep learning · Regularization",t:"stretch",
+ q:"Training accuracy is excellent, validation accuracy is far lower. Which set of moves addresses this, and what does dropout actually do?",
+ o:["Train longer; dropout increases capacity","Add regularization/dropout, more or augmented data, or a simpler model; dropout randomly zeroes activations during training to prevent co-adaptation, and is disabled at inference","Raise the learning rate; dropout speeds training","Remove the validation set"],
+ a:1,
+ e:"Classic overfitting, plus a precise check on what dropout does and that it is train-only. Foundational DL that the senior role assumes but the resume does not evidence."},
+
+/* ===== Statistics / evaluation — JD-required, absent ===== */
+{s:"Stats · Metrics",t:"stretch",
+ q:"A telco churn model must catch churners for a retention campaign with limited budget. Which metric framing fits, and why not accuracy?",
+ o:["Accuracy, because it summarizes everything","With rare churn and a capped campaign, optimize precision/recall tradeoff (or precision@k for the top-scored customers); accuracy is dominated by the non-churn majority","F1 only, ignoring business context","ROC-AUC alone, ignoring the budget"],
+ a:1,
+ e:"His resume has no classical modelling or evaluation-metric work. Churn under a budget is a precision@k / PR problem, not accuracy. Core to the telco role and a real stretch for him."},
+
+{s:"Stats · Leakage",t:"stretch",
+ q:"Your churn model scores 0.99 AUC in testing but fails in production. The most common silent cause is:",
+ o:["The model is too simple","Data/target leakage — a feature encodes information only available after churn (or post-cutoff), inflating offline metrics","Not enough epochs","The learning rate was wrong"],
+ a:1,
+ e:"Leakage is the classic 'too good to be true' cause and a senior-level instinct. Absent any predictive-modelling history on the resume, this tests whether the instinct exists."},
+
+{s:"Stats · Validation",t:"stretch",
+ q:"For a model forecasting monthly subscriber data usage, why is a random train/test split misleading, and what is correct?",
+ o:["Random splits are fine for any data","Time-ordered data leaks the future under a random split; use chronological splits or time-series cross-validation so you evaluate on genuinely future periods","Use a 50/50 split","Shuffle more aggressively"],
+ a:1,
+ e:"Usage forecasting is time-series; temporal validation is mandatory. His work is not modelling-based, so whether he recognizes the temporal pitfall is the tell."},
+
+/* ===== Telecom domain — absent ===== */
+{s:"Telecom · Churn imbalance",t:"stretch",
+ q:"~3% of subscribers churn monthly. Before any modelling, what is the first data-level problem to confront?",
+ o:["Choosing TensorFlow vs PyTorch","Severe class imbalance — handle via resampling or class weights and evaluate on PR/recall, since a trivial 'no churn' model scores 97% accuracy","Picking the chunk size","Whether to use RAG"],
+ a:1,
+ e:"No telecom on the resume. Class imbalance defines churn/fraud/anomaly work in telco. Whether he reaches for it unprompted indicates transfer."},
+
+{s:"Telecom · Fraud",t:"stretch",
+ q:"Real-time telecom fraud detection on call/usage streams. Why is a purely supervised classifier usually insufficient?",
+ o:["Supervised models can't score numbers","Fraud drifts and novel fraud has no labels; you need anomaly / semi-supervised detection plus a feedback loop as new fraud is confirmed","Streaming data can't be modelled","It needs a bigger LLM"],
+ a:1,
+ e:"Domain-shaped and outside his LLM-application experience. Tests reasoning about label scarcity and drift in a streaming telco setting."},
+
+{s:"Telecom · Network",t:"stretch",
+ q:"Predicting cell-tower congestion from historical traffic is fundamentally which kind of problem?",
+ o:["A document-retrieval problem","A per-site time-series forecasting problem with seasonality, trend and spatial correlation between towers — not one global classifier","A prompt-engineering problem","A vector-search problem"],
+ a:1,
+ e:"Network analytics is a JD preferred skill. His toolkit is retrieval/LLM; this checks whether he can frame a classic telco forecasting task correctly rather than reaching for RAG."},
+
+/* ===== Big data / scale — absent ===== */
+{s:"Scale · Spark",t:"stretch",
+ q:"You must engineer features over billions of call-detail records nightly. Why Spark rather than pandas, and what changes in how you write the job?",
+ o:["Spark has nicer plots; nothing changes","The data exceeds one machine's memory, so Spark distributes work across a cluster; you write transformations that run lazily and in parallel over partitions, avoiding row-wise Python loops and driver-side collection","pandas can't read CSVs that large","Spark is required by scikit-learn"],
+ a:1,
+ e:"The JD requires Spark/Hive; his resume shows neither. Telco CDR volumes are exactly where distributed processing is mandatory. Tests whether the concept is understood at all."},
+
+{s:"Scale · Streaming",t:"stretch",
+ q:"A real-time inference service must consume a high-throughput event stream reliably. What does a log-based broker like Kafka provide that direct API calls do not?",
+ o:["Lower model latency","Durable, replayable, partitioned delivery that decouples producers from consumers and absorbs spikes, so a slow or restarted consumer does not lose events","Automatic model training","Built-in vector search"],
+ a:1,
+ e:"Kafka/Flink are JD preferred skills, absent from his resume. He has REST/AWS service experience — see whether the decoupling/durability concept transfers."},
+
+{s:"Scale · Kubernetes",t:"stretch",
+ q:"Your inference service must autoscale with traffic and self-heal on node failure. What does Kubernetes add over Docker alone?",
+ o:["A smaller image","Orchestration — scheduling, horizontal autoscaling, self-healing restarts and rolling deploys across a cluster of nodes","A faster model","A managed vector database"],
+ a:1,
+ e:"He lists Docker but not Kubernetes; the JD names it. For a role owning production scalability this is a gap — check whether he can reason about orchestration regardless."},
+
+{s:"MLOps · Monitoring",t:"stretch",
+ q:"A model deployed months ago is quietly losing accuracy though the code is unchanged. Most likely cause, and what should have been in place?",
+ o:["A library upgrade; pin versions","Data/concept drift — input distribution or the target relationship shifted; production needs drift monitoring, performance tracking and a retraining trigger","A memory leak; restart it","Slow network; add caching"],
+ a:1,
+ e:"End-to-end lifecycle and monitoring are explicit JD requirements. His deployment experience is service-integration, not model-lifecycle — probe whether he thinks about silent decay."},
+
+/* ===== Seniority / mentoring — reality check ===== */
+{s:"Seniority · Level",t:"stretch",
+ q:"Interviewer calibration: the role wants 6\u20139 years across ML/DL/CNNs and telco; his title is Junior Software Engineer (AI) with ~1.5 years of applied-LLM work. What is the honest read?",
+ o:["Senior hire — the GenAI skills cover it","Strong emerging applied-GenAI engineer, but well below the senior bar on tenure, classical ML/DL depth and domain; a fit for a junior/mid GenAI role, not this one","Reject outright — no usable skills","Perfect fit for the telecom mandate"],
+ a:1,
+ e:"The most important calibration. His applied-GenAI ability is real and marketable, but the gap to a 6\u20139 year Senior Data Scientist owning telco ML is large. The honest routing is a junior/mid GenAI role."},
+
+{s:"Leadership · Mentoring",t:"stretch",
+ q:"The role expects mentoring junior data scientists and engineers. What is the fair assessment given his experience?",
+ o:["Ready to lead a senior DS team now","Not yet — he is himself early-career; leadership signals exist (NCC, trekking-unit lead), but professional DS mentoring is not evidenced and would come later","Irrelevant to the role","A disqualifier"],
+ a:1,
+ e:"His NCC and expedition-leadership background shows genuine leadership aptitude, but mentoring senior-level data scientists is beyond his current stage. An honest 'not yet,' not a criticism."}
+];
+
+/* Randomise option order so the correct answer isn't always in one position. */
+(function shuffleOptions(){
+  QUESTIONS.forEach(q => {
+    const correct = q.o[q.a];
+    for (let i = q.o.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [q.o[i], q.o[j]] = [q.o[j], q.o[i]];
+    }
+    q.a = q.o.indexOf(correct);
+  });
+})();
+
+const TOTAL = QUESTIONS.length;
+const answers = new Array(TOTAL).fill(null);
+let cur = 0, graded = false, secondsLeft = 55 * 60;
+
+const stage = document.getElementById('stage');
+const grid  = document.getElementById('grid');
+const bar   = document.getElementById('bar');
+const LETTERS = ['A','B','C','D'];
+
+document.getElementById('qcount').textContent = TOTAL;
+document.getElementById('answered').textContent = '0 / ' + TOTAL;
+
+const clock = document.getElementById('clock');
+const timer = setInterval(() => {
+  if (graded) { clearInterval(timer); return; }
+  secondsLeft--;
+  const m = Math.floor(Math.max(secondsLeft,0)/60), s = Math.max(secondsLeft,0)%60;
+  clock.textContent = m + ':' + String(s).padStart(2,'0');
+  if (secondsLeft <= 300) clock.classList.add('warn');
+  if (secondsLeft <= 0) { clearInterval(timer); grade(); }
+}, 1000);
+
+function render() {
+  const q = QUESTIONS[cur];
+  const badge = q.t === 'core'
+    ? '<span class="badge core">Evidenced</span>'
+    : '<span class="badge stretch">JD-required</span>';
+
+  let html = '<section class="card">'
+    + '<div class="qhead"><span class="qnum">' + String(cur+1).padStart(2,'0') + ' / ' + TOTAL + '</span>'
+    + badge + '<span class="section-name">' + q.s + '</span></div>'
+    + '<p class="qtext">' + q.q + '</p><ul class="opts">';
+
+  q.o.forEach((opt, i) => {
+    let cls = 'opt', mark = '';
+    if (answers[cur] === i) cls += ' sel';
+    if (graded) {
+      if (i === q.a) { cls += ' correct'; mark = '<span class="mark ok">Correct</span>'; }
+      else if (answers[cur] === i) { cls += ' wrong'; mark = '<span class="mark no">Chosen</span>'; }
+    }
+    html += '<li><button class="' + cls + '" data-i="' + i + '"' + (graded ? ' disabled' : '') + '>'
+          + '<span class="letter">' + LETTERS[i] + '</span><span>' + opt + '</span>' + mark + '</button></li>';
+  });
+
+  html += '</ul>';
+  if (graded) html += '<div class="rationale"><div class="rlabel">Interviewer note</div><p>' + q.e + '</p></div>';
+  html += '</section>';
+  stage.innerHTML = html;
+
+  if (!graded) {
+    stage.querySelectorAll('.opt').forEach(b => {
+      b.addEventListener('click', () => {
+        answers[cur] = Number(b.dataset.i);
+        render(); paint();
+        if (cur < TOTAL - 1) setTimeout(() => { cur++; render(); paint(); }, 160);
+      });
+    });
+  }
+
+  document.getElementById('prev').disabled = cur === 0;
+  document.getElementById('next').disabled = cur === TOTAL - 1;
+  document.getElementById('navnote').textContent = graded ? 'Review mode' : (answers[cur] === null ? 'Not answered' : 'Answered');
+}
+
+function paint() {
+  const done = answers.filter(a => a !== null).length;
+  document.getElementById('answered').textContent = done + ' / ' + TOTAL;
+  bar.style.width = (done / TOTAL * 100) + '%';
+  grid.innerHTML = QUESTIONS.map((q, i) => {
+    let c = 'gcell';
+    if (answers[i] !== null) c += ' answered';
+    if (i === cur) c += ' here';
+    if (q.t === 'stretch') c += ' st';
+    return '<button class="' + c + '" data-i="' + i + '">' + (i+1) + '</button>';
+  }).join('');
+  grid.querySelectorAll('.gcell').forEach(b => {
+    b.addEventListener('click', () => { cur = Number(b.dataset.i); render(); paint(); });
+  });
+}
+
+document.getElementById('prev').addEventListener('click', () => { if (cur > 0) { cur--; render(); paint(); } });
+document.getElementById('next').addEventListener('click', () => { if (cur < TOTAL-1) { cur++; render(); paint(); } });
+document.getElementById('submit').addEventListener('click', () => {
+  const done = answers.filter(a => a !== null).length;
+  if (!graded && done < TOTAL && !confirm((TOTAL - done) + ' question(s) are unanswered. Score anyway?')) return;
+  grade();
+});
+
+function grade() {
+  if (graded) { window.scrollTo({top:0,behavior:'smooth'}); return; }
+  graded = true; clearInterval(timer);
+
+  const bySection = {};
+  let coreC = 0, coreT = 0, strC = 0, strT = 0;
+  QUESTIONS.forEach((q, i) => {
+    const ok = answers[i] === q.a;
+    if (!bySection[q.s]) bySection[q.s] = {c:0, t:0, track:q.t};
+    bySection[q.s].t++; if (ok) bySection[q.s].c++;
+    if (q.t === 'core') { coreT++; if (ok) coreC++; } else { strT++; if (ok) strC++; }
+  });
+
+  const corePct = Math.round(coreC/coreT*100);
+  const strPct  = Math.round(strC/strT*100);
+  const overall = Math.round((coreC+strC)/TOTAL*100);
+
+  let vTitle, vBody;
+  if (corePct >= 80 && strPct >= 55) {
+    vTitle = "Impressive for his level — but the level is the point";
+    vBody = "He handled the hard applied-GenAI questions and reasoned into ML, deep-learning and telecom ground his resume doesn't cover, which is a strong signal of a fast learner. That earns a real conversation — but for a junior/mid GenAI Engineer role, not this one. At ~1.5 years with no classical ML/DL, statistics or telecom modelling, he is years short of a 6\u20139 year Senior Data Scientist owning telco ML. Advance him into the right-level pipeline.";
+  } else if (corePct >= 80) {
+    vTitle = "Strong applied-GenAI engineer, wrong role level";
+    vBody = "The evidenced GenAI/RAG/systems questions held up well at a hard setting — he clearly builds these for real. But the JD-required track (classical ML, CNNs, statistics, telecom, big-data scale) came back thin, exactly as the resume predicts. This is a good junior/mid GenAI hire, not a senior data-science hire; the gap is depth and years, not talent.";
+  } else if (corePct >= 55) {
+    vTitle = "Applied skills present but shallower than the resume implies";
+    vBody = "Even the evidenced GenAI track showed gaps under hard questioning. Since RAG/LangChain/prompting is the core of his day job, probe the specific misses live \u2014 a hands-on RAG debugging session will quickly reveal depth versus tutorial-level familiarity.";
+  } else {
+    vTitle = "Depth doesn't yet match the claims";
+    vBody = "Under fifty-five percent on the applied-GenAI questions that map to his daily work. Combined with the seniority gap, this needs a hands-on verification session before any progression, and this senior telco role is not the right target regardless.";
+  }
+
+  const rows = Object.keys(bySection).map(k => {
+    const b = bySection[k];
+    return '<tr class="' + (b.track === 'core' ? 'core-row' : 'stretch-row') + '">'
+      + '<td>' + k + '</td><td class="num">' + b.c + ' / ' + b.t + '</td>'
+      + '<td class="num">' + Math.round(b.c/b.t*100) + '%</td></tr>';
+  }).join('');
+
+  stage.innerHTML =
+    '<section class="result">'
+    + '<h2>Assessment complete</h2>'
+    + '<p class="rsub">Varun Chouhan \u00B7 ' + (coreC + strC) + ' of ' + TOTAL + ' overall (' + overall + '%). Hard setting: the evidenced track probes his applied-GenAI work at senior depth; the JD-required track tests the ML/DL, statistics, telecom and scale the role demands but the resume does not show.</p>'
+    + '<div class="readout">'
+      + '<div class="pane"><div class="plabel"><span class="dot core"></span>Evidenced \u2014 applied GenAI &amp; systems</div>'
+        + '<div class="pscore">' + corePct + '%</div><div class="pof">' + coreC + ' of ' + coreT + ' correct</div>'
+        + '<div class="meter"><i class="core" style="width:' + corePct + '%"></i></div></div>'
+      + '<div class="pane"><div class="plabel"><span class="dot stretch"></span>JD-required \u2014 ML/DL, telecom, scale</div>'
+        + '<div class="pscore">' + strPct + '%</div><div class="pof">' + strC + ' of ' + strT + ' correct</div>'
+        + '<div class="meter"><i class="stretch" style="width:' + strPct + '%"></i></div></div>'
+    + '</div>'
+    + '<table class="bd"><thead><tr><th>Section</th><th class="num">Score</th><th class="num">%</th></tr></thead><tbody>' + rows + '</tbody></table>'
+    + '<div class="verdict"><div class="vlabel">Hiring signal</div><h3>' + vTitle + '</h3><p>' + vBody + '</p></div>'
+    + '<div class="gapbox"><div class="vlabel">Read the resume alongside the score</div><ul>'
+      + '<li><strong>The JD asks for 6\u20139 years; he has ~1.5.</strong> This is the decisive mismatch. His title is Junior Software Engineer (AI). No amount of GenAI skill closes a five-year, senior-level tenure gap on its own.</li>'
+      + '<li><strong>His real strength is applied GenAI, and it is genuine.</strong> RAG on Elasticsearch, LangChain orchestration, workflow composition, multitenant traceability, open-model serving \u2014 all real, current, hands-on. For a junior/mid GenAI role this is a strong profile.</li>'
+      + '<li><strong>The JD-required data-science core is largely absent.</strong> No CNNs or deep-learning training, no classical ML modelling (his one ML project is TF-IDF + cosine), no statistics, no model-from-scratch evaluation. The senior telco mandate leans on exactly this.</li>'
+      + '<li><strong>No telecom domain, and no big-data/streaming/Kubernetes at scale.</strong> Spark, Hive, Kafka, Flink, Kubernetes, MLflow \u2014 all named in the JD, none on the resume. Treat the stretch track as aptitude probing, not experience.</li>'
+      + '<li><strong>Leadership aptitude is real, DS mentoring is not yet.</strong> NCC certificates and leading a 26-cadet unit show genuine leadership, but mentoring senior data scientists is a stage beyond where he is.</li>'
+      + '<li><strong>Right move: redirect, don\u2019t reject.</strong> He is a promising applied-GenAI engineer at the start of his career. If Aavya has a junior/mid GenAI opening he is worth a real conversation; against this specific Senior Data Scientist (Telecom) role he is not a fit, and that is about level and scope, not ability.</li>'
+    + '</ul></div>'
+    + '<p class="rsub" style="margin:0">Use Previous and Next, or the number grid, to review each question with the correct answer and interviewer note.</p>'
+    + '</section>';
+
+  bar.style.width = '100%';
+  document.getElementById('submit').textContent = 'Scored';
+  document.getElementById('submit').disabled = true;
+  paint();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+render(); paint();
+</script>
+</body>
+</html>
