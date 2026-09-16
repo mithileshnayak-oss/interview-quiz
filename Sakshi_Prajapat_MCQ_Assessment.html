@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Full-Stack Developer Assessment — Sakshi Prajapat</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#0A0F1E;--bg2:#0F1629;--bg3:#131D35;
+      --border:#1E2D50;--border2:#263960;
+      --teal:#14B8A6;--teal2:#0D9488;--teal-lt:rgba(20,184,166,0.1);--teal-xlt:rgba(20,184,166,0.05);
+      --violet:#8B5CF6;--vlt:rgba(139,92,246,0.1);
+      --pink:#EC4899;--pink-lt:rgba(236,72,153,0.1);
+      --amber:#F59E0B;--amb-lt:rgba(245,158,11,0.1);
+      --red:#EF4444;--red-lt:rgba(239,68,68,0.1);
+      --green:#10B981;--grn-lt:rgba(16,185,129,0.1);
+      --text:#E2EAF5;--muted:#3D5280;--sub:#64748B;
+      --mono:'JetBrains Mono',monospace;--sans:'Plus Jakarta Sans',sans-serif;
+    }
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden}
+    body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 40% at 50% -5%,rgba(20,184,166,0.07) 0%,transparent 70%);pointer-events:none;z-index:0}
+
+    .hdr{position:sticky;top:0;z-index:200;background:rgba(10,15,30,0.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 40px}
+    .hdr-l{display:flex;align-items:center;gap:14px}
+    .logo{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--bg);background:var(--teal);padding:3px 10px;border-radius:4px;letter-spacing:.06em}
+    .hdr-title{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.04em}
+    .hdr-r{display:flex;align-items:center;gap:12px}
+    .role-tag{font-family:var(--mono);font-size:10px;font-weight:500;color:var(--violet);border:1px solid rgba(139,92,246,.35);background:var(--vlt);padding:3px 9px;border-radius:3px;letter-spacing:.05em}
+    .tmr{font-family:var(--mono);font-size:19px;font-weight:600;color:var(--amber);min-width:52px;text-align:right}
+    .tmr.urgent{color:var(--red);animation:fl .75s ease-in-out infinite}
+    @keyframes fl{0%,100%{opacity:1}50%{opacity:.4}}
+    .prog{height:2px;background:var(--border);z-index:1;position:relative}
+    .prog-f{height:100%;background:linear-gradient(90deg,var(--teal2),var(--teal));transition:width .4s cubic-bezier(.4,0,.2,1)}
+
+    .main{max-width:820px;margin:0 auto;padding:36px 20px 100px;position:relative;z-index:1}
+
+    .hero{border:1px solid var(--border2);border-radius:14px;padding:34px 38px;margin-bottom:36px;background:linear-gradient(135deg,var(--bg2) 0%,var(--bg3) 100%);position:relative;overflow:hidden}
+    .hero::after{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(20,184,166,.08) 0%,transparent 70%);pointer-events:none}
+    .hero-eye{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);margin-bottom:10px}
+    .hero h1{font-size:24px;font-weight:700;line-height:1.2;margin-bottom:10px}
+    .hero h1 em{color:var(--teal);font-style:normal}
+    .hero p{font-size:14px;color:var(--sub);line-height:1.7;margin-bottom:22px;max-width:540px}
+    .hero-tags{display:flex;gap:8px;flex-wrap:wrap}
+    .htag{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.05em;padding:4px 11px;border-radius:20px;border:1px solid}
+    .ht-t{color:var(--teal);border-color:rgba(20,184,166,.35);background:var(--teal-lt)}
+    .ht-v{color:var(--violet);border-color:rgba(139,92,246,.35);background:var(--vlt)}
+    .ht-p{color:var(--pink);border-color:rgba(236,72,153,.35);background:var(--pink-lt)}
+    .ht-a{color:var(--amber);border-color:rgba(245,158,11,.35);background:var(--amb-lt)}
+
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:36px}
+    .stat{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+    .stat .sv{font-family:var(--mono);font-size:22px;font-weight:600;color:var(--teal)}
+    .stat .sl{font-size:11px;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.07em;font-family:var(--mono)}
+
+    .sec{display:flex;align-items:center;gap:12px;margin:40px 0 16px}
+    .sec-pill{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);background:var(--teal-lt);border:1px solid rgba(20,184,166,.3);padding:3px 11px;border-radius:20px;white-space:nowrap}
+    .sec-line{flex:1;height:1px;background:var(--border)}
+    .sec-cnt{font-family:var(--mono);font-size:10px;color:var(--muted);white-space:nowrap}
+
+    .qcard{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:20px 22px;margin-bottom:12px;position:relative;transition:border-color .2s}
+    .qcard::before{content:'';position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:0 2px 2px 0;background:var(--border2);transition:background .3s}
+    .qcard.answered{border-color:rgba(16,185,129,.25)}
+    .qcard.answered::before{background:var(--green)}
+    .qcard.incorrect{border-color:rgba(239,68,68,.2)}
+    .qcard.incorrect::before{background:var(--red)}
+
+    .qmeta{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+    .qnum{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--bg);background:var(--teal);padding:2px 8px;border-radius:3px;min-width:34px;text-align:center}
+    .qtag{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.07em;color:var(--muted);text-transform:uppercase}
+    .qdiff{margin-left:auto;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.1em;padding:2px 9px;border-radius:20px;text-transform:uppercase}
+    .dm{color:var(--amber);background:var(--amb-lt);border:1px solid rgba(245,158,11,.3)}
+    .dh{color:var(--red);background:var(--red-lt);border:1px solid rgba(239,68,68,.3)}
+    .qtext{font-size:15px;font-weight:600;color:var(--text);line-height:1.55;margin-bottom:16px}
+    .qtext code{font-family:var(--mono);font-size:12.5px;background:var(--teal-lt);color:var(--teal);padding:1px 6px;border-radius:3px}
+
+    .opts{display:flex;flex-direction:column;gap:8px}
+    .opt{display:flex;align-items:flex-start;gap:11px;padding:11px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:14px;line-height:1.5;color:var(--sub);transition:all .15s;user-select:none}
+    .opt:hover:not(.locked){border-color:var(--teal2);background:var(--teal-xlt);color:var(--text)}
+    .opt code{font-family:var(--mono);font-size:12px;background:var(--teal-lt);color:var(--teal);padding:1px 5px;border-radius:3px}
+    .ok{font-family:var(--mono);font-size:11px;font-weight:600;min-width:22px;height:22px;border-radius:3px;background:var(--border2);color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all .15s}
+    .opt.correct-pick{border-color:var(--green);background:var(--grn-lt);color:var(--text)}
+    .opt.correct-pick .ok{background:#059669;color:#fff}
+    .opt.wrong-pick{border-color:var(--red);background:var(--red-lt);color:var(--text)}
+    .opt.wrong-pick .ok{background:#DC2626;color:#fff}
+    .opt.reveal-right{border-color:var(--green);background:var(--grn-lt);color:var(--text)}
+    .opt.reveal-right .ok{background:#059669;color:#fff}
+
+    .expl{display:none;margin-top:12px;padding:12px 16px;border-radius:8px;font-size:13px;line-height:1.75}
+    .expl.show{display:block}
+    .expl code{font-family:var(--mono);font-size:12px;background:rgba(0,0,0,.4);padding:1px 5px;border-radius:3px}
+    .expl-ok{background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2);color:#6EE7B7}
+    .expl-bad{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2);color:#FCA5A5}
+
+    .fbar{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(10,15,30,.97);backdrop-filter:blur(12px);border-top:1px solid var(--border);padding:12px 40px;display:flex;align-items:center;justify-content:space-between}
+    .fstats{display:flex;gap:20px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+    .fstats span{color:var(--teal);font-weight:600}
+    .fstats .ft{color:var(--amber)}
+    .btn-sub{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:11px 26px;background:var(--teal2);color:#fff;border:none;border-radius:5px;cursor:pointer;transition:background .2s,transform .1s}
+    .btn-sub:hover{background:var(--teal);transform:translateY(-1px)}
+
+    .results{display:none;background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:36px;margin-top:40px}
+    .results.show{display:block}
+    .rtitle{font-size:22px;font-weight:700;margin-bottom:4px}
+    .rtitle span{color:var(--teal)}
+    .rsub{font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:28px}
+    .sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:26px}
+    .sbox{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center}
+    .sbox .sv{font-family:var(--mono);font-size:26px;font-weight:600}
+    .sbox.tc .sv{color:var(--teal)}
+    .sbox.gc .sv{color:var(--green)}
+    .sbox.ac .sv{color:var(--amber)}
+    .sbox.rc .sv{color:var(--red)}
+    .sbox .sl{font-size:11px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.08em;font-family:var(--mono)}
+    .verdict{padding:15px 18px;border-radius:9px;font-size:15px;font-weight:600;margin-bottom:24px;border:1px solid}
+    .v-ex{background:rgba(20,184,166,.08);border-color:rgba(20,184,166,.3);color:#5EEAD4}
+    .v-good{background:rgba(16,185,129,.07);border-color:rgba(16,185,129,.25);color:var(--green)}
+    .v-ok{background:rgba(245,158,11,.07);border-color:rgba(245,158,11,.3);color:var(--amber)}
+    .v-try{background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.3);color:var(--red)}
+    .sb-head{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+    .sb-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+    .sb-name{width:240px;flex-shrink:0;font-size:12px;color:var(--sub);font-family:var(--mono)}
+    .sb-track{flex:1;background:var(--border);border-radius:2px;height:6px}
+    .sb-fill{height:100%;border-radius:2px;background:var(--teal);transition:width .6s cubic-bezier(.4,0,.2,1)}
+    .sb-num{font-family:var(--mono);font-size:11px;color:var(--muted);width:36px;text-align:right}
+
+    @media(max-width:600px){.hdr{padding:0 14px}.hero{padding:22px 18px}.main{padding:20px 12px 90px}.stats{grid-template-columns:repeat(2,1fr)}.sgrid{grid-template-columns:repeat(2,1fr)}.fbar{padding:10px 14px}.fstats{gap:10px;font-size:11px}.role-tag{display:none}}
+  </style>
+</head>
+<body>
+<header class="hdr">
+  <div class="hdr-l">
+    <span class="logo">MERN//EVAL</span>
+    <span class="hdr-title">FULL-STACK DEVELOPER · SAKSHI PRAJAPAT · BBVA + CMS</span>
+  </div>
+  <div class="hdr-r">
+    <span class="role-tag">JD: BBVA · CMS · MERN</span>
+    <div class="tmr" id="tmrDisp">35:00</div>
+  </div>
+</header>
+<div class="prog"><div class="prog-f" id="progF" style="width:0%"></div></div>
+
+<main class="main">
+  <div class="hero">
+    <div class="hero-eye">Full-Stack Developer Assessment · BBVA + CMS</div>
+    <h1>25 Questions · <em>Medium &amp; Hard</em> · MERN Stack</h1>
+    <p>Anchored to Sakshi's actual production experience — Redux state management, protected routes, REST API integration, MongoDB aggregation and transactions, Next.js ISR, JWT auth, XSS/security, and system design. Difficulty calibrated for ~1.5 years of MERN experience.</p>
+    <div class="hero-tags">
+      <span class="htag ht-t">React · Redux · Next.js</span>
+      <span class="htag ht-v">Node.js · Express · GraphQL</span>
+      <span class="htag ht-p">MongoDB · Aggregation</span>
+      <span class="htag ht-a">CMS · BBVA · Security</span>
+      <span class="htag ht-t">JWT · RBAC · XSS</span>
+      <span class="htag ht-v">System Design · Production</span>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="sv">25</div><div class="sl">Questions</div></div>
+    <div class="stat"><div class="sv">35</div><div class="sl">Minutes</div></div>
+    <div class="stat"><div class="sv">M+H</div><div class="sl">Difficulty</div></div>
+    <div class="stat"><div class="sv">5</div><div class="sl">Sections</div></div>
+  </div>
+
+  <div class="sec"><span class="sec-pill">React · Redux · Next.js</span><div class="sec-line"></div><span class="sec-cnt">Q1–Q6</span></div>
+  <div class="qcard" id="qc-1">
+    <div class="qmeta"><span class="qnum">Q01</span><span class="qtag">React Performance</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">In your Cold Storage app you implemented lazy loading. In React, what is the correct way to lazy load a component, and when does the bundle actually get loaded?</div>
+    <div class="opts" id="o-1">
+      <div class="opt" onclick="pick(1,'A')"><span class="ok">A</span>Use React.lazy() with import() to define the component, then wrap it in <Suspense fallback={<Loading/>}>. The bundle is fetched from the server only when the component is first rendered — not at initial page load</div>
+      <div class="opt" onclick="pick(1,'B')"><span class="ok">B</span>Use useEffect to import the component after a 2-second delay</div>
+      <div class="opt" onclick="pick(1,'C')"><span class="ok">C</span>Add loading={true} prop to every component — React handles the rest automatically</div>
+      <div class="opt" onclick="pick(1,'D')"><span class="ok">D</span>Wrap the component in React.memo() — this defers loading until the component is needed</div>
+    </div>
+    <div class="expl" id="ex-1"></div>
+  </div>
+
+  <div class="qcard" id="qc-2">
+    <div class="qmeta"><span class="qnum">Q02</span><span class="qtag">Redux State Management</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">You integrated Redux across 20+ APIs in your inventory app. A component subscribes to a Redux slice via useSelector. When does that component re-render, and how do you prevent unnecessary re-renders?</div>
+    <div class="opts" id="o-2">
+      <div class="opt" onclick="pick(2,'A')"><span class="ok">A</span>Wrap every component in React.memo() — this prevents all re-renders caused by useSelector</div>
+      <div class="opt" onclick="pick(2,'B')"><span class="ok">B</span>The component re-renders on every Redux dispatch, regardless of which slice changed. You cannot prevent this in Redux</div>
+      <div class="opt" onclick="pick(2,'C')"><span class="ok">C</span>useSelector re-renders the component whenever the selected value changes (by reference). To prevent unnecessary re-renders: (1) select the minimum slice of state needed, (2) use memoised selectors with createSelector (Reselect) so the selector only recomputes when its inputs change</div>
+      <div class="opt" onclick="pick(2,'D')"><span class="ok">D</span>useSelector only re-renders when the entire Redux store is replaced — updating a slice never causes re-renders</div>
+    </div>
+    <div class="expl" id="ex-2"></div>
+  </div>
+
+  <div class="qcard" id="qc-3">
+    <div class="qmeta"><span class="qnum">Q03</span><span class="qtag">React Router Auth</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">You implemented protected routes with React Router. A user navigates directly to /admin/dashboard without logging in. What does your protected route component do, and how is it implemented?</div>
+    <div class="opts" id="o-3">
+      <div class="opt" onclick="pick(3,'A')"><span class="ok">A</span>Add an auth: true prop directly to the <Route> component — React Router validates this at render time</div>
+      <div class="opt" onclick="pick(3,'B')"><span class="ok">B</span>Set a window.isAuthenticated global variable — React Router reads it before rendering any route</div>
+      <div class="opt" onclick="pick(3,'C')"><span class="ok">C</span>A ProtectedRoute component checks the auth state (from Redux or context). If authenticated: renders the children (the protected page). If not authenticated: redirects to /login using React Router's <Navigate to='/login' replace/>. The replace prop prevents the protected URL from staying in the browser history</div>
+      <div class="opt" onclick="pick(3,'D')"><span class="ok">D</span>React Router automatically blocks unauthenticated users — no custom component is needed</div>
+    </div>
+    <div class="expl" id="ex-3"></div>
+  </div>
+
+  <div class="qcard" id="qc-4">
+    <div class="qmeta"><span class="qnum">Q04</span><span class="qtag">Redux Thunk / Async</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">In your MERN apps you managed async API calls with Redux. What problem does Redux Toolkit's createAsyncThunk solve, and what three action types does it automatically generate?</div>
+    <div class="opts" id="o-4">
+      <div class="opt" onclick="pick(4,'A')"><span class="ok">A</span>createAsyncThunk solves component re-rendering issues. It generates: pending, resolved, rejected</div>
+      <div class="opt" onclick="pick(4,'B')"><span class="ok">B</span>createAsyncThunk makes API calls synchronous so reducers can handle them directly. It generates: start, end, fail</div>
+      <div class="opt" onclick="pick(4,'C')"><span class="ok">C</span>createAsyncThunk handles side effects and async logic outside of reducers (which must be pure/synchronous). It automatically dispatches: actionName/pending (before the async call), actionName/fulfilled (on success with the returned data), and actionName/rejected (on failure with the error). You handle these in extraReducers in your slice</div>
+      <div class="opt" onclick="pick(4,'D')"><span class="ok">D</span>createAsyncThunk is a replacement for useEffect for data fetching. It generates: loading, success, error</div>
+    </div>
+    <div class="expl" id="ex-4"></div>
+  </div>
+
+  <div class="qcard" id="qc-5">
+    <div class="qmeta"><span class="qnum">Q05</span><span class="qtag">React Optimisation</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">Your inventory app has a large list of 500 stock items that each render a complex component with images. Scrolling is sluggish. Which React technique specifically addresses rendering performance for very long lists?</div>
+    <div class="opts" id="o-5">
+      <div class="opt" onclick="pick(5,'A')"><span class="ok">A</span>Use useCallback on the list rendering function — this prevents the render function from being recreated on each re-render</div>
+      <div class="opt" onclick="pick(5,'B')"><span class="ok">B</span>Wrap the list in React.memo() — this prevents the list from re-rendering</div>
+      <div class="opt" onclick="pick(5,'C')"><span class="ok">C</span>Add key={index} to each list item — this helps React recycle DOM nodes more efficiently for large lists</div>
+      <div class="opt" onclick="pick(5,'D')"><span class="ok">D</span>Use virtual scrolling (windowing) with a library like react-window or react-virtual — only render the items currently visible in the viewport (typically 10-20 items) instead of all 500. As the user scrolls, items outside the viewport are unmounted and new ones are mounted. This keeps the DOM small regardless of list size</div>
+    </div>
+    <div class="expl" id="ex-5"></div>
+  </div>
+
+  <div class="qcard" id="qc-6">
+    <div class="qmeta"><span class="qnum">Q06</span><span class="qtag">Next.js SSR vs CSR</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">The BBVA CMS project uses Next.js. A content editor updates an article. The change must be visible to all visitors within 60 seconds without requiring a full site rebuild. Which Next.js data fetching strategy is correct?</div>
+    <div class="opts" id="o-6">
+      <div class="opt" onclick="pick(6,'A')"><span class="ok">A</span>getServerSideProps — fetches data on every request, so visitors always get fresh content. Trade-off: slower TTFB since data is fetched before each render</div>
+      <div class="opt" onclick="pick(6,'B')"><span class="ok">B</span>getStaticProps — static pages are built at deploy time and never update until the next deployment</div>
+      <div class="opt" onclick="pick(6,'C')"><span class="ok">C</span>Use useEffect to fetch data in the browser on every page visit — this is the fastest approach</div>
+      <div class="opt" onclick="pick(6,'D')"><span class="ok">D</span>Incremental Static Regeneration (ISR) with revalidate: 60 — pages are statically generated but regenerated in the background every 60 seconds. Visitors get the cached static page (fast) while stale content is refreshed. Content updates appear within 60 seconds without a rebuild</div>
+    </div>
+    <div class="expl" id="ex-6"></div>
+  </div>
+
+  <div class="sec"><span class="sec-pill">Node.js · Express · API Design</span><div class="sec-line"></div><span class="sec-cnt">Q7–Q11</span></div>
+  <div class="qcard" id="qc-7">
+    <div class="qmeta"><span class="qnum">Q07</span><span class="qtag">Express Middleware</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">In your Node.js backend you handle 20+ REST APIs. What is Express middleware and how does the order of middleware registration affect a request?</div>
+    <div class="opts" id="o-7">
+      <div class="opt" onclick="pick(7,'A')"><span class="ok">A</span>Middleware is only used for authentication — it does not affect other types of requests</div>
+      <div class="opt" onclick="pick(7,'B')"><span class="ok">B</span>Order of middleware registration does not matter — Express evaluates all middleware simultaneously and picks the most specific match</div>
+      <div class="opt" onclick="pick(7,'C')"><span class="ok">C</span>Middleware is a function with (req, res, next) that runs in the middleware stack. Order matters: middleware registered first runs first. If a middleware does not call next(), the request stops there — subsequent middleware and route handlers never execute. This is critical: if you register a route handler before an authentication middleware, the auth check is bypassed for that route</div>
+      <div class="opt" onclick="pick(7,'D')"><span class="ok">D</span>Middleware runs after the route handler completes — it post-processes the response</div>
+    </div>
+    <div class="expl" id="ex-7"></div>
+  </div>
+
+  <div class="qcard" id="qc-8">
+    <div class="qmeta"><span class="qnum">Q08</span><span class="qtag">REST API Design</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">You built REST APIs for inventory operations. A client reports that calling POST /items repeatedly with the same data creates duplicate records. What API design principle prevents this, and how do you implement it?</div>
+    <div class="opts" id="o-8">
+      <div class="opt" onclick="pick(8,'A')"><span class="ok">A</span>Use GET instead of POST for creating records — GET requests cannot create duplicates</div>
+      <div class="opt" onclick="pick(8,'B')"><span class="ok">B</span>Add a unique index on the items collection in MongoDB — the database will reject duplicates automatically</div>
+      <div class="opt" onclick="pick(8,'C')"><span class="ok">C</span>Idempotency: a repeated identical request produces the same result as a single request. Implement with: (1) client sends a unique Idempotency-Key header with each request, (2) server stores processed keys in a cache/DB, (3) if the key was already processed, return the stored response without re-executing. POST is inherently non-idempotent; this pattern adds idempotency artificially</div>
+      <div class="opt" onclick="pick(8,'D')"><span class="ok">D</span>Add a 1-second server-side delay between requests — this prevents duplicates from simultaneous calls</div>
+    </div>
+    <div class="expl" id="ex-8"></div>
+  </div>
+
+  <div class="qcard" id="qc-9">
+    <div class="qmeta"><span class="qnum">Q09</span><span class="qtag">Node.js Async</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">Your Express API fetches data from MongoDB, sends an email notification, and logs the operation — all for one request. Written naively with await in sequence, this takes 900ms. How do you optimise this?</div>
+    <div class="opts" id="o-9">
+      <div class="opt" onclick="pick(9,'A')"><span class="ok">A</span>If the email and log operations do not depend on each other, run them in parallel: const [dbResult] = await Promise.all([fetchFromMongo(), sendEmail(), logOperation()]). Operations that are independent should never be awaited sequentially</div>
+      <div class="opt" onclick="pick(9,'B')"><span class="ok">B</span>Move all database operations to a separate Node.js process using child_process.fork()</div>
+      <div class="opt" onclick="pick(9,'C')"><span class="ok">C</span>Use setImmediate() — it runs all promises simultaneously</div>
+      <div class="opt" onclick="pick(9,'D')"><span class="ok">D</span>Use setTimeout(fn, 0) to push each operation to the next event loop tick — this makes them run faster</div>
+    </div>
+    <div class="expl" id="ex-9"></div>
+  </div>
+
+  <div class="qcard" id="qc-10">
+    <div class="qmeta"><span class="qnum">Q10</span><span class="qtag">GraphQL vs REST</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">You listed GraphQL in your tools. A frontend developer complains that the REST inventory API returns 50 fields per item but the product listing page only needs 5 fields, causing slow responses. How does GraphQL specifically solve this?</div>
+    <div class="opts" id="o-10">
+      <div class="opt" onclick="pick(10,'A')"><span class="ok">A</span>GraphQL compresses the JSON response automatically, making it smaller than REST</div>
+      <div class="opt" onclick="pick(10,'B')"><span class="ok">B</span>GraphQL caches all responses in the browser, so subsequent requests are faster even with all 50 fields</div>
+      <div class="opt" onclick="pick(10,'C')"><span class="ok">C</span>GraphQL allows the client to filter results server-side using WHERE clauses in the query string</div>
+      <div class="opt" onclick="pick(10,'D')"><span class="ok">D</span>GraphQL eliminates over-fetching: the client specifies exactly which fields it needs in the query, and the server returns only those fields. query { items { id name price } } returns only those 3 fields, not all 50. It also solves under-fetching (N+1 problem) by allowing nested queries that fetch related data in one request instead of multiple REST calls</div>
+    </div>
+    <div class="expl" id="ex-10"></div>
+  </div>
+
+  <div class="qcard" id="qc-11">
+    <div class="qmeta"><span class="qnum">Q11</span><span class="qtag">Authentication & JWT</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">Your apps implement role-based authentication. In a JWT-based auth system, when a user logs in you return a JWT. How do you handle the case where a user's role changes (e.g. admin privileges revoked) while their token is still valid?</div>
+    <div class="opts" id="o-11">
+      <div class="opt" onclick="pick(11,'A')"><span class="ok">A</span>Delete the token from the client's localStorage — the server will automatically deny subsequent requests</div>
+      <div class="opt" onclick="pick(11,'B')"><span class="ok">B</span>A JWT is stateless — once issued, the server cannot invalidate it until it expires. Options: (1) Use short-lived access tokens (15 min) + a refresh token system; revoking access means invalidating the refresh token. (2) Maintain a token blocklist/blacklist in Redis — check every request against it. (3) Embed a version number in the JWT; store the current version in DB; reject tokens with old version numbers</div>
+      <div class="opt" onclick="pick(11,'C')"><span class="ok">C</span>JWTs include the user's live role from the database — they always reflect the current role</div>
+      <div class="opt" onclick="pick(11,'D')"><span class="ok">D</span>JWT tokens automatically refresh from the server every 5 minutes — role changes are picked up automatically</div>
+    </div>
+    <div class="expl" id="ex-11"></div>
+  </div>
+
+  <div class="sec"><span class="sec-pill">MongoDB & Database</span><div class="sec-line"></div><span class="sec-cnt">Q12–Q15</span></div>
+  <div class="qcard" id="qc-12">
+    <div class="qmeta"><span class="qnum">Q12</span><span class="qtag">MongoDB Aggregation</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">In your Cold Storage app you generate reports on stock movement. You need to calculate total inward stock per product per warehouse for the last 30 days. Which MongoDB feature handles this efficiently?</div>
+    <div class="opts" id="o-12">
+      <div class="opt" onclick="pick(12,'A')"><span class="ok">A</span>Use the MongoDB Aggregation Pipeline: $match (filter last 30 days), $group (group by productId + warehouseId, sum the quantity), $sort (optional). This runs entirely in MongoDB — no data is sent to Node.js before aggregation. It is faster and uses far less memory than fetching all documents and aggregating in JavaScript</div>
+      <div class="opt" onclick="pick(12,'B')"><span class="ok">B</span>Create a MongoDB view that pre-computes the totals — views update automatically when data changes</div>
+      <div class="opt" onclick="pick(12,'C')"><span class="ok">C</span>Use MongoDB's mapReduce function — it is the only way to perform multi-field grouping</div>
+      <div class="opt" onclick="pick(12,'D')"><span class="ok">D</span>Use MongoDB's find() with a JavaScript forEach loop in Node.js to calculate totals in memory</div>
+    </div>
+    <div class="expl" id="ex-12"></div>
+  </div>
+
+  <div class="qcard" id="qc-13">
+    <div class="qmeta"><span class="qnum">Q13</span><span class="qtag">MongoDB Schema Design</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">Your inventory system tracks stock items, each with a category, supplier, and multiple warehouse locations. MongoDB is schema-less but schema design still matters. When do you embed documents vs use references (like SQL foreign keys)?</div>
+    <div class="opts" id="o-13">
+      <div class="opt" onclick="pick(13,'A')"><span class="ok">A</span>Always embed all related data in one document — MongoDB performs best with no references</div>
+      <div class="opt" onclick="pick(13,'B')"><span class="ok">B</span>Embed when: data is frequently read together, the embedded data belongs exclusively to the parent, and the embedded array will not grow unboundedly (e.g. embed an item's last 5 status changes). Reference (store ObjectId) when: data is shared across multiple documents (a supplier referenced by thousands of items), the related data is large or grows without bound, or you need to query the related data independently</div>
+      <div class="opt" onclick="pick(13,'C')"><span class="ok">C</span>Always use references for all relationships — embedding causes data duplication</div>
+      <div class="opt" onclick="pick(13,'D')"><span class="ok">D</span>Embedding is only supported for arrays with fewer than 10 items — use references for larger datasets</div>
+    </div>
+    <div class="expl" id="ex-13"></div>
+  </div>
+
+  <div class="qcard" id="qc-14">
+    <div class="qmeta"><span class="qnum">Q14</span><span class="qtag">MongoDB Indexing</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">Your inventory search runs queries on the items collection filtering by warehouseId AND productCategory AND filtering by inwardDate range. The collection has 200,000 documents and queries are slow. What indexing strategy helps?</div>
+    <div class="opts" id="o-14">
+      <div class="opt" onclick="pick(14,'A')"><span class="ok">A</span>Create a compound index on the fields used in the query in the correct order: db.items.createIndex({ warehouseId: 1, productCategory: 1, inwardDate: -1 }). MongoDB can use the leftmost prefix of a compound index — so it can also serve queries on just warehouseId, or warehouseId + productCategory. Equality fields should come before range fields in a compound index</div>
+      <div class="opt" onclick="pick(14,'B')"><span class="ok">B</span>Add a single-field index on each of the three fields separately — MongoDB will combine them automatically</div>
+      <div class="opt" onclick="pick(14,'C')"><span class="ok">C</span>Add a text index on all string fields — MongoDB text indexes handle all query types</div>
+      <div class="opt" onclick="pick(14,'D')"><span class="ok">D</span>Use MongoDB Atlas Search — standard indexes do not improve filter query performance</div>
+    </div>
+    <div class="expl" id="ex-14"></div>
+  </div>
+
+  <div class="qcard" id="qc-15">
+    <div class="qmeta"><span class="qnum">Q15</span><span class="qtag">Database Transactions</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">In your warehouse system, a Stock Transfer operation moves 100 units from Warehouse A to Warehouse B. This requires: decrement stock in A AND increment stock in B. If the server crashes between the two operations, the stock count is wrong. How do you prevent this in MongoDB?</div>
+    <div class="opts" id="o-15">
+      <div class="opt" onclick="pick(15,'A')"><span class="ok">A</span>Use MongoDB multi-document transactions (supported since MongoDB 4.0 with replica sets): start a session, run both update operations within session.withTransaction(), and commit. If either operation fails, the entire transaction rolls back atomically — both updates succeed together or neither does</div>
+      <div class="opt" onclick="pick(15,'B')"><span class="ok">B</span>Use MongoDB's $inc operator — it is atomic and handles multi-document updates automatically</div>
+      <div class="opt" onclick="pick(15,'C')"><span class="ok">C</span>Run both operations inside a try/catch block — if either fails, log the error and retry manually</div>
+      <div class="opt" onclick="pick(15,'D')"><span class="ok">D</span>Perform both updates in a single MongoDB updateMany() call — this is automatically atomic across documents</div>
+    </div>
+    <div class="expl" id="ex-15"></div>
+  </div>
+
+  <div class="sec"><span class="sec-pill">CMS · BBVA · Security</span><div class="sec-line"></div><span class="sec-cnt">Q16–Q20</span></div>
+  <div class="qcard" id="qc-16">
+    <div class="qmeta"><span class="qnum">Q16</span><span class="qtag">CMS Architecture</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">The BBVA CMS project requires content editors to update financial product pages without deploying code. How does a headless CMS architecture differ from a traditional CMS, and why is it more suitable for a Next.js frontend?</div>
+    <div class="opts" id="o-16">
+      <div class="opt" onclick="pick(16,'A')"><span class="ok">A</span>Headless CMS is only suitable for blogs — it cannot handle structured financial product data</div>
+      <div class="opt" onclick="pick(16,'B')"><span class="ok">B</span>A traditional CMS (e.g. WordPress) tightly couples content storage with the presentation layer — the CMS also renders the HTML. A headless CMS (e.g. Contentful, Sanity, Strapi) stores content and exposes it via APIs (REST or GraphQL) — the presentation is completely separate. For a Next.js app: the CMS manages content, Next.js fetches it via API and renders it. Editors update content in the CMS UI; the Next.js frontend regenerates via ISR or webhooks — no deployment needed</div>
+      <div class="opt" onclick="pick(16,'C')"><span class="ok">C</span>A headless CMS removes the database layer — content is stored in flat files instead</div>
+      <div class="opt" onclick="pick(16,'D')"><span class="ok">D</span>A headless CMS is the same as a traditional CMS but without a login page</div>
+    </div>
+    <div class="expl" id="ex-16"></div>
+  </div>
+
+  <div class="qcard" id="qc-17">
+    <div class="qmeta"><span class="qnum">Q17</span><span class="qtag">Role-Based Access Control</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">The BBVA CMS has three roles: Viewer (read-only), Editor (create/edit content), Admin (full access including publishing). You need to implement this in both the frontend (hide UI elements) and backend (enforce permissions). What is the correct architecture?</div>
+    <div class="opts" id="o-17">
+      <div class="opt" onclick="pick(17,'A')"><span class="ok">A</span>Backend: store the role in the JWT payload (or fetch from DB on each request). Add a role-checking middleware that reads req.user.role and returns 403 if the role lacks permission for the endpoint. Frontend: read the role from the auth context to conditionally render UI elements. Critical: frontend checks are UX only — hiding a button does not secure the API. The backend check is the real security</div>
+      <div class="opt" onclick="pick(17,'B')"><span class="ok">B</span>Store the role in localStorage and check it on the frontend — the backend trusts the frontend's role claim</div>
+      <div class="opt" onclick="pick(17,'C')"><span class="ok">C</span>Use React's useReducer to manage role state — dispatch a SET_ROLE action when the user logs in and check it before every API call</div>
+      <div class="opt" onclick="pick(17,'D')"><span class="ok">D</span>Create separate applications for each role — Viewers use one app, Editors use another</div>
+    </div>
+    <div class="expl" id="ex-17"></div>
+  </div>
+
+  <div class="qcard" id="qc-18">
+    <div class="qmeta"><span class="qnum">Q18</span><span class="qtag">Next.js API Routes</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">In the BBVA Next.js CMS, you need a backend endpoint that accepts a POST request to publish an article — it validates the content, updates the database, and triggers a cache revalidation. Where does this logic live in a Next.js project?</div>
+    <div class="opts" id="o-18">
+      <div class="opt" onclick="pick(18,'A')"><span class="ok">A</span>Next.js is frontend-only — you need a separate Express server for all backend logic</div>
+      <div class="opt" onclick="pick(18,'B')"><span class="ok">B</span>Put all backend logic inside a useEffect hook — Next.js runs useEffect on the server during SSR</div>
+      <div class="opt" onclick="pick(18,'C')"><span class="ok">C</span>Use getServerSideProps for POST request handling — it supports both GET and POST methods</div>
+      <div class="opt" onclick="pick(18,'D')"><span class="ok">D</span>Use a Next.js API Route (pages/api/publish.js) or a Route Handler (app/api/publish/route.js in the App Router). These are serverless functions that run on the server — they can connect to databases, call external services, and use res.revalidate() to trigger ISR cache invalidation for specific pages. No separate server is needed for straightforward backend logic</div>
+    </div>
+    <div class="expl" id="ex-18"></div>
+  </div>
+
+  <div class="qcard" id="qc-19">
+    <div class="qmeta"><span class="qnum">Q19</span><span class="qtag">Frontend Security</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">The BBVA CMS displays financial content that includes user-submitted rich text (editors can include HTML). A malicious editor injects <script>document.cookie='stolen='+document.cookie</script> into an article. When a viewer opens the article, the script runs and steals their session. What is this attack and how do you prevent it?</div>
+    <div class="opts" id="o-19">
+      <div class="opt" onclick="pick(19,'A')"><span class="ok">A</span>This is Cross-Site Scripting (XSS). Prevent it by: (1) never using dangerouslySetInnerHTML with unsanitised user content in React, (2) sanitising all HTML before storing or rendering using a library like DOMPurify (strips dangerous tags/attributes), (3) implementing a Content Security Policy (CSP) header that blocks inline scripts, and (4) using HttpOnly and Secure flags on cookies so JavaScript cannot read them</div>
+      <div class="opt" onclick="pick(19,'B')"><span class="ok">B</span>This is a CSRF attack. Prevent it by adding a CSRF token to every form submission</div>
+      <div class="opt" onclick="pick(19,'C')"><span class="ok">C</span>This is a man-in-the-middle attack. Prevent it by using HTTPS everywhere</div>
+      <div class="opt" onclick="pick(19,'D')"><span class="ok">D</span>This is SQL injection. Prevent it by using parameterised queries in your MongoDB operations</div>
+    </div>
+    <div class="expl" id="ex-19"></div>
+  </div>
+
+  <div class="qcard" id="qc-20">
+    <div class="qmeta"><span class="qnum">Q20</span><span class="qtag">State Management Strategy</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">The BBVA CMS has: (1) global auth state (user, role, token), (2) server data (articles fetched from API that can go stale), (3) UI state (modal open/closed, active tab). A colleague says 'put everything in Redux.' What is the better architecture and why?</div>
+    <div class="opts" id="o-20">
+      <div class="opt" onclick="pick(20,'A')"><span class="ok">A</span>Split by concern: global auth state → Redux (persists, shared everywhere). Server data → React Query or SWR (manages fetch, caching, stale-while-revalidate, automatic refetch — Redux is poor at cache invalidation). UI state → local useState/useReducer (open modal, active tab — no one else needs to know). Mixing server cache with Redux requires writing manual invalidation logic that React Query handles automatically</div>
+      <div class="opt" onclick="pick(20,'B')"><span class="ok">B</span>Put everything in Redux — consistency is more important than optimal tool selection</div>
+      <div class="opt" onclick="pick(20,'C')"><span class="ok">C</span>Use React Context for all state — it is built into React and eliminates the need for Redux or React Query</div>
+      <div class="opt" onclick="pick(20,'D')"><span class="ok">D</span>Use only useState in every component — global state management adds unnecessary complexity</div>
+    </div>
+    <div class="expl" id="ex-20"></div>
+  </div>
+
+  <div class="sec"><span class="sec-pill">System Design & Production</span><div class="sec-line"></div><span class="sec-cnt">Q21–Q25</span></div>
+  <div class="qcard" id="qc-21">
+    <div class="qmeta"><span class="qnum">Q21</span><span class="qtag">Error Handling</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">Your inventory Express.js backend throws unhandled promise rejections in async route handlers, causing the Node.js server to crash. What is the correct pattern to handle errors in async Express routes?</div>
+    <div class="opts" id="o-21">
+      <div class="opt" onclick="pick(21,'A')"><span class="ok">A</span>Use process.on('unhandledRejection') to catch all async errors globally and send a response</div>
+      <div class="opt" onclick="pick(21,'B')"><span class="ok">B</span>Wrap every route handler in a global try/catch that catches all errors before they reach the route</div>
+      <div class="opt" onclick="pick(21,'C')"><span class="ok">C</span>Create an asyncHandler wrapper: const asyncHandler = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next). Wrap every async route with it. When an error is thrown, it is passed to next(err), which triggers Express's error middleware (app.use((err, req, res, next) => ...)). Centralise error formatting and HTTP status codes in the error middleware</div>
+      <div class="opt" onclick="pick(21,'D')"><span class="ok">D</span>Add async: true to the Express route definition — this enables built-in async error handling</div>
+    </div>
+    <div class="expl" id="ex-21"></div>
+  </div>
+
+  <div class="qcard" id="qc-22">
+    <div class="qmeta"><span class="qnum">Q22</span><span class="qtag">API Pagination</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">Your inventory API returns all 50,000 stock records in one response. The frontend freezes and the response takes 8 seconds. What pagination strategy do you implement, and what are the trade-offs between offset pagination and cursor pagination?</div>
+    <div class="opts" id="o-22">
+      <div class="opt" onclick="pick(22,'A')"><span class="ok">A</span>Return all records but compress the response with gzip — this makes large responses acceptable</div>
+      <div class="opt" onclick="pick(22,'B')"><span class="ok">B</span>Offset pagination (page=2&limit=20): easy to implement with MongoDB skip/limit, supports jumping to any page. Problem: slow on large collections (MongoDB still scans skipped documents) and inconsistent results if records are inserted/deleted between page requests. Cursor pagination (cursor=lastItemId): uses the last item's ID as a pointer — next query fetches items after that ID. Fast on large collections (uses the _id index), consistent results, but cannot jump to arbitrary pages</div>
+      <div class="opt" onclick="pick(22,'C')"><span class="ok">C</span>Offset and cursor pagination are identical in performance — choose based on UI preference only</div>
+      <div class="opt" onclick="pick(22,'D')"><span class="ok">D</span>Use WebSockets to stream all 50,000 records continuously — the frontend renders them as they arrive</div>
+    </div>
+    <div class="expl" id="ex-22"></div>
+  </div>
+
+  <div class="qcard" id="qc-23">
+    <div class="qmeta"><span class="qnum">Q23</span><span class="qtag">MERN Deployment</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">You are deploying the BBVA MERN application to production. The React frontend, Node.js/Express backend, and MongoDB are currently all on one VM. What are the risks of this architecture and how should production deployment be structured?</div>
+    <div class="opts" id="o-23">
+      <div class="opt" onclick="pick(23,'A')"><span class="ok">A</span>Risks: single point of failure (one VM crash takes down everything), cannot scale services independently (frontend gets more traffic than backend — you cannot scale just the backend), no resource isolation (a memory leak in Node.js competes with MongoDB's RAM). Production architecture: frontend → static hosting (Vercel, Netlify, or CDN). Backend → containerised (Docker) on a managed platform or Kubernetes. MongoDB → managed service (MongoDB Atlas). Each scales independently and failures are isolated</div>
+      <div class="opt" onclick="pick(23,'B')"><span class="ok">B</span>Single-VM deployment is the recommended production architecture — it simplifies network communication between services</div>
+      <div class="opt" onclick="pick(23,'C')"><span class="ok">C</span>The main risk is that MongoDB and Node.js use the same port — configure them on different ports to fix this</div>
+      <div class="opt" onclick="pick(23,'D')"><span class="ok">D</span>Single-VM is fine for production as long as the VM has enough RAM and CPU — architecture separation is only needed for enterprise applications</div>
+    </div>
+    <div class="expl" id="ex-23"></div>
+  </div>
+
+  <div class="qcard" id="qc-24">
+    <div class="qmeta"><span class="qnum">Q24</span><span class="qtag">Performance Monitoring</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">After deploying the inventory app, users report intermittent slow responses. You have no visibility into what is causing it. What tools and metrics would you implement to diagnose production performance issues in a Node.js/Express application?</div>
+    <div class="opts" id="o-24">
+      <div class="opt" onclick="pick(24,'A')"><span class="ok">A</span>Restart the server every hour — most performance issues resolve themselves after a restart</div>
+      <div class="opt" onclick="pick(24,'B')"><span class="ok">B</span>Use Chrome DevTools Performance tab — it monitors Node.js server performance remotely</div>
+      <div class="opt" onclick="pick(24,'C')"><span class="ok">C</span>Add console.log statements throughout the code and read the server logs manually</div>
+      <div class="opt" onclick="pick(24,'D')"><span class="ok">D</span>Implement: (1) APM (Application Performance Monitoring) — tools like New Relic, Datadog, or open-source OpenTelemetry to trace request duration, identify slow endpoints, and see DB query times. (2) Structured logging (Winston/Pino) with request ID, duration, and status code on every request. (3) Health check endpoints (/health, /metrics) exposed to a monitoring tool. (4) MongoDB Explain Plans on slow queries. (5) Alerts on p95/p99 response time thresholds. Console.log (A) is not sufficient — logs need structure, persistence, and searchability</div>
+    </div>
+    <div class="expl" id="ex-24"></div>
+  </div>
+
+  <div class="qcard" id="qc-25">
+    <div class="qmeta"><span class="qnum">Q25</span><span class="qtag">Code Review & Team</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">You worked in a 5-member Agile team with code reviews. A junior developer submits a PR with hardcoded API URLs, no error handling, and SQL-injection-equivalent MongoDB query construction using string concatenation. As the reviewer, how do you handle this?</div>
+    <div class="opts" id="o-25">
+      <div class="opt" onclick="pick(25,'A')"><span class="ok">A</span>Schedule a 1-hour meeting to explain every best practice — code review comments are too brief for teaching</div>
+      <div class="opt" onclick="pick(25,'B')"><span class="ok">B</span>Fix the issues yourself in the PR — it is faster than explaining them to the junior developer</div>
+      <div class="opt" onclick="pick(25,'C')"><span class="ok">C</span>Request changes with specific, constructive comments: (1) 'Move API URLs to environment variables (process.env.API_URL) — hardcoding breaks different environments.' (2) 'Add try/catch and pass errors to next() — unhandled rejections crash the server.' (3) 'Never concatenate user input into MongoDB queries — use parameterised queries or Mongoose sanitisation to prevent NoSQL injection.' Link to examples for each. Block the merge until issues are resolved</div>
+      <div class="opt" onclick="pick(25,'D')"><span class="ok">D</span>Approve the PR with a comment — the developer will learn from production issues</div>
+    </div>
+    <div class="expl" id="ex-25"></div>
+  </div>
+
+
+  <div class="results" id="resultsPanel">
+    <div class="rtitle">Assessment <span>Complete</span></div>
+    <div class="rsub" id="rSub"></div>
+    <div class="sgrid">
+      <div class="sbox tc"><div class="sv" id="rScore">—</div><div class="sl">Score</div></div>
+      <div class="sbox gc"><div class="sv" id="rPct">—</div><div class="sl">Accuracy</div></div>
+      <div class="sbox ac"><div class="sv" id="rTime">—</div><div class="sl">Time</div></div>
+      <div class="sbox rc"><div class="sv" id="rWrong">—</div><div class="sl">Incorrect</div></div>
+    </div>
+    <div class="verdict" id="verdBox"></div>
+    <div class="sb-head">Score by section</div>
+    <div id="secBD"></div>
+  </div>
+</main>
+
+<div class="fbar">
+  <div class="fstats">
+    <span>ANSWERED <span id="fA">0</span>/25</span>
+    <span>CORRECT <span id="fC">0</span></span>
+    <span class="ft" id="fT">35:00</span>
+  </div>
+  <button class="btn-sub" onclick="submitAll()">SUBMIT &rarr; RESULTS</button>
+</div>
+
+<script>
+const ANS={1:'A',2:'C',3:'C',4:'C',5:'D',6:'D',7:'C',8:'C',9:'A',10:'D',11:'B',12:'A',13:'B',14:'A',15:'A',16:'B',17:'A',18:'D',19:'A',20:'A',21:'C',22:'B',23:'A',24:'D',25:'C'};
+const EX={1:`React.lazy(() => import('./Component')) creates a lazy-loaded component. React downloads that JS bundle only when the component actually renders for the first time. Suspense provides a fallback UI (spinner, skeleton) while the bundle loads. This is distinct from React.memo, which prevents re-renders — it has nothing to do with code splitting or lazy loading.`,2:`useSelector runs the selector on every dispatch and compares the result with the previous result using strict equality (===). If the reference is the same, no re-render occurs. If you return a new object on each call (e.g. selecting and transforming an array), you get unnecessary re-renders. createSelector memoises the result — it only recomputes if the input selectors return new values, preventing the re-render.`,3:`A ProtectedRoute wrapper reads auth state and either renders the children or redirects. The replace prop on <Navigate> is important — without it, the user can press Back and return to the protected page. The auth check should be based on a persisted token or session (localStorage, Redux persisted state), not just an in-memory variable that resets on page refresh.`,4:`Redux reducers must be pure and synchronous — they cannot contain API calls. createAsyncThunk wraps an async function and automatically dispatches the three lifecycle actions. In extraReducers you handle each: pending sets loading state, fulfilled updates the data, rejected sets the error. This is the Redux Toolkit pattern that replaced manual action creators + thunk middleware setup.`,5:`Virtual scrolling (windowing) is the correct solution for long lists. React.memo and useCallback prevent unnecessary re-renders but cannot help when 500 complex DOM nodes all exist simultaneously — the browser still has to render and paint them all. react-window maintains a fixed number of DOM nodes regardless of list size. key={index} is an antipattern for lists with reordering and has no performance benefit for rendering speed.`,6:`ISR is the correct balance for CMS content. getStaticProps (A) never updates post-deploy. getServerSideProps (B) is always fresh but slower — every request waits for the data fetch before rendering. ISR serves the cached static page instantly (fast TTFB) and triggers background regeneration after the revalidate window. The next visitor after regeneration sees the updated content. useEffect (D) delays content display until after hydration — bad for SEO.`,7:`Express processes requests through a pipeline in registration order. app.use(authMiddleware) before route definitions means every request is authenticated first. Registering a route before the auth middleware means auth never runs for that route — a common security bug. next() passes control to the next middleware; calling res.send() without next() terminates the pipeline. Error middleware takes (err, req, res, next) — four parameters.`,8:`Idempotency keys are the correct REST API pattern for non-idempotent operations. MongoDB unique indexes (D) are also a valid database-level safety net but they throw errors rather than gracefully returning the original response — and they do not handle the case where the first request failed mid-processing. Idempotency keys give the client a clean retry mechanism. HTTP methods PUT and DELETE are naturally idempotent; POST is not.`,9:`Promise.all runs independent promises concurrently. If fetchFromMongo takes 500ms, sendEmail takes 300ms, and logOperation takes 100ms sequentially that is 900ms total. With Promise.all they overlap: total time = max(500, 300, 100) = 500ms. Use Promise.allSettled if you want all to complete even if some fail. Node.js is single-threaded but I/O operations (network, disk) are handled by libuv's thread pool — they genuinely run concurrently.`,10:`Over-fetching (getting more data than needed) and under-fetching (needing multiple requests to get all required data) are GraphQL's core problems to solve. A single GraphQL query can fetch a product with its category, supplier, and recent orders — things that would require 4 separate REST calls. Trade-off: GraphQL requires more complex backend setup, caching is harder (no simple HTTP cache on POST requests), and N+1 query problems must be solved with DataLoader.`,11:`JWT statelessness is its strength (no server-side session storage) and its weakness (cannot be revoked). Deleting from localStorage (C) only works if the user cooperates — a malicious user keeping the token can still use it until expiry. The short-lived access token + refresh token pattern is the industry standard: the access token expires in 15 minutes, so role changes take effect within that window without server-side state.`,12:`The Aggregation Pipeline is MongoDB's data processing engine — stages like $match, $group, $sort, $lookup, $project transform documents server-side. Fetching all documents to Node.js (A) is the antipattern: for millions of records this causes memory exhaustion and extreme latency. mapReduce (D) is deprecated in favour of the aggregation pipeline. MongoDB views (C) do not auto-update like materialised views — they run the pipeline on each query.`,13:`The embed vs reference decision is the core MongoDB schema design problem. Embedding optimises for read performance (one query gets everything) but causes duplication and update anomalies for shared data. For example, embedding a supplier's full address in 10,000 item documents means updating the address requires 10,000 document updates. Reference the supplier with an ObjectId + $lookup. The 16MB document size limit also constrains unbounded embedding.`,14:`Compound indexes are more efficient than multiple single-field indexes. MongoDB's ESR rule: Equality fields first, Sort fields next, Range fields last. A compound index on {warehouseId:1, productCategory:1, inwardDate:-1} supports queries filtering on warehouseId+productCategory+inwardDate range, or just warehouseId, or warehouseId+productCategory. Three separate indexes mean MongoDB must do an index intersection — less efficient and not always chosen by the query planner.`,15:`$inc is atomic at the single-document level, not across multiple documents. Multi-document atomicity requires transactions. MongoDB transactions require a replica set (even a single-node replica set in development). For a warehouse transfer this is critical: without transactions, a crash between the debit and credit leaves the inventory in an inconsistent state. SQL databases have had transactions for decades — MongoDB added multi-document transactions in v4.0.`,16:`Headless CMS decouples content from presentation, making it ideal for multi-channel delivery (web, mobile, API) and modern frontend frameworks. For BBVA: financial product data (rates, terms, disclosures) lives in the CMS, editors update it without touching code, Next.js fetches via API and serves via ISR. Webhooks from the CMS trigger Next.js revalidation when content changes — content is live within seconds of editing.`,17:`Frontend RBAC is UX (show/hide UI); backend RBAC is security. Never trust the frontend. Even if you hide the Delete button for Viewers, a malicious user can call DELETE /content/123 directly with a valid token if the backend does not check the role. The backend middleware pattern: const requireRole = (roles) => (req, res, next) => roles.includes(req.user.role) ? next() : res.status(403).json({error:'Forbidden'}). Apply it per route.`,18:`Next.js API routes are a built-in serverless backend. They run in Node.js on the server, not in the browser. In the App Router, Route Handlers replace API routes with a cleaner syntax. For cache revalidation: call revalidatePath('/articles/[slug]') inside the handler after updating the database — this triggers ISR regeneration for that specific page. getServerSideProps only handles GET requests for page rendering — it cannot process POST bodies.`,19:`XSS (Cross-Site Scripting) allows attackers to inject client-side scripts into pages viewed by others. In a financial application like BBVA, XSS can steal session tokens, perform actions on behalf of users, and access sensitive data. DOMPurify is the standard sanitisation library — it parses the HTML and strips any elements or attributes that could execute JavaScript. React by default escapes all JSX content (preventing XSS), but dangerouslySetInnerHTML bypasses this protection — hence the name.`,20:`Different state has different characteristics. Auth state is global and persistent — Redux with persistence is correct. Server state has cache, staleness, loading, error, and refetch semantics — React Query/SWR model this far better than Redux (which is designed for client state). UI state is local and ephemeral — local useState is cleanest. Using Redux for server data requires writing manually what React Query does automatically: cache invalidation, background refetch, loading states, pagination.`,21:`Express does not automatically handle rejected promises in async route handlers (pre-Express 5). If an async function throws and you do not catch it, the promise rejection is unhandled and crashes the process. The asyncHandler wrapper catches the rejection and passes it to next(err), which triggers the error middleware. Express 5 (now stable) handles this automatically. Centralised error middleware is the correct pattern: format the error, log it, and return the appropriate HTTP status code.`,22:`Both patterns have valid use cases. Offset pagination is intuitive for numbered page controls (Page 1, 2, 3) but degrades with large offsets — skip(40000).limit(20) still scans 40,000 documents. Cursor pagination is efficient at any depth but only supports next/prev navigation. For an inventory admin interface with numbered pages and manageable data: offset is fine with proper indexing. For infinite scroll or very large datasets: cursor pagination is correct.`,23:`The single-VM architecture is fine for development but carries serious production risks. For BBVA (a financial application): independent scaling matters (backend may need 5 instances during market hours), fault isolation matters (DB crash should not take down the API), and managed databases (Atlas) provide automatic backups, point-in-time recovery, and monitoring that a self-managed MongoDB does not.`,24:`Production observability requires three pillars: logs (structured, searchable), metrics (response time percentiles, error rates, throughput), and traces (distributed request tracing across services). Console.log produces unstructured output that cannot be queried or alerted on. APM tools like Datadog or New Relic instrument your Express app with minimal code changes and surface which endpoints, DB queries, and external calls are causing slow responses.`,25:`Constructive code review comments are specific, actionable, and explain the WHY (security, reliability, maintainability). Approving with a note (A) is negligent — security issues and crash bugs should never reach production. Fixing it yourself (C) robs the developer of learning and creates dependency. PR comments with links to documentation and examples are the right balance: asynchronous, specific, and educational. NoSQL injection is a real attack vector — MongoDB query operators like $where can execute arbitrary JavaScript if user input is unsanitised.`};
+const SECS=[{name:`React · Redux · Next.js`,qs:[1,2,3,4,5,6]},{name:`Node.js · Express · API Design`,qs:[7,8,9,10,11]},{name:`MongoDB & Database`,qs:[12,13,14,15]},{name:`CMS · BBVA · Security`,qs:[16,17,18,19,20]},{name:`System Design & Production`,qs:[21,22,23,24,25]}];
+let secs=2100,usedSecs=0,tInt=null,tStarted=false,submitted=false;
+const picks={},locked={};let corr=0,ansTotal=0;
+function startTimer(){
+  if(tStarted)return;tStarted=true;
+  tInt=setInterval(()=>{
+    secs--;usedSecs++;
+    const m=String(Math.floor(secs/60)).padStart(2,'0'),s=String(secs%60).padStart(2,'0'),d=m+':'+s;
+    document.getElementById('tmrDisp').textContent=d;
+    document.getElementById('fT').textContent=d;
+    document.getElementById('tmrDisp').className='tmr'+(secs<300?' urgent':'');
+    if(secs<=0){clearInterval(tInt);submitAll(true);}
+  },1000);
+}
+document.addEventListener('click',startTimer,{once:true});
+document.addEventListener('keydown',startTimer,{once:true});
+function pick(n,choice){
+  if(locked[n]||submitted)return;
+  locked[n]=true;picks[n]=choice;ansTotal++;
+  const correct=ANS[n],isOk=choice===correct;
+  if(isOk)corr++;
+  const opts=document.querySelectorAll('#o-'+n+' .opt');
+  ['A','B','C','D'].forEach((k,i)=>{
+    opts[i].classList.add('locked');
+    if(k===choice&&isOk)opts[i].classList.add('correct-pick');
+    if(k===choice&&!isOk)opts[i].classList.add('wrong-pick');
+    if(k===correct&&!isOk)opts[i].classList.add('reveal-right');
+  });
+  document.getElementById('qc-'+n).classList.add(isOk?'answered':'incorrect');
+  const ex=document.getElementById('ex-'+n);
+  ex.innerHTML='<strong>'+(isOk?'✓ Correct':'✗ Incorrect — Correct: '+correct)+'</strong> — '+EX[n];
+  ex.className='expl show '+(isOk?'expl-ok':'expl-bad');
+  document.getElementById('fA').textContent=ansTotal;
+  document.getElementById('fC').textContent=corr;
+  document.getElementById('progF').style.width=(ansTotal/25*100)+'%';
+  if(ansTotal===25&&!submitted)setTimeout(()=>submitAll(),500);
+}
+function submitAll(auto=false){
+  if(submitted)return;submitted=true;clearInterval(tInt);usedSecs=2100-secs;
+  const panel=document.getElementById('resultsPanel');panel.classList.add('show');
+  document.getElementById('rScore').textContent=corr+'/25';
+  document.getElementById('rPct').textContent=Math.round(corr/25*100)+'%';
+  document.getElementById('rWrong').textContent=ansTotal-corr;
+  const um=String(Math.floor(usedSecs/60)).padStart(2,'0'),us=String(usedSecs%60).padStart(2,'0');
+  document.getElementById('rTime').textContent=um+':'+us;
+  const pct=corr/25*100;
+  const vb=document.getElementById('verdBox');
+  if(pct>=80){vb.className='verdict v-ex';vb.textContent='⚡ Excellent — Strong MERN depth across React/Redux, MongoDB, Next.js, and security. Well-suited for the BBVA CMS Full-Stack role.';}
+  else if(pct>=65){vb.className='verdict v-good';vb.textContent='✓ Good — Solid production MERN experience. Review the areas where you dropped marks — especially MongoDB transactions, Next.js ISR, and XSS prevention.';}
+  else if(pct>=50){vb.className='verdict v-ok';vb.textContent='◎ Developing — Core MERN knowledge present but gaps in production-level specifics. Focus on MongoDB aggregation, JWT revocation patterns, and Next.js data fetching strategies.';}
+  else{vb.className='verdict v-try';vb.textContent='↺ Review Needed — Revisit Redux async patterns, MongoDB indexing strategy, Express error handling, and frontend security fundamentals before the interview.';}
+  document.getElementById('rSub').textContent=ansTotal+' of 25 answered  ·  '+corr+' correct  ·  '+(ansTotal-corr)+' incorrect';
+  const bd=document.getElementById('secBD');
+  bd.innerHTML=SECS.map(sec=>{
+    const got=sec.qs.filter(q=>picks[q]===ANS[q]).length;
+    const p=Math.round(got/sec.qs.length*100);
+    const c=p>=80?'#14B8A6':p>=60?'#10B981':p>=40?'#F59E0B':'#EF4444';
+    return '<div class="sb-row"><div class="sb-name">'+sec.name+'</div><div class="sb-track"><div class="sb-fill" style="width:'+p+'%;background:'+c+'"></div></div><div class="sb-num">'+got+'/'+sec.qs.length+'</div></div>';
+  }).join('');
+  panel.scrollIntoView({behavior:'smooth',block:'start'});
+}
+</script>
+</body>
+</html>
