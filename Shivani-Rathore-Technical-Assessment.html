@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Technical Assessment — Shivani Rathore — UI/UX &amp; Frontend</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#12161C; --ink-2:#454E5C; --ink-3:#7A8494;
+  --paper:#EDF0F4; --surface:#FFFFFF; --line:#D3DAE3;
+  --core:#1F4E79; --stretch:#9A5B08;
+  --pass:#0E6B5E; --fail:#9E2B25;
+  --sans:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px 80px}
+.masthead{border-bottom:2px solid var(--ink);padding:34px 0 18px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin:0 0 10px}
+.masthead h1{font-size:clamp(26px,4.4vw,38px);line-height:1.1;font-weight:700;letter-spacing:-.02em;margin:0 0 6px}
+.masthead .sub{color:var(--ink-2);margin:0;font-size:15px}
+.strip{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--line);background:var(--surface)}
+.strip .cell{flex:1 1 150px;padding:12px 16px;border-right:1px solid var(--line)}
+.strip .cell:last-child{border-right:0}
+.strip .k{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:block}
+.strip .v{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--ink)}
+#clock.warn{color:var(--fail)}
+.tracks{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
+.track{background:var(--surface);padding:14px 16px}
+.track .tlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+.dot.core{background:var(--core)}
+.dot.stretch{background:var(--stretch)}
+.track .tdesc{font-size:13px;color:var(--ink-2);line-height:1.45}
+.progress{height:4px;background:var(--line);position:sticky;top:0;z-index:20}
+.progress .bar{height:100%;width:0;background:var(--ink);transition:width .25s ease}
+.card{background:var(--surface);border:1px solid var(--line);border-top:0;padding:26px 26px 22px}
+.qhead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.qnum{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink-3)}
+.badge{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border:1px solid;border-radius:2px}
+.badge.core{color:var(--core);border-color:var(--core)}
+.badge.stretch{color:var(--stretch);border-color:var(--stretch)}
+.section-name{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.qtext{font-size:18px;line-height:1.45;font-weight:500;margin:12px 0 18px}
+.opts{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.opt{display:flex;gap:12px;align-items:center;border:1px solid var(--line);background:var(--surface);padding:13px 15px;cursor:pointer;text-align:left;font:inherit;color:inherit;border-radius:3px;transition:border-color .12s,background .12s;width:100%}
+.opt:hover{border-color:var(--ink-3)}
+.opt:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.opt .letter{font-family:var(--mono);font-weight:600;font-size:13px;color:var(--ink-3);flex:none}
+.opt.sel{border-color:var(--ink);background:#F6F8FA;box-shadow:inset 0 0 0 1px var(--ink)}
+.opt.sel .letter{color:var(--ink)}
+.opt[disabled]{cursor:default}
+.opt.correct{border-color:var(--pass);background:#F0F7F5}
+.opt.correct .letter{color:var(--pass)}
+.opt.wrong{border-color:var(--fail);background:#FCF2F1}
+.opt.wrong .letter{color:var(--fail)}
+.mark{margin-left:auto;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;flex:none}
+.mark.ok{color:var(--pass)}
+.mark.no{color:var(--fail)}
+.rationale{margin-top:16px;border:1px dashed var(--line);padding:13px 15px;background:var(--paper)}
+.rationale .rlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:5px}
+.rationale p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.5}
+.nav{display:flex;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-top:0;padding:16px 26px;flex-wrap:wrap}
+button.btn{font-family:var(--sans);font-size:14px;font-weight:600;padding:10px 18px;border-radius:3px;cursor:pointer;border:1px solid var(--ink);background:var(--surface);color:var(--ink);transition:background .12s,color .12s}
+button.btn:hover:not(:disabled){background:var(--ink);color:var(--surface)}
+button.btn.primary{background:var(--ink);color:var(--surface)}
+button.btn:disabled{opacity:.35;cursor:not-allowed}
+button.btn:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.nav .spacer{margin-left:auto}
+.navnote{font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+.grid{display:flex;flex-wrap:wrap;gap:5px;background:var(--surface);border:1px solid var(--line);border-top:0;padding:16px 26px 20px}
+.gcell{width:32px;height:32px;font-family:var(--mono);font-size:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink-3);cursor:pointer;border-radius:2px;padding:0}
+.gcell:hover{border-color:var(--ink-3)}
+.gcell.answered{background:#E6EBF1;color:var(--ink);font-weight:600;border-color:#B6C1CF}
+.gcell.here{border-color:var(--ink);border-width:2px;color:var(--ink);font-weight:600}
+.gcell.st{border-bottom:3px solid var(--stretch)}
+.result{background:var(--surface);border:1px solid var(--line);border-top:0;padding:28px 26px}
+.result h2{font-size:24px;margin:0 0 4px;letter-spacing:-.01em}
+.result .rsub{color:var(--ink-2);font-size:14px;margin:0 0 24px}
+.readout{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:22px}
+.readout .pane{background:var(--surface);padding:18px}
+.readout .plabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.readout .pscore{font-family:var(--mono);font-size:34px;font-weight:600;line-height:1;letter-spacing:-.02em}
+.readout .pof{font-family:var(--mono);font-size:13px;color:var(--ink-3);margin-top:5px}
+.meter{height:6px;background:var(--line);margin-top:12px;border-radius:3px;overflow:hidden}
+.meter i{display:block;height:100%;width:0;transition:width .5s ease}
+.meter i.core{background:var(--core)}
+.meter i.stretch{background:var(--stretch)}
+table.bd{width:100%;border-collapse:collapse;margin-bottom:22px;font-size:14px}
+table.bd th,table.bd td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+table.bd th{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);border-bottom:1px solid var(--ink)}
+table.bd td.num{font-family:var(--mono);text-align:right;white-space:nowrap}
+table.bd tr.stretch-row td:first-child{border-left:3px solid var(--stretch);padding-left:10px}
+table.bd tr.core-row td:first-child{border-left:3px solid var(--core);padding-left:10px}
+.verdict{border:1px solid var(--ink);padding:18px 20px;margin-bottom:22px}
+.verdict .vlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:7px}
+.verdict h3{margin:0 0 8px;font-size:17px}
+.verdict p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.55}
+.gapbox{background:var(--paper);border-left:3px solid var(--stretch);padding:16px 18px;margin-bottom:22px}
+.gapbox .vlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--stretch);margin-bottom:8px}
+.gapbox ul{margin:0;padding-left:18px;font-size:14px;color:var(--ink-2)}
+.gapbox li{margin-bottom:6px}
+.footer{font-family:var(--mono);font-size:11px;color:var(--ink-3);padding:18px 0 0;text-align:center;letter-spacing:.04em}
+@media (max-width:640px){
+  .tracks,.readout{grid-template-columns:1fr}
+  .card,.nav,.grid,.result{padding-left:18px;padding-right:18px}
+  .strip .cell{flex:1 1 50%;border-bottom:1px solid var(--line)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Aavya · Technical Screening</p>
+    <h1>UI/UX Designer — with frontend implementation</h1>
+    <p class="sub">Candidate: Shivani Rathore · ~3 yrs · Bestpeers Infosystem · design craft and code depth scored separately</p>
+  </header>
+
+  <div class="strip">
+    <div class="cell"><span class="k">Questions</span><span class="v" id="qcount">36</span></div>
+    <div class="cell"><span class="k">Time</span><span class="v" id="clock">50:00</span></div>
+    <div class="cell"><span class="k">Answered</span><span class="v" id="answered">0 / 36</span></div>
+    <div class="cell"><span class="k">Scoring</span><span class="v">Two-track</span></div>
+  </div>
+
+  <div class="tracks">
+    <div class="track">
+      <div class="tlabel"><span class="dot core"></span>Design craft and markup</div>
+      <div class="tdesc">Research and usability, information architecture, design systems and handoff, WCAG accessibility, CSS and responsive layout, semantic HTML, and Core Web Vitals. This is what she claims and should be strong.</div>
+    </div>
+    <div class="track">
+      <div class="tlabel"><span class="dot stretch"></span>Frontend engineering depth</div>
+      <div class="tdesc">React beyond presentational components, TypeScript, state and data handling. Her resume qualifies React as UI components only, so this track answers whether she can ship features or only build the pieces.</div>
+    </div>
+  </div>
+
+  <main id="stage"></main>
+
+  <div class="nav" id="nav">
+    <button class="btn" id="prev">Previous</button>
+    <button class="btn" id="next">Next</button>
+    <span class="spacer"></span>
+    <span class="navnote" id="navnote"></span>
+    <button class="btn primary" id="submit">Finish and score</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <p class="footer">Answers are scored on submit. Nothing is transmitted — this file runs entirely in the browser.</p>
+</div>
+
+<script>
+const QUESTIONS = [
+
+/* ===== Research and usability ===== */
+{s:"Research · Methods",t:"core",
+ q:"What is the difference between usability testing and A/B testing?",
+ o:["Two names for the same practice","Usability testing observes a few users to learn why something fails; A/B testing measures which variant performs better at scale without explaining why","A/B testing is qualitative and usability testing is quantitative","Usability testing requires a statistically significant sample"],
+ a:1,
+ e:"She claims both. The distinction is that one produces explanations and the other produces evidence \u2014 and they answer different questions. Anyone who has run both knows you need the qualitative round to interpret the quantitative result."},
+
+{s:"Research · Sample size",t:"core",
+ q:"How many participants does a qualitative usability test typically need to surface most issues?",
+ o:["One or two is sufficient","Around five per distinct user group, with sharply diminishing returns beyond that","At least fifty for reliable findings","Two hundred or more"],
+ a:1,
+ e:"The classic finding, and the practical answer to the objection that research takes too long. Someone who says fifty has confused usability testing with survey work."},
+
+{s:"Research · Information architecture",t:"core",
+ q:"What does information architecture actually cover?",
+ o:["The visual layout and spacing of a page","How content is organised, labelled and related so people can find and understand it","The database schema behind the product","The token structure of a design system"],
+ a:1,
+ e:"She lists information architecture first in her summary. The answer should reference structure, labelling and findability rather than layout."},
+
+{s:"Research · Artefacts",t:"core",
+ q:"A user flow and a wireframe answer different questions. Which?",
+ o:["They are the same artefact at different fidelities","A flow maps the sequence of steps and decisions to complete a task; a wireframe shows the structure of a single screen","A wireframe includes colour and a flow does not","A flow is high fidelity and a wireframe is low fidelity"],
+ a:1,
+ e:"Basic vocabulary for the role, and she produced both on the fintech onboarding work."},
+
+{s:"Research · Applied",t:"core",
+ q:"A fintech onboarding flow has high abandonment during KYC. What is your first move?",
+ o:["Redesign the visual treatment to feel more trustworthy","Find exactly where in the funnel people leave, then investigate why at that specific step","Add reassurance copy at every step","Collapse all fields onto a single screen"],
+ a:1,
+ e:"She designed KYC and UPI journeys on QuickPay and claims a 30 percent reduction in projected drop-off. Measure where before asking why \u2014 anyone who jumps to a solution has not done the work they describe."},
+
+/* ===== Design systems and handoff ===== */
+{s:"Design systems · Definition",t:"core",
+ q:"What makes a design system more than a component library?",
+ o:["A larger number of components","Shared tokens, usage rules, documentation and governance \u2014 how and when to use something, not only what exists","Being maintained in Figma rather than code","Supporting both light and dark themes"],
+ a:1,
+ e:"She established a reusable component library adopted across three products. This question asks whether she also built the rules around it, which is the difference between a library and a system."},
+
+{s:"Design systems · Tokens",t:"core",
+ q:"What are design tokens for?",
+ o:["Naming and organising layers in a design file","Named design decisions \u2014 colour, spacing, type \u2014 stored once and consumed by both design and code, so a change propagates to both","A licensing mechanism for design assets","Another name for component variants"],
+ a:1,
+ e:"Tokens are the mechanism that makes design-to-development handoff stop being a translation exercise. Directly relevant to her stated handoff time reduction."},
+
+{s:"Figma · Auto Layout",t:"core",
+ q:"Figma Auto Layout maps most directly onto which CSS concept?",
+ o:["CSS Grid","Flexbox \u2014 direction, gap, padding, alignment and resizing behaviour","Absolute positioning","Float-based layout"],
+ a:1,
+ e:"She lists Auto Layout explicitly. A designer who understands it as flexbox produces designs that survive implementation; one who does not produces designs developers quietly rebuild."},
+
+{s:"Handoff · Collaboration",t:"core",
+ q:"A developer says part of your design cannot be built as specified. Best response?",
+ o:["Hold the line \u2014 the design was signed off","Ask what the constraint is, then work out together what the design is protecting and what can flex","Escalate to the product manager for a decision","Simplify it immediately to avoid friction"],
+ a:1,
+ e:"She claims design QA in sprints and cross-functional collaboration. The answer that matters separates the intent of a design from its specification."},
+
+/* ===== Accessibility ===== */
+{s:"Accessibility · Contrast",t:"core",
+ q:"What is the WCAG AA minimum contrast ratio for normal body text?",
+ o:["3 to 1","4.5 to 1","7 to 1","2 to 1"],
+ a:1,
+ e:"She lists WCAG accessibility as a skill. This is the single most-used number in the guidelines and should be immediate \u2014 a miss here undermines the whole claim."},
+
+{s:"Accessibility · Contrast",t:"core",
+ q:"And for large text, meaning 18pt or 14pt bold and above?",
+ o:["4.5 to 1, the same as body text","3 to 1","7 to 1","No minimum applies to large text"],
+ a:1,
+ e:"The second number, and the one people who have only run an automated checker tend not to know."},
+
+{s:"Accessibility · Forms",t:"core",
+ q:"A form uses placeholder text instead of visible labels. What is wrong with that?",
+ o:["Nothing, provided the placeholder contrast passes","It disappears once typing starts, is not reliably announced by assistive technology, and usually fails contrast \u2014 a persistent visible label is required","It is only a problem on small screens","It is acceptable if an aria-label is also present"],
+ a:1,
+ e:"One of the most common accessibility failures in production interfaces, and directly relevant to the KYC and payment forms she designed."},
+
+{s:"Accessibility · Interactive elements",t:"core",
+ q:"A div with a click handler is styled to look like a button. What is missing?",
+ o:["Nothing, as long as it looks and behaves like a button visually","Keyboard focusability, an accessible role and name, and Enter and Space key handling \u2014 all of which a real button element provides","Only an aria-label","Only a tabindex attribute"],
+ a:1,
+ e:"The question that distinguishes accessibility as a checklist from accessibility as understanding. Adding tabindex alone gets focus but not keyboard activation."},
+
+{s:"Accessibility · Focus",t:"core",
+ q:"A design removes the default focus outline because it looks untidy. What is the consequence?",
+ o:["None \u2014 it is a purely visual default","Keyboard users lose all indication of where they are on the page; it fails WCAG unless a visible alternative is provided","It only affects users of screen readers","It is acceptable if the site is mouse-oriented"],
+ a:1,
+ e:"A designer-initiated accessibility failure, which makes it a fair test of whether she pushes back on her own instincts. A custom focus style is the correct answer, not removal."},
+
+/* ===== CSS and responsive ===== */
+{s:"CSS · Layout",t:"core",
+ q:"When do you reach for Flexbox rather than Grid?",
+ o:["Grid is newer, so it should be the default for everything","Flexbox for laying out along a single axis; Grid when you need rows and columns together","Flexbox cannot wrap onto multiple lines","Grid is only appropriate for whole-page layout"],
+ a:1,
+ e:"One dimension versus two. Core to translating designs into implementable layout, and to writing an Auto Layout structure a developer can map directly."},
+
+{s:"CSS · Positioning",t:"core",
+ q:"A sticky header stops sticking for no obvious reason. Most likely cause?",
+ o:["position sticky is not supported in that browser","An ancestor has overflow hidden or auto, which silently breaks sticky positioning","The element needs a higher z-index","It requires position absolute on the parent"],
+ a:1,
+ e:"The most common sticky bug, and it fails silently with no error. Knowing it is a strong signal of hands-on CSS work rather than design-only experience."},
+
+{s:"CSS · Units",t:"core",
+ q:"Why prefer rem over px for font sizes?",
+ o:["They are equivalent; rem is a stylistic preference","rem scales with the root font size, so it respects the user browser font-size preference; px ignores it","px is better supported by assistive technology","rem only works inside media queries"],
+ a:1,
+ e:"This is an accessibility question disguised as a CSS one. A user who has increased their default font size gets no benefit from a layout built entirely in pixels."},
+
+{s:"CSS · Responsive",t:"core",
+ q:"What does mobile-first mean in the stylesheet itself?",
+ o:["Designing only for mobile and scaling up later","Base styles target the smallest viewport, with min-width media queries adding complexity upward","Writing max-width queries that step down from desktop","Maintaining a separate stylesheet for mobile devices"],
+ a:1,
+ e:"She claims responsive design across several roles. The answer should reference the direction the media queries run, not the design process."},
+
+{s:"CSS · Stacking",t:"core",
+ q:"An element has z-index 9999 and still renders behind another element.",
+ o:["The maximum usable z-index value is lower than that","An ancestor created a stacking context, so the element can only stack within it","z-index requires position absolute to take effect","A rendering bug specific to that browser"],
+ a:1,
+ e:"Stacking contexts are created by transform, opacity, filter and several other properties, which is why this surprises people. A good test of depth beyond everyday CSS."},
+
+/* ===== Semantic HTML ===== */
+{s:"HTML · Semantics",t:"core",
+ q:"What does semantic HTML give you that styled divs do not?",
+ o:["Better default visual appearance","Meaning that assistive technology, search engines and browser features can use, independent of styling","Faster page rendering","Smaller file sizes"],
+ a:1,
+ e:"The foundation of the accessibility work she claims. Semantics carry behaviour and meaning; classes carry only appearance."},
+
+{s:"HTML · Images",t:"core",
+ q:"What alt text belongs on a purely decorative image?",
+ o:["A full description of what the image shows","An empty alt attribute, so assistive technology skips it","No alt attribute at all","The word decorative, or the file name"],
+ a:1,
+ e:"Empty alt and omitted alt behave differently \u2014 a missing attribute causes some screen readers to announce the file name. A precise piece of knowledge that separates real practice from general awareness."},
+
+{s:"HTML · Headings",t:"core",
+ q:"Why does jumping from an h1 straight to an h4 matter?",
+ o:["It affects the visual sizing of the text","Headings form the document outline that screen reader users navigate by; skipping levels breaks that structure","It incurs a search ranking penalty and nothing more","It does not matter as long as styling is consistent"],
+ a:1,
+ e:"Screen reader users navigate by heading level constantly. Anyone who has tested with one knows this; anyone who has only read guidelines often does not."},
+
+/* ===== Core Web Vitals ===== */
+{s:"Performance · Metrics",t:"core",
+ q:"You report Lighthouse scores above 90. Which metric reflects whether the interface responds to input?",
+ o:["Largest Contentful Paint","Interaction to Next Paint","Cumulative Layout Shift","Time to First Byte"],
+ a:1,
+ e:"She claims Lighthouse above 90 for performance and accessibility on the AI assistant interface. LCP measures when content appears; INP measures whether the page answers when touched."},
+
+{s:"Performance · LCP",t:"core",
+ q:"An image-led landing page scores badly on Largest Contentful Paint. Biggest contributor?",
+ o:["The total JavaScript bundle size","An unoptimised hero image with no dimensions or priority hint","Too many DOM nodes on the page","Web font loading strategy"],
+ a:1,
+ e:"The LCP element on a visual page is almost always the hero image. A designer who understands this specifies image treatment differently."},
+
+{s:"Performance · Layout shift",t:"core",
+ q:"Content jumps as the page loads, hurting Cumulative Layout Shift. Most common cause?",
+ o:["CSS animations running on load","Images, embeds or injected content with no reserved space, so surrounding content moves when they arrive","Too many web fonts","Server response time"],
+ a:1,
+ e:"A layout shift is a design-influenced defect \u2014 reserving space is a decision made in the design, not only in the code."},
+
+{s:"Performance · Bundles",t:"core",
+ q:"Why does JavaScript bundle size matter beyond download time?",
+ o:["It does not \u2014 once cached the size is irrelevant","It must still be parsed and executed, which is expensive on low-end devices regardless of connection speed","Larger bundles consume more server storage","It only affects the first visit"],
+ a:1,
+ e:"The parse and execute cost is what makes heavy pages unusable on mid-range Android devices, which is most of the market she designs for."},
+
+/* ===== React basics ===== */
+{s:"React · Fundamentals",t:"core",
+ q:"What is the difference between props and state?",
+ o:["Props are for styling and state is for data","Props are passed in and read-only to the component; state is owned by the component and can change","State is faster than props","Props can only hold strings"],
+ a:1,
+ e:"She builds React UI components, so this is a floor rather than a stretch."},
+
+{s:"React · Lists",t:"core",
+ q:"Why does a rendered list need a key prop?",
+ o:["It improves accessibility for screen readers","It lets React match elements across renders; using the array index breaks when the list reorders","It is required for CSS selectors to work","It prevents duplicate entries being rendered"],
+ a:1,
+ e:"The second half is the discriminating part. Many people know keys are required without knowing why index keys are a defect."},
+
+/* ===== React depth — the real question ===== */
+{s:"React · Re-renders",t:"stretch",
+ q:"A component wrapped in React.memo still re-renders on every parent update.",
+ o:["memo only works on class components","A new object, array or function is being created and passed as a prop each render, so referential equality fails","memo requires a custom comparison function to work at all","The component has internal state, which disables memo"],
+ a:1,
+ e:"Her resume qualifies React as UI components. This is where building components ends and reasoning about rendering begins \u2014 the first genuinely engineering-level question here."},
+
+{s:"React · Effects",t:"stretch",
+ q:"An effect fires endlessly in a loop. Most likely cause?",
+ o:["The dependency array is missing entirely","A dependency is recreated on every render \u2014 typically an object, array or function literal","The effect returns a value instead of a cleanup function","Two effects are declared in the same component"],
+ a:1,
+ e:"The most common React bug after keys. Note that a missing dependency array also causes it, which makes the first option a reasonable partial answer worth discussing live."},
+
+{s:"React · Forms",t:"stretch",
+ q:"Controlled versus uncontrolled inputs?",
+ o:["Controlled inputs are styled by the design system; uncontrolled are browser defaults","Controlled inputs derive their value from state; uncontrolled keep it in the DOM and are read via a ref","Uncontrolled inputs cannot be validated","Controlled inputs only work in class components"],
+ a:1,
+ e:"She designed multi-step KYC and booking forms. Implementing one is where a designer who codes meets the limits of component-level work."},
+
+{s:"React · Structure",t:"stretch",
+ q:"Two sibling components need to share the same piece of state.",
+ o:["Duplicate the state in both and keep them synchronised","Lift it to their nearest common ancestor and pass it down, or use shared context if the tree is deep","Store it on the window object","Pass it through a ref between siblings"],
+ a:1,
+ e:"Composition and data flow, rather than component construction. This is the boundary between building the pieces and assembling a feature."},
+
+/* ===== TypeScript ===== */
+{s:"TypeScript · Purpose",t:"stretch",
+ q:"What does TypeScript give you, and what happens to the types at runtime?",
+ o:["Faster execution, because types are compiled into optimisations","Compile-time type checking; the types are erased entirely and enforce nothing when the code runs","Automatic validation of API responses","Runtime errors are prevented by the type system"],
+ a:1,
+ e:"TypeScript appears nowhere on her resume and is standard on any modern frontend team. The erasure half is the part most newcomers get wrong."},
+
+{s:"TypeScript · Components",t:"stretch",
+ q:"How do you describe the props a React component accepts in TypeScript?",
+ o:["A propTypes object attached to the component","An interface or type describing the props object, used to type the component parameter","A JSDoc comment above the component","TypeScript infers props with no declaration needed"],
+ a:1,
+ e:"propTypes is the older JavaScript-era pattern and is the answer someone gives if they have seen React codebases but not TypeScript ones."},
+
+/* ===== State and data ===== */
+{s:"Data · UI states",t:"stretch",
+ q:"A component fetches data from an API. Which states must the interface handle?",
+ o:["Success and failure","Loading, empty, error and success \u2014 and ideally the distinction between no results and not yet loaded","Only loading, since errors are handled globally","None, if the API is reliable"],
+ a:1,
+ e:"The best question in this section for a designer who codes. Empty states and error states are design responsibilities that most handoffs omit entirely, and she would be the person who should catch that."},
+
+{s:"Data · Where state lives",t:"stretch",
+ q:"Where should data fetched from a server live in a React application?",
+ o:["In a global store alongside interface state, for consistency","In a query layer with its own caching and invalidation, kept separate from local interface state","In component state only, refetched on every mount","In browser local storage"],
+ a:1,
+ e:"Putting server data in a global store means hand-writing caching and invalidation. A reasonable miss for a designer-leaning candidate, and a useful indicator of how far her engineering exposure extends."}
+];
+
+/* Randomise option order so the correct answer is not always in one position. */
+(function shuffleOptions(){
+  QUESTIONS.forEach(q => {
+    const correct = q.o[q.a];
+    for (let i = q.o.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [q.o[i], q.o[j]] = [q.o[j], q.o[i]];
+    }
+    q.a = q.o.indexOf(correct);
+  });
+})();
+
+const TOTAL = QUESTIONS.length;
+const answers = new Array(TOTAL).fill(null);
+let cur = 0, graded = false, secondsLeft = 50 * 60;
+
+const stage = document.getElementById('stage');
+const grid  = document.getElementById('grid');
+const bar   = document.getElementById('bar');
+const LETTERS = ['A','B','C','D'];
+
+document.getElementById('qcount').textContent = TOTAL;
+document.getElementById('answered').textContent = '0 / ' + TOTAL;
+
+const clock = document.getElementById('clock');
+const timer = setInterval(() => {
+  if (graded) { clearInterval(timer); return; }
+  secondsLeft--;
+  const m = Math.floor(Math.max(secondsLeft,0)/60), s = Math.max(secondsLeft,0)%60;
+  clock.textContent = m + ':' + String(s).padStart(2,'0');
+  if (secondsLeft <= 300) clock.classList.add('warn');
+  if (secondsLeft <= 0) { clearInterval(timer); grade(); }
+}, 1000);
+
+function render() {
+  const q = QUESTIONS[cur];
+  const badge = q.t === 'core'
+    ? '<span class="badge core">Design and markup</span>'
+    : '<span class="badge stretch">Engineering depth</span>';
+
+  let html = '<section class="card">'
+    + '<div class="qhead"><span class="qnum">' + String(cur+1).padStart(2,'0') + ' / ' + TOTAL + '</span>'
+    + badge + '<span class="section-name">' + q.s + '</span></div>'
+    + '<p class="qtext">' + q.q + '</p><ul class="opts">';
+
+  q.o.forEach((opt, i) => {
+    let cls = 'opt', mark = '';
+    if (answers[cur] === i) cls += ' sel';
+    if (graded) {
+      if (i === q.a) { cls += ' correct'; mark = '<span class="mark ok">Correct</span>'; }
+      else if (answers[cur] === i) { cls += ' wrong'; mark = '<span class="mark no">Chosen</span>'; }
+    }
+    html += '<li><button class="' + cls + '" data-i="' + i + '"' + (graded ? ' disabled' : '') + '>'
+          + '<span class="letter">' + LETTERS[i] + '</span><span>' + opt + '</span>' + mark + '</button></li>';
+  });
+
+  html += '</ul>';
+  if (graded) html += '<div class="rationale"><div class="rlabel">Interviewer note</div><p>' + q.e + '</p></div>';
+  html += '</section>';
+  stage.innerHTML = html;
+
+  if (!graded) {
+    stage.querySelectorAll('.opt').forEach(b => {
+      b.addEventListener('click', () => {
+        answers[cur] = Number(b.dataset.i);
+        render(); paint();
+        if (cur < TOTAL - 1) setTimeout(() => { cur++; render(); paint(); }, 160);
+      });
+    });
+  }
+
+  document.getElementById('prev').disabled = cur === 0;
+  document.getElementById('next').disabled = cur === TOTAL - 1;
+  document.getElementById('navnote').textContent = graded ? 'Review mode' : (answers[cur] === null ? 'Not answered' : 'Answered');
+}
+
+function paint() {
+  const done = answers.filter(a => a !== null).length;
+  document.getElementById('answered').textContent = done + ' / ' + TOTAL;
+  bar.style.width = (done / TOTAL * 100) + '%';
+  grid.innerHTML = QUESTIONS.map((q, i) => {
+    let c = 'gcell';
+    if (answers[i] !== null) c += ' answered';
+    if (i === cur) c += ' here';
+    if (q.t === 'stretch') c += ' st';
+    return '<button class="' + c + '" data-i="' + i + '">' + (i+1) + '</button>';
+  }).join('');
+  grid.querySelectorAll('.gcell').forEach(b => {
+    b.addEventListener('click', () => { cur = Number(b.dataset.i); render(); paint(); });
+  });
+}
+
+document.getElementById('prev').addEventListener('click', () => { if (cur > 0) { cur--; render(); paint(); } });
+document.getElementById('next').addEventListener('click', () => { if (cur < TOTAL-1) { cur++; render(); paint(); } });
+document.getElementById('submit').addEventListener('click', () => {
+  const done = answers.filter(a => a !== null).length;
+  if (!graded && done < TOTAL && !confirm((TOTAL - done) + ' question(s) are unanswered. Score anyway?')) return;
+  grade();
+});
+
+function grade() {
+  if (graded) { window.scrollTo({top:0,behavior:'smooth'}); return; }
+  graded = true; clearInterval(timer);
+
+  const bySection = {};
+  let coreC = 0, coreT = 0, strC = 0, strT = 0;
+  QUESTIONS.forEach((q, i) => {
+    const ok = answers[i] === q.a;
+    if (!bySection[q.s]) bySection[q.s] = {c:0, t:0, track:q.t};
+    bySection[q.s].t++; if (ok) bySection[q.s].c++;
+    if (q.t === 'core') { coreT++; if (ok) coreC++; } else { strT++; if (ok) strC++; }
+  });
+
+  const corePct = Math.round(coreC/coreT*100);
+  const strPct  = Math.round(strC/strT*100);
+
+  let vTitle, vBody;
+  if (corePct >= 85 && strPct >= 60) {
+    vTitle = "Advance \u2014 designer who genuinely ships";
+    vBody = "Design craft and accessibility hold up, and she reasons about rendering, state and data rather than only building components. That combination is uncommon and valuable: a designer who can implement her own work removes an entire handoff cycle. Treat the React qualifier on her resume as modesty rather than accuracy, and consider her for the design-plus-implementation seat rather than a pure design one.";
+  } else if (corePct >= 85) {
+    vTitle = "Strong designer, implementation is component-level";
+    vBody = "Research, accessibility, design systems and CSS are all solid, and the WCAG depth is a genuine differentiator most designers do not have. React is presentational only, as her own wording suggests. Hire as a designer who can build and style components against an existing structure, with a developer owning state, data and composition. That is a real and useful seat \u2014 just not a frontend developer one.";
+  } else if (corePct >= 65) {
+    vTitle = "Borderline \u2014 the design claims need probing";
+    vBody = "Misses inside accessibility, CSS or research methods matter more than the engineering track, because those are what she presents as her specialism. Review her portfolio and Figma files live before deciding; a designer can be strong in practice and weak on terminology.";
+  } else {
+    vTitle = "Below bar";
+    vBody = "Under sixty-five percent on design craft, accessibility and CSS after three years in the role. Combined with limited engineering depth, there is no seat here that fits.";
+  }
+
+  const rows = Object.keys(bySection).map(k => {
+    const b = bySection[k];
+    return '<tr class="' + (b.track === 'core' ? 'core-row' : 'stretch-row') + '">'
+      + '<td>' + k + '</td><td class="num">' + b.c + ' / ' + b.t + '</td>'
+      + '<td class="num">' + Math.round(b.c/b.t*100) + '%</td></tr>';
+  }).join('');
+
+  stage.innerHTML =
+    '<section class="result">'
+    + '<h2>Assessment complete</h2>'
+    + '<p class="rsub">Shivani Rathore · ' + (coreC + strC) + ' of ' + TOTAL + ' overall. The two tracks answer different questions and should not be averaged.</p>'
+    + '<div class="readout">'
+      + '<div class="pane"><div class="plabel"><span class="dot core"></span>Design craft and markup</div>'
+        + '<div class="pscore">' + corePct + '%</div><div class="pof">' + coreC + ' of ' + coreT + ' correct</div>'
+        + '<div class="meter"><i class="core" style="width:' + corePct + '%"></i></div></div>'
+      + '<div class="pane"><div class="plabel"><span class="dot stretch"></span>Frontend engineering depth</div>'
+        + '<div class="pscore">' + strPct + '%</div><div class="pof">' + strC + ' of ' + strT + ' correct</div>'
+        + '<div class="meter"><i class="stretch" style="width:' + strPct + '%"></i></div></div>'
+    + '</div>'
+    + '<table class="bd"><thead><tr><th>Section</th><th class="num">Score</th><th class="num">%</th></tr></thead><tbody>' + rows + '</tbody></table>'
+    + '<div class="verdict"><div class="vlabel">Hiring signal</div><h3>' + vTitle + '</h3><p>' + vBody + '</p></div>'
+    + '<div class="gapbox"><div class="vlabel">Read the resume alongside the score</div><ul>'
+      + '<li><strong>She qualifies React as UI components, twice.</strong> That is a careful and honest phrasing, and it almost certainly means presentational work against structure someone else owns. The engineering track exists to confirm or overturn it \u2014 do not read a low score there as overstatement.</li>'
+      + '<li><strong>WCAG accessibility named explicitly is rare and valuable.</strong> Most designers list responsive and accessible without knowing the contrast ratios. The five accessibility questions will settle whether it is practice or vocabulary \u2014 and if it is practice, that alone is worth a seat on a client-facing product.</li>'
+      + '<li><strong>No version control anywhere on the resume.</strong> No Git, no GitHub, no branching. For anyone implementing frontend code in a team, that is a notable omission \u2014 ask how her code reaches the repository today.</li>'
+      + '<li><strong>Also absent:</strong> TypeScript, Next.js, any state management, any build tooling, and any testing framework. jQuery is listed, which dates the environments she has worked in.</li>'
+      + '<li><strong>Genuinely strong material:</strong> a component library adopted across three products, design QA inside sprints, fintech KYC and UPI journeys, an AI chat interface with Lighthouse above 90, and a role-based admin dashboard over 10,000 records. Live URLs and a Figma prototype link are provided \u2014 open them before the interview.</li>'
+      + '<li><strong>Roughly ten percentage claims,</strong> several of which are not measurable by a designer \u2014 cross-browser inconsistencies down 40 percent, operational efficiency up 45 percent. Pick one and ask for the baseline.</li>'
+      + '<li><strong>Tenure note:</strong> twelve months, then five months, then twenty months at Bestpeers, with a three-month gap in mid-2024. The current role is her longest and still running, which is the right direction.</li>'
+      + '<li><strong>She currently works at Bestpeers Infosystem</strong> \u2014 the same employer as another candidate in this pipeline. Worth knowing before either interview, in case they are aware of each other applying.</li>'
+    + '</ul></div>'
+    + '<p class="rsub" style="margin:0">Use Previous and Next, or the number grid, to review each question with the correct answer and interviewer note.</p>'
+    + '</section>';
+
+  bar.style.width = '100%';
+  document.getElementById('submit').textContent = 'Scored';
+  document.getElementById('submit').disabled = true;
+  paint();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+render(); paint();
+</script>
+</body>
+</html>
