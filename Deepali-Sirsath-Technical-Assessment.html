@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Technical Assessment — Deepali Sirsath — Senior Full Stack Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#12161C; --ink-2:#454E5C; --ink-3:#7A8494;
+  --paper:#EDF0F4; --surface:#FFFFFF; --line:#D3DAE3;
+  --core:#1F4E79; --stretch:#9A5B08;
+  --pass:#0E6B5E; --fail:#9E2B25;
+  --sans:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px 80px}
+.masthead{border-bottom:2px solid var(--ink);padding:34px 0 18px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin:0 0 10px}
+.masthead h1{font-size:clamp(26px,4.4vw,38px);line-height:1.1;font-weight:700;letter-spacing:-.02em;margin:0 0 6px}
+.masthead .sub{color:var(--ink-2);margin:0;font-size:15px}
+.strip{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--line);background:var(--surface)}
+.strip .cell{flex:1 1 150px;padding:12px 16px;border-right:1px solid var(--line)}
+.strip .cell:last-child{border-right:0}
+.strip .k{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:block}
+.strip .v{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--ink)}
+#clock.warn{color:var(--fail)}
+.tracks{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
+.track{background:var(--surface);padding:14px 16px}
+.track .tlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+.dot.core{background:var(--core)}
+.dot.stretch{background:var(--stretch)}
+.track .tdesc{font-size:13px;color:var(--ink-2);line-height:1.45}
+.progress{height:4px;background:var(--line);position:sticky;top:0;z-index:20}
+.progress .bar{height:100%;width:0;background:var(--ink);transition:width .25s ease}
+.card{background:var(--surface);border:1px solid var(--line);border-top:0;padding:26px 26px 22px}
+.qhead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.qnum{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink-3)}
+.badge{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border:1px solid;border-radius:2px}
+.badge.core{color:var(--core);border-color:var(--core)}
+.badge.stretch{color:var(--stretch);border-color:var(--stretch)}
+.section-name{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.qtext{font-size:18px;line-height:1.45;font-weight:500;margin:12px 0 18px}
+.opts{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.opt{display:flex;gap:12px;align-items:center;border:1px solid var(--line);background:var(--surface);padding:13px 15px;cursor:pointer;text-align:left;font:inherit;color:inherit;border-radius:3px;transition:border-color .12s,background .12s;width:100%}
+.opt:hover{border-color:var(--ink-3)}
+.opt:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.opt .letter{font-family:var(--mono);font-weight:600;font-size:13px;color:var(--ink-3);flex:none}
+.opt.sel{border-color:var(--ink);background:#F6F8FA;box-shadow:inset 0 0 0 1px var(--ink)}
+.opt.sel .letter{color:var(--ink)}
+.opt[disabled]{cursor:default}
+.opt.correct{border-color:var(--pass);background:#F0F7F5}
+.opt.correct .letter{color:var(--pass)}
+.opt.wrong{border-color:var(--fail);background:#FCF2F1}
+.opt.wrong .letter{color:var(--fail)}
+.mark{margin-left:auto;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;flex:none}
+.mark.ok{color:var(--pass)}
+.mark.no{color:var(--fail)}
+.rationale{margin-top:16px;border:1px dashed var(--line);padding:13px 15px;background:var(--paper)}
+.rationale .rlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:5px}
+.rationale p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.5}
+.nav{display:flex;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-top:0;padding:16px 26px;flex-wrap:wrap}
+button.btn{font-family:var(--sans);font-size:14px;font-weight:600;padding:10px 18px;border-radius:3px;cursor:pointer;border:1px solid var(--ink);background:var(--surface);color:var(--ink);transition:background .12s,color .12s}
+button.btn:hover:not(:disabled){background:var(--ink);color:var(--surface)}
+button.btn.primary{background:var(--ink);color:var(--surface)}
+button.btn:disabled{opacity:.35;cursor:not-allowed}
+button.btn:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.nav .spacer{margin-left:auto}
+.navnote{font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+.grid{display:flex;flex-wrap:wrap;gap:5px;background:var(--surface);border:1px solid var(--line);border-top:0;padding:16px 26px 20px}
+.gcell{width:32px;height:32px;font-family:var(--mono);font-size:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink-3);cursor:pointer;border-radius:2px;padding:0}
+.gcell:hover{border-color:var(--ink-3)}
+.gcell.answered{background:#E6EBF1;color:var(--ink);font-weight:600;border-color:#B6C1CF}
+.gcell.here{border-color:var(--ink);border-width:2px;color:var(--ink);font-weight:600}
+.gcell.st{border-bottom:3px solid var(--stretch)}
+.result{background:var(--surface);border:1px solid var(--line);border-top:0;padding:28px 26px}
+.result h2{font-size:24px;margin:0 0 4px;letter-spacing:-.01em}
+.result .rsub{color:var(--ink-2);font-size:14px;margin:0 0 24px}
+.readout{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:22px}
+.readout .pane{background:var(--surface);padding:18px}
+.readout .plabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.readout .pscore{font-family:var(--mono);font-size:34px;font-weight:600;line-height:1;letter-spacing:-.02em}
+.readout .pof{font-family:var(--mono);font-size:13px;color:var(--ink-3);margin-top:5px}
+.meter{height:6px;background:var(--line);margin-top:12px;border-radius:3px;overflow:hidden}
+.meter i{display:block;height:100%;width:0;transition:width .5s ease}
+.meter i.core{background:var(--core)}
+.meter i.stretch{background:var(--stretch)}
+table.bd{width:100%;border-collapse:collapse;margin-bottom:22px;font-size:14px}
+table.bd th,table.bd td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+table.bd th{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);border-bottom:1px solid var(--ink)}
+table.bd td.num{font-family:var(--mono);text-align:right;white-space:nowrap}
+table.bd tr.stretch-row td:first-child{border-left:3px solid var(--stretch);padding-left:10px}
+table.bd tr.core-row td:first-child{border-left:3px solid var(--core);padding-left:10px}
+.verdict{border:1px solid var(--ink);padding:18px 20px;margin-bottom:22px}
+.verdict .vlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:7px}
+.verdict h3{margin:0 0 8px;font-size:17px}
+.verdict p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.55}
+.gapbox{background:var(--paper);border-left:3px solid var(--stretch);padding:16px 18px;margin-bottom:22px}
+.gapbox .vlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--stretch);margin-bottom:8px}
+.gapbox ul{margin:0;padding-left:18px;font-size:14px;color:var(--ink-2)}
+.gapbox li{margin-bottom:6px}
+.footer{font-family:var(--mono);font-size:11px;color:var(--ink-3);padding:18px 0 0;text-align:center;letter-spacing:.04em}
+@media (max-width:640px){
+  .tracks,.readout{grid-template-columns:1fr}
+  .card,.nav,.grid,.result{padding-left:18px;padding-right:18px}
+  .strip .cell{flex:1 1 50%;border-bottom:1px solid var(--line)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Aavya · Technical Screening</p>
+    <h1>Senior Full Stack Engineer — CMS platform and banking engagement</h1>
+    <p class="sub">Candidate: Deepali Sirsath · ~6 yrs · CRUDS System · scored against both JDs</p>
+  </header>
+
+  <div class="strip">
+    <div class="cell"><span class="k">Questions</span><span class="v" id="qcount">38</span></div>
+    <div class="cell"><span class="k">Time</span><span class="v" id="clock">55:00</span></div>
+    <div class="cell"><span class="k">Answered</span><span class="v" id="answered">0 / 38</span></div>
+    <div class="cell"><span class="k">Depth</span><span class="v">Senior</span></div>
+  </div>
+
+  <div class="tracks">
+    <div class="track">
+      <div class="tlabel"><span class="dot core"></span>Evidenced — pitched at senior level</div>
+      <div class="tdesc">React, Next.js and server rendering, TypeScript, Redux, Node and Express, MongoDB, GraphQL with Apollo, authentication and role-based access. Six years and a team lead title mean these run harder than a standard screen.</div>
+    </div>
+    <div class="track">
+      <div class="tlabel"><span class="dot stretch"></span>Required by the JDs, absent</div>
+      <div class="tdesc">PostgreSQL and relational modelling, content modelling for a headless CMS, and for the banking platform: Python, retrieval and chunking, traceability, audit history, caching, bilingual modelling, and working inside a locked-down client estate. Section labels show which JD each serves.</div>
+    </div>
+  </div>
+
+  <main id="stage"></main>
+
+  <div class="nav" id="nav">
+    <button class="btn" id="prev">Previous</button>
+    <button class="btn" id="next">Next</button>
+    <span class="spacer"></span>
+    <span class="navnote" id="navnote"></span>
+    <button class="btn primary" id="submit">Finish and score</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <p class="footer">Answers are scored on submit. Nothing is transmitted — this file runs entirely in the browser.</p>
+</div>
+
+<script>
+const QUESTIONS = [
+
+/* ===== React and Next.js ===== */
+{s:"Next.js · Both JDs",t:"core",
+ q:"You implemented server-side rendering and report faster page loads. What does SSR primarily improve?",
+ o:["The total JavaScript bundle shipped to the browser","Time to first contentful paint and search indexing, because the HTML arrives already populated","Runtime memory usage on the client","Backend API response latency"],
+ a:1,
+ e:"Her resume claims SSR cut page load by 30 percent. SSR does not reduce the JavaScript shipped \u2014 hydration still happens. Someone who implemented it understands what it did and did not fix."},
+
+{s:"Next.js · CMS JD",t:"core",
+ q:"What does the \"use client\" directive do in the App Router?",
+ o:["Makes the file execute only in the browser","Marks the boundary where client rendering begins; everything imported below becomes a client component","Disables server rendering across the application","Allows React hooks to run on the server"],
+ a:1,
+ e:"Client components still render on the server for the initial HTML. The first option is the common misconception and leads to over-marking files."},
+
+{s:"Next.js · CMS JD",t:"core",
+ q:"What can a Server Component not do?",
+ o:["Fetch data directly from a database","Hold state, run effects, or access browser APIs","Import and render other components","Read environment variables"],
+ a:1,
+ e:"Server Components render once and never hydrate. Knowing what forces a client boundary is what keeps the bundle small, and the CMS platform runs entirely on this model."},
+
+{s:"React · Both JDs",t:"core",
+ q:"A hydration mismatch is reported on a dashboard page.",
+ o:["A missing key prop in a rendered list","Server and client produced different markup \u2014 typically a date, a random value, or reading window during render","A Tailwind class missing from the production build","Too many state updates inside an effect"],
+ a:1,
+ e:"She built real-time monitoring dashboards with live data, where timestamps rendered without a fixed locale are the classic cause."},
+
+{s:"React · Both JDs",t:"core",
+ q:"A monitoring table renders 400 rows and scrolling stutters.",
+ o:["Memoise the array with useMemo","Virtualise so only visible rows mount","Move the table into a Server Component","Debounce the scroll handler"],
+ a:1,
+ e:"Only windowing changes the amount of DOM work. Directly relevant to her real-time dashboard work and to a review interface with hundreds of statements."},
+
+{s:"Next.js · CMS JD",t:"core",
+ q:"A published page must reflect a content change within a minute, with no redeploy.",
+ o:["Client-side polling on every visit","Time-based revalidation, or on-demand revalidation triggered when content is published","Rebuild and redeploy on every publish","Disable caching and render each request from scratch"],
+ a:1,
+ e:"On-demand revalidation triggered by the publish event is what a CMS build wants. Disabling caching works and throws away the reason for using the framework."},
+
+/* ===== TypeScript ===== */
+{s:"TypeScript · Both JDs",t:"core",
+ q:"An external API response is cast with the as keyword to a declared interface. What does that guarantee?",
+ o:["The compiler validates the shape at runtime","Nothing \u2014 as is erased at compile time and asserts something nothing enforces","The response is coerced into the declared shape","It throws if the shape does not match"],
+ a:1,
+ e:"The most consequential TypeScript misconception. She lists TypeScript and integrated third-party APIs, so this is directly on her ground."},
+
+{s:"TypeScript · Both JDs",t:"core",
+ q:"Practical difference between interface and type?",
+ o:["They are interchangeable in every case","Interfaces support declaration merging; type aliases support unions, intersections and mapped types","type is deprecated in current TypeScript","Interfaces cannot describe function signatures"],
+ a:1,
+ e:"Everyday TypeScript. A vague answer suggests it is used as annotated JavaScript rather than as a type system."},
+
+{s:"TypeScript · Both JDs",t:"core",
+ q:"unknown versus any?",
+ o:["They behave identically","unknown must be narrowed before use; any switches type checking off entirely","unknown is only valid in catch clauses","any is the safer choice for external data"],
+ a:1,
+ e:"unknown preserves safety at the boundary and forces a check. Reaching for any at every integration point is the habit this question looks for."},
+
+/* ===== Node, Express, API ===== */
+{s:"Node · Both JDs",t:"core",
+ q:"A request handler performs heavy processing on an uploaded file.",
+ o:["Node spawns a worker thread automatically","It blocks the event loop and stalls every other request on that process","Only that request is slowed","The garbage collector reclaims the time"],
+ a:1,
+ e:"The single most important thing about Node. She built file and image handling pipelines, so this should be immediate."},
+
+{s:"API · Both JDs",t:"core",
+ q:"A request triggers work that takes several minutes.",
+ o:["Run it synchronously and raise the timeout","Accept it, return 202 with a job identifier, and let the client poll or receive a callback","Schedule it on a cron job","Stream the response and hold the connection open"],
+ a:1,
+ e:"Document generation and report processing both take minutes on these platforms, so this pattern is central rather than incidental."},
+
+{s:"API · Both JDs",t:"core",
+ q:"How do you validate incoming request payloads in a TypeScript service?",
+ o:["TypeScript interfaces enforce the shape at runtime","Runtime schema validation at the boundary; TypeScript types vanish at compile time","Database constraints are sufficient","Wrap handlers in try/catch"],
+ a:1,
+ e:"The same principle as the casting question, seen from the server side. Getting one right and the other wrong is worth probing live."},
+
+{s:"API · Both JDs",t:"core",
+ q:"Which HTTP methods are idempotent?",
+ o:["Only GET","GET, PUT and DELETE \u2014 but not POST","All methods, by specification","POST and PUT"],
+ a:1,
+ e:"Both platforms retry requests. A non-idempotent create endpoint duplicates records on retry, which in a payment or order flow is a real incident."},
+
+/* ===== MongoDB ===== */
+{s:"MongoDB · CMS JD",t:"core",
+ q:"When do you embed a related document rather than reference it?",
+ o:["Always embed to avoid extra queries","Embed when the data is read together and bounded in size; reference when it is unbounded or shared across parents","Always reference to avoid duplication","Embedding only works for arrays of primitives"],
+ a:1,
+ e:"She claims optimised MongoDB schemas across four employers. This is the central modelling decision and the habit that causes trouble when moving to a relational database."},
+
+{s:"MongoDB · Both JDs",t:"core",
+ q:"Can MongoDB guarantee two writes to different collections both succeed or both fail?",
+ o:["No \u2014 atomicity is limited to a single document","Yes, through multi-document transactions on a replica set, with explicit session handling and higher cost than single-document writes","Yes, automatically for every write","Only if both collections are in the same database"],
+ a:1,
+ e:"Multi-document transactions have existed since MongoDB 4.0. Someone who says they are impossible has a mental model several versions out of date, and both platforms need atomic multi-entity writes."},
+
+{s:"MongoDB · Both JDs",t:"core",
+ q:"You add an index to cut query latency. What does it cost?",
+ o:["Nothing \u2014 indexes are pure gain","Disk space and slower writes, since every insert and update maintains the index","It locks the collection until rebuilt","Only additional memory, with no write penalty"],
+ a:1,
+ e:"She claims a 20 percent latency reduction from indexing. The cost side is what separates someone who tuned deliberately from someone who added indexes until it got faster."},
+
+/* ===== GraphQL and Apollo ===== */
+{s:"GraphQL · CMS JD",t:"core",
+ q:"What problem does GraphQL solve compared with REST?",
+ o:["It is faster over the network in all cases","Over- and under-fetching \u2014 the client specifies exactly the shape it needs","It removes the need for server-side authorisation","It replaces the database query layer"],
+ a:1,
+ e:"She lists GraphQL and Apollo Client, which few candidates in this pipeline do. The CMS platform exposes GraphQL alongside REST, so this is a genuine differentiator if it holds up."},
+
+{s:"GraphQL · CMS JD",t:"core",
+ q:"A query requests 50 posts each with its author, and the server issues 51 database queries.",
+ o:["Expected behaviour \u2014 resolvers run per field by design","The resolver N+1 problem; batch the author lookups with a data loader within the request","Fix it by adding an index on the author table","Limit query depth to prevent it"],
+ a:1,
+ e:"GraphQL makes N+1 the default rather than an accident, since each field resolves independently. This is the question that separates using GraphQL from operating it."},
+
+{s:"Apollo · CMS JD",t:"core",
+ q:"What does Apollo Client normalised caching actually do?",
+ o:["Stores raw responses keyed by query string","Splits responses into entities keyed by type and id, so updating one entity refreshes it everywhere it appears","Caches only on the server side","Persists the cache to local storage automatically"],
+ a:1,
+ e:"Normalisation is the main reason to use Apollo rather than plain fetch. Someone who has only issued queries through it will not know this."},
+
+/* ===== Auth and RBAC ===== */
+{s:"Security · Both JDs",t:"core",
+ q:"An admin interface hides actions the current user cannot perform. Is that sufficient?",
+ o:["Yes, provided the routes are also guarded client-side","No \u2014 the interface reflects permissions but cannot grant them; every request must be authorised server-side","Yes, if the API endpoints are undocumented","Only insufficient for destructive operations"],
+ a:1,
+ e:"She implemented Active Directory login and role-based access for enterprise applications. Non-negotiable on any platform with approval gates."},
+
+{s:"Authorisation · Both JDs",t:"core",
+ q:"A user may edit only records belonging to their own department. Why is a role check insufficient?",
+ o:["It is sufficient \u2014 check for the editor role","The rule depends on the relationship between the actor and the specific record, so authorisation must evaluate resource attributes","Create one role per department","Filter the list view in the UI for that user"],
+ a:1,
+ e:"The step from role-based to resource-scoped authorisation. Creating a role per department is the trap answer and does not survive an organisation that grows."},
+
+/* ===== PostgreSQL — absent, both JDs ===== */
+{s:"PostgreSQL · Both JDs",t:"stretch",
+ q:"What does a foreign key enforce?",
+ o:["That the column values are unique across the table","That the referenced parent row exists, and that deleting a parent cannot silently orphan children","That the column cannot contain nulls","An automatic index on the parent table"],
+ a:1,
+ e:"No SQL database appears anywhere across six years and four employers, and both JDs require PostgreSQL. This is the floor for the whole section."},
+
+{s:"PostgreSQL · Both JDs",t:"stretch",
+ q:"Difference between an INNER JOIN and a LEFT JOIN?",
+ o:["LEFT JOIN is faster because it scans fewer rows","INNER keeps only matching rows; LEFT keeps every row from the left table, padding unmatched columns with nulls","They return the same rows in different order","LEFT JOIN requires an index on both sides"],
+ a:1,
+ e:"Fundamental SQL. Coming from MongoDB, joins are unfamiliar territory rather than forgotten knowledge \u2014 score it as transfer, not as a gap in her stated experience."},
+
+{s:"PostgreSQL · Both JDs",t:"stretch",
+ q:"Records carry many tags, and each tag applies to many records. Model it relationally.",
+ o:["A comma-separated text column on the record","A join table holding both foreign keys, unique on the pair","An array column of tag identifiers","One table per tag"],
+ a:1,
+ e:"The structural difference from a document store, where an embedded array is idiomatic. Both platforms need this shape constantly."},
+
+{s:"PostgreSQL · Both JDs",t:"stretch",
+ q:"A query filters on status and orders by created_at. Which index serves it best?",
+ o:["Two separate single-column indexes","A composite index on (status, created_at)","An index on created_at alone","No index \u2014 the planner will combine what it has"],
+ a:1,
+ e:"Composite in predicate-then-sort order satisfies filter and ordering from one index. She claims indexing work in MongoDB, so the concept should partially transfer."},
+
+{s:"PostgreSQL · Both JDs",t:"stretch",
+ q:"A query is running slowly. What is your first diagnostic step?",
+ o:["Add an index on the columns in the WHERE clause","Read the execution plan with EXPLAIN to see what the database is actually doing","Increase the connection pool size","Rewrite the query using a subquery"],
+ a:1,
+ e:"Adding an index before reading the plan is guessing. This is the question that distinguishes measured optimisation from trial and error, and her resume is full of optimisation claims."},
+
+/* ===== Content modelling — CMS JD ===== */
+{s:"Content modelling · CMS JD",t:"stretch",
+ q:"You customised Shopify themes and storefronts. What defines a headless CMS by contrast?",
+ o:["A CMS with no administrative interface","Content is authored and stored independently of presentation and delivered over an API to any frontend","A hosted storefront with a theme editor","A static site generator with a form builder"],
+ a:1,
+ e:"Her Shopify work is the closest thing to content management in this pipeline, but Shopify couples content to a storefront by default. Whether she sees the distinction indicates how quickly the CMS model will land."},
+
+{s:"Content modelling · CMS JD",t:"stretch",
+ q:"A page is assembled from an ordered sequence of section types chosen by an author, where a type may repeat.",
+ o:["A nullable column on the page for each possible section type","A blocks table with a type discriminator and a position column, with type-specific fields stored separately","The rendered HTML of the finished page","A separate table per page layout"],
+ a:1,
+ e:"The central abstraction of the CMS platform. Someone with strong data instincts reasons to a polymorphic child table even without CMS experience, which is exactly the transfer being tested."},
+
+{s:"Content modelling · CMS JD",t:"stretch",
+ q:"Editors must work on changes without the public seeing them until publish.",
+ o:["A published boolean toggled when the content is ready","Separate draft and published versions, so edits accumulate against the draft until it is promoted","Lock the record while an editor has it open","Duplicate the record, edit the copy, delete the original on publish"],
+ a:1,
+ e:"A boolean cannot represent two simultaneous states of the same content. Version-based publishing also delivers rollback and scheduled publishing nearly free."},
+
+/* ===== Bank JD ===== */
+{s:"Python · Bank JD",t:"stretch",
+ q:"How does FastAPI validate incoming request bodies?",
+ o:["Manual checks written into each route handler","From Python type hints and Pydantic models, validated at runtime, generating an OpenAPI schema automatically","Through decorators evaluated at import time","By loading JSON Schema definitions from disk"],
+ a:1,
+ e:"Python appears in two of her project tech stacks but nowhere in her skills list \u2014 worth resolving whether that was her work or a colleague. Conceptually this mirrors the TypeScript boundary questions, so connecting them shows transfer."},
+
+{s:"Retrieval · Bank JD",t:"stretch",
+ q:"A document corpus totals roughly 500,000 tokens. Why retrieve selected passages rather than send it all to a model?",
+ o:["Retrieval improves the quality of the generated text","The corpus far exceeds the model context window, so only relevant passages can physically be sent","Sending the full corpus breaches the provider licence","It removes the need for a database"],
+ a:1,
+ e:"The hard constraint the banking platform is architected around. She integrated AI chatbots via third-party APIs, which is a different thing from building retrieval."},
+
+{s:"Traceability · Bank JD",t:"stretch",
+ q:"Every generated statement must be auditable back to its exact source, and sources are revised over time.",
+ o:["Store a confidence score with each statement","Citation records pointing at a specific document version and location, so a later revision cannot invalidate an approved statement","Write the full prompt and response to an audit log","Keep a snapshot of the corpus alongside each output"],
+ a:1,
+ e:"The version is the crux \u2014 a citation pointing at a document rather than a version breaks silently the moment that document changes. The hardest question here and the most central to the banking engagement."},
+
+/* ===== Bank engagement — environment, audit, retrieval ===== */
+{s:"Environment · Bank JD",t:"stretch",
+ q:"Development happens on client-provided machines with no access to public package registries.",
+ o:["Request a temporary firewall exception for the duration of the build","Use the internal artifact proxy and its whitelisting process, submitting the full dependency list for security approval before day one","Commit the installed dependency folder into the repository","Development is not practical under that constraint"],
+ a:1,
+ e:"Dependency approval is the most common first-sprint blocker in bank environments, with lead times measured in weeks. Anticipating it rather than discovering it is the difference between starting in week one and week four. Nothing in her background suggests exposure to a locked-down estate."},
+
+{s:"Environment · Bank JD",t:"stretch",
+ q:"No client data may leave the client environment. What does that rule out?",
+ o:["Nothing, provided all traffic is encrypted in transit","Any hosted third-party service that processes client content \u2014 external model and embedding APIs, error reporting that captures payloads, analytics","Only email and file sharing","Only bulk data exports"],
+ a:1,
+ e:"The subtle cases are the dangerous ones \u2014 an error reporter capturing request bodies exfiltrates client content without anyone deciding to. She integrated AI chatbots through third-party APIs, which is exactly the pattern this constraint disallows."},
+
+{s:"Localisation · Both JDs",t:"stretch",
+ q:"A content record has 20 fields, six of which need translating into a second language.",
+ o:["Duplicate the entire record per language","Locale-scoped values for the six translated fields, with the remaining fields stored once against a shared record","Translate on render through a translation service","A separate database per language"],
+ a:1,
+ e:"Both platforms are bilingual. Duplicating records forks the relationship graph and doubles every future change, and it is where localisation stops being an interface concern and becomes a schema decision."},
+
+{s:"Audit · Bank JD",t:"stretch",
+ q:"An auditor may later ask who approved a generated document and when. How should approval state be stored?",
+ o:["A boolean approved column on the record","An explicit current state plus append-only transition rows recording actor, timestamp and previous state","A status column updated in place at each stage","Created and last-modified timestamps on the record"],
+ a:1,
+ e:"An overwritten status column destroys the exact evidence an audit needs. The banking platform mandates analyst and QA sign-off gates that survive review, so this is a hard requirement rather than good practice. Her Active Directory and role-based access work is adjacent but not the same thing."},
+
+{s:"Caching · Bank JD",t:"stretch",
+ q:"You put Redis in front of an expensive retrieval query. What is the decision that actually matters?",
+ o:["The eviction policy and memory ceiling","The invalidation strategy, and what stale data costs the user","The serialisation format for cached values","The size of the connection pool"],
+ a:1,
+ e:"Adding a cache is easy; knowing when it is wrong is the engineering. Redis is on the target stack and appears nowhere across her six years."},
+
+{s:"Retrieval · Bank JD",t:"stretch",
+ q:"Why does chunk size matter when indexing documents for retrieval?",
+ o:["Smaller chunks are always better, since more fit in the context window","Too large dilutes relevance and wastes context; too small severs surrounding meaning \u2014 a tuning decision measured against real queries","It affects storage cost and nothing else","It is fixed by the embedding model and not a choice"],
+ a:1,
+ e:"A genuine engineering tradeoff with no default answer, which is why a corpus is typically re-embedded several times during a build. Expect a miss and score the reasoning."}
+];
+
+/* Randomise option order so the correct answer is not always in one position. */
+(function shuffleOptions(){
+  QUESTIONS.forEach(q => {
+    const correct = q.o[q.a];
+    for (let i = q.o.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [q.o[i], q.o[j]] = [q.o[j], q.o[i]];
+    }
+    q.a = q.o.indexOf(correct);
+  });
+})();
+
+const TOTAL = QUESTIONS.length;
+const answers = new Array(TOTAL).fill(null);
+let cur = 0, graded = false, secondsLeft = 55 * 60;
+
+const stage = document.getElementById('stage');
+const grid  = document.getElementById('grid');
+const bar   = document.getElementById('bar');
+const LETTERS = ['A','B','C','D'];
+
+document.getElementById('qcount').textContent = TOTAL;
+document.getElementById('answered').textContent = '0 / ' + TOTAL;
+
+const clock = document.getElementById('clock');
+const timer = setInterval(() => {
+  if (graded) { clearInterval(timer); return; }
+  secondsLeft--;
+  const m = Math.floor(Math.max(secondsLeft,0)/60), s = Math.max(secondsLeft,0)%60;
+  clock.textContent = m + ':' + String(s).padStart(2,'0');
+  if (secondsLeft <= 300) clock.classList.add('warn');
+  if (secondsLeft <= 0) { clearInterval(timer); grade(); }
+}, 1000);
+
+function render() {
+  const q = QUESTIONS[cur];
+  const badge = q.t === 'core'
+    ? '<span class="badge core">Evidenced</span>'
+    : '<span class="badge stretch">Absent</span>';
+
+  let html = '<section class="card">'
+    + '<div class="qhead"><span class="qnum">' + String(cur+1).padStart(2,'0') + ' / ' + TOTAL + '</span>'
+    + badge + '<span class="section-name">' + q.s + '</span></div>'
+    + '<p class="qtext">' + q.q + '</p><ul class="opts">';
+
+  q.o.forEach((opt, i) => {
+    let cls = 'opt', mark = '';
+    if (answers[cur] === i) cls += ' sel';
+    if (graded) {
+      if (i === q.a) { cls += ' correct'; mark = '<span class="mark ok">Correct</span>'; }
+      else if (answers[cur] === i) { cls += ' wrong'; mark = '<span class="mark no">Chosen</span>'; }
+    }
+    html += '<li><button class="' + cls + '" data-i="' + i + '"' + (graded ? ' disabled' : '') + '>'
+          + '<span class="letter">' + LETTERS[i] + '</span><span>' + opt + '</span>' + mark + '</button></li>';
+  });
+
+  html += '</ul>';
+  if (graded) html += '<div class="rationale"><div class="rlabel">Interviewer note</div><p>' + q.e + '</p></div>';
+  html += '</section>';
+  stage.innerHTML = html;
+
+  if (!graded) {
+    stage.querySelectorAll('.opt').forEach(b => {
+      b.addEventListener('click', () => {
+        answers[cur] = Number(b.dataset.i);
+        render(); paint();
+        if (cur < TOTAL - 1) setTimeout(() => { cur++; render(); paint(); }, 160);
+      });
+    });
+  }
+
+  document.getElementById('prev').disabled = cur === 0;
+  document.getElementById('next').disabled = cur === TOTAL - 1;
+  document.getElementById('navnote').textContent = graded ? 'Review mode' : (answers[cur] === null ? 'Not answered' : 'Answered');
+}
+
+function paint() {
+  const done = answers.filter(a => a !== null).length;
+  document.getElementById('answered').textContent = done + ' / ' + TOTAL;
+  bar.style.width = (done / TOTAL * 100) + '%';
+  grid.innerHTML = QUESTIONS.map((q, i) => {
+    let c = 'gcell';
+    if (answers[i] !== null) c += ' answered';
+    if (i === cur) c += ' here';
+    if (q.t === 'stretch') c += ' st';
+    return '<button class="' + c + '" data-i="' + i + '">' + (i+1) + '</button>';
+  }).join('');
+  grid.querySelectorAll('.gcell').forEach(b => {
+    b.addEventListener('click', () => { cur = Number(b.dataset.i); render(); paint(); });
+  });
+}
+
+document.getElementById('prev').addEventListener('click', () => { if (cur > 0) { cur--; render(); paint(); } });
+document.getElementById('next').addEventListener('click', () => { if (cur < TOTAL-1) { cur++; render(); paint(); } });
+document.getElementById('submit').addEventListener('click', () => {
+  const done = answers.filter(a => a !== null).length;
+  if (!graded && done < TOTAL && !confirm((TOTAL - done) + ' question(s) are unanswered. Score anyway?')) return;
+  grade();
+});
+
+function grade() {
+  if (graded) { window.scrollTo({top:0,behavior:'smooth'}); return; }
+  graded = true; clearInterval(timer);
+
+  const bySection = {};
+  let coreC = 0, coreT = 0, strC = 0, strT = 0;
+  QUESTIONS.forEach((q, i) => {
+    const ok = answers[i] === q.a;
+    if (!bySection[q.s]) bySection[q.s] = {c:0, t:0, track:q.t};
+    bySection[q.s].t++; if (ok) bySection[q.s].c++;
+    if (q.t === 'core') { coreT++; if (ok) coreC++; } else { strT++; if (ok) strC++; }
+  });
+
+  const corePct = Math.round(coreC/coreT*100);
+  const strPct  = Math.round(strC/strT*100);
+
+  let vTitle, vBody;
+  if (corePct >= 85 && strPct >= 55) {
+    vTitle = "Advance \u2014 strong senior fit for the CMS build";
+    vBody = "The claimed stack holds up at senior level and she reasons into relational modelling and content structure she has not used. TypeScript, Next.js, GraphQL and Apollo together are rarer in this pipeline than the market suggests, and six years with mentoring experience adds capacity you are short of. PostgreSQL remains the gap, but on this foundation it is weeks rather than quarters.";
+  } else if (corePct >= 85) {
+    vTitle = "Advance for the CMS build with a database ramp";
+    vBody = "React, Next.js, TypeScript and GraphQL are solid, which covers most of the daily work on the content platform. Relational modelling is genuinely new after six years exclusively on MongoDB, and that is the harder transition than it appears \u2014 document instincts actively work against schema design. Hire with someone senior reviewing her schema decisions for the first month, and keep her off the banking engagement.";
+  } else if (corePct >= 65) {
+    vTitle = "Borderline \u2014 breadth exceeds depth";
+    vBody = "Misses inside React, Next.js, TypeScript or GraphQL matter more than the absent track, because six years and a team lead title set the expectation. Combined with the volume of unverifiable percentage claims on the resume, run a hands-on session before deciding rather than declining on the number.";
+  } else {
+    vTitle = "Below bar \u2014 claims and depth do not reconcile";
+    vBody = "Under sixty-five percent on a stack claimed across four employers and six years. Given how heavily the resume leans on quantified improvement claims, treat this as a serious signal and verify with a live exercise before proceeding.";
+  }
+
+  const rows = Object.keys(bySection).map(k => {
+    const b = bySection[k];
+    return '<tr class="' + (b.track === 'core' ? 'core-row' : 'stretch-row') + '">'
+      + '<td>' + k + '</td><td class="num">' + b.c + ' / ' + b.t + '</td>'
+      + '<td class="num">' + Math.round(b.c/b.t*100) + '%</td></tr>';
+  }).join('');
+
+  stage.innerHTML =
+    '<section class="result">'
+    + '<h2>Assessment complete</h2>'
+    + '<p class="rsub">Deepali Sirsath · ' + (coreC + strC) + ' of ' + TOTAL + ' overall. Section labels show which JD each requirement serves.</p>'
+    + '<div class="readout">'
+      + '<div class="pane"><div class="plabel"><span class="dot core"></span>Evidenced \u2014 senior level</div>'
+        + '<div class="pscore">' + corePct + '%</div><div class="pof">' + coreC + ' of ' + coreT + ' correct</div>'
+        + '<div class="meter"><i class="core" style="width:' + corePct + '%"></i></div></div>'
+      + '<div class="pane"><div class="plabel"><span class="dot stretch"></span>Required by the JDs, absent</div>'
+        + '<div class="pscore">' + strPct + '%</div><div class="pof">' + strC + ' of ' + strT + ' correct</div>'
+        + '<div class="meter"><i class="stretch" style="width:' + strPct + '%"></i></div></div>'
+    + '</div>'
+    + '<table class="bd"><thead><tr><th>Section</th><th class="num">Score</th><th class="num">%</th></tr></thead><tbody>' + rows + '</tbody></table>'
+    + '<div class="verdict"><div class="vlabel">Hiring signal</div><h3>' + vTitle + '</h3><p>' + vBody + '</p></div>'
+    + '<div class="gapbox"><div class="vlabel">Read the resume alongside the score</div><ul>'
+      + '<li><strong>She brings three things most of this pipeline lacks:</strong> TypeScript, Next.js with real server rendering work, and GraphQL with Apollo Client. For the CMS platform, which exposes GraphQL alongside REST, that combination is a genuine advantage.</li>'
+      + '<li><strong>The Shopify work is the closest thing to content management anyone has brought</strong> \u2014 themes, product and inventory management, cart and checkout, order workflows. Probe whether she used the Storefront API or customised a hosted theme; those are very different levels of transfer.</li>'
+      + '<li><strong>No SQL database across six years and four employers.</strong> MongoDB only. Both JDs require PostgreSQL, and moving from document to relational is harder than it looks because embedding instincts work against schema design.</li>'
+      + '<li><strong>Roughly nineteen percentage claims, nearly all between 15 and 40 percent and every one rounded to a multiple of five.</strong> Several are not measurable at all \u2014 reducing bugs by 30 percent, improving stability by 25 percent, customer satisfaction by 25 percent for a frontend role. Pick one, ask for the baseline and the measurement method, and calibrate everything else on the answer.</li>'
+      + '<li><strong>Nothing in six years touches a restricted client environment.</strong> No locked-down estate, no artifact proxy, no data-residency constraint, and no Redis. The banking engagement places engineers inside the client tenant, so these are working conditions rather than tools \u2014 probe how she reacts to the constraint, not whether she has met it.</li>'
+      + '<li><strong>Python appears in two project tech stacks but not in her skills list.</strong> Likely a colleague\u2019s contribution on an AI and IoT team. Ask directly \u2014 it matters for the banking engagement, where the backend is Python.</li>'
+      + '<li><strong>Title trajectory runs backwards:</strong> Team Lead at Ekvayu, then Senior Software Engineer at CRUDS. Ask neutrally; a move from a small firm to a larger one often explains it.</li>'
+      + '<li><strong>Tenure has shortened.</strong> Three years at Mindpath, then ten months, twelve months, and eleven months so far, with a four-month gap between June and October 2024. For a programme with a fixed timeline, retention is worth a direct question.</li>'
+      + '<li><strong>Her own summary calls her a Frontend Developer</strong> while the body claims full-stack across all four roles. Establish which she considers herself, since the answer shapes which seat she fits.</li>'
+    + '</ul></div>'
+    + '<p class="rsub" style="margin:0">Use Previous and Next, or the number grid, to review each question with the correct answer and interviewer note.</p>'
+    + '</section>';
+
+  bar.style.width = '100%';
+  document.getElementById('submit').textContent = 'Scored';
+  document.getElementById('submit').disabled = true;
+  paint();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+render(); paint();
+</script>
+</body>
+</html>
