@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Technical Assessment — Sandeep Khede — Senior Full Stack Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#12161C; --ink-2:#454E5C; --ink-3:#7A8494;
+  --paper:#EDF0F4; --surface:#FFFFFF; --line:#D3DAE3;
+  --core:#1F4E79; --stretch:#9A5B08;
+  --pass:#0E6B5E; --fail:#9E2B25;
+  --sans:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px 80px}
+.masthead{border-bottom:2px solid var(--ink);padding:34px 0 18px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin:0 0 10px}
+.masthead h1{font-size:clamp(26px,4.4vw,38px);line-height:1.1;font-weight:700;letter-spacing:-.02em;margin:0 0 6px}
+.masthead .sub{color:var(--ink-2);margin:0;font-size:15px}
+.strip{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--line);background:var(--surface)}
+.strip .cell{flex:1 1 150px;padding:12px 16px;border-right:1px solid var(--line)}
+.strip .cell:last-child{border-right:0}
+.strip .k{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:block}
+.strip .v{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--ink)}
+#clock.warn{color:var(--fail)}
+.tracks{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
+.track{background:var(--surface);padding:14px 16px}
+.track .tlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+.dot.core{background:var(--core)}
+.dot.stretch{background:var(--stretch)}
+.track .tdesc{font-size:13px;color:var(--ink-2);line-height:1.45}
+.progress{height:4px;background:var(--line);position:sticky;top:0;z-index:20}
+.progress .bar{height:100%;width:0;background:var(--ink);transition:width .25s ease}
+.card{background:var(--surface);border:1px solid var(--line);border-top:0;padding:26px 26px 22px}
+.qhead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.qnum{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink-3)}
+.badge{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border:1px solid;border-radius:2px}
+.badge.core{color:var(--core);border-color:var(--core)}
+.badge.stretch{color:var(--stretch);border-color:var(--stretch)}
+.section-name{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.qtext{font-size:18px;line-height:1.45;font-weight:500;margin:12px 0 18px}
+.opts{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.opt{display:flex;gap:12px;align-items:center;border:1px solid var(--line);background:var(--surface);padding:13px 15px;cursor:pointer;text-align:left;font:inherit;color:inherit;border-radius:3px;transition:border-color .12s,background .12s;width:100%}
+.opt:hover{border-color:var(--ink-3)}
+.opt:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.opt .letter{font-family:var(--mono);font-weight:600;font-size:13px;color:var(--ink-3);flex:none}
+.opt.sel{border-color:var(--ink);background:#F6F8FA;box-shadow:inset 0 0 0 1px var(--ink)}
+.opt.sel .letter{color:var(--ink)}
+.opt[disabled]{cursor:default}
+.opt.correct{border-color:var(--pass);background:#F0F7F5}
+.opt.correct .letter{color:var(--pass)}
+.opt.wrong{border-color:var(--fail);background:#FCF2F1}
+.opt.wrong .letter{color:var(--fail)}
+.mark{margin-left:auto;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;flex:none}
+.mark.ok{color:var(--pass)}
+.mark.no{color:var(--fail)}
+.rationale{margin-top:16px;border:1px dashed var(--line);padding:13px 15px;background:var(--paper)}
+.rationale .rlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:5px}
+.rationale p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.5}
+.nav{display:flex;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-top:0;padding:16px 26px;flex-wrap:wrap}
+button.btn{font-family:var(--sans);font-size:14px;font-weight:600;padding:10px 18px;border-radius:3px;cursor:pointer;border:1px solid var(--ink);background:var(--surface);color:var(--ink);transition:background .12s,color .12s}
+button.btn:hover:not(:disabled){background:var(--ink);color:var(--surface)}
+button.btn.primary{background:var(--ink);color:var(--surface)}
+button.btn:disabled{opacity:.35;cursor:not-allowed}
+button.btn:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.nav .spacer{margin-left:auto}
+.navnote{font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+.grid{display:flex;flex-wrap:wrap;gap:5px;background:var(--surface);border:1px solid var(--line);border-top:0;padding:16px 26px 20px}
+.gcell{width:32px;height:32px;font-family:var(--mono);font-size:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink-3);cursor:pointer;border-radius:2px;padding:0}
+.gcell:hover{border-color:var(--ink-3)}
+.gcell.answered{background:#E6EBF1;color:var(--ink);font-weight:600;border-color:#B6C1CF}
+.gcell.here{border-color:var(--ink);border-width:2px;color:var(--ink);font-weight:600}
+.gcell.st{border-bottom:3px solid var(--stretch)}
+.result{background:var(--surface);border:1px solid var(--line);border-top:0;padding:28px 26px}
+.result h2{font-size:24px;margin:0 0 4px;letter-spacing:-.01em}
+.result .rsub{color:var(--ink-2);font-size:14px;margin:0 0 24px}
+.readout{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:22px}
+.readout .pane{background:var(--surface);padding:18px}
+.readout .plabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.readout .pscore{font-family:var(--mono);font-size:34px;font-weight:600;line-height:1;letter-spacing:-.02em}
+.readout .pof{font-family:var(--mono);font-size:13px;color:var(--ink-3);margin-top:5px}
+.meter{height:6px;background:var(--line);margin-top:12px;border-radius:3px;overflow:hidden}
+.meter i{display:block;height:100%;width:0;transition:width .5s ease}
+.meter i.core{background:var(--core)}
+.meter i.stretch{background:var(--stretch)}
+table.bd{width:100%;border-collapse:collapse;margin-bottom:22px;font-size:14px}
+table.bd th,table.bd td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+table.bd th{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);border-bottom:1px solid var(--ink)}
+table.bd td.num{font-family:var(--mono);text-align:right;white-space:nowrap}
+table.bd tr.stretch-row td:first-child{border-left:3px solid var(--stretch);padding-left:10px}
+table.bd tr.core-row td:first-child{border-left:3px solid var(--core);padding-left:10px}
+.verdict{border:1px solid var(--ink);padding:18px 20px;margin-bottom:22px}
+.verdict .vlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:7px}
+.verdict h3{margin:0 0 8px;font-size:17px}
+.verdict p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.55}
+.gapbox{background:var(--paper);border-left:3px solid var(--stretch);padding:16px 18px;margin-bottom:22px}
+.gapbox .vlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--stretch);margin-bottom:8px}
+.gapbox ul{margin:0;padding-left:18px;font-size:14px;color:var(--ink-2)}
+.gapbox li{margin-bottom:6px}
+.footer{font-family:var(--mono);font-size:11px;color:var(--ink-3);padding:18px 0 0;text-align:center;letter-spacing:.04em}
+@media (max-width:640px){
+  .tracks,.readout{grid-template-columns:1fr}
+  .card,.nav,.grid,.result{padding-left:18px;padding-right:18px}
+  .strip .cell{flex:1 1 50%;border-bottom:1px solid var(--line)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Aavya · Technical Screening</p>
+    <h1>Senior Full Stack Engineer — banking engagement and CMS platform</h1>
+    <p class="sub">Candidate: Sandeep Khede · 5+ yrs · Webkorps Solutions · scored against both JDs</p>
+  </header>
+
+  <div class="strip">
+    <div class="cell"><span class="k">Questions</span><span class="v" id="qcount">38</span></div>
+    <div class="cell"><span class="k">Time</span><span class="v" id="clock">55:00</span></div>
+    <div class="cell"><span class="k">Answered</span><span class="v" id="answered">0 / 38</span></div>
+    <div class="cell"><span class="k">Depth</span><span class="v">Senior</span></div>
+  </div>
+
+  <div class="tracks">
+    <div class="track">
+      <div class="tlabel"><span class="dot core"></span>Evidenced — pitched hard</div>
+      <div class="tdesc">PostgreSQL and Prisma at 10M rows, NestJS and API design, Kafka and event-driven work, Redis, retrieval with embeddings and vector search, multi-tenant RBAC, React and TypeScript. All claimed in production, so these run at senior level.</div>
+    </div>
+    <div class="track">
+      <div class="tlabel"><span class="dot stretch"></span>Required by the JDs, absent</div>
+      <div class="tdesc">Python and FastAPI for the banking backend, content modelling for the CMS platform, and audit traceability plus working inside a locked-down client estate.</div>
+    </div>
+  </div>
+
+  <main id="stage"></main>
+
+  <div class="nav" id="nav">
+    <button class="btn" id="prev">Previous</button>
+    <button class="btn" id="next">Next</button>
+    <span class="spacer"></span>
+    <span class="navnote" id="navnote"></span>
+    <button class="btn primary" id="submit">Finish and score</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <p class="footer">Answers are scored on submit. Nothing is transmitted — this file runs entirely in the browser.</p>
+</div>
+
+<script>
+const QUESTIONS = [
+
+/* ===== PostgreSQL and Prisma — 10M rows ===== */
+{s:"Postgres · Index limits",t:"core",
+ q:"A query filters on organization_id and a date range, then orders by cost descending. What limits how much a single composite index can do?",
+ o:["Nothing — an index on (organization_id, date, cost) serves the filter and the sort","A range predicate on date means columns after it in the index cannot satisfy the ordering, so a sort still happens","PostgreSQL cannot build an index across three columns","Ordering always requires its own separate index"],
+ a:1,
+ e:"The sharpest indexing question here. Equality columns first, then one range column, and anything after the range is unusable for ordering. Anyone who has genuinely tuned queries over 10M rows has met this."},
+
+{s:"Postgres · Partitioning",t:"core",
+ q:"Cost and usage records are growing past 10M rows. When is partitioning the right answer rather than more indexes?",
+ o:["Never — indexes handle any volume with correct design","When queries naturally scope by a key such as time, so the planner prunes whole partitions and maintenance, vacuum and archival work per partition","Only above roughly a billion rows","Partitioning replaces the need for indexing entirely"],
+ a:1,
+ e:"He designed a data layer over 10M cost records across organisations and accounts. The maintenance argument matters as much as the query one \u2014 dropping last year is a partition drop rather than a mass delete."},
+
+{s:"Postgres · Aggregation",t:"core",
+ q:"A dashboard summarises 10M cost records by organisation and month. Queries take seconds on every load.",
+ o:["Add indexes until the aggregate is fast enough","Pre-aggregate into rollup tables or materialised views refreshed on a schedule, keeping raw rows for drill-down","Cache the result in Redis and accept a slow first request","Move the workload to a document database"],
+ a:1,
+ e:"Caching only hides the cold query, which is the answer to watch for since he lists Redis prominently. Pre-aggregation changes what the database is asked to do."},
+
+{s:"Postgres · Connections",t:"core",
+ q:"Several containerised service instances connect to one PostgreSQL database and it starts refusing connections under load.",
+ o:["Increase max_connections until the errors stop","Each instance opens its own pool and exhausts the server limit; put a connection pooler in front, or share one through a proxy","Switch to long-lived single connections per service","Move read traffic to a replica and leave pooling alone"],
+ a:1,
+ e:"He runs services on Docker and Kubernetes against PostgreSQL, so horizontal scaling versus a fixed connection budget is a problem he should have hit. Raising the limit trades connection errors for memory exhaustion."},
+
+{s:"Prisma · Relations",t:"core",
+ q:"You call findMany for 50 records then read a relation on each inside a loop.",
+ o:["Prisma batches relation access automatically","The N+1 problem — load the relation in the same query with include or select, or batch it","Add an index on the related table","Only an issue when using raw queries"],
+ a:1,
+ e:"Unavoidable in any application with related data. With 10M rows behind it, the difference between one query and 51 is the difference between a working dashboard and a timeout."},
+
+{s:"Prisma · Migrations",t:"core",
+ q:"Difference between prisma migrate dev and prisma migrate deploy?",
+ o:["They are aliases for the same operation","dev generates and applies migrations in development and may reset the database; deploy applies existing migrations in production without prompting or resetting","deploy additionally seeds reference data","dev is superseded by db push in current versions"],
+ a:1,
+ e:"Running migrate dev against production is a data-loss incident. A safety question as much as a knowledge one."},
+
+/* ===== NestJS and API design ===== */
+{s:"NestJS · Architecture",t:"core",
+ q:"What does NestJS dependency injection actually buy you?",
+ o:["Faster application startup through lazy loading","Modules declare providers and the container resolves them, so implementations can be swapped and units tested in isolation","Automatic request validation on every route","It is required in order to use TypeScript decorators"],
+ a:1,
+ e:"He built NestJS services powering over a hundred APIs. The testability argument is the one that matters in practice and connects to his 75 percent coverage claim."},
+
+{s:"API · Idempotency",t:"core",
+ q:"A client retries a POST after a timeout. How do you prevent the action happening twice?",
+ o:["Rely on the client not retrying after a timeout","Accept an idempotency key, store the outcome against it, and return the original response on a repeat","Apply a rate limit to the endpoint","Switch the endpoint to PUT"],
+ a:1,
+ e:"He processes 500K events a day through Kafka and RabbitMQ, where duplicate delivery is guaranteed rather than exceptional. The same discipline applies at the HTTP boundary."},
+
+{s:"API · Long-running work",t:"core",
+ q:"A request triggers cloud-data ingestion that takes several minutes.",
+ o:["Run it synchronously and raise the gateway timeout","Accept it, return 202 with a job identifier, and let the client poll or receive a callback","Schedule it on a cron running every minute","Stream the response and hold the connection open"],
+ a:1,
+ e:"His ingestion pipeline is exactly this shape, and the banking platform generates documents that take minutes. Should be immediate."},
+
+{s:"API · Validation",t:"core",
+ q:"How do you validate an incoming request payload in a TypeScript service?",
+ o:["TypeScript interfaces enforce the shape at runtime","Runtime schema validation at the boundary, since TypeScript types are erased at compile time","Database constraints catch anything invalid","Wrap the handler in try/catch and inspect failures"],
+ a:1,
+ e:"The most consequential TypeScript misconception, and a service exposing a hundred public APIs cannot afford it."},
+
+/* ===== Kafka and messaging ===== */
+{s:"Kafka · Ordering",t:"core",
+ q:"What ordering guarantee does Kafka actually provide?",
+ o:["Global ordering across every message in a topic","Ordering within a partition only — the partition key determines which messages stay ordered relative to each other","No ordering guarantee at all","Ordering by producer timestamp across partitions"],
+ a:1,
+ e:"The single most important Kafka concept, and the reason key selection matters. Anyone who has designed a topic layout knows it; anyone who inherited one may not."},
+
+{s:"Kafka · Delivery",t:"core",
+ q:"Your consumer processes an event, then crashes before committing its offset.",
+ o:["The event is lost and must be replayed manually","It is redelivered, which is why consumers must be idempotent — at-least-once is the default guarantee","Kafka detects the crash and skips the event","The broker rolls back the processing side effects"],
+ a:1,
+ e:"At-least-once plus non-idempotent consumers is the classic source of duplicate records. He processes 500K events daily, so this should be lived experience."},
+
+{s:"Kafka · Operations",t:"core",
+ q:"Consumer lag is climbing steadily. What does that tell you, and what do you check?",
+ o:["The broker is failing and needs restarting","Consumers are processing slower than producers — check per-partition lag, whether consumer count matches partitions, and whether processing blocks on I/O","There are too many partitions for the topic","It is always a network bandwidth problem"],
+ a:1,
+ e:"Consumer count above partition count adds idle consumers rather than throughput, which is the detail that separates operating Kafka from configuring it."},
+
+/* ===== Redis ===== */
+{s:"Redis · Invalidation",t:"core",
+ q:"You cache expensive cost aggregations in Redis. What is the decision that actually matters?",
+ o:["The eviction policy and memory ceiling","The invalidation strategy, and what stale data costs the user","The serialisation format for cached values","The connection pool configuration"],
+ a:1,
+ e:"He claims a 35 percent reduction in repeated database operations. In a cost-reporting product, stale figures are a correctness problem, not a performance one."},
+
+{s:"Redis · Stampede",t:"core",
+ q:"A hot cached key expires under load and every request regenerates it at once.",
+ o:["Shorten the TTL so the event is smaller each time","Single-flight the regeneration behind a lock, or stagger TTLs with jitter","Remove the cache and query directly","Increase the memory limit on the Redis instance"],
+ a:1,
+ e:"A harder question, included because caching is a stated competency rather than a passing mention."},
+
+/* ===== Retrieval — his production differentiator ===== */
+{s:"Retrieval · Context limits",t:"core",
+ q:"Why retrieve selected passages rather than sending a large corpus to a model?",
+ o:["Retrieval improves the fluency of generated text","The corpus exceeds the model context window, so only relevant passages can physically be sent","Provider licensing restricts bulk content submission","It removes the need for a database"],
+ a:1,
+ e:"He built retrieval over 100K indexed records in production. This is the floor for that claim \u2014 a miss here would call the whole line into question."},
+
+{s:"Retrieval · Chunking",t:"core",
+ q:"Why does chunk size matter when indexing documents?",
+ o:["Smaller is always better, since more chunks fit in the context","Too large dilutes relevance and wastes context; too small severs surrounding meaning — a tuning decision measured against real queries","It affects storage cost and nothing else","It is fixed by the embedding model"],
+ a:1,
+ e:"A genuine tradeoff with no default. Ask what he tuned against, since the answer reveals whether an evaluation loop existed."},
+
+{s:"Retrieval · Embedding models",t:"core",
+ q:"You switch to a different embedding model. What must happen to the existing index?",
+ o:["Nothing — embeddings are portable between models","The entire corpus must be re-embedded, since vectors from different models occupy different spaces","Only newly added documents need the new model","The stored vectors can be mathematically converted"],
+ a:1,
+ e:"A practical consequence anyone maintaining a vector index has met, and the reason a build budget assumes several full re-embedding passes."},
+
+{s:"Retrieval · Hybrid search",t:"core",
+ q:"Semantic search fails to find records matching an exact account identifier or cost code. Why, and what fixes it?",
+ o:["The embedding model is undertrained and needs replacing","Vector similarity does not match exact tokens well; combine keyword and vector search, with metadata filtering and a reranking stage","Increase the number of chunks returned per query","Lengthen the prompt to instruct the model to look harder"],
+ a:1,
+ e:"His corpus is cost and usage data full of account identifiers and resource codes, so this is precisely the failure his own system would hit. The best question in this section."},
+
+{s:"Retrieval · Storage",t:"core",
+ q:"pgvector inside PostgreSQL versus a dedicated vector database. What is the real tradeoff?",
+ o:["Dedicated stores are always faster and should be preferred","pgvector keeps vectors beside relational data, so tenant and permission filters apply in the same query; dedicated stores scale further but add a second system and a synchronisation problem","They are functionally equivalent at any scale","PostgreSQL cannot perform approximate nearest-neighbour search"],
+ a:1,
+ e:"He has PostgreSQL and vector databases both. The filtering argument is decisive for a multi-tenant product \u2014 retrieval that cannot respect permissions in the same query is a leak waiting to happen."},
+
+{s:"Retrieval · Evaluation",t:"core",
+ q:"You change the chunking strategy. How do you know retrieval improved rather than merely changed?",
+ o:["The generated answers read better in spot checks","A labelled evaluation set with retrieval metrics measured before and after — without one, every change is a guess","Fewer user complaints over the following weeks","Lower average query latency"],
+ a:1,
+ e:"The discipline that separates a working demo from a system anyone can improve. If he has an evaluation loop in production, that is a significant differentiator for the banking engagement."},
+
+/* ===== Auth, RBAC, multi-tenancy ===== */
+{s:"Multi-tenancy · Isolation",t:"core",
+ q:"A shared database serves 100+ organisations. What guarantees one never sees another data?",
+ o:["Add an organisation filter to every query and rely on code review","Enforce scoping below the application — row-level security, or a data layer that always injects the tenant predicate","Deploy a separate frontend per organisation","Validate the organisation claim in the interface before rendering"],
+ a:1,
+ e:"The most important question on this sheet. He claims organisation-level access controls across 100+ organisations; a design where isolation depends on remembering a WHERE clause is one missed filter from a cross-tenant breach."},
+
+{s:"Authorisation · Modelling",t:"core",
+ q:"Six roles across many organisations. How do you model permissions without the matrix exploding?",
+ o:["Create one role per organisation per permission combination","Roles grant permissions; permissions are checked against the resource and its organisation, keeping the role model separate from the tenancy scope","Hardcode the checks into each endpoint","Embed the full permission set in the token and trust it"],
+ a:1,
+ e:"Conflating roles with tenancy is what produces a role table that grows with customer count. His resume describes exactly this shape, so the answer should be considered rather than theoretical."},
+
+{s:"Authorisation · Scope",t:"core",
+ q:"A user may edit only budgets belonging to their own organisation and created by their team. Why is a role check insufficient?",
+ o:["It is sufficient — check for the budget-editor role","The rule depends on attributes of the specific record, so authorisation must evaluate the resource, not only the role name","Create a dedicated role per team","Filter the list view in the interface"],
+ a:1,
+ e:"The step from role-based to resource-scoped authorisation, and where most RBAC implementations stop one level too early."},
+
+{s:"Auth · Token lifecycle",t:"core",
+ q:"A user is removed from an organisation while holding a valid JWT.",
+ o:["The next request is rejected automatically","The token stays valid until expiry — you need short lifetimes with refresh, or a revocation check against server state","Clearing the server session invalidates it immediately","Rotating the signing key resolves it"],
+ a:1,
+ e:"He implemented OAuth 2.0 and JWT across 100+ protected APIs. The stateless tradeoff matters wherever membership changes mid-session."},
+
+/* ===== React, Next.js, TypeScript ===== */
+{s:"TypeScript · Assertions",t:"core",
+ q:"An API response is cast with the as keyword to a declared interface. What does that guarantee?",
+ o:["The compiler verifies the shape when the code runs","Nothing — as is erased at compile time and asserts something nothing enforces","The value is coerced into the declared shape","It raises an error if the shape does not match"],
+ a:1,
+ e:"The counterpart to the payload validation question, seen from the consuming side."},
+
+{s:"Next.js · Server Components",t:"core",
+ q:"What can a Server Component not do?",
+ o:["Query a database directly","Hold state, run effects, or access browser APIs — it renders once and never hydrates","Render other components as children","Read server environment variables"],
+ a:1,
+ e:"He lists Next.js. Knowing what forces a client boundary is what keeps the bundle small, and the CMS platform is built entirely on this model."},
+
+{s:"React · Large tables",t:"core",
+ q:"A cost dashboard renders several thousand rows and scrolling stutters.",
+ o:["Memoise the row array with useMemo","Virtualise so only visible rows mount","Move the table into a Server Component","Debounce the scroll handler"],
+ a:1,
+ e:"He built cost dashboards over 10M records. Only windowing changes the amount of DOM work; pagination limits what is fetched but not what is mounted."},
+
+{s:"React · Re-renders",t:"core",
+ q:"A memoised component still re-renders on every parent update.",
+ o:["memo only applies to class components","A new object, array or function prop is created each render, so referential equality fails","memo requires a custom comparator to work","Internal state disables memoisation"],
+ a:1,
+ e:"Where knowing the API ends and understanding the render model begins."},
+
+/* ===== Testing ===== */
+{s:"Testing · Coverage",t:"core",
+ q:"You report roughly 75 percent test coverage. What does that number not tell you?",
+ o:["Nothing meaningful is missing — coverage is the key quality signal","Whether the assertions are meaningful; coverage measures lines executed, not behaviour verified","Whether the suite runs fast enough for CI","Whether end-to-end tests exist"],
+ a:1,
+ e:"A test that executes a line without asserting anything counts identically to one that catches a regression. He names Jest, React Testing Library, Cypress and Playwright, so the breadth is real \u2014 this tests the judgement behind it."},
+
+/* ===== Python and FastAPI — absent, bank ===== */
+{s:"Python · FastAPI · Bank JD",t:"stretch",
+ q:"How does FastAPI validate incoming request bodies?",
+ o:["Manual checks written into each route handler","From Python type hints and Pydantic models, validated at runtime, with an OpenAPI schema generated from them","Through decorators evaluated at import time","By loading JSON Schema files from disk"],
+ a:1,
+ e:"His backend is Node and NestJS; the banking platform is Python and FastAPI. Conceptually this mirrors NestJS pipes with class-validator, so a candidate who draws that parallel is showing real transfer."},
+
+{s:"Python · Concurrency · Bank JD",t:"stretch",
+ q:"A service makes many slow calls to an external model API. Why does async matter?",
+ o:["It makes the external API respond faster","The calls are I/O-bound; async lets one worker handle many concurrent waits rather than blocking a thread per request","It is required in order to use type hints","It reduces the token cost of each call"],
+ a:1,
+ e:"The concept transfers directly from Node, which is his daily environment. A miss here would be more surprising than a miss on FastAPI specifics."},
+
+/* ===== Content modelling — absent, CMS ===== */
+{s:"Content modelling · CMS JD",t:"stretch",
+ q:"What defines a headless CMS?",
+ o:["A content system with no administrative interface","Content is authored and stored independently of presentation and delivered over an API to any frontend","A static site generator with an editing layer","A managed database with a REST wrapper"],
+ a:1,
+ e:"No CMS appears anywhere on his resume. Baseline literacy for the content platform role."},
+
+{s:"Content modelling · CMS JD",t:"stretch",
+ q:"A page is assembled from an ordered sequence of section types chosen by an author, where a type may repeat.",
+ o:["A nullable column on the page for each possible section type","A blocks table with a type discriminator and a position column, with type-specific fields stored separately","The rendered HTML of the assembled page","A separate table for each page layout"],
+ a:1,
+ e:"The central abstraction of the CMS platform. Given his relational depth, this is the question most likely to transfer cleanly despite no CMS experience."},
+
+{s:"Content modelling · CMS JD",t:"stretch",
+ q:"Editors must work on changes without the public seeing them until publish.",
+ o:["A published boolean toggled when the content is ready","Separate draft and published versions, so edits accumulate against the draft until it is promoted","Lock the record while an editor has it open","Duplicate the record, edit the copy, delete the original on publish"],
+ a:1,
+ e:"A boolean cannot represent two simultaneous states of the same content. Versioned publishing also delivers rollback and scheduling almost free."},
+
+/* ===== Traceability and regulated environment — absent, bank ===== */
+{s:"Traceability · Bank JD",t:"stretch",
+ q:"Every generated statement must be auditable to its exact source, and sources are revised over time.",
+ o:["Store a confidence score with each statement","Citation records pointing at a specific document version and location, so a later revision cannot invalidate an approved statement","Write the full prompt and response to an audit log","Keep a snapshot of the corpus alongside each output"],
+ a:1,
+ e:"The version is the crux — a citation pointing at a document rather than a version breaks silently the moment that document changes. The hardest question here and the most central to the banking engagement."},
+
+{s:"Audit · Bank JD",t:"stretch",
+ q:"An auditor may later ask who approved a document and when. How should approval state be stored?",
+ o:["A boolean approved column on the record","An explicit current state plus append-only transition rows recording actor, timestamp and previous state","A status column updated in place at each stage","Created and last-modified timestamps"],
+ a:1,
+ e:"An overwritten status column destroys the evidence an audit needs. The platform mandates analyst and QA sign-off gates that survive review."},
+
+{s:"Environment · Bank JD",t:"stretch",
+ q:"No client data may leave the client environment. What does that rule out?",
+ o:["Nothing, provided all traffic is encrypted in transit","Any hosted third-party service processing client content — external model and embedding APIs included, plus error reporting that captures payloads","Only email and file transfer","Only bulk data exports"],
+ a:1,
+ e:"The pointed question for him. His retrieval work runs through hosted LLM APIs, which is exactly the pattern disallowed inside a bank tenant — embeddings and inference must run within it, changing cost, latency and model choice. Whether he sees that immediately indicates how well the experience transfers."}
+];
+
+/* Randomise option order so the correct answer is not always in one position. */
+(function shuffleOptions(){
+  QUESTIONS.forEach(q => {
+    const correct = q.o[q.a];
+    for (let i = q.o.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [q.o[i], q.o[j]] = [q.o[j], q.o[i]];
+    }
+    q.a = q.o.indexOf(correct);
+  });
+})();
+
+const TOTAL = QUESTIONS.length;
+const answers = new Array(TOTAL).fill(null);
+let cur = 0, graded = false, secondsLeft = 55 * 60;
+
+const stage = document.getElementById('stage');
+const grid  = document.getElementById('grid');
+const bar   = document.getElementById('bar');
+const LETTERS = ['A','B','C','D'];
+
+document.getElementById('qcount').textContent = TOTAL;
+document.getElementById('answered').textContent = '0 / ' + TOTAL;
+
+const clock = document.getElementById('clock');
+const timer = setInterval(() => {
+  if (graded) { clearInterval(timer); return; }
+  secondsLeft--;
+  const m = Math.floor(Math.max(secondsLeft,0)/60), s = Math.max(secondsLeft,0)%60;
+  clock.textContent = m + ':' + String(s).padStart(2,'0');
+  if (secondsLeft <= 300) clock.classList.add('warn');
+  if (secondsLeft <= 0) { clearInterval(timer); grade(); }
+}, 1000);
+
+function render() {
+  const q = QUESTIONS[cur];
+  const badge = q.t === 'core'
+    ? '<span class="badge core">Evidenced</span>'
+    : '<span class="badge stretch">Absent</span>';
+
+  let html = '<section class="card">'
+    + '<div class="qhead"><span class="qnum">' + String(cur+1).padStart(2,'0') + ' / ' + TOTAL + '</span>'
+    + badge + '<span class="section-name">' + q.s + '</span></div>'
+    + '<p class="qtext">' + q.q + '</p><ul class="opts">';
+
+  q.o.forEach((opt, i) => {
+    let cls = 'opt', mark = '';
+    if (answers[cur] === i) cls += ' sel';
+    if (graded) {
+      if (i === q.a) { cls += ' correct'; mark = '<span class="mark ok">Correct</span>'; }
+      else if (answers[cur] === i) { cls += ' wrong'; mark = '<span class="mark no">Chosen</span>'; }
+    }
+    html += '<li><button class="' + cls + '" data-i="' + i + '"' + (graded ? ' disabled' : '') + '>'
+          + '<span class="letter">' + LETTERS[i] + '</span><span>' + opt + '</span>' + mark + '</button></li>';
+  });
+
+  html += '</ul>';
+  if (graded) html += '<div class="rationale"><div class="rlabel">Interviewer note</div><p>' + q.e + '</p></div>';
+  html += '</section>';
+  stage.innerHTML = html;
+
+  if (!graded) {
+    stage.querySelectorAll('.opt').forEach(b => {
+      b.addEventListener('click', () => {
+        answers[cur] = Number(b.dataset.i);
+        render(); paint();
+        if (cur < TOTAL - 1) setTimeout(() => { cur++; render(); paint(); }, 160);
+      });
+    });
+  }
+
+  document.getElementById('prev').disabled = cur === 0;
+  document.getElementById('next').disabled = cur === TOTAL - 1;
+  document.getElementById('navnote').textContent = graded ? 'Review mode' : (answers[cur] === null ? 'Not answered' : 'Answered');
+}
+
+function paint() {
+  const done = answers.filter(a => a !== null).length;
+  document.getElementById('answered').textContent = done + ' / ' + TOTAL;
+  bar.style.width = (done / TOTAL * 100) + '%';
+  grid.innerHTML = QUESTIONS.map((q, i) => {
+    let c = 'gcell';
+    if (answers[i] !== null) c += ' answered';
+    if (i === cur) c += ' here';
+    if (q.t === 'stretch') c += ' st';
+    return '<button class="' + c + '" data-i="' + i + '">' + (i+1) + '</button>';
+  }).join('');
+  grid.querySelectorAll('.gcell').forEach(b => {
+    b.addEventListener('click', () => { cur = Number(b.dataset.i); render(); paint(); });
+  });
+}
+
+document.getElementById('prev').addEventListener('click', () => { if (cur > 0) { cur--; render(); paint(); } });
+document.getElementById('next').addEventListener('click', () => { if (cur < TOTAL-1) { cur++; render(); paint(); } });
+document.getElementById('submit').addEventListener('click', () => {
+  const done = answers.filter(a => a !== null).length;
+  if (!graded && done < TOTAL && !confirm((TOTAL - done) + ' question(s) are unanswered. Score anyway?')) return;
+  grade();
+});
+
+function grade() {
+  if (graded) { window.scrollTo({top:0,behavior:'smooth'}); return; }
+  graded = true; clearInterval(timer);
+
+  const bySection = {};
+  let coreC = 0, coreT = 0, strC = 0, strT = 0;
+  QUESTIONS.forEach((q, i) => {
+    const ok = answers[i] === q.a;
+    if (!bySection[q.s]) bySection[q.s] = {c:0, t:0, track:q.t};
+    bySection[q.s].t++; if (ok) bySection[q.s].c++;
+    if (q.t === 'core') { coreT++; if (ok) coreC++; } else { strT++; if (ok) strC++; }
+  });
+
+  const corePct = Math.round(coreC/coreT*100);
+  const strPct  = Math.round(strC/strT*100);
+
+  let vTitle, vBody;
+  if (corePct >= 85 && strPct >= 55) {
+    vTitle = "Move now — strongest candidate assessed for the banking engagement";
+    vBody = "PostgreSQL at scale, event-driven architecture, multi-tenant access control and production retrieval all hold up under senior questioning, and he reasons into audit modelling and the constraints of a locked-down estate. Nobody else assessed combines relational depth with shipped RAG. Python is the only material gap and it is weeks, not quarters, for someone with this backend foundation. Compress the process.";
+  } else if (corePct >= 85) {
+    vTitle = "Advance — strong senior hire, plan the new domains";
+    vBody = "The claimed stack survives senior-level questioning, which given the density of scale figures on his resume is the main thing to establish. Content modelling, audit traceability and regulated-environment working are new. All are learnable on this foundation inside a quarter, but none should be assumed on day one.";
+  } else if (corePct >= 65) {
+    vTitle = "Borderline — the scale claims need verifying";
+    vBody = "Misses inside PostgreSQL, Kafka, retrieval or multi-tenancy matter more than the absent track, because those are the specific things that make him the strongest paper candidate. Identify which area came back thin and probe it live before deciding.";
+  } else {
+    vTitle = "Claims and depth do not reconcile";
+    vBody = "Under sixty-five percent on a stack described in unusual operational detail across five years. Given the volume of quantified scale claims, take this seriously and verify with a hands-on session before proceeding.";
+  }
+
+  const rows = Object.keys(bySection).map(k => {
+    const b = bySection[k];
+    return '<tr class="' + (b.track === 'core' ? 'core-row' : 'stretch-row') + '">'
+      + '<td>' + k + '</td><td class="num">' + b.c + ' / ' + b.t + '</td>'
+      + '<td class="num">' + Math.round(b.c/b.t*100) + '%</td></tr>';
+  }).join('');
+
+  stage.innerHTML =
+    '<section class="result">'
+    + '<h2>Assessment complete</h2>'
+    + '<p class="rsub">Sandeep Khede · ' + (coreC + strC) + ' of ' + TOTAL + ' overall. The evidenced track was pitched at senior level because his resume claims this depth in production.</p>'
+    + '<div class="readout">'
+      + '<div class="pane"><div class="plabel"><span class="dot core"></span>Evidenced — senior level</div>'
+        + '<div class="pscore">' + corePct + '%</div><div class="pof">' + coreC + ' of ' + coreT + ' correct</div>'
+        + '<div class="meter"><i class="core" style="width:' + corePct + '%"></i></div></div>'
+      + '<div class="pane"><div class="plabel"><span class="dot stretch"></span>Required by the JDs, absent</div>'
+        + '<div class="pscore">' + strPct + '%</div><div class="pof">' + strC + ' of ' + strT + ' correct</div>'
+        + '<div class="meter"><i class="stretch" style="width:' + strPct + '%"></i></div></div>'
+    + '</div>'
+    + '<table class="bd"><thead><tr><th>Section</th><th class="num">Score</th><th class="num">%</th></tr></thead><tbody>' + rows + '</tbody></table>'
+    + '<div class="verdict"><div class="vlabel">Hiring signal</div><h3>' + vTitle + '</h3><p>' + vBody + '</p></div>'
+    + '<div class="gapbox"><div class="vlabel">Read the resume alongside the score</div><ul>'
+      + '<li><strong>He is the only candidate assessed with PostgreSQL, TypeScript, Redis and production retrieval together.</strong> Embeddings and vector search over 100K indexed records as shipped work rather than a portfolio build. For the banking platform that combination is the whole architecture.</li>'
+      + '<li><strong>His scale claims are counts, not improvement percentages.</strong> 10M records, 500K events a day, 100+ organisations, 1,000+ cloud accounts. Those are checkable in conversation in a way that reducing bugs by 30 percent never is \u2014 a meaningfully more honest resume than most of this shortlist.</li>'
+      + '<li><strong>Organisation-level access control across 100+ organisations</strong> is the most relevant line for the multi-tenancy work on the CMS programme. Push hard on where isolation was enforced and whether he designed it or implemented it.</li>'
+      + '<li><strong>Python is the material gap for the banking seat.</strong> His backend is Node and NestJS. The concepts transfer almost completely \u2014 dependency injection, decorators, async I/O, schema validation \u2014 but FastAPI and the Python ecosystem are new.</li>'
+      + '<li><strong>No CMS of any kind,</strong> so content modelling, versioned publishing and localisation are unfamiliar. His relational depth should carry him through the reasoning, which the three content questions test.</li>'
+      + '<li><strong>His retrieval runs on hosted model APIs.</strong> Inside a bank tenant with no egress, that exact pattern is disallowed \u2014 embeddings and inference must run within it. The last question tests whether he sees that; if not, walk him there and watch the recovery.</li>'
+      + '<li><strong>Title is Software Engineer; the work described is architectural.</strong> Data layer design, messaging topology, infrastructure with Terraform. Probe scope: who made the design calls, and what he personally owned end to end.</li>'
+      + '<li><strong>Roughly a two-and-a-half year gap between graduating in 2018 and the first listed role in February 2021.</strong> Ordinary, and worth asking neutrally and early rather than leaving unaddressed.</li>'
+    + '</ul></div>'
+    + '<p class="rsub" style="margin:0">Use Previous and Next, or the number grid, to review each question with the correct answer and interviewer note.</p>'
+    + '</section>';
+
+  bar.style.width = '100%';
+  document.getElementById('submit').textContent = 'Scored';
+  document.getElementById('submit').disabled = true;
+  paint();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+render(); paint();
+</script>
+</body>
+</html>
