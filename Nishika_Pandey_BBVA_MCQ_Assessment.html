@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Engineer Assessment — Nishika Pandey · BBVA</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#05050F;--bg2:#08091A;--bg3:#0D0F24;--border:#151833;--border2:#1E2245;
+      --violet:#8B5CF6;--violet2:#7C3AED;--vlt:rgba(139,92,246,.1);--vlt-x:rgba(139,92,246,.05);
+      --cyan:#22D3EE;--cyan-lt:rgba(34,211,238,.1);
+      --rose:#F472B6;--rose-lt:rgba(244,114,182,.1);
+      --amber:#FCD34D;--amb-lt:rgba(252,211,77,.1);
+      --green:#34D399;--grn-lt:rgba(52,211,153,.1);
+      --red:#F87171;--red-lt:rgba(248,113,113,.1);
+      --text:#EDE9FE;--muted:#2E3060;--sub:#64748B;
+      --mono:'JetBrains Mono',monospace;--sans:'Sora',sans-serif;
+    }
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden}
+    body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 65% 40% at 50% -5%,rgba(139,92,246,.1) 0%,transparent 65%);pointer-events:none;z-index:0}
+    .hdr{position:sticky;top:0;z-index:200;background:rgba(5,5,15,.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 40px}
+    .hdr-l{display:flex;align-items:center;gap:14px}
+    .logo{font-family:var(--mono);font-size:11px;font-weight:600;color:#fff;background:var(--violet2);padding:3px 10px;border-radius:4px;letter-spacing:.06em}
+    .hdr-title{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.04em}
+    .hdr-r{display:flex;align-items:center;gap:12px}
+    .bbva-tag{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--cyan);border:1px solid rgba(34,211,238,.35);background:var(--cyan-lt);padding:3px 9px;border-radius:3px;letter-spacing:.06em}
+    .tmr{font-family:var(--mono);font-size:19px;font-weight:600;color:var(--amber);min-width:52px;text-align:right}
+    .tmr.urgent{color:var(--red);animation:fl .75s ease-in-out infinite}
+    @keyframes fl{0%,100%{opacity:1}50%{opacity:.4}}
+    .prog{height:2px;background:var(--border);z-index:1;position:relative}
+    .prog-f{height:100%;background:linear-gradient(90deg,var(--violet2),var(--cyan));transition:width .4s cubic-bezier(.4,0,.2,1)}
+    .main{max-width:840px;margin:0 auto;padding:36px 20px 100px;position:relative;z-index:1}
+    .hero{border:1px solid var(--border2);border-radius:14px;padding:34px 40px;margin-bottom:36px;background:linear-gradient(135deg,var(--bg2) 0%,var(--bg3) 100%);position:relative;overflow:hidden}
+    .hero::after{content:'';position:absolute;top:-60px;right:-60px;width:210px;height:210px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.1) 0%,transparent 70%);pointer-events:none}
+    .hero-eye{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--violet);margin-bottom:10px}
+    .hero h1{font-size:24px;font-weight:700;line-height:1.2;margin-bottom:10px}
+    .hero h1 em{color:var(--violet);font-style:normal}
+    .hero p{font-size:14px;color:var(--sub);line-height:1.7;margin-bottom:22px;max-width:560px}
+    .hero-tags{display:flex;gap:8px;flex-wrap:wrap}
+    .htag{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.05em;padding:4px 11px;border-radius:20px;border:1px solid}
+    .ht-v{color:var(--violet);border-color:rgba(139,92,246,.35);background:var(--vlt)}
+    .ht-c{color:var(--cyan);border-color:rgba(34,211,238,.35);background:var(--cyan-lt)}
+    .ht-r{color:var(--rose);border-color:rgba(244,114,182,.35);background:var(--rose-lt)}
+    .ht-a{color:var(--amber);border-color:rgba(252,211,77,.35);background:var(--amb-lt)}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:36px}
+    .stat{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+    .stat .sv{font-family:var(--mono);font-size:22px;font-weight:600;color:var(--violet)}
+    .stat .sl{font-size:11px;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.07em;font-family:var(--mono)}
+    .sec{display:flex;align-items:center;gap:12px;margin:42px 0 16px}
+    .sec-pill{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--violet);background:var(--vlt);border:1px solid rgba(139,92,246,.3);padding:3px 11px;border-radius:20px;white-space:nowrap}
+    .sec-line{flex:1;height:1px;background:var(--border)}
+    .sec-cnt{font-family:var(--mono);font-size:10px;color:var(--muted);white-space:nowrap}
+    .qcard{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:20px 22px;margin-bottom:12px;position:relative;transition:border-color .2s}
+    .qcard::before{content:'';position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:0 2px 2px 0;background:var(--border2);transition:background .3s}
+    .qcard.answered{border-color:rgba(52,211,153,.25)} .qcard.answered::before{background:var(--green)}
+    .qcard.incorrect{border-color:rgba(248,113,113,.2)} .qcard.incorrect::before{background:var(--red)}
+    .qmeta{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+    .qnum{font-family:var(--mono);font-size:11px;font-weight:600;color:#fff;background:var(--violet2);padding:2px 8px;border-radius:3px;min-width:34px;text-align:center}
+    .qtag{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.07em;color:var(--muted);text-transform:uppercase}
+    .qdiff{margin-left:auto;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.1em;padding:2px 9px;border-radius:20px;text-transform:uppercase}
+    .dm{color:var(--amber);background:var(--amb-lt);border:1px solid rgba(252,211,77,.3)}
+    .dh{color:var(--red);background:var(--red-lt);border:1px solid rgba(248,113,113,.3)}
+    .qtext{font-size:15px;font-weight:600;color:var(--text);line-height:1.58;margin-bottom:18px}
+    .qtext code{font-family:var(--mono);font-size:12.5px;background:var(--vlt);color:var(--violet);padding:1px 6px;border-radius:3px}
+    .opts{display:flex;flex-direction:column;gap:8px}
+    .opt{display:flex;align-items:flex-start;gap:11px;padding:11px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:14px;line-height:1.55;color:var(--sub);transition:all .15s;user-select:none}
+    .opt:hover:not(.locked){border-color:var(--violet2);background:var(--vlt-x);color:var(--text)}
+    .ok{font-family:var(--mono);font-size:11px;font-weight:600;min-width:22px;height:22px;border-radius:3px;background:var(--border2);color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all .15s}
+    .opt.correct-pick{border-color:var(--green);background:var(--grn-lt);color:var(--text)} .opt.correct-pick .ok{background:#059669;color:#fff}
+    .opt.wrong-pick{border-color:var(--red);background:var(--red-lt);color:var(--text)} .opt.wrong-pick .ok{background:#DC2626;color:#fff}
+    .opt.reveal-right{border-color:var(--green);background:var(--grn-lt);color:var(--text)} .opt.reveal-right .ok{background:#059669;color:#fff}
+    .expl{display:none;margin-top:12px;padding:13px 16px;border-radius:8px;font-size:13px;line-height:1.75}
+    .expl.show{display:block}
+    .expl-ok{background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.2);color:#6EE7B7}
+    .expl-bad{background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.2);color:#FCA5A5}
+    .fbar{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(5,5,15,.97);backdrop-filter:blur(14px);border-top:1px solid var(--border);padding:12px 40px;display:flex;align-items:center;justify-content:space-between}
+    .fstats{display:flex;gap:20px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+    .fstats span{color:var(--violet);font-weight:600} .fstats .ft{color:var(--amber)}
+    .btn-sub{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:11px 28px;background:var(--violet2);color:#fff;border:none;border-radius:5px;cursor:pointer;transition:background .2s,transform .1s}
+    .btn-sub:hover{background:var(--violet);transform:translateY(-1px)}
+    .results{display:none;background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:36px;margin-top:40px}
+    .results.show{display:block}
+    .rtitle{font-size:22px;font-weight:700;margin-bottom:4px} .rtitle span{color:var(--violet)}
+    .rsub{font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:28px}
+    .sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:26px}
+    .sbox{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center}
+    .sbox .sv{font-family:var(--mono);font-size:26px;font-weight:600}
+    .sbox.vc .sv{color:var(--violet)} .sbox.gc .sv{color:var(--green)}
+    .sbox.ac .sv{color:var(--amber)} .sbox.rc .sv{color:var(--red)}
+    .sbox .sl{font-size:11px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.08em;font-family:var(--mono)}
+    .verdict{padding:15px 18px;border-radius:9px;font-size:15px;font-weight:600;margin-bottom:24px;border:1px solid}
+    .v-ex{background:rgba(139,92,246,.08);border-color:rgba(139,92,246,.3);color:#C4B5FD}
+    .v-good{background:rgba(52,211,153,.07);border-color:rgba(52,211,153,.25);color:var(--green)}
+    .v-ok{background:rgba(252,211,77,.07);border-color:rgba(252,211,77,.3);color:var(--amber)}
+    .v-try{background:rgba(248,113,113,.07);border-color:rgba(248,113,113,.3);color:var(--red)}
+    .sb-head{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+    .sb-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+    .sb-name{width:240px;flex-shrink:0;font-size:12px;color:var(--sub);font-family:var(--mono)}
+    .sb-track{flex:1;background:var(--border);border-radius:2px;height:6px}
+    .sb-fill{height:100%;border-radius:2px;background:var(--violet);transition:width .7s cubic-bezier(.4,0,.2,1)}
+    .sb-num{font-family:var(--mono);font-size:11px;color:var(--muted);width:36px;text-align:right}
+    @media(max-width:600px){.hdr{padding:0 14px}.hero{padding:22px 18px}.main{padding:20px 12px 100px}.stats,.sgrid{grid-template-columns:repeat(2,1fr)}.fbar{padding:10px 14px}.fstats{gap:10px;font-size:11px}.bbva-tag{display:none}}
+  </style>
+</head>
+<body>
+<header class="hdr">
+  <div class="hdr-l">
+    <span class="logo">AI//EVAL</span>
+    <span class="hdr-title">AI ENGINEER · NISHIKA PANDEY · BBVA JD</span>
+  </div>
+  <div class="hdr-r">
+    <span class="bbva-tag">JD: BBVA · MEDIUM-HARD</span>
+    <div class="tmr" id="tmrDisp">35:00</div>
+  </div>
+</header>
+<div class="prog"><div class="prog-f" id="progF" style="width:0%"></div></div>
+
+<main class="main">
+  <div class="hero">
+    <div class="hero-eye">AI Engineer Assessment · BBVA Financial Context</div>
+    <h1>25 Questions · <em>Medium &amp; Hard</em> · Full AI Stack</h1>
+    <p>Anchored to Nishika's actual production experience — Qdrant RAG pipelines, MCP agentic servers with WhatsApp/Gmail/Teams, real-time WebSocket video streaming, MuseTalk lip-sync, multi-LLM routing, DeepLabV3/Mask R-CNN computer vision, and FastAPI production backends — all framed against BBVA's financial AI requirements.</p>
+    <div class="hero-tags">
+      <span class="htag ht-v">LLM · RAG · Qdrant · ChromaDB</span>
+      <span class="htag ht-c">MCP · Agents · Orchestration</span>
+      <span class="htag ht-r">WebSocket · MuseTalk · Streaming</span>
+      <span class="htag ht-a">FastAPI · Docker · Security</span>
+      <span class="htag ht-v">DeepLabV3 · CNN · NLP</span>
+      <span class="htag ht-c">BBVA System Design</span>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="sv">25</div><div class="sl">Questions</div></div>
+    <div class="stat"><div class="sv">35</div><div class="sl">Minutes</div></div>
+    <div class="stat"><div class="sv">M+H</div><div class="sl">Difficulty</div></div>
+    <div class="stat"><div class="sv">6</div><div class="sl">Sections</div></div>
+  </div>
+
+  <div class="sec"><span class="sec-pill">LLM · RAG · Prompt Engineering</span><div class="sec-line"></div><span class="sec-cnt">Q1–Q6</span></div>
+  <div class="qcard" id="qc-1">
+    <div class="qmeta"><span class="qnum">Q01</span><span class="qtag">RAG Pipeline</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">In your MCP server you used Qdrant + OpenAI Embeddings for context-aware RAG responses. A query returns chunks that are semantically close but from the wrong document section (e.g. 'interest rate' from a general banking FAQ when the user asked about mortgage rates specifically). Which retrieval fix most directly addresses this?</div>
+    <div class="opts" id="o-1">
+      <div class="opt" onclick="pick(1,'A')"><span class="ok">A</span>Remove stop words from the query before embedding — common banking terms like 'rate' and 'interest' inflate similarity scores across unrelated document sections</div>
+      <div class="opt" onclick="pick(1,'B')"><span class="ok">B</span>Increase the number of retrieved chunks from top-3 to top-10 — more candidates increase the chance the correct section appears in the results</div>
+      <div class="opt" onclick="pick(1,'C')"><span class="ok">C</span>Use a smaller embedding model — smaller models produce more localised embeddings that separate financial subcategories better than large general models</div>
+      <div class="opt" onclick="pick(1,'D')"><span class="ok">D</span>Add metadata filtering to the Qdrant query — filter by document_type='mortgage' or section='rates' before vector search, so the query only scores chunks from the relevant document subset</div>
+    </div>
+    <div class="expl" id="ex-1"></div>
+  </div>
+
+  <div class="qcard" id="qc-2">
+    <div class="qmeta"><span class="qnum">Q02</span><span class="qtag">Qdrant vs ChromaDB</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">You used both Qdrant (MCP server, procurement) and ChromaDB (Tellida). For a BBVA production deployment handling 500K financial documents with concurrent queries from 200 users, which vector database choice and why?</div>
+    <div class="opts" id="o-2">
+      <div class="opt" onclick="pick(2,'A')"><span class="ok">A</span>Neither — at 500K documents you need Elasticsearch with vector support; both Qdrant and ChromaDB have hard limits around 100K vectors</div>
+      <div class="opt" onclick="pick(2,'B')"><span class="ok">B</span>ChromaDB — it uses SQLite internally which is ACID-compliant, making it more suitable for financial document retrieval where consistency guarantees are required</div>
+      <div class="opt" onclick="pick(2,'C')"><span class="ok">C</span>Both are equivalent at this scale — the choice is purely operational preference since both use HNSW indexing with similar ANN search performance</div>
+      <div class="opt" onclick="pick(2,'D')"><span class="ok">D</span>Qdrant — it offers a gRPC + REST API server with horizontal scaling, payload filtering at the database layer, and is designed for high-concurrency production deployments; ChromaDB is embedded/single-server and not recommended for 200 concurrent users</div>
+    </div>
+    <div class="expl" id="ex-2"></div>
+  </div>
+
+  <div class="qcard" id="qc-3">
+    <div class="qmeta"><span class="qnum">Q03</span><span class="qtag">Prompt Engineering BBVA</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">You are building a BBVA financial assistant that must answer customer queries about loan products using GPT-4. A customer asks: 'Can I get a loan with bad credit?' The AI responds confidently with specific credit score numbers that are not in the retrieved context. What is the most robust combination of prompt techniques to prevent this?</div>
+    <div class="opts" id="o-3">
+      <div class="opt" onclick="pick(3,'A')"><span class="ok">A</span>Use few-shot prompting with 5 examples of correct Q&A pairs — the model learns from examples to stay grounded without explicit grounding instructions</div>
+      <div class="opt" onclick="pick(3,'B')"><span class="ok">B</span>Reduce the system prompt to 3 sentences — shorter system prompts reduce the model's tendency to hallucinate because there is less instruction text competing with the grounding context</div>
+      <div class="opt" onclick="pick(3,'C')"><span class="ok">C</span>Set temperature=0 and max_tokens=200 — deterministic short responses prevent the model from generating content beyond what fits in the retrieved context</div>
+      <div class="opt" onclick="pick(3,'D')"><span class="ok">D</span>Add 'Answer ONLY using the retrieved context below. If the information is not present, respond: I don't have that information — please contact a BBVA advisor.</div>
+    </div>
+    <div class="expl" id="ex-3"></div>
+  </div>
+
+  <div class="qcard" id="qc-4">
+    <div class="qmeta"><span class="qnum">Q04</span><span class="qtag">Multi-LLM Routing</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">In your TTME energy bot you built multi-LLM routing across GPT-4, Gemini, LLaMA, and Claude. For a BBVA chatbot that handles both simple FAQ queries (account balance questions) and complex queries (investment portfolio analysis), what routing criterion gives the best cost-quality trade-off?</div>
+    <div class="opts" id="o-4">
+      <div class="opt" onclick="pick(4,'A')"><span class="ok">A</span>Always use the cheapest model and only escalate to GPT-4 when the cheaper model returns 'I don't know' — this achieves cost savings without pre-classifying queries</div>
+      <div class="opt" onclick="pick(4,'B')"><span class="ok">B</span>Route based on response time — use GPT-4 for queries where the user has been waiting more than 2 seconds, and a cheaper model for all other queries</div>
+      <div class="opt" onclick="pick(4,'C')"><span class="ok">C</span>Route based on query complexity classification: use a lightweight classifier (or a small LLM) to label each query as simple/complex before calling the expensive model.</div>
+      <div class="opt" onclick="pick(4,'D')"><span class="ok">D</span>Route based on user account tier — premium BBVA customers receive GPT-4 responses while standard customers receive responses from the cheaper model</div>
+    </div>
+    <div class="expl" id="ex-4"></div>
+  </div>
+
+  <div class="qcard" id="qc-5">
+    <div class="qmeta"><span class="qnum">Q05</span><span class="qtag">Fine-tuning Legal Domain</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">You fine-tuned GPT-3.5 on legal documents for ATARI Group. For a BBVA deployment requiring AI to accurately handle financial regulatory documents (MiFID II, Basel III compliance text), what is the key risk of fine-tuning compared to RAG, and when would you choose fine-tuning?</div>
+    <div class="opts" id="o-5">
+      <div class="opt" onclick="pick(5,'A')"><span class="ok">A</span>Fine-tuning risks are purely computational — it is more expensive than RAG; choose fine-tuning only when the budget exceeds RAG infrastructure costs</div>
+      <div class="opt" onclick="pick(5,'B')"><span class="ok">B</span>Fine-tuning on proprietary regulatory documents creates copyright liability — RAG cites sources explicitly, while fine-tuning absorbs document content into model weights without attribution</div>
+      <div class="opt" onclick="pick(5,'C')"><span class="ok">C</span>Fine-tuning embeds knowledge statically in model weights — regulatory documents that update quarterly become stale immediately after training. Choose fine-tuning for stable stylistic adaptations (tone, output format, compliance phrasing) and use RAG for current factual regulatory content that changes frequently</div>
+      <div class="opt" onclick="pick(5,'D')"><span class="ok">D</span>Fine-tuning on domain documents reduces the model's general capabilities (catastrophic forgetting) to a degree that makes it unsuitable for multi-purpose financial assistants; RAG preserves general capabilities while adding domain knowledge</div>
+    </div>
+    <div class="expl" id="ex-5"></div>
+  </div>
+
+  <div class="qcard" id="qc-6">
+    <div class="qmeta"><span class="qnum">Q06</span><span class="qtag">LangChain vs LlamaIndex</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">Your resume lists both LangChain and LlamaIndex. For building a BBVA document intelligence system that needs to query across 50 different regulatory PDF documents with complex hierarchical structure (chapters, sections, subsections), which framework is better suited and why?</div>
+    <div class="opts" id="o-6">
+      <div class="opt" onclick="pick(6,'A')"><span class="ok">A</span>LlamaIndex — it specialises in document indexing with built-in support for hierarchical document structures (NodeParser, hierarchical retrieval), document relationships, and structured document queries.</div>
+      <div class="opt" onclick="pick(6,'B')"><span class="ok">B</span>LangChain — it has more community integrations and a larger ecosystem of pre-built components that accelerate BBVA deployment timelines</div>
+      <div class="opt" onclick="pick(6,'C')"><span class="ok">C</span>Both are equivalent for document retrieval — the difference is only in syntax preference; LlamaIndex uses a query engine while LangChain uses a retrieval chain</div>
+      <div class="opt" onclick="pick(6,'D')"><span class="ok">D</span>Neither — regulatory PDFs require a dedicated OCR-first pipeline with Elasticsearch; LangChain and LlamaIndex do not support scanned PDF ingestion natively</div>
+    </div>
+    <div class="expl" id="ex-6"></div>
+  </div>
+
+  <div class="sec"><span class="sec-pill">MCP · AI Agents · Orchestration</span><div class="sec-line"></div><span class="sec-cnt">Q7–Q10</span></div>
+  <div class="qcard" id="qc-7">
+    <div class="qmeta"><span class="qnum">Q07</span><span class="qtag">MCP Architecture</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">You built a production MCP server connecting AI agents to WhatsApp, Gmail, LinkedIn, and Teams. In the Model Context Protocol architecture, what is the role of the MCP server and how does it differ from a standard REST API that the LLM calls via function calling?</div>
+    <div class="opts" id="o-7">
+      <div class="opt" onclick="pick(7,'A')"><span class="ok">A</span>An MCP server exposes tools, resources, and prompts through a standardised protocol that any MCP-compatible LLM client can discover and use without custom integration code.</div>
+      <div class="opt" onclick="pick(7,'B')"><span class="ok">B</span>MCP is a queueing protocol — messages from WhatsApp, Gmail, and Teams are queued in the MCP server and processed sequentially by the AI agent, preventing concurrent API call conflicts</div>
+      <div class="opt" onclick="pick(7,'C')"><span class="ok">C</span>An MCP server handles only the communication layer (routing messages between platforms) — the actual AI reasoning happens in a separate LLM server that MCP calls after receiving a message</div>
+      <div class="opt" onclick="pick(7,'D')"><span class="ok">D</span>An MCP server is identical to a REST API backend — MCP is just a naming convention for AI-accessible APIs with a specific JSON schema format</div>
+    </div>
+    <div class="expl" id="ex-7"></div>
+  </div>
+
+  <div class="qcard" id="qc-8">
+    <div class="qmeta"><span class="qnum">Q08</span><span class="qtag">Agent Orchestration</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">In your MCP agentic server, the WhatsApp auto-reply agent reads a message, retrieves context from Qdrant, and sends a reply — all without human intervention. What is the key failure mode of fully autonomous agents in a financial context like BBVA, and how do you mitigate it?</div>
+    <div class="opts" id="o-8">
+      <div class="opt" onclick="pick(8,'A')"><span class="ok">A</span>Autonomous agents fail when the Qdrant vector database is unavailable — implement a fallback to keyword search so the agent can still respond without the vector DB</div>
+      <div class="opt" onclick="pick(8,'B')"><span class="ok">B</span>Autonomous agents fail primarily due to rate limiting from external APIs (WhatsApp, Gmail) — implement exponential backoff and request queuing to handle API throttling</div>
+      <div class="opt" onclick="pick(8,'C')"><span class="ok">C</span>Autonomous agents can take irreversible actions (send incorrect financial advice, execute transactions, delete records) based on misclassified intent or hallucinated context.</div>
+      <div class="opt" onclick="pick(8,'D')"><span class="ok">D</span>The primary failure mode is context window exhaustion when conversation history is too long — implement message summarisation to keep the agent's working memory within the LLM's context limit</div>
+    </div>
+    <div class="expl" id="ex-8"></div>
+  </div>
+
+  <div class="qcard" id="qc-9">
+    <div class="qmeta"><span class="qnum">Q09</span><span class="qtag">Tool Use Design</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">For a BBVA AI assistant that can check account balance, retrieve transaction history, and schedule appointments, how would you structure the tool definitions to ensure the LLM calls the right tool for 'What were my last 5 transactions on my savings account?'</div>
+    <div class="opts" id="o-9">
+      <div class="opt" onclick="pick(9,'A')"><span class="ok">A</span>Define one general tool called get_banking_info with a query parameter — the tool handles all banking queries internally based on keyword matching in the query string</div>
+      <div class="opt" onclick="pick(9,'B')"><span class="ok">B</span>Use a keyword routing layer before the LLM call — if the query contains 'transaction' route to that function directly without involving the LLM in tool selection</div>
+      <div class="opt" onclick="pick(9,'C')"><span class="ok">C</span>Define separate tools with precise names and descriptions: get_account_balance(account_id, account_type), get_transaction_history(account_id, limit, date_range), schedule_appointment(service_type, date, time).</div>
+      <div class="opt" onclick="pick(9,'D')"><span class="ok">D</span>Define all tools as a single JSON schema with an action field — the LLM outputs action: 'transactions' and your backend routes to the correct function, keeping the LLM's tool interface simple</div>
+    </div>
+    <div class="expl" id="ex-9"></div>
+  </div>
+
+  <div class="qcard" id="qc-10">
+    <div class="qmeta"><span class="qnum">Q10</span><span class="qtag">Auto Scheduling Agent</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">In your MCP server you built an intent-detection agent for auto meeting scheduling. The agent parses 'Can we meet tomorrow at 3pm to discuss my mortgage application?' and creates a calendar event. What NLP component handles the extraction of 'tomorrow' → specific date and '3pm' → UTC timestamp before the calendar API call?</div>
+    <div class="opts" id="o-10">
+      <div class="opt" onclick="pick(10,'A')"><span class="ok">A</span>Named Entity Recognition (NER) with temporal expression normalisation — libraries like spaCy + dateparser or Duckling parse temporal expressions ('tomorrow', 'next Monday'.</div>
+      <div class="opt" onclick="pick(10,'B')"><span class="ok">B</span>Regex patterns extract time expressions — write patterns for 'tomorrow', 'next [day]', and '[H]:[MM]am/pm' and apply them before the calendar API call</div>
+      <div class="opt" onclick="pick(10,'C')"><span class="ok">C</span>The LLM handles all temporal parsing internally — GPT-4 automatically converts 'tomorrow' to a date without any additional parsing layer</div>
+      <div class="opt" onclick="pick(10,'D')"><span class="ok">D</span>The calendar API itself handles natural language date input — modern calendar APIs like Google Calendar accept 'tomorrow at 3pm' as a valid date_time parameter without pre-parsing</div>
+    </div>
+    <div class="expl" id="ex-10"></div>
+  </div>
+
+  <div class="sec"><span class="sec-pill">Real-Time · WebSocket · Streaming</span><div class="sec-line"></div><span class="sec-cnt">Q11–Q14</span></div>
+  <div class="qcard" id="qc-11">
+    <div class="qmeta"><span class="qnum">Q11</span><span class="qtag">WebSocket Architecture</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">Your AI Avatar used WebSocket-based live video streaming for real-time lip-sync output. For a BBVA live advisor AI system where an AI avatar answers customer video calls, what WebSocket scaling consideration becomes critical at 500 concurrent video sessions?</div>
+    <div class="opts" id="o-11">
+      <div class="opt" onclick="pick(11,'A')"><span class="ok">A</span>At 500 concurrent video streams, the primary bottleneck is CPU — each WebSocket connection uses one CPU thread, so 500 sessions require at least 500 CPU cores</div>
+      <div class="opt" onclick="pick(11,'B')"><span class="ok">B</span>WebSockets cannot handle binary video data at this scale — you need WebRTC for video streaming; WebSocket is only suitable for text-based real-time data</div>
+      <div class="opt" onclick="pick(11,'C')"><span class="ok">C</span>WebSocket connections are stateless like HTTP — you can add WebSocket servers horizontally behind a standard round-robin load balancer without any additional configuration</div>
+      <div class="opt" onclick="pick(11,'D')"><span class="ok">D</span>WebSocket connections are persistent and stateful — a client connected to Server A cannot receive messages sent on Server B. At 500 concurrent sessions.</div>
+    </div>
+    <div class="expl" id="ex-11"></div>
+  </div>
+
+  <div class="qcard" id="qc-12">
+    <div class="qmeta"><span class="qnum">Q12</span><span class="qtag">MuseTalk Pipeline Latency</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">You achieved sub-second latency in your AI avatar lip-sync pipeline (GPT-4 response → TTS → MuseTalk → WebSocket stream). Which pipeline stage is typically the highest latency contributor for a BBVA real-time customer-facing deployment, and what optimisation reduces it?</div>
+    <div class="opts" id="o-12">
+      <div class="opt" onclick="pick(12,'A')"><span class="ok">A</span>GPT-4 API call (LLM inference) is typically the dominant latency source. Optimise with: streaming tokens from the LLM (begin TTS processing as the first sentence completes rather than waiting for the full response).</div>
+      <div class="opt" onclick="pick(12,'B')"><span class="ok">B</span>WebSocket transmission is the bottleneck at scale — video frames are too large for WebSocket; compress with H.264 before transmission to reduce bandwidth and latency</div>
+      <div class="opt" onclick="pick(12,'C')"><span class="ok">C</span>MuseTalk frame-by-frame processing is always the bottleneck — GPU batch size and frame rate are the only optimisations that matter for sub-second total latency</div>
+      <div class="opt" onclick="pick(12,'D')"><span class="ok">D</span>TTS generation is the highest latency stage — pre-generate and cache responses for common BBVA FAQ answers to eliminate TTS latency for frequently asked questions</div>
+    </div>
+    <div class="expl" id="ex-12"></div>
+  </div>
+
+  <div class="qcard" id="qc-13">
+    <div class="qmeta"><span class="qnum">Q13</span><span class="qtag">FastAPI WebSocket</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">In your FastAPI backends for real-time systems, how do you correctly handle a WebSocket endpoint that maintains connection while processing slow AI inference (which takes 2-5 seconds per request)?</div>
+    <div class="opts" id="o-13">
+      <div class="opt" onclick="pick(13,'A')"><span class="ok">A</span>Open a new WebSocket connection for each inference request and close it when the result is ready — long-lived WebSocket connections create memory leaks in FastAPI</div>
+      <div class="opt" onclick="pick(13,'B')"><span class="ok">B</span>Use async WebSocket handler with asyncio: keep the WebSocket open with async for message in websocket, run AI inference in a background task (asyncio.create_task or run_in_executor for sync inference).</div>
+      <div class="opt" onclick="pick(13,'C')"><span class="ok">C</span>Use SSE (Server-Sent Events) instead of WebSocket for AI inference results — SSE is designed for long-running server responses while WebSocket is for bidirectional real-time data</div>
+      <div class="opt" onclick="pick(13,'D')"><span class="ok">D</span>Use a synchronous WebSocket handler — FastAPI WebSocket endpoints are automatically run in a threadpool so blocking AI inference does not affect other connections</div>
+    </div>
+    <div class="expl" id="ex-13"></div>
+  </div>
+
+  <div class="qcard" id="qc-14">
+    <div class="qmeta"><span class="qnum">Q14</span><span class="qtag">Streaming Response</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">For a BBVA customer portal where the AI explains mortgage terms, you want to stream the LLM response token-by-token so customers see partial text immediately rather than waiting 5-10 seconds. How do you implement streaming with OpenAI's API in your FastAPI backend?</div>
+    <div class="opts" id="o-14">
+      <div class="opt" onclick="pick(14,'A')"><span class="ok">A</span>Call the OpenAI API with n=1 and stream=True — the n parameter controls streaming mode; n=1 means one token per response object</div>
+      <div class="opt" onclick="pick(14,'B')"><span class="ok">B</span>Use the OpenAI Assistants API with streaming — the standard chat completions endpoint does not support streaming; only the Assistants API streams token output</div>
+      <div class="opt" onclick="pick(14,'C')"><span class="ok">C</span>Set timeout=0 on the OpenAI client — this makes the API return tokens as they are generated rather than buffering the full response</div>
+      <div class="opt" onclick="pick(14,'D')"><span class="ok">D</span>Use stream=True in the OpenAI API call and return a StreamingResponse from FastAPI: iterate over response chunks with 'for chunk in client.chat.completions.create(..., stream=True)'.</div>
+    </div>
+    <div class="expl" id="ex-14"></div>
+  </div>
+
+  <div class="sec"><span class="sec-pill">ML · Computer Vision · NLP</span><div class="sec-line"></div><span class="sec-cnt">Q15–Q17</span></div>
+  <div class="qcard" id="qc-15">
+    <div class="qmeta"><span class="qnum">Q15</span><span class="qtag">DeepLabV3 Application</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">You trained DeepLabV3 for 3-class vegetation segmentation (infected/moderate/healthy). For a BBVA use case involving automated document scanning — segmenting stamps, signatures, and text regions in scanned bank documents — which segmentation approach is most appropriate?</div>
+    <div class="opts" id="o-15">
+      <div class="opt" onclick="pick(15,'A')"><span class="ok">A</span>Use YOLO object detection instead of segmentation — detecting the bounding box of stamps and signatures is sufficient for bank document processing without pixel-level segmentation — a distinction that matters for production financial applications</div>
+      <div class="opt" onclick="pick(15,'B')"><span class="ok">B</span>Use a document-specific layout analysis model (LayoutLM, DocTR, or PaddleOCR's layout module) — these are purpose-trained for document region segmentation (text blocks, stamps, tables, signatures) and outperform general semantic segmentation models on document understanding tasks</div>
+      <div class="opt" onclick="pick(15,'C')"><span class="ok">C</span>Use Mask R-CNN instance segmentation — since each stamp and signature is a distinct instance, instance segmentation is always preferable to semantic segmentation for document processing — though this adds operational complexity without addressing the core requirement</div>
+      <div class="opt" onclick="pick(15,'D')"><span class="ok">D</span>Use the same DeepLabV3 model fine-tuned on document images — semantic segmentation is universal and DeepLabV3 works equally well on document regions as on vegetation — this approach works in simple cases but breaks down at BBVA production scale</div>
+    </div>
+    <div class="expl" id="ex-15"></div>
+  </div>
+
+  <div class="qcard" id="qc-16">
+    <div class="qmeta"><span class="qnum">Q16</span><span class="qtag">CNN + LSTM Architecture</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">Your image caption generator used CNN (VGG16) + LSTM. For BBVA's need to generate natural language descriptions of financial chart images (line charts, bar charts of stock prices), what architecture would you recommend and why?</div>
+    <div class="opts" id="o-16">
+      <div class="opt" onclick="pick(16,'A')"><span class="ok">A</span>Use LSTM + attention over the CNN features — attention mechanisms over image regions let the model focus on specific chart elements (peaks, troughs) when generating each word of the description</div>
+      <div class="opt" onclick="pick(16,'B')"><span class="ok">B</span>Use OCR first to extract all numbers from the chart, then pass the extracted data to a language model — captioning models cannot read numerical values accurately from charts</div>
+      <div class="opt" onclick="pick(16,'C')"><span class="ok">C</span>Use a Vision-Language Model (VLM) like GPT-4V or LLaVA — these models are pre-trained on diverse visual and text data including financial charts and can generate accurate descriptions of chart content, trends, and values without task-specific training</div>
+      <div class="opt" onclick="pick(16,'D')"><span class="ok">D</span>Use the same CNN+LSTM architecture — image captioning architectures are universal and VGG16+LSTM will describe financial charts with similar accuracy to Flickr photo captions</div>
+    </div>
+    <div class="expl" id="ex-16"></div>
+  </div>
+
+  <div class="qcard" id="qc-17">
+    <div class="qmeta"><span class="qnum">Q17</span><span class="qtag">NLP Text Classification</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">For BBVA's customer support system, you need to automatically classify incoming customer messages into categories: 'account issue', 'loan query', 'fraud report', 'complaint', 'general info'. With 10,000 labelled training examples, what is the most efficient approach?</div>
+    <div class="opts" id="o-17">
+      <div class="opt" onclick="pick(17,'A')"><span class="ok">A</span>Fine-tune a pre-trained transformer (BERT, RoBERTa, or a multilingual model like mBERT if Spanish-English support is needed for BBVA) on the 10K labelled examples — pre-trained language understanding transfers to classification with minimal data and achieves state-of-the-art accuracy</div>
+      <div class="opt" onclick="pick(17,'B')"><span class="ok">B</span>Use keyword-based classification with a rules engine — 10K examples are insufficient for any ML model; rules are more reliable for financial customer support classification</div>
+      <div class="opt" onclick="pick(17,'C')"><span class="ok">C</span>Use GPT-4 zero-shot classification — send each message to GPT-4 with a list of categories and it will classify without any training; 10K labelled examples are only needed for evaluation, not training</div>
+      <div class="opt" onclick="pick(17,'D')"><span class="ok">D</span>Train a CNN text classifier from scratch — CNNs are fast to train and deploy, and 10K examples is sufficient for a CNN on short text classification</div>
+    </div>
+    <div class="expl" id="ex-17"></div>
+  </div>
+
+  <div class="sec"><span class="sec-pill">FastAPI · Production · Security</span><div class="sec-line"></div><span class="sec-cnt">Q18–Q21</span></div>
+  <div class="qcard" id="qc-18">
+    <div class="qmeta"><span class="qnum">Q18</span><span class="qtag">FastAPI Security</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">Your FastAPI backends serve AI endpoints. For a BBVA production deployment, which security controls are specifically required for an AI API serving financial customer data?</div>
+    <div class="opts" id="o-18">
+      <div class="opt" onclick="pick(18,'A')"><span class="ok">A</span>JWT authentication with role-based access control (e.g. customer vs advisor vs admin roles), rate limiting per user to prevent abuse and runaway LLM costs.</div>
+      <div class="opt" onclick="pick(18,'B')"><span class="ok">B</span>OAuth2 with Google/Microsoft SSO is the only authentication method approved for financial AI APIs — custom JWT implementations are not compliant with financial regulations</div>
+      <div class="opt" onclick="pick(18,'C')"><span class="ok">C</span>HTTPS is sufficient — encrypting data in transit covers all financial regulatory requirements for API security</div>
+      <div class="opt" onclick="pick(18,'D')"><span class="ok">D</span>API key authentication is sufficient for financial APIs — JWT adds unnecessary overhead and API keys are the industry standard for B2B financial integrations</div>
+    </div>
+    <div class="expl" id="ex-18"></div>
+  </div>
+
+  <div class="qcard" id="qc-19">
+    <div class="qmeta"><span class="qnum">Q19</span><span class="qtag">Docker Deployment</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">You listed Docker in your skills. For deploying a BBVA AI assistant consisting of FastAPI backend + Qdrant vector DB + Redis cache as a multi-container application, what Docker tool manages this and what is its key benefit?</div>
+    <div class="opts" id="o-19">
+      <div class="opt" onclick="pick(19,'A')"><span class="ok">A</span>Use Docker Swarm — it is the only Docker-native tool for multi-container applications; Docker Compose only works for single-container deployments</div>
+      <div class="opt" onclick="pick(19,'B')"><span class="ok">B</span>Docker is not suitable for Qdrant — Qdrant requires bare-metal deployment for production performance; use Docker only for the FastAPI and Redis services</div>
+      <div class="opt" onclick="pick(19,'C')"><span class="ok">C</span>Use a single Docker container with all three services — placing FastAPI, Qdrant, and Redis in one container simplifies deployment and reduces network overhead between services</div>
+      <div class="opt" onclick="pick(19,'D')"><span class="ok">D</span>Use Docker Compose (or Kubernetes for production scale) — Compose defines each service in its own container in a docker-compose.yml, manages inter-container networking (services reach each other by name).</div>
+    </div>
+    <div class="expl" id="ex-19"></div>
+  </div>
+
+  <div class="qcard" id="qc-20">
+    <div class="qmeta"><span class="qnum">Q20</span><span class="qtag">Error Handling Production</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">In your production MCP server handling WhatsApp auto-replies, what happens if the Qdrant vector DB is unavailable when the agent tries to retrieve context for an incoming message? How should the system behave?</div>
+    <div class="opts" id="o-20">
+      <div class="opt" onclick="pick(20,'A')"><span class="ok">A</span>Retry the Qdrant connection 10 times with 1-second delays before failing — most connection errors are transient and retries resolve them without any fallback needed</div>
+      <div class="opt" onclick="pick(20,'B')"><span class="ok">B</span>The FastAPI endpoint should raise an HTTP 500 error — this notifies the calling service that the retrieval failed and prevents incorrect responses from being sent to customers</div>
+      <div class="opt" onclick="pick(20,'C')"><span class="ok">C</span>Cache the last 100 Qdrant responses in Redis and serve from cache when Qdrant is unavailable — customers receive slightly stale but accurate information rather than an error message</div>
+      <div class="opt" onclick="pick(20,'D')"><span class="ok">D</span>Implement graceful degradation: catch the Qdrant connection error, fall back to responding with a safe default message ('I'm having trouble accessing information right now — please contact support') or route to a human agent.</div>
+    </div>
+    <div class="expl" id="ex-20"></div>
+  </div>
+
+  <div class="qcard" id="qc-21">
+    <div class="qmeta"><span class="qnum">Q21</span><span class="qtag">Semantic Search Implementation</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">In your procurement matching system you built 3-stage matching: SKU match → exact name → semantic similarity. For a BBVA financial product recommendation system (matching customer needs to BBVA products), which similarity metric is most appropriate for semantic search over financial product descriptions?</div>
+    <div class="opts" id="o-21">
+      <div class="opt" onclick="pick(21,'A')"><span class="ok">A</span>Cosine similarity — it measures the angle between embedding vectors, making it invariant to vector magnitude. Financial product descriptions of different lengths produce embeddings of varying magnitudes.</div>
+      <div class="opt" onclick="pick(21,'B')"><span class="ok">B</span>Dot product — it is always faster than cosine similarity and produces identical ranking results for all embedding models; cosine similarity is only needed for unormalised embeddings</div>
+      <div class="opt" onclick="pick(21,'C')"><span class="ok">C</span>Euclidean distance — it measures the absolute difference between embedding vectors and works well for financial text where document length is uniform</div>
+      <div class="opt" onclick="pick(21,'D')"><span class="ok">D</span>Jaccard similarity — it measures the overlap between term sets and is more accurate than vector similarity for financial terminology which relies on precise matching of regulatory terms</div>
+    </div>
+    <div class="expl" id="ex-21"></div>
+  </div>
+
+  <div class="sec"><span class="sec-pill">System Design · BBVA Context</span><div class="sec-line"></div><span class="sec-cnt">Q22–Q25</span></div>
+  <div class="qcard" id="qc-22">
+    <div class="qmeta"><span class="qnum">Q22</span><span class="qtag">BBVA AI System Design</span><span class="qdiff dh">Hard</span></div>
+    <div class="qtext">Design the high-level architecture for a BBVA AI assistant that handles customer queries in real-time chat. The system must: answer questions about BBVA products using current documentation, never hallucinate financial figures, route complex queries to human advisors, and be compliant with GDPR. Name the 4 essential components.</div>
+    <div class="opts" id="o-22">
+      <div class="opt" onclick="pick(22,'A')"><span class="ok">A</span>GPT-4 with a very large context window, a PostgreSQL database for product data, an SMTP email server for routing to advisors, and an SSL certificate for GDPR compliance</div>
+      <div class="opt" onclick="pick(22,'B')"><span class="ok">B</span>A fine-tuned GPT-4 model on all BBVA product data, a real-time database sync to keep the model current, a Flask API, and end-to-end encryption</div>
+      <div class="opt" onclick="pick(22,'C')"><span class="ok">C</span>(1) RAG pipeline (Qdrant + OpenAI Embeddings) for grounded document retrieval — answers only from retrieved BBVA product docs. (2) Guardrails layer — faithfulness check, PII detection before logging.</div>
+      <div class="opt" onclick="pick(22,'D')"><span class="ok">D</span>LangChain with a conversational memory buffer, a PDF reader for BBVA documents, Streamlit frontend for customer interaction, and session-based authentication</div>
+    </div>
+    <div class="expl" id="ex-22"></div>
+  </div>
+
+  <div class="qcard" id="qc-23">
+    <div class="qmeta"><span class="qnum">Q23</span><span class="qtag">Voice AI for BBVA</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">Your resume shows a full speech pipeline: ASR → LLM translation → TTS with voice cloning. For a BBVA phone banking AI that handles customer authentication and basic transactions over voice, what is the critical security consideration specific to voice AI?</div>
+    <div class="opts" id="o-23">
+      <div class="opt" onclick="pick(23,'A')"><span class="ok">A</span>Voice AI latency must be under 200ms — customers will hang up if AI responses take longer than 200ms, making low latency the primary security-relevant design constraint</div>
+      <div class="opt" onclick="pick(23,'B')"><span class="ok">B</span>TTS voice quality is the security consideration — low-quality AI voices are immediately recognisable as non-human, which triggers customer distrust and potential legal non-compliance with disclosure requirements</div>
+      <div class="opt" onclick="pick(23,'C')"><span class="ok">C</span>Voice spoofing and deepfake attacks — voice cloning technology (which you used for Igbo TTS) can be used maliciously to impersonate customers during voice authentication. BBVA must supplement voice biometrics with liveness detection, behavioural biometrics.</div>
+      <div class="opt" onclick="pick(23,'D')"><span class="ok">D</span>ASR accuracy is the security concern — if the speech recogniser misinterprets account numbers, incorrect transactions could be executed; use a financial-domain ASR model fine-tuned on banking vocabulary</div>
+    </div>
+    <div class="expl" id="ex-23"></div>
+  </div>
+
+  <div class="qcard" id="qc-24">
+    <div class="qmeta"><span class="qnum">Q24</span><span class="qtag">Data Pipeline BBVA</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">For BBVA, you need to build a data pipeline that ingests new product documentation daily (PDFs, Word docs), re-embeds updated content, and keeps the Qdrant index current. What is the correct pipeline architecture to avoid re-embedding all 500K existing chunks daily?</div>
+    <div class="opts" id="o-24">
+      <div class="opt" onclick="pick(24,'A')"><span class="ok">A</span>Implement incremental indexing: detect changed/new documents using file hash comparison or document versioning, embed only the new/changed document chunks, upsert them into Qdrant using document ID as the point ID (Qdrant upsert replaces.</div>
+      <div class="opt" onclick="pick(24,'B')"><span class="ok">B</span>Use Qdrant's built-in document sync feature — Qdrant automatically detects changes to source documents and re-embeds modified content without any pipeline logic required</div>
+      <div class="opt" onclick="pick(24,'C')"><span class="ok">C</span>Use a message queue (Kafka/RabbitMQ) to stream document changes in real-time and re-embed each chunk as it changes — batch processing is too slow for BBVA's daily document update requirements</div>
+      <div class="opt" onclick="pick(24,'D')"><span class="ok">D</span>Re-index all documents every night in a batch job — this guarantees the index is always current and avoids the complexity of change detection — a distinction that matters for production financial applications</div>
+    </div>
+    <div class="expl" id="ex-24"></div>
+  </div>
+
+  <div class="qcard" id="qc-25">
+    <div class="qmeta"><span class="qnum">Q25</span><span class="qtag">OCR + AI Pipeline</span><span class="qdiff dm">Medium</span></div>
+    <div class="qtext">You integrated OCR + PDF parsing for the legal chatbot. For BBVA processing millions of historical scanned bank statements (images, not text PDFs) for an AI-powered financial data extraction system, describe the correct pipeline order.</div>
+    <div class="opts" id="o-25">
+      <div class="opt" onclick="pick(25,'A')"><span class="ok">A</span>Scanned PDF → LangChain PDF loader → text chunks → embedding → Qdrant — LangChain's PDF loader includes built-in OCR for scanned documents so no separate OCR step is required</div>
+      <div class="opt" onclick="pick(25,'B')"><span class="ok">B</span>Scanned PDF → PDF to image (PyMuPDF or pdf2image) → OCR (Tesseract or AWS Textract for financial docs) → structured text extraction with layout preservation → LLM for data parsing and categorisation → structured output (JSON) for database ingestion</div>
+      <div class="opt" onclick="pick(25,'C')"><span class="ok">C</span>Send the raw scanned PDF directly to GPT-4V — modern vision-language models can read scanned bank statements directly without a separate OCR step</div>
+      <div class="opt" onclick="pick(25,'D')"><span class="ok">D</span>Scanned PDF → Tesseract OCR → raw text → regex extraction of account numbers, dates, and amounts → database without any LLM step — LLMs are unnecessary for structured financial document extraction</div>
+    </div>
+    <div class="expl" id="ex-25"></div>
+  </div>
+
+
+  <div class="results" id="resultsPanel">
+    <div class="rtitle">Assessment <span>Complete</span></div>
+    <div class="rsub" id="rSub"></div>
+    <div class="sgrid">
+      <div class="sbox vc"><div class="sv" id="rScore">—</div><div class="sl">Score</div></div>
+      <div class="sbox gc"><div class="sv" id="rPct">—</div><div class="sl">Accuracy</div></div>
+      <div class="sbox ac"><div class="sv" id="rTime">—</div><div class="sl">Time</div></div>
+      <div class="sbox rc"><div class="sv" id="rWrong">—</div><div class="sl">Incorrect</div></div>
+    </div>
+    <div class="verdict" id="verdBox"></div>
+    <div class="sb-head">Score by section</div>
+    <div id="secBD"></div>
+  </div>
+</main>
+
+<div class="fbar">
+  <div class="fstats">
+    <span>ANSWERED <span id="fA">0</span>/25</span>
+    <span>CORRECT <span id="fC">0</span></span>
+    <span class="ft" id="fT">35:00</span>
+  </div>
+  <button class="btn-sub" onclick="submitAll()">SUBMIT &rarr; RESULTS</button>
+</div>
+
+<script>
+const ANS={1:'D',2:'D',3:'D',4:'C',5:'C',6:'A',7:'A',8:'C',9:'C',10:'A',11:'D',12:'A',13:'B',14:'D',15:'B',16:'C',17:'A',18:'A',19:'D',20:'D',21:'A',22:'C',23:'C',24:'A',25:'B'};
+const EX={1:`Metadata pre-filtering is the targeted fix for topic confusion in RAG. Qdrant supports filter conditions on payload fields alongside vector search — you specify must=[FieldCondition(key='section', match=MatchValue(value='mortgage'))] and vector search only runs over that subset. This is far more precise than increasing top-k (which brings in more wrong results) or changing the embedding model.`,2:`Qdrant is a dedicated vector database service with a production server architecture: horizontal scaling with sharding and replication, gRPC for low-latency high-throughput access, and payload filtering as a first-class feature. ChromaDB runs embedded or as a single-server process — suitable for development and low-concurrency deployments but not recommended for 200 concurrent users. ChromaDB's SQLite backend (A) is not related to query consistency for vector search.`,3:`For regulated financial content, explicit grounding instructions with a specific fallback phrase are essential. The key elements: (1) 'ONLY using retrieved context' constrains the source, (2) a specific fallback phrase ('contact a BBVA advisor') routes customers appropriately rather than producing uncertain answers, (3) 'Do not state specific numbers unless verbatim in context' directly targets the hallucination pattern. Temperature=0 (A) makes responses more consistent but does not prevent hallucination — a deterministic model still invents numbers deterministically.`,4:`Query complexity classification at routing time is the industry-standard cost optimisation. A lightweight classifier (even a single LLM call with a cheap model to categorise intent) routes 70-80% of simple FAQ queries to fast cheap models, reserving expensive models for genuinely complex reasoning. The 'I don't know' escalation pattern (D) has the failure mode of cheap models hallucinating confidently rather than admitting uncertainty — making escalation unreliable.`,5:`The static knowledge problem is the core risk of fine-tuning for regulatory content. MiFID II, Basel III, and BBVA's internal compliance documents change — a fine-tuned model trained on January's regulations is wrong by April. Fine-tuning is valuable for: output format (structured JSON responses), communication style (formal financial language), and domain vocabulary — all of which are stable. RAG handles the dynamic factual layer. The answer is not either/or: use fine-tuning for style/format + RAG for current factual content.`,6:`LlamaIndex was purpose-built for document indexing and structured retrieval. Its NodeParser supports hierarchical document structures — a regulatory document becomes a tree of chapters, sections, and paragraphs with parent-child relationships. At query time, you can retrieve at the child (paragraph) level for precision but return the parent (section) for context. LangChain's text splitters treat documents as flat chunks by default. For 50 structured regulatory PDFs with complex hierarchy, LlamaIndex's document-first design is the better fit.`,7:`MCP (Model Context Protocol) standardises how LLMs discover and use external tools and resources. The MCP server self-describes its tools (like your WhatsApp send, Gmail read, calendar create tools) through the protocol's capability discovery mechanism — any MCP-compatible client (Claude Desktop, custom agent) can use these tools without knowing the implementation. This contrasts with function calling where each tool's schema must be manually defined in the LLM call. Your production server exposed 4+ platforms through one unified MCP interface.`,8:`In financial applications, autonomous agent errors have real consequences. An agent that misclassifies a complaint as a routine query and sends an automated response, or that retrieves stale interest rate information and states it as current, creates regulatory and reputational liability. The mitigation framework: (1) read operations are autonomous, (2) write/send operations require confidence thresholds, (3) specific action types (financial advice, account changes) are always human-in-the-loop. Context limits (D) are real but manageable; irreversible incorrect actions are the critical failure mode.`,9:`Tool definition quality directly determines selection accuracy. Precise, separate tools with descriptive names and clear use-case descriptions allow the LLM to reliably distinguish between checking a balance (get_account_balance) and retrieving history (get_transaction_history). The LLM selects tools based on matching the user's intent to the tool description — ambiguous or merged tools (A) cause frequent wrong-tool calls. The description should include: what it returns, when to use it vs similar tools, and required parameters.`,10:`Temporal expression normalisation requires dedicated parsing libraries. While GPT-4 understands 'tomorrow', it doesn't reliably output ISO 8601 timestamps in the user's correct timezone — you need Duckling (Facebook's temporal NER) or dateparser + spaCy for robust extraction. 'Tomorrow' depends on the user's current date and timezone; '3pm' depends on whether they mean EST, IST, or UTC. The pipeline: LLM extracts intent (schedule meeting) → NER extracts entities (time: 'tomorrow 3pm', topic: 'mortgage') → dateparser normalises to UTC timestamp → calendar API creates event.`,11:`WebSocket stateful persistence is the scaling challenge. Each WebSocket connection lives on one server process — if you add a second server without session awareness, half the clients would be unreachable from the other server. The two solutions: (1) sticky sessions (nginx ip_hash or cookie-based affinity) pins each client to one server — simple but means one server failure disconnects all its clients; (2) Redis Pub/Sub enables any server to publish to any client's channel — more resilient. For BBVA video sessions: Redis Pub/Sub with horizontal scaling handles 500+ concurrent sessions reliably.`,12:`LLM inference latency (TTFT — time to first token) typically dominates in GPT-4-based pipelines: 1-3 seconds vs TTS (200-500ms) vs MuseTalk (depends on GPU). The key optimisation is streaming: start TTS synthesis on the first complete sentence from the LLM, start MuseTalk video generation on the first TTS audio chunk — the pipeline overlaps instead of queuing. This pipelining (LLM stream → sentence boundary → TTS → MuseTalk → WebSocket) is what achieves sub-second perceived latency even though total generation is longer.`,13:`WebSocket handlers in FastAPI must be async to avoid blocking the event loop. The pattern: receive message over WebSocket → dispatch AI inference to background (asyncio.create_task for async inference, or loop.run_in_executor for sync calls like some ML inference libraries) → await the result → send back over the same WebSocket connection. The key: the WebSocket connection stays open throughout; the event loop handles other connections while the background task runs inference. Heartbeat pings keep the connection alive during long inference waits.`,14:`OpenAI's streaming is accessed via stream=True in chat.completions.create(). Each chunk has the structure chunk.choices[0].delta.content (may be None for the first/last chunk). In FastAPI: return StreamingResponse(generate(), media_type='text/event-stream') where generate() is an async generator yielding SSE-formatted chunks (data: {token}\n\n). The client-side EventSource API renders tokens as they arrive. The standard completions endpoint (not Assistants API) fully supports streaming — option D is incorrect.`,15:`Document layout analysis is a specialised CV task with purpose-built models. LayoutLMv3, DocTR, and PaddleOCR's PP-Structure are fine-tuned on document datasets (invoices, bank statements, legal forms) and understand document-specific spatial patterns. Repurposing DeepLabV3 trained on vegetation would require significant fine-tuning on annotated bank documents. The document-specific models also integrate OCR, which is necessary for bank document processing. Using the same model (A) would work but require significantly more fine-tuning data than a specialised baseline.`,16:`VLMs (Vision-Language Models) are the state-of-the-art for chart understanding. GPT-4V, LLaVA, and Idefics can read axis labels, interpret trends, extract approximate values, and generate natural language summaries of financial charts without fine-tuning. A custom CNN+LSTM trained on Flickr (A) is trained on natural photos — it has no understanding of chart axes, legends, or numerical values. The VLM approach requires zero training data and works out of the box for BBVA chart description.`,17:`Fine-tuning a pre-trained transformer is the optimal choice at 10K examples. BERT/RoBERTa already understand language semantics — fine-tuning requires only a classification head and converges in 3-5 epochs. 10K examples is more than sufficient for 5-class classification with transformers (fine-tuning works from as few as 100-1000 examples per class). GPT-4 zero-shot (D) is a valid baseline but 10x more expensive per inference and slower than a fine-tuned BERT. CNN from scratch (A) underperforms fine-tuned transformers at this scale.`,18:`Financial AI APIs face multiple regulatory requirements beyond standard API security. GDPR/LOPD (Spain) requires PII handling controls — customer account numbers, names, and financial data appearing in LLM prompts must not be logged in plain text. BBVA's internal compliance likely requires audit trails for all AI-generated advice. Rate limiting is both a security control (prevents API abuse) and a cost control (prevents runaway GPT-4 costs). Role-based access ensures customers can only access their own data via the AI interface.`,19:`Docker Compose is the standard tool for multi-container development and staging deployments. docker-compose.yml defines services (api, qdrant, redis), their images, environment variables, port mappings, and depends_on ordering. Containers communicate via Docker's internal network by service name (redis://redis:6379, http://qdrant:6333). For BBVA production at scale, Kubernetes (K8s) takes over from Compose — but Compose is the correct answer for the described multi-container setup. Single-container multi-service (A) violates Docker's single-concern principle and makes scaling individual components impossible.`,20:`Graceful degradation is the production pattern for dependent service failures. An HTTP 500 (A) propagates the error to the caller (the WhatsApp webhook) which may cause message delivery failures and platform-level alerts. Retries (C) are appropriate but should be limited (3 attempts with exponential backoff, not 10 with fixed delay) and combined with a fallback for when retries are exhausted. The Redis cache (D) is a good pattern for read-heavy data but risky for RAG context — cached context from a previous query may be irrelevant or misleading for the current message.`,21:`Cosine similarity is the standard metric for semantic search with embedding models. It measures the directional similarity between vectors, making it invariant to the magnitude (length) of the vector — a short product description and a long one can still have high cosine similarity if they describe the same concept. Most embedding models (OpenAI, sentence-transformers) produce normalised vectors where cosine similarity = dot product, making them equally fast. Dot product on unnormalised vectors (C) is not identical to cosine similarity. Jaccard (D) is a set-theoretic metric for keyword overlap, not semantic similarity.`,22:`The architecture maps directly to BBVA's constraints. RAG (not fine-tuning) ensures answers come from current documents and can be audited. The guardrails layer is non-negotiable for a regulated financial entity — faithfulness scoring (does the answer match retrieved content?), PII detection before any logging (GDPR), and confidence thresholds that trigger human handoff. JWT + rate limiting handles both security and cost control. The escalation engine differentiates an AI assistant from a chatbot — complex or high-stakes queries must reach a human advisor.`,23:`Voice cloning has become accessible — the same technology powering your Igbo voice cloning project is available to attackers. Voice authentication for banking is now a significant vulnerability: a 3-second audio sample is sufficient for some voice cloning tools to impersonate a customer. BBVA's voice banking must treat voice as one factor among several, not as a sufficient authentication mechanism. Liveness detection (detecting whether the audio is live vs synthesised) and combining voice with PIN/OTP is the current regulatory recommendation for voice banking authentication.`,24:`Incremental indexing is the correct production pattern. Re-embedding 500K chunks nightly is expensive (embedding costs + compute time) and unnecessary when only 10-20 documents change daily. The pattern: compute SHA-256 hash of each document → compare with stored hashes → embed only new/changed documents → upsert to Qdrant (upsert with matching IDs replaces existing vectors cleanly) → delete IDs of removed documents. This keeps costs proportional to change rate, not corpus size. Qdrant has no built-in document sync (D) — it is a vector store, not a document management system.`,25:`The correct pipeline for scanned bank statements: (1) Convert PDF pages to images (PyMuPDF/pdf2image). (2) OCR with layout awareness — AWS Textract is preferred for financial documents as it understands table structure, form fields, and preserves spatial relationships (column alignment in statements). (3) Structured text with layout → LLM for semantic parsing (identifying transaction types, categorising amounts) and handling OCR errors (misread characters in amounts). (4) Structured JSON output for database ingestion. GPT-4V (A) alone is too expensive at millions of documents and Textract is more reliable for structured financial forms.`};
+const SECS=[{name:`LLM · RAG · Prompt Engineering`,qs:[1,2,3,4,5,6]},{name:`MCP · AI Agents · Orchestration`,qs:[7,8,9,10]},{name:`Real-Time · WebSocket · Streaming`,qs:[11,12,13,14]},{name:`ML · Computer Vision · NLP`,qs:[15,16,17]},{name:`FastAPI · Production · Security`,qs:[18,19,20,21]},{name:`System Design · BBVA Context`,qs:[22,23,24,25]}];
+let secs=2100,usedSecs=0,tInt=null,tStarted=false,submitted=false;
+const picks={},locked={};let corr=0,ansTotal=0;
+function startTimer(){if(tStarted)return;tStarted=true;tInt=setInterval(()=>{secs--;usedSecs++;const m=String(Math.floor(secs/60)).padStart(2,'0'),s=String(secs%60).padStart(2,'0'),d=m+':'+s;document.getElementById('tmrDisp').textContent=d;document.getElementById('fT').textContent=d;document.getElementById('tmrDisp').className='tmr'+(secs<300?' urgent':'');if(secs<=0){clearInterval(tInt);submitAll(true);}},1000);}
+document.addEventListener('click',startTimer,{once:true});
+document.addEventListener('keydown',startTimer,{once:true});
+function pick(n,choice){
+  if(locked[n]||submitted)return;locked[n]=true;picks[n]=choice;ansTotal++;
+  const correct=ANS[n],isOk=choice===correct;if(isOk)corr++;
+  const opts=document.querySelectorAll('#o-'+n+' .opt');
+  ['A','B','C','D'].forEach((k,i)=>{opts[i].classList.add('locked');if(k===choice&&isOk)opts[i].classList.add('correct-pick');if(k===choice&&!isOk)opts[i].classList.add('wrong-pick');if(k===correct&&!isOk)opts[i].classList.add('reveal-right');});
+  document.getElementById('qc-'+n).classList.add(isOk?'answered':'incorrect');
+  const ex=document.getElementById('ex-'+n);
+  ex.innerHTML='<strong>'+(isOk?'&#10003; Correct':'&#10007; Incorrect &mdash; Correct: '+correct)+'</strong> &mdash; '+EX[n];
+  ex.className='expl show '+(isOk?'expl-ok':'expl-bad');
+  document.getElementById('fA').textContent=ansTotal;document.getElementById('fC').textContent=corr;
+  document.getElementById('progF').style.width=(ansTotal/25*100)+'%';
+  if(ansTotal===25&&!submitted)setTimeout(()=>submitAll(),500);
+}
+function submitAll(auto=false){
+  if(submitted)return;submitted=true;clearInterval(tInt);usedSecs=2100-secs;
+  const panel=document.getElementById('resultsPanel');panel.classList.add('show');
+  document.getElementById('rScore').textContent=corr+'/25';
+  document.getElementById('rPct').textContent=Math.round(corr/25*100)+'%';
+  document.getElementById('rWrong').textContent=ansTotal-corr;
+  const um=String(Math.floor(usedSecs/60)).padStart(2,'0'),us=String(usedSecs%60).padStart(2,'0');
+  document.getElementById('rTime').textContent=um+':'+us;
+  const pct=corr/25*100,vb=document.getElementById('verdBox');
+  if(pct>=80){vb.className='verdict v-ex';vb.textContent='&#9889; Excellent — Strong full-stack AI depth across RAG, agents, real-time systems, and BBVA production context. Clear hire signal.';}
+  else if(pct>=65){vb.className='verdict v-good';vb.textContent='&#10003; Good — Solid applied AI knowledge. Review the sections where marks dropped — especially BBVA security/compliance, WebSocket scaling, or document AI pipeline specifics.';}
+  else if(pct>=50){vb.className='verdict v-ok';vb.textContent='&#9675; Developing — Core AI experience is real but production/compliance depth needs work. Study Qdrant metadata filtering, FastAPI security patterns, and BBVA-specific regulatory constraints.';}
+  else{vb.className='verdict v-try';vb.textContent='&#8635; Needs Preparation — Review RAG retrieval strategies, MCP architecture, WebSocket scaling, LangChain vs LlamaIndex, and financial AI security before the interview.';}
+  document.getElementById('rSub').textContent=ansTotal+' of 25 answered &#xB7; '+corr+' correct &#xB7; '+(ansTotal-corr)+' incorrect';
+  const bd=document.getElementById('secBD');
+  bd.innerHTML=SECS.map(s=>{const got=s.qs.filter(q=>picks[q]===ANS[q]).length,p=Math.round(got/s.qs.length*100),c=p>=80?'#8B5CF6':p>=60?'#34D399':p>=40?'#FCD34D':'#F87171';return '<div class="sb-row"><div class="sb-name">'+s.name+'</div><div class="sb-track"><div class="sb-fill" style="width:'+p+'%;background:'+c+'"></div></div><div class="sb-num">'+got+'/'+s.qs.length+'</div></div>';}).join('');
+  panel.scrollIntoView({behavior:'smooth',block:'start'});
+}
+</script>
+</body>
+</html>
