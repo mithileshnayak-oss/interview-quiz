@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Technical Assessment — Pawan Dangi — Full Stack Backend Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#12161C; --ink-2:#454E5C; --ink-3:#7A8494;
+  --paper:#EDF0F4; --surface:#FFFFFF; --line:#D3DAE3;
+  --core:#1F4E79; --stretch:#9A5B08;
+  --pass:#0E6B5E; --fail:#9E2B25;
+  --sans:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px 80px}
+.masthead{border-bottom:2px solid var(--ink);padding:34px 0 18px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin:0 0 10px}
+.masthead h1{font-size:clamp(26px,4.4vw,38px);line-height:1.1;font-weight:700;letter-spacing:-.02em;margin:0 0 6px}
+.masthead .sub{color:var(--ink-2);margin:0;font-size:15px}
+.strip{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--line);background:var(--surface)}
+.strip .cell{flex:1 1 150px;padding:12px 16px;border-right:1px solid var(--line)}
+.strip .cell:last-child{border-right:0}
+.strip .k{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:block}
+.strip .v{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--ink)}
+#clock.warn{color:var(--fail)}
+.tracks{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
+.track{background:var(--surface);padding:14px 16px}
+.track .tlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+.dot.core{background:var(--core)}
+.dot.stretch{background:var(--stretch)}
+.track .tdesc{font-size:13px;color:var(--ink-2);line-height:1.45}
+.progress{height:4px;background:var(--line);position:sticky;top:0;z-index:20}
+.progress .bar{height:100%;width:0;background:var(--ink);transition:width .25s ease}
+.card{background:var(--surface);border:1px solid var(--line);border-top:0;padding:26px 26px 22px}
+.qhead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.qnum{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink-3)}
+.badge{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border:1px solid;border-radius:2px}
+.badge.core{color:var(--core);border-color:var(--core)}
+.badge.stretch{color:var(--stretch);border-color:var(--stretch)}
+.section-name{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.qtext{font-size:18px;line-height:1.45;font-weight:500;margin:12px 0 18px}
+.opts{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.opt{display:flex;gap:12px;align-items:center;border:1px solid var(--line);background:var(--surface);padding:13px 15px;cursor:pointer;text-align:left;font:inherit;color:inherit;border-radius:3px;transition:border-color .12s,background .12s;width:100%}
+.opt:hover{border-color:var(--ink-3)}
+.opt:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.opt .letter{font-family:var(--mono);font-weight:600;font-size:13px;color:var(--ink-3);flex:none}
+.opt.sel{border-color:var(--ink);background:#F6F8FA;box-shadow:inset 0 0 0 1px var(--ink)}
+.opt.sel .letter{color:var(--ink)}
+.opt[disabled]{cursor:default}
+.opt.correct{border-color:var(--pass);background:#F0F7F5}
+.opt.correct .letter{color:var(--pass)}
+.opt.wrong{border-color:var(--fail);background:#FCF2F1}
+.opt.wrong .letter{color:var(--fail)}
+.mark{margin-left:auto;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;flex:none}
+.mark.ok{color:var(--pass)}
+.mark.no{color:var(--fail)}
+.rationale{margin-top:16px;border:1px dashed var(--line);padding:13px 15px;background:var(--paper)}
+.rationale .rlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:5px}
+.rationale p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.5}
+.nav{display:flex;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-top:0;padding:16px 26px;flex-wrap:wrap}
+button.btn{font-family:var(--sans);font-size:14px;font-weight:600;padding:10px 18px;border-radius:3px;cursor:pointer;border:1px solid var(--ink);background:var(--surface);color:var(--ink);transition:background .12s,color .12s}
+button.btn:hover:not(:disabled){background:var(--ink);color:var(--surface)}
+button.btn.primary{background:var(--ink);color:var(--surface)}
+button.btn:disabled{opacity:.35;cursor:not-allowed}
+button.btn:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.nav .spacer{margin-left:auto}
+.navnote{font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+.grid{display:flex;flex-wrap:wrap;gap:5px;background:var(--surface);border:1px solid var(--line);border-top:0;padding:16px 26px 20px}
+.gcell{width:32px;height:32px;font-family:var(--mono);font-size:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink-3);cursor:pointer;border-radius:2px;padding:0}
+.gcell:hover{border-color:var(--ink-3)}
+.gcell.answered{background:#E6EBF1;color:var(--ink);font-weight:600;border-color:#B6C1CF}
+.gcell.here{border-color:var(--ink);border-width:2px;color:var(--ink);font-weight:600}
+.gcell.st{border-bottom:3px solid var(--stretch)}
+.result{background:var(--surface);border:1px solid var(--line);border-top:0;padding:28px 26px}
+.result h2{font-size:24px;margin:0 0 4px;letter-spacing:-.01em}
+.result .rsub{color:var(--ink-2);font-size:14px;margin:0 0 24px}
+.readout{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:22px}
+.readout .pane{background:var(--surface);padding:18px}
+.readout .plabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.readout .pscore{font-family:var(--mono);font-size:34px;font-weight:600;line-height:1;letter-spacing:-.02em}
+.readout .pof{font-family:var(--mono);font-size:13px;color:var(--ink-3);margin-top:5px}
+.meter{height:6px;background:var(--line);margin-top:12px;border-radius:3px;overflow:hidden}
+.meter i{display:block;height:100%;width:0;transition:width .5s ease}
+.meter i.core{background:var(--core)}
+.meter i.stretch{background:var(--stretch)}
+table.bd{width:100%;border-collapse:collapse;margin-bottom:22px;font-size:14px}
+table.bd th,table.bd td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+table.bd th{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);border-bottom:1px solid var(--ink)}
+table.bd td.num{font-family:var(--mono);text-align:right;white-space:nowrap}
+table.bd tr.stretch-row td:first-child{border-left:3px solid var(--stretch);padding-left:10px}
+table.bd tr.core-row td:first-child{border-left:3px solid var(--core);padding-left:10px}
+.verdict{border:1px solid var(--ink);padding:18px 20px;margin-bottom:22px}
+.verdict .vlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:7px}
+.verdict h3{margin:0 0 8px;font-size:17px}
+.verdict p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.55}
+.gapbox{background:var(--paper);border-left:3px solid var(--stretch);padding:16px 18px;margin-bottom:22px}
+.gapbox .vlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--stretch);margin-bottom:8px}
+.gapbox ul{margin:0;padding-left:18px;font-size:14px;color:var(--ink-2)}
+.gapbox li{margin-bottom:6px}
+.footer{font-family:var(--mono);font-size:11px;color:var(--ink-3);padding:18px 0 0;text-align:center;letter-spacing:.04em}
+@media (max-width:640px){
+  .tracks,.readout{grid-template-columns:1fr}
+  .card,.nav,.grid,.result{padding-left:18px;padding-right:18px}
+  .strip .cell{flex:1 1 50%;border-bottom:1px solid var(--line)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Aavya · Technical Screening</p>
+    <h1>Full Stack Backend Engineer — CMS platform and banking engagement</h1>
+    <p class="sub">Candidate: Pawan Dangi · ~2.7 yrs combined · Appsixer, prev. Code Better · rising-junior band</p>
+  </header>
+
+  <div class="strip">
+    <div class="cell"><span class="k">Questions</span><span class="v" id="qcount">34</span></div>
+    <div class="cell"><span class="k">Time</span><span class="v" id="clock">50:00</span></div>
+    <div class="cell"><span class="k">Answered</span><span class="v" id="answered">0 / 34</span></div>
+    <div class="cell"><span class="k">Band</span><span class="v">Rising junior</span></div>
+  </div>
+
+  <div class="tracks">
+    <div class="track">
+      <div class="tlabel"><span class="dot core"></span>Evidenced — backend pitched hard</div>
+      <div class="tdesc">JWT/RBAC, Redis, Bull queues, rate limiting, Socket.IO, MySQL indexing, REST design, React and Redux Toolkit. He names production hygiene most two-year candidates don't, so backend questions run above standard junior level.</div>
+    </div>
+    <div class="track">
+      <div class="tlabel"><span class="dot stretch"></span>Required by the JDs, absent</div>
+      <div class="tdesc">TypeScript, Next.js, PostgreSQL specifics, content modelling for the CMS, and for the bank: retrieval, traceability, Python, and regulated-environment work.</div>
+    </div>
+  </div>
+
+  <main id="stage"></main>
+
+  <div class="nav" id="nav">
+    <button class="btn" id="prev">Previous</button>
+    <button class="btn" id="next">Next</button>
+    <span class="spacer"></span>
+    <span class="navnote" id="navnote"></span>
+    <button class="btn primary" id="submit">Finish and score</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <p class="footer">Answers are scored on submit. Nothing is transmitted — this file runs entirely in the browser.</p>
+</div>
+
+<script>
+const QUESTIONS = [
+
+/* ===== Auth, RBAC, security — his stated strength ===== */
+{s:"Auth · Both JDs",t:"core",
+ q:"Why hash passwords with bcrypt rather than SHA-256?",
+ o:["SHA-256 is a weaker algorithm overall","bcrypt is deliberately slow and salted, which defeats brute force and rainbow tables; SHA-256 is fast by design, which is the wrong property here","SHA-256 cannot handle long passwords","bcrypt produces a shorter, easier to store output"],
+ a:1,
+ e:"He lists bcrypt explicitly across every project. This should be immediate and precise."},
+
+{s:"Auth · Both JDs",t:"core",
+ q:"What is inside a JWT, and is it encrypted?",
+ o:["Header, payload and signature — base64-encoded and signed, not encrypted; anyone holding it can read the payload","A single encrypted blob only the server can decode","Only a signature; the payload lives server-side","An encrypted session identifier"],
+ a:1,
+ e:"Directly on his stated JWT work across four projects. Assuming the payload is hidden is a common and consequential misconception."},
+
+{s:"RBAC · Both JDs",t:"core",
+ q:"An admin dashboard hides actions the current user cannot perform. Is that sufficient?",
+ o:["Yes, provided the routes are also guarded on the client","No — the interface reflects permissions but cannot grant them; every request must be authorised server-side","Yes, if the API endpoints are undocumented","Only insufficient for destructive actions"],
+ a:1,
+ e:"He built a protected Admin Dashboard and RBAC across Admin, Instructor and Student roles on the LMS project. Non-negotiable on any platform with role-gated workflows."},
+
+{s:"RBAC · Both JDs",t:"core",
+ q:"A user may edit only records they created. Why is a role check alone insufficient?",
+ o:["It is sufficient — check for the relevant role","The rule depends on the relationship between the actor and the specific record, so authorisation must evaluate resource attributes, not just the role","Create a separate role for every user","Filter the list view in the interface for that user"],
+ a:1,
+ e:"The step from role-based to resource-scoped authorisation. His RBAC work across five projects makes this a fair question rather than a stretch."},
+
+{s:"Security · Both JDs",t:"core",
+ q:"Where should a browser application keep its session token?",
+ o:["localStorage, so it survives a refresh","An httpOnly cookie, or in memory with a refresh flow","sessionStorage, which clears automatically","A URL query parameter"],
+ a:1,
+ e:"He mentions secure cookie handling explicitly. localStorage is readable by any script on the page, so any XSS becomes account takeover."},
+
+/* ===== Redis, Bull, background jobs ===== */
+{s:"Redis · Both JDs",t:"core",
+ q:"You cache an expensive query in Redis. What is the decision that actually matters?",
+ o:["The eviction policy and memory ceiling","The invalidation strategy, and what stale data costs the user","The serialisation format for cached values","The connection pool size"],
+ a:1,
+ e:"He lists caching strategies and query optimisation as a named skill. Adding a cache is easy; knowing when it is wrong is the engineering."},
+
+{s:"Bull · Both JDs",t:"core",
+ q:"Why use a job queue like Bull instead of handling a slow task inline in the request handler?",
+ o:["Queues make the task complete faster","It decouples the slow work from the request-response cycle, so the API responds immediately and the job runs asynchronously with retry support","Queues are required for any task over one second","It removes the need for error handling in the job itself"],
+ a:1,
+ e:"He built background job processing with Bull and Cron. The retry and decoupling argument is the real reason to reach for a queue rather than just async/await."},
+
+{s:"Bull · Both JDs",t:"core",
+ q:"A job in your queue fails repeatedly and keeps retrying forever.",
+ o:["This is correct behaviour — jobs should always eventually succeed","Set a maximum attempt count and move exhausted jobs to a dead-letter or failed state for inspection, rather than retrying indefinitely","Disable retries entirely to avoid the loop","Increase the worker concurrency to process it faster"],
+ a:1,
+ e:"An unbounded retry loop on a permanently broken job is a common production incident. Anyone who has run Bull past a demo has hit this."},
+
+/* ===== Rate limiting and API hygiene ===== */
+{s:"API · Both JDs",t:"core",
+ q:"You implement rate limiting on a public endpoint. What should the limit key on, and why does IP alone fall short?",
+ o:["Always limit by IP address only — it is the simplest and most reliable signal","Key by authenticated user or API key where possible; IP alone over- or under-limits users behind shared NAT or mobile carriers","Rate limiting should apply globally across all users as one shared count","Rate limiting is only needed on login endpoints"],
+ a:1,
+ e:"He lists rate limiting across three projects. Office and campus networks share one IP for hundreds of users, so IP-only limiting is a common false positive he may have encountered."},
+
+{s:"API · Both JDs",t:"core",
+ q:"Which HTTP methods are idempotent?",
+ o:["Only GET","GET, PUT and DELETE — but not POST","All methods, by specification","POST and PUT"],
+ a:1,
+ e:"Both platforms retry requests. A non-idempotent create endpoint duplicates records on retry."},
+
+{s:"Logging · Both JDs",t:"core",
+ q:"You use Winston for centralized logging. What makes a log line actually useful for debugging a production incident?",
+ o:["As much detail as possible, including full request and response bodies","Structured fields — timestamp, request id, severity, relevant context — logged consistently, without sensitive data like passwords or tokens","Plain text messages are sufficient as long as something is logged","Logging is only needed for errors, not for normal request flow"],
+ a:1,
+ e:"He names centralised logging as a skill. Structured, correlatable logs are what actually let you trace one request through a system; unstructured text logs are close to useless at any scale."},
+
+/* ===== Node and event loop ===== */
+{s:"Node · Both JDs",t:"core",
+ q:"What happens if a request handler performs heavy synchronous computation?",
+ o:["Node spawns a new thread automatically","It blocks the event loop and stalls every other request on that process","Only that one request is affected","The event loop schedules it around other work"],
+ a:1,
+ e:"The single most important fact about Node, and directly relevant to a platform where document processing is slow."},
+
+{s:"Socket.IO · Both JDs",t:"core",
+ q:"You built real-time chat with Socket.IO. What happens to a message if the recipient is offline when it is sent?",
+ o:["Socket.IO queues it automatically and delivers it on reconnect","Nothing built-in guarantees delivery — the application must persist the message and reconcile on reconnect, or it is lost","The sender's client retries indefinitely","The message is broadcast to all connected clients instead"],
+ a:1,
+ e:"He built live chat on two separate projects. Socket.IO is a transport, not a delivery guarantee, and this is the gap most real-time features miss until a user complains."},
+
+/* ===== MySQL — his strongest database claim ===== */
+{s:"MySQL · Both JDs",t:"core",
+ q:"What does a foreign key enforce?",
+ o:["That the column values are unique across the table","That the referenced parent row exists, and that deleting a parent cannot silently orphan children unless an action is declared","That the column cannot contain nulls","An automatic index on the parent table"],
+ a:1,
+ e:"He claims schema design, indexing and query optimisation across five projects. This is the floor for that claim."},
+
+{s:"MySQL · Both JDs",t:"core",
+ q:"Difference between an INNER JOIN and a LEFT JOIN?",
+ o:["LEFT JOIN is faster because it scans fewer rows","INNER keeps only matching rows; LEFT keeps every row from the left table, padding unmatched columns with nulls","They return the same rows in a different order","LEFT JOIN requires an index on both tables"],
+ a:1,
+ e:"Fundamental SQL, and both JDs need PostgreSQL where the same semantics apply directly."},
+
+{s:"MySQL · Both JDs",t:"core",
+ q:"You add an index to speed up a slow query. What does it cost?",
+ o:["Nothing — indexes are pure performance gain","Disk space and slower writes, since every insert and update must also maintain the index","It locks the table permanently once created","Only additional memory, with no effect on writes"],
+ a:1,
+ e:"He claims indexing across multiple projects. The cost side separates deliberate tuning from adding indexes until a query got faster."},
+
+{s:"MySQL · Both JDs",t:"core",
+ q:"A query is running slowly. What is your first diagnostic step?",
+ o:["Add an index on every column in the WHERE clause","Read the execution plan with EXPLAIN to see what the database is actually doing","Increase the connection pool size","Rewrite the query using a subquery"],
+ a:1,
+ e:"Adding an index before reading the plan is guessing. The question that distinguishes measured optimisation from trial and error."},
+
+{s:"Relational · Both JDs",t:"core",
+ q:"An LMS tracks students, courses and enrolments — a student can join many courses, and a course has many students. Model it.",
+ o:["An array of course ids stored on each student record","A join table holding both foreign keys, unique on the pair, which can also carry enrolment-specific data like the join date","A comma-separated list of student ids on each course","Duplicate the course record once per enrolled student"],
+ a:1,
+ e:"Directly on his own LMS project. A join table is also where enrolment-specific facts belong, which is the detail that separates a modelled relationship from a workaround."},
+
+/* ===== REST and validation ===== */
+{s:"API · Both JDs",t:"core",
+ q:"How do you validate an incoming request body in an Express service?",
+ o:["Trust the frontend to send correct data, since it already validates","Validate at the API boundary with a library such as express-validator, independent of any client-side validation","Rely on MySQL constraints to reject bad data","Wrap the handler in try/catch and inspect failures"],
+ a:1,
+ e:"He names express-validator explicitly. Client-side validation is a UX convenience; the server boundary is the actual security boundary."},
+
+{s:"API · Both JDs",t:"core",
+ q:"A request triggers work that takes several minutes.",
+ o:["Run it synchronously and raise the timeout","Accept it, return 202 with a job identifier, and let the client poll or receive a callback","Schedule it on a cron running every minute","Stream the response and hold the connection open"],
+ a:1,
+ e:"He has both Bull and Cron. Document generation on both target platforms takes minutes, so this pattern is central rather than incidental."},
+
+/* ===== React and Redux ===== */
+{s:"React · Both JDs",t:"core",
+ q:"Why does a rendered list need a key prop?",
+ o:["It improves accessibility for assistive technology","It lets React match elements across renders; using the array index breaks when the list reorders","It is required for CSS selectors to apply","It prevents duplicate items being rendered"],
+ a:1,
+ e:"The second half is the discriminating part. Relevant to his social feed and post-listing work on the Spikeview project."},
+
+{s:"Redux · Both JDs",t:"core",
+ q:"What does Redux Toolkit give you over writing Redux by hand?",
+ o:["Better runtime performance on large stores","Bundled store setup and Immer, so reducers can be written with mutating syntax safely and with far less boilerplate","It removes the need for reducers entirely","It only works in TypeScript projects"],
+ a:1,
+ e:"He lists Redux Toolkit for state management on two projects. The Immer point is what separates using RTK from having installed it."},
+
+{s:"Performance · Both JDs",t:"core",
+ q:"You list lazy loading, memoisation and code splitting as page-load optimisations on the Dovies project. What does code splitting actually change?",
+ o:["It reduces the number of React components rendered","It breaks the JavaScript bundle into separate chunks loaded on demand, so the initial page download is smaller","It compresses images automatically","It removes the need for a build step"],
+ a:1,
+ e:"Directly on his own resume line. The answer should be specific to bundling, not a general statement about performance."},
+
+/* ===== TypeScript — absent ===== */
+{s:"TypeScript · Both JDs",t:"stretch",
+ q:"What does TypeScript give you, and what happens to the types when the code runs?",
+ o:["Faster execution, since types enable compiler optimisations","Compile-time type checking; the types are erased entirely and enforce nothing at runtime","Automatic validation of incoming API data","Runtime errors become impossible"],
+ a:1,
+ e:"TypeScript appears nowhere on his resume, and JavaScript ES6+ is listed as his only language. Both JDs are TypeScript-first, so this section measures how quickly the transition would go."},
+
+{s:"TypeScript · Both JDs",t:"stretch",
+ q:"How would you describe the shape of an Express request body in TypeScript?",
+ o:["A propTypes-style object attached to the handler","An interface or type describing the expected fields, used to type the parsed body","A JSDoc comment above the function","TypeScript infers it automatically with no declaration"],
+ a:1,
+ e:"A fair question for someone who has never used TypeScript but has written a lot of Express validation — the underlying discipline of describing shapes is one he already has in express-validator schemas."},
+
+/* ===== Next.js — absent, CMS ===== */
+{s:"Next.js · CMS JD",t:"stretch",
+ q:"Content must appear in the initial HTML for search indexing. Which rendering approach?",
+ o:["Client rendering with a loading state","Server rendering or static generation","Client rendering plus a sitemap submission","It does not matter — crawlers execute JavaScript"],
+ a:1,
+ e:"The CMS platform runs on Next.js, absent from his resume. The most basic reason server rendering exists."},
+
+{s:"Next.js · CMS JD",t:"stretch",
+ q:"What does the \"use client\" directive do?",
+ o:["Makes the file execute only in the browser","Marks the boundary where client rendering begins; everything imported below it becomes a client component too","Disables server rendering for the application","Enables hooks to run on the server"],
+ a:1,
+ e:"Not knowable without App Router exposure. Expected to be a miss; the finding is the gap, not a fault."},
+
+/* ===== PostgreSQL specifics — absent ===== */
+{s:"PostgreSQL · Both JDs",t:"stretch",
+ q:"Two writes must both succeed or both leave no trace.",
+ o:["Execute them in order and check for errors after each","Wrap both in a transaction and commit once","Retry the second write until it succeeds","Add a unique constraint spanning both tables"],
+ a:1,
+ e:"Transactions exist in MySQL too, so this tests the concept rather than a new database. Required by any approval workflow that also writes an audit record."},
+
+{s:"PostgreSQL · Both JDs",t:"stretch",
+ q:"A page lists 50 records and shows a related field on each. What goes wrong naively?",
+ o:["One query per row is correct and keeps each query simple","The N+1 problem — 51 queries instead of one; fix by joining or batching","Only an issue in document databases","Adding an index on the related table resolves it"],
+ a:1,
+ e:"The most useful database question available regardless of which relational engine. Given his MySQL depth, this is a fair test of whether the optimisation instinct generalises."},
+
+/* ===== Content modelling — absent, CMS ===== */
+{s:"Content modelling · CMS JD",t:"stretch",
+ q:"What defines a headless CMS?",
+ o:["A content system with no administrative interface","Content is authored and stored independently of presentation and delivered over an API to any frontend","A static site generator with a form builder attached","A managed database behind a REST wrapper"],
+ a:1,
+ e:"Baseline literacy for the CMS role. No CMS of any kind appears on his resume."},
+
+{s:"Content modelling · CMS JD",t:"stretch",
+ q:"A page is assembled from an ordered sequence of section types chosen by an author, where a type may repeat.",
+ o:["A nullable column on the page for each possible section type","A blocks table with a type discriminator and a position column, with type-specific fields stored separately","The rendered HTML of the assembled page","A separate table for each page layout"],
+ a:1,
+ e:"The central abstraction of the CMS platform. His relational modelling instinct from the LMS enrolment question should partially transfer here."},
+
+/* ===== Retrieval, traceability, environment — absent, bank ===== */
+{s:"Retrieval · Bank JD",t:"stretch",
+ q:"A document corpus totals roughly 500,000 tokens. Why retrieve selected passages rather than send it all to a model?",
+ o:["Retrieval improves the fluency of generated text","The corpus far exceeds the model context window, so only relevant passages can physically be sent","Provider licensing restricts sending bulk content","It removes the need for a database"],
+ a:1,
+ e:"Nothing on his resume touches AI, embeddings or language models at all — the only candidate in this batch with zero mentions. The hard architectural constraint the banking platform is built around."},
+
+{s:"Traceability · Bank JD",t:"stretch",
+ q:"Every generated statement must be auditable to its exact source, and sources are revised over time.",
+ o:["Store a confidence score against each statement","Citation records pointing at a specific document version and location, so a later revision cannot invalidate an approved statement","Write the full prompt and response to a log file","Keep a snapshot of the corpus alongside each output"],
+ a:1,
+ e:"The version is the crux — a citation pointing at a document rather than a version breaks silently once that document changes. The hardest question here."},
+
+{s:"Environment · Bank JD",t:"stretch",
+ q:"No client data may leave the client environment. What does that rule out?",
+ o:["Nothing, provided all traffic is encrypted in transit","Any hosted third-party service processing client content — external model APIs, error reporting that captures payloads, analytics","Only email and file sharing","Only bulk data exports"],
+ a:1,
+ e:"He uses Firebase, Twilio and Nodemailer across his projects — all hosted third-party services. This question tests whether he recognises that pattern as the thing a locked-down client tenant disallows."}
+];
+
+/* Randomise option order so the correct answer is not always in one position. */
+(function shuffleOptions(){
+  QUESTIONS.forEach(q => {
+    const correct = q.o[q.a];
+    for (let i = q.o.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [q.o[i], q.o[j]] = [q.o[j], q.o[i]];
+    }
+    q.a = q.o.indexOf(correct);
+  });
+})();
+
+const TOTAL = QUESTIONS.length;
+const answers = new Array(TOTAL).fill(null);
+let cur = 0, graded = false, secondsLeft = 50 * 60;
+
+const stage = document.getElementById('stage');
+const grid  = document.getElementById('grid');
+const bar   = document.getElementById('bar');
+const LETTERS = ['A','B','C','D'];
+
+document.getElementById('qcount').textContent = TOTAL;
+document.getElementById('answered').textContent = '0 / ' + TOTAL;
+
+const clock = document.getElementById('clock');
+const timer = setInterval(() => {
+  if (graded) { clearInterval(timer); return; }
+  secondsLeft--;
+  const m = Math.floor(Math.max(secondsLeft,0)/60), s = Math.max(secondsLeft,0)%60;
+  clock.textContent = m + ':' + String(s).padStart(2,'0');
+  if (secondsLeft <= 300) clock.classList.add('warn');
+  if (secondsLeft <= 0) { clearInterval(timer); grade(); }
+}, 1000);
+
+function render() {
+  const q = QUESTIONS[cur];
+  const badge = q.t === 'core'
+    ? '<span class="badge core">Evidenced</span>'
+    : '<span class="badge stretch">Absent</span>';
+
+  let html = '<section class="card">'
+    + '<div class="qhead"><span class="qnum">' + String(cur+1).padStart(2,'0') + ' / ' + TOTAL + '</span>'
+    + badge + '<span class="section-name">' + q.s + '</span></div>'
+    + '<p class="qtext">' + q.q + '</p><ul class="opts">';
+
+  q.o.forEach((opt, i) => {
+    let cls = 'opt', mark = '';
+    if (answers[cur] === i) cls += ' sel';
+    if (graded) {
+      if (i === q.a) { cls += ' correct'; mark = '<span class="mark ok">Correct</span>'; }
+      else if (answers[cur] === i) { cls += ' wrong'; mark = '<span class="mark no">Chosen</span>'; }
+    }
+    html += '<li><button class="' + cls + '" data-i="' + i + '"' + (graded ? ' disabled' : '') + '>'
+          + '<span class="letter">' + LETTERS[i] + '</span><span>' + opt + '</span>' + mark + '</button></li>';
+  });
+
+  html += '</ul>';
+  if (graded) html += '<div class="rationale"><div class="rlabel">Interviewer note</div><p>' + q.e + '</p></div>';
+  html += '</section>';
+  stage.innerHTML = html;
+
+  if (!graded) {
+    stage.querySelectorAll('.opt').forEach(b => {
+      b.addEventListener('click', () => {
+        answers[cur] = Number(b.dataset.i);
+        render(); paint();
+        if (cur < TOTAL - 1) setTimeout(() => { cur++; render(); paint(); }, 160);
+      });
+    });
+  }
+
+  document.getElementById('prev').disabled = cur === 0;
+  document.getElementById('next').disabled = cur === TOTAL - 1;
+  document.getElementById('navnote').textContent = graded ? 'Review mode' : (answers[cur] === null ? 'Not answered' : 'Answered');
+}
+
+function paint() {
+  const done = answers.filter(a => a !== null).length;
+  document.getElementById('answered').textContent = done + ' / ' + TOTAL;
+  bar.style.width = (done / TOTAL * 100) + '%';
+  grid.innerHTML = QUESTIONS.map((q, i) => {
+    let c = 'gcell';
+    if (answers[i] !== null) c += ' answered';
+    if (i === cur) c += ' here';
+    if (q.t === 'stretch') c += ' st';
+    return '<button class="' + c + '" data-i="' + i + '">' + (i+1) + '</button>';
+  }).join('');
+  grid.querySelectorAll('.gcell').forEach(b => {
+    b.addEventListener('click', () => { cur = Number(b.dataset.i); render(); paint(); });
+  });
+}
+
+document.getElementById('prev').addEventListener('click', () => { if (cur > 0) { cur--; render(); paint(); } });
+document.getElementById('next').addEventListener('click', () => { if (cur < TOTAL-1) { cur++; render(); paint(); } });
+document.getElementById('submit').addEventListener('click', () => {
+  const done = answers.filter(a => a !== null).length;
+  if (!graded && done < TOTAL && !confirm((TOTAL - done) + ' question(s) are unanswered. Score anyway?')) return;
+  grade();
+});
+
+function grade() {
+  if (graded) { window.scrollTo({top:0,behavior:'smooth'}); return; }
+  graded = true; clearInterval(timer);
+
+  const bySection = {};
+  let coreC = 0, coreT = 0, strC = 0, strT = 0;
+  QUESTIONS.forEach((q, i) => {
+    const ok = answers[i] === q.a;
+    if (!bySection[q.s]) bySection[q.s] = {c:0, t:0, track:q.t};
+    bySection[q.s].t++; if (ok) bySection[q.s].c++;
+    if (q.t === 'core') { coreT++; if (ok) coreC++; } else { strT++; if (ok) strC++; }
+  });
+
+  const corePct = Math.round(coreC/coreT*100);
+  const strPct  = Math.round(strC/strT*100);
+
+  let vTitle, vBody;
+  if (corePct >= 85 && strPct >= 45) {
+    vTitle = "Best backend-leaning junior assessed — hire on trajectory if a seat exists";
+    vBody = "The production-hygiene claims hold up: queues, rate limiting, structured logging, RBAC and MySQL tuning are all genuinely understood rather than name-dropped. He reasons into relational modelling and content structure despite no exposure. TypeScript and Next.js are real gaps, but the backend instincts underneath them are more mature than his ~2.7 years suggests. Does not meet either JD as written, but is the strongest candidate for a junior seat with a senior engineer above him.";
+  } else if (corePct >= 85) {
+    vTitle = "Solid backend fundamentals, does not meet either JD";
+    vBody = "Auth, queues, rate limiting and MySQL are all in order for his level. Next.js, PostgreSQL specifics and everything the banking platform needs are absent both on paper and in the result. Decline for these two seats; strong candidate for a junior backend-leaning role where someone else owns the frontend framework and the data platform.";
+  } else if (corePct >= 65) {
+    vTitle = "Below bar — gaps inside his own claimed strengths";
+    vBody = "Misses inside auth, queues or MySQL matter more than the absent track, because those are exactly what he presents as his differentiator. At this experience band that is a real concern rather than nerves. Decline.";
+  } else {
+    vTitle = "Decline";
+    vBody = "Under sixty-five percent on the backend hygiene he claims as his specialism. Combined with under three years of experience against a shortlist of three to six years, there is no seat on either programme this fits.";
+  }
+
+  const rows = Object.keys(bySection).map(k => {
+    const b = bySection[k];
+    return '<tr class="' + (b.track === 'core' ? 'core-row' : 'stretch-row') + '">'
+      + '<td>' + k + '</td><td class="num">' + b.c + ' / ' + b.t + '</td>'
+      + '<td class="num">' + Math.round(b.c/b.t*100) + '%</td></tr>';
+  }).join('');
+
+  stage.innerHTML =
+    '<section class="result">'
+    + '<h2>Assessment complete</h2>'
+    + '<p class="rsub">Pawan Dangi · ' + (coreC + strC) + ' of ' + TOTAL + ' overall. Section labels show which JD each requirement serves.</p>'
+    + '<div class="readout">'
+      + '<div class="pane"><div class="plabel"><span class="dot core"></span>Evidenced — backend, pitched hard</div>'
+        + '<div class="pscore">' + corePct + '%</div><div class="pof">' + coreC + ' of ' + coreT + ' correct</div>'
+        + '<div class="meter"><i class="core" style="width:' + corePct + '%"></i></div></div>'
+      + '<div class="pane"><div class="plabel"><span class="dot stretch"></span>Required by the JDs, absent</div>'
+        + '<div class="pscore">' + strPct + '%</div><div class="pof">' + strC + ' of ' + strT + ' correct</div>'
+        + '<div class="meter"><i class="stretch" style="width:' + strPct + '%"></i></div></div>'
+    + '</div>'
+    + '<table class="bd"><thead><tr><th>Section</th><th class="num">Score</th><th class="num">%</th></tr></thead><tbody>' + rows + '</tbody></table>'
+    + '<div class="verdict"><div class="vlabel">Hiring signal</div><h3>' + vTitle + '</h3><p>' + vBody + '</p></div>'
+    + '<div class="gapbox"><div class="vlabel">Read the resume alongside the score</div><ul>'
+      + '<li><strong>He is the most backend-complete junior in this pipeline.</strong> Bull job queues, Winston structured logging, rate limiting, Socket.IO, Redis caching, RBAC \u2014 that is production hygiene most two-year candidates do not have. If the evidenced score holds up under questioning, that maturity is real and worth weighting heavily.</li>'
+      + '<li><strong>MySQL depth across five separate projects</strong> \u2014 schema design, indexing, query optimisation \u2014 is more relational exposure than several more senior candidates in this batch. PostgreSQL specifics are untested, but the concepts should transfer directly.</li>'
+      + '<li><strong>Zero AI or LLM content anywhere on the resume.</strong> The only candidate assessed with no mention at all \u2014 not even a wrapper around an API. Expected to be a full miss on the retrieval questions, and worth naming as the widest single gap for the banking seat.</li>'
+      + '<li><strong>His own experience claim is honest.</strong> "~2+ years" against a resume that adds up to roughly 2.7 combined, no invented percentages, no inflated skill count. Consistent with the pattern seen in the more credible junior resumes in this batch.</li>'
+      + '<li><strong>One date inconsistency worth a neutral question:</strong> the Appsixer project is dated November 2025 to February 2026, but Appsixer employment is listed starting 12 December 2025 \u2014 roughly a month of overlap before the job began. Likely a project he started as a freelance or trial engagement before converting to a role; ask rather than assume.</li>'
+      + '<li><strong>"Trained hundreds of students" sits oddly inside the Code Better bullets.</strong> Worth clarifying whether Code Better is a product company or a training academy, since it changes how much of that experience was building production software versus teaching.</li>'
+      + '<li><strong>Third-party services throughout \u2014 Firebase, Twilio, Nodemailer</strong> \u2014 are all hosted external dependencies of exactly the kind a locked-down bank tenant disallows. The environment question tests whether he already recognises that pattern.</li>'
+      + '<li><strong>No cloud beyond EC2 basics, no CMS, no GraphQL, no Docker beyond \"basic containerisation.\"</strong> All expected at this stage and none of it disqualifying on its own.</li>'
+    + '</ul></div>'
+    + '<p class="rsub" style="margin:0">Use Previous and Next, or the number grid, to review each question with the correct answer and interviewer note.</p>'
+    + '</section>';
+
+  bar.style.width = '100%';
+  document.getElementById('submit').textContent = 'Scored';
+  document.getElementById('submit').disabled = true;
+  paint();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+render(); paint();
+</script>
+</body>
+</html>
