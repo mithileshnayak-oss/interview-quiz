@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L2 Technical Assessment — Manali Tomar — Full Stack Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#12161C; --ink-2:#454E5C; --ink-3:#7A8494;
+  --paper:#EDF0F4; --surface:#FFFFFF; --line:#D3DAE3;
+  --core:#1F4E79; --stretch:#9A5B08;
+  --pass:#0E6B5E; --fail:#9E2B25;
+  --sans:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px 80px}
+.masthead{border-bottom:2px solid var(--ink);padding:34px 0 18px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin:0 0 10px}
+.masthead h1{font-size:clamp(26px,4.4vw,38px);line-height:1.1;font-weight:700;letter-spacing:-.02em;margin:0 0 6px}
+.masthead .sub{color:var(--ink-2);margin:0;font-size:15px}
+.strip{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--line);background:var(--surface)}
+.strip .cell{flex:1 1 150px;padding:12px 16px;border-right:1px solid var(--line)}
+.strip .cell:last-child{border-right:0}
+.strip .k{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:block}
+.strip .v{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--ink)}
+#clock.warn{color:var(--fail)}
+.tracks{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
+.track{background:var(--surface);padding:14px 16px}
+.track .tlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+.dot.core{background:var(--core)}
+.dot.stretch{background:var(--stretch)}
+.track .tdesc{font-size:13px;color:var(--ink-2);line-height:1.45}
+.progress{height:4px;background:var(--line);position:sticky;top:0;z-index:20}
+.progress .bar{height:100%;width:0;background:var(--ink);transition:width .25s ease}
+.card{background:var(--surface);border:1px solid var(--line);border-top:0;padding:26px 26px 22px}
+.qhead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.qnum{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink-3)}
+.badge{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border:1px solid;border-radius:2px}
+.badge.core{color:var(--core);border-color:var(--core)}
+.badge.stretch{color:var(--stretch);border-color:var(--stretch)}
+.section-name{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.qtext{font-size:18px;line-height:1.45;font-weight:500;margin:12px 0 18px}
+.opts{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.opt{display:flex;gap:12px;align-items:center;border:1px solid var(--line);background:var(--surface);padding:13px 15px;cursor:pointer;text-align:left;font:inherit;color:inherit;border-radius:3px;transition:border-color .12s,background .12s;width:100%}
+.opt:hover{border-color:var(--ink-3)}
+.opt:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.opt .letter{font-family:var(--mono);font-weight:600;font-size:13px;color:var(--ink-3);flex:none}
+.opt.sel{border-color:var(--ink);background:#F6F8FA;box-shadow:inset 0 0 0 1px var(--ink)}
+.opt.sel .letter{color:var(--ink)}
+.opt[disabled]{cursor:default}
+.opt.correct{border-color:var(--pass);background:#F0F7F5}
+.opt.correct .letter{color:var(--pass)}
+.opt.wrong{border-color:var(--fail);background:#FCF2F1}
+.opt.wrong .letter{color:var(--fail)}
+.mark{margin-left:auto;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;flex:none}
+.mark.ok{color:var(--pass)}
+.mark.no{color:var(--fail)}
+.rationale{margin-top:16px;border:1px dashed var(--line);padding:13px 15px;background:var(--paper)}
+.rationale .rlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:5px}
+.rationale p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.5}
+.nav{display:flex;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-top:0;padding:16px 26px;flex-wrap:wrap}
+button.btn{font-family:var(--sans);font-size:14px;font-weight:600;padding:10px 18px;border-radius:3px;cursor:pointer;border:1px solid var(--ink);background:var(--surface);color:var(--ink);transition:background .12s,color .12s}
+button.btn:hover:not(:disabled){background:var(--ink);color:var(--surface)}
+button.btn.primary{background:var(--ink);color:var(--surface)}
+button.btn:disabled{opacity:.35;cursor:not-allowed}
+button.btn:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.nav .spacer{margin-left:auto}
+.navnote{font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+.grid{display:flex;flex-wrap:wrap;gap:5px;background:var(--surface);border:1px solid var(--line);border-top:0;padding:16px 26px 20px}
+.gcell{width:32px;height:32px;font-family:var(--mono);font-size:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink-3);cursor:pointer;border-radius:2px;padding:0}
+.gcell:hover{border-color:var(--ink-3)}
+.gcell.answered{background:#E6EBF1;color:var(--ink);font-weight:600;border-color:#B6C1CF}
+.gcell.here{border-color:var(--ink);border-width:2px;color:var(--ink);font-weight:600}
+.gcell.st{border-bottom:3px solid var(--stretch)}
+.result{background:var(--surface);border:1px solid var(--line);border-top:0;padding:28px 26px}
+.result h2{font-size:24px;margin:0 0 4px;letter-spacing:-.01em}
+.result .rsub{color:var(--ink-2);font-size:14px;margin:0 0 24px}
+.readout{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:22px}
+.readout .pane{background:var(--surface);padding:18px}
+.readout .plabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.readout .pscore{font-family:var(--mono);font-size:34px;font-weight:600;line-height:1;letter-spacing:-.02em}
+.readout .pof{font-family:var(--mono);font-size:13px;color:var(--ink-3);margin-top:5px}
+.meter{height:6px;background:var(--line);margin-top:12px;border-radius:3px;overflow:hidden}
+.meter i{display:block;height:100%;width:0;transition:width .5s ease}
+.meter i.core{background:var(--core)}
+.meter i.stretch{background:var(--stretch)}
+table.bd{width:100%;border-collapse:collapse;margin-bottom:22px;font-size:14px}
+table.bd th,table.bd td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+table.bd th{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);border-bottom:1px solid var(--ink)}
+table.bd td.num{font-family:var(--mono);text-align:right;white-space:nowrap}
+table.bd tr.stretch-row td:first-child{border-left:3px solid var(--stretch);padding-left:10px}
+table.bd tr.core-row td:first-child{border-left:3px solid var(--core);padding-left:10px}
+.verdict{border:1px solid var(--ink);padding:18px 20px;margin-bottom:22px}
+.verdict .vlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:7px}
+.verdict h3{margin:0 0 8px;font-size:17px}
+.verdict p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.55}
+.gapbox{background:var(--paper);border-left:3px solid var(--stretch);padding:16px 18px;margin-bottom:22px}
+.gapbox .vlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--stretch);margin-bottom:8px}
+.gapbox ul{margin:0;padding-left:18px;font-size:14px;color:var(--ink-2)}
+.gapbox li{margin-bottom:6px}
+.footer{font-family:var(--mono);font-size:11px;color:var(--ink-3);padding:18px 0 0;text-align:center;letter-spacing:.04em}
+@media (max-width:640px){
+  .tracks,.readout{grid-template-columns:1fr}
+  .card,.nav,.grid,.result{padding-left:18px;padding-right:18px}
+  .strip .cell{flex:1 1 50%;border-bottom:1px solid var(--line)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Aavya · L2 Technical Round</p>
+    <h1>Full Stack Developer — CMS platform and banking engagement</h1>
+    <p class="sub">Candidate: Manali Tomar · ~3.5 yrs · Samosys (Angular, MEAN) and Dollop Infotech (React, MERN) · scored against both JDs</p>
+  </header>
+
+  <div class="strip">
+    <div class="cell"><span class="k">Questions</span><span class="v" id="qcount">40</span></div>
+    <div class="cell"><span class="k">Time</span><span class="v" id="clock">60:00</span></div>
+    <div class="cell"><span class="k">Answered</span><span class="v" id="answered">0 / 40</span></div>
+    <div class="cell"><span class="k">Round</span><span class="v">L2</span></div>
+  </div>
+
+  <div class="tracks">
+    <div class="track">
+      <div class="tlabel"><span class="dot core"></span>Evidenced — pitched at L2 depth</div>
+      <div class="tdesc">Angular and RxJS, TypeScript, Node and Express, webhooks and third-party APIs, MySQL including migrations, and React. These run deeper than a screening round because she claims them with specifics.</div>
+    </div>
+    <div class="track">
+      <div class="tlabel"><span class="dot stretch"></span>Required by the JDs, absent</div>
+      <div class="tdesc">Next.js, PostgreSQL, authentication and tenancy, Redis, content modelling for the CMS, and for the bank: retrieval, traceability, audit history, Python and a locked-down estate. Section labels show which JD each serves.</div>
+    </div>
+  </div>
+
+  <main id="stage"></main>
+
+  <div class="nav" id="nav">
+    <button class="btn" id="prev">Previous</button>
+    <button class="btn" id="next">Next</button>
+    <span class="spacer"></span>
+    <span class="navnote" id="navnote"></span>
+    <button class="btn primary" id="submit">Finish and score</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <p class="footer">Answers are scored on submit. Nothing is transmitted — this file runs entirely in the browser.</p>
+</div>
+
+<script>
+const QUESTIONS = [
+
+/* ===== Angular and RxJS — her primary frontend ===== */
+{s:"Angular · Change detection",t:"core",
+ q:"A child component uses OnPush change detection. The parent mutates a property inside the object it passes as an @Input, without replacing the object. What happens?",
+ o:["The child updates immediately because the object changed","The child is not re-checked, since OnPush compares input references; replace the object with an immutable update, or call markForCheck","Angular throws ExpressionChangedAfterItHasBeenChecked","The child updates only after the next HTTP response"],
+ a:1,
+ e:"OnPush is the first thing Angular performance work reaches for, and in-place mutation is the classic way to break it. She worked on dashboards for two and a half years, so this should be familiar."},
+
+{s:"Angular · RxJS",t:"core",
+ q:"A search box fires an API call on every keystroke. Which operator ensures only the latest query result is used and earlier in-flight requests are cancelled?",
+ o:["mergeMap, so every request runs in parallel","switchMap, which cancels the previous inner observable when a new value arrives","concatMap, which queues requests in order","exhaustMap, which ignores new values while one request is in flight"],
+ a:1,
+ e:"The standard typeahead answer, usually paired with debounceTime and distinctUntilChanged. exhaustMap is the interesting wrong answer because it silently drops the newest keystrokes."},
+
+{s:"Angular · Subscriptions",t:"core",
+ q:"A component subscribes to a long-lived observable in ngOnInit and never unsubscribes. What happens after the component is destroyed?",
+ o:["Angular unsubscribes automatically on destroy","The subscription stays active and its callback keeps running, holding the component in memory; use the async pipe, takeUntilDestroyed or an explicit unsubscribe","Only an error is logged and nothing else changes","The observable completes on its own"],
+ a:1,
+ e:"HttpClient observables complete by themselves, so the leak only appears with long-lived streams such as store selectors or intervals. Whether she knows that nuance shows how far the understanding goes."},
+
+{s:"Angular · Dependency injection",t:"core",
+ q:"A service is declared providedIn root. A component also lists the same service in its own providers array. What does that component get?",
+ o:["The same root singleton as everywhere else","Its own instance, scoped to that component and its children, while the rest of the app keeps the root singleton","A compile error for duplicate registration","A new instance on every change detection pass"],
+ a:1,
+ e:"Component-level providers are a common source of state that appears to reset or fail to share. She built several modules sharing learner data, so this is directly on her ground."},
+
+{s:"Angular · Guards",t:"core",
+ q:"A canActivate guard protects the admin route in your super admin panel. Is that sufficient to protect the admin data?",
+ o:["Yes, if the guard checks the user role","No — a guard only controls client-side navigation; every API request must be authorised on the server","Yes, if the routes are lazy loaded","Only insufficient for destructive actions"],
+ a:1,
+ e:"She built a super admin panel, yet her resume never mentions how access was controlled. The guard is a convenience, not a security boundary, and this is the answer to anchor the live discussion on."},
+
+/* ===== TypeScript ===== */
+{s:"TypeScript · Assertions",t:"core",
+ q:"An API response is cast with the as keyword to a declared interface. What does that guarantee?",
+ o:["The compiler checks the shape when the code runs","Nothing — as is erased at compile time and asserts something nothing enforces","The value is coerced into the declared shape","It throws if the shape does not match"],
+ a:1,
+ e:"She integrated third-party APIs and lists TypeScript. A cast on an external response is a promise the compiler cannot verify."},
+
+{s:"TypeScript · Narrowing",t:"core",
+ q:"What does a discriminated union give the compiler?",
+ o:["Faster compilation through simpler types","A shared literal-typed field the compiler can use to narrow the union in a switch or if, including exhaustiveness checking","Automatic runtime validation of each variant","The ability to merge declarations across files"],
+ a:1,
+ e:"The pattern behind well-typed API responses and state machines. An L2 question because it separates using TypeScript from modelling with it."},
+
+{s:"TypeScript · Strictness",t:"core",
+ q:"What does enabling strictNullChecks change?",
+ o:["Null and undefined are no longer assignable to every type, so possibly-missing values must be handled before use","It removes null from the language at runtime","It only affects function parameters","It makes optional properties required"],
+ a:1,
+ e:"One of the settings that turns TypeScript from annotation into protection. An Angular codebase without it is common, so ask what her projects used."},
+
+/* ===== Node, Express, webhooks, third-party APIs ===== */
+{s:"Node · Both JDs",t:"core",
+ q:"A report-generation endpoint does heavy synchronous computation. What is the effect on the process?",
+ o:["Node spawns a worker thread automatically","It blocks the event loop and stalls every other request on that process","Only that one request is slowed","The runtime schedules it around other requests"],
+ a:1,
+ e:"The single most important fact about Node, and relevant to both platforms where document processing is slow."},
+
+{s:"Express · Error handling",t:"core",
+ q:"In Express 4, an async route handler awaits a rejected database call and the error is not caught. What happens?",
+ o:["Express passes it to the error-handling middleware automatically","Express 4 does not catch the rejection: the request hangs, or the process may terminate on an unhandled rejection, unless the error is caught and passed to next","Express returns a 500 and logs the stack trace","Node restarts the handler"],
+ a:1,
+ e:"A well-known trap that Express 5 fixed. Anyone who has run async handlers in production on Express 4 has either wrapped them or been bitten by this."},
+
+{s:"Webhooks · Both JDs",t:"core",
+ q:"You added express.json() globally, and webhook signature verification now fails intermittently. Why?",
+ o:["The signing secret expires after a short interval","The signature is computed over the raw request bytes; once the body is parsed and re-serialised the bytes differ, so verification needs the raw body","JSON bodies cannot be signed at all","The provider changed its signing algorithm"],
+ a:1,
+ e:"The most common webhook bug in Express, and she lists webhook implementation specifically. A candidate who has built one has met it."},
+
+{s:"Third-party APIs · Both JDs",t:"core",
+ q:"A provider you integrate with starts returning 429 with a Retry-After header. What is the correct client behaviour?",
+ o:["Retry immediately in a tight loop until it succeeds","Honour Retry-After or back off exponentially with jitter, cap the number of attempts, and surface failure beyond that","Switch to a different endpoint on the same provider","Ignore the status and treat it as a transient network error"],
+ a:1,
+ e:"Third-party integration is a core claim. A retry storm against a rate-limited provider turns a throttle into an outage."},
+
+/* ===== MySQL, migrations — her strongest line ===== */
+{s:"MySQL · Indexing",t:"core",
+ q:"A query filters on course_id (equality) and submitted_at (range), ordered by score descending. What limits what one composite index on (course_id, submitted_at, score) can do?",
+ o:["Nothing — it serves the filter and the ordering","After the range column, later columns cannot be used for ordering, so a sort still happens","MySQL cannot build an index across three columns","Ordering always needs a separate index"],
+ a:1,
+ e:"Equality columns first, then one range column, and nothing after the range helps the sort. Anyone who has genuinely tuned MySQL queries has met this."},
+
+{s:"MySQL · Query plans",t:"core",
+ q:"EXPLAIN shows type ALL and an estimated row count in the millions for an equality filter.",
+ o:["Normal for large tables","A full table scan — no usable index exists for that predicate","The table needs partitioning","The statistics are stale"],
+ a:1,
+ e:"She claims query optimisation. Reading the plan is what separates measured tuning from adding indexes until something got faster."},
+
+{s:"MySQL · Isolation",t:"core",
+ q:"What is the default transaction isolation level for InnoDB?",
+ o:["READ UNCOMMITTED","READ COMMITTED","REPEATABLE READ","SERIALIZABLE"],
+ a:2,
+ e:"REPEATABLE READ. PostgreSQL defaults to READ COMMITTED, which matters when a workload moves between the two and behaviour under concurrency changes quietly."},
+
+{s:"MySQL · Migrations",t:"core",
+ q:"You must move a large live table to a new schema with no downtime. What is the safest sequence?",
+ o:["Take the system offline, run one ALTER, bring it back","Expand and contract: add the new structure, dual-write, backfill in batches, verify, switch reads, then remove the old","Drop and recreate the table from a dump","Rename the table and let the application recover"],
+ a:1,
+ e:"She led data migration projects across SQL databases, so this is her headline claim. Ask what the scale was and how the cutover was rehearsed."},
+
+{s:"MySQL · Migration checks",t:"core",
+ q:"How do you prove a data migration was accurate?",
+ o:["Matching row counts between source and target","Row counts plus checksums or sampled field-level comparison and reconciliation queries; counts alone cannot detect corrupted values","Spot-checking a handful of records by eye","Running the application against the target and watching for errors"],
+ a:1,
+ e:"She says her migrations ensured accurate, disruption-free transitions. Counts catch dropped rows and miss transformed or truncated values."},
+
+{s:"MySQL · Concurrency",t:"core",
+ q:"Two transactions update the same two rows in opposite order and one is rolled back with a deadlock error. What is the right fix?",
+ o:["Raise the lock wait timeout","Acquire locks in a consistent order everywhere and retry the transaction that was rolled back","Disable transactions on those updates","Switch to READ UNCOMMITTED"],
+ a:1,
+ e:"Deadlocks are a normal event under load, not a bug to eliminate. The retry is as important as the ordering."},
+
+{s:"SQL · Outer joins",t:"core",
+ q:"You LEFT JOIN a child table and use COUNT(*) grouped by parent. Parents with no children show 1 instead of 0.",
+ o:["That is correct behaviour for a left join","COUNT(*) counts the null-padded row; count a column from the joined table instead","Switch to an inner join","Add a HAVING clause"],
+ a:1,
+ e:"Produces silently wrong reports rather than errors. The best SQL discriminator available, and a fair test for a learner-progress dashboard she built."},
+
+{s:"MySQL · Relations",t:"core",
+ q:"A page lists 50 students and loads each student's course count in a loop. What goes wrong?",
+ o:["One query per row is correct and keeps each query simple","The N+1 problem — 51 queries instead of one; fix with a join or a batched query","Only a problem in document databases","An index on the courses table resolves it"],
+ a:1,
+ e:"Unavoidable in any dashboard over related data, and it is the first thing to look for when an API she optimised was slow."},
+
+/* ===== React ===== */
+{s:"React · Effects",t:"core",
+ q:"An effect reads a state value but its dependency array is empty. Inside the effect the value never updates. Why?",
+ o:["State updates are asynchronous so the effect is slow","The effect closed over the value from the render where it ran; omitting the dependency leaves it stale — include it, or use a functional update","useEffect cannot read state","The component needs forceUpdate"],
+ a:1,
+ e:"The stale closure is the most common React defect after keys. She has one year of React, so this is a fair measure of how far that year went."},
+
+{s:"React · Memoisation",t:"core",
+ q:"A child wrapped in React.memo still re-renders on every parent update.",
+ o:["memo only works on class components","A new object, array or function prop is created each render, so referential equality fails","memo needs a custom comparison function to work at all","Internal state disables memo"],
+ a:1,
+ e:"Where knowing the API ends and understanding the render model begins. Compare against her Angular OnPush answer — the concept is the same."},
+
+/* ===== Next.js — absent, CMS ===== */
+{s:"Next.js · CMS JD",t:"stretch",
+ q:"What does the \"use client\" directive do?",
+ o:["Makes the file execute only in the browser","Marks where client rendering begins; everything imported below it becomes a client component","Disables server rendering for the whole application","Enables hooks to run on the server"],
+ a:1,
+ e:"Not knowable without App Router exposure. Expected to be a miss; the finding is the gap, not a fault."},
+
+{s:"Next.js · CMS JD",t:"stretch",
+ q:"A published page must reflect an editorial change within a minute, with no redeploy.",
+ o:["Client-side polling on every visit","Time-based revalidation, or on-demand revalidation triggered when content is published","Rebuild and redeploy on every publish","Render every request from scratch with caching disabled"],
+ a:1,
+ e:"The answer a CMS build needs. Reasoning about caching versus freshness is the transfer being tested, even if the API names are new."},
+
+/* ===== PostgreSQL — absent ===== */
+{s:"PostgreSQL · Both JDs",t:"stretch",
+ q:"A migration script has several ALTER statements and the third one fails. How do PostgreSQL and MySQL differ?",
+ o:["They behave identically","PostgreSQL supports transactional DDL, so the whole script rolls back; MySQL commits DDL implicitly, leaving the schema half-changed","MySQL rolls everything back and PostgreSQL does not","Neither can run DDL inside a transaction"],
+ a:1,
+ e:"The most useful transfer question for her, since migrations are her headline claim. It is also a reason PostgreSQL migrations are safer to rehearse."},
+
+{s:"PostgreSQL · Both JDs",t:"stretch",
+ q:"There is an index on email, but a query filtering on lower(email) ignores it.",
+ o:["The index is corrupted and needs rebuilding","A function applied to the column defeats a plain index; an expression index on lower(email) is required","PostgreSQL cannot index text columns well","The table needs vacuuming"],
+ a:1,
+ e:"Applies equally in MySQL for non-functional indexes, so her tuning instinct should partly carry over."},
+
+/* ===== Auth and tenancy — absent from the resume ===== */
+{s:"Auth · Both JDs",t:"stretch",
+ q:"A user is deactivated while holding a valid JWT.",
+ o:["The next request is rejected automatically","The token stays valid until expiry — you need short lifetimes with refresh, or a revocation check against server state","Clearing the server session invalidates it","Rotating the signing key resolves it"],
+ a:1,
+ e:"Authentication and RBAC appear nowhere on her resume despite a super admin panel. Both JDs make access control central, so this section sizes the gap."},
+
+{s:"Authorisation · Both JDs",t:"stretch",
+ q:"A user may edit only records belonging to their own department. Why is a role check insufficient?",
+ o:["It is sufficient — check for the editor role","The rule depends on the relationship between the actor and the specific record, so authorisation must evaluate resource attributes","Create one role per department","Filter the list view in the interface"],
+ a:1,
+ e:"The step from role-based to resource-scoped authorisation. Creating a role per department is the trap answer and does not survive a growing organisation."},
+
+{s:"Multi-tenancy · Both JDs",t:"stretch",
+ q:"A shared database serves many tenants. What guarantees one tenant never sees another's data?",
+ o:["A tenant filter on every query, caught in code review","Enforcement below the application — row-level security, or a data layer that always injects the tenant predicate","A separate frontend per tenant","Checking the tenant claim in the interface before rendering"],
+ a:1,
+ e:"A design that depends on remembering a WHERE clause is one missed filter from a cross-tenant leak. Relevant to the tenancy work on both programmes."},
+
+{s:"Redis · Both JDs",t:"stretch",
+ q:"You cache an expensive query in Redis. What is the decision that actually matters?",
+ o:["The eviction policy and memory ceiling","The invalidation strategy, and what stale data costs the user","The serialisation format","The connection pool size"],
+ a:1,
+ e:"Redis does not appear on her resume. Adding a cache is easy; knowing when it is wrong is the engineering."},
+
+/* ===== Content modelling — CMS ===== */
+{s:"Content modelling · CMS JD",t:"stretch",
+ q:"What defines a headless CMS?",
+ o:["A content system with no administrative interface","Content is authored and stored independently of presentation and delivered over an API to any frontend","A static site generator with a form builder","A hosted database with a REST wrapper"],
+ a:1,
+ e:"Baseline literacy. Her super admin panel for dynamic content management is the closest thing to this in her background, so ask how content shape was defined there."},
+
+{s:"Content modelling · CMS JD",t:"stretch",
+ q:"A page is assembled from an ordered sequence of section types chosen by an author, where a type may repeat.",
+ o:["A nullable column on the page for every possible section type","A blocks table with a type discriminator and a position column, with type-specific fields stored separately","The rendered HTML of the page","A separate table per page layout"],
+ a:1,
+ e:"The central abstraction of the CMS platform. Strong relational instincts usually reach a polymorphic child table without CMS experience, which is exactly the transfer being tested."},
+
+{s:"Content modelling · CMS JD",t:"stretch",
+ q:"Editors must work on changes without the public seeing them until publish, and an admin must be able to revert.",
+ o:["A published boolean toggled when ready","Separate draft and published versions with history, so edits accumulate against the draft and a prior version can be restored","Lock the record while an editor has it open","Copy the record, edit the copy, delete the original on publish"],
+ a:1,
+ e:"A boolean cannot represent two simultaneous states, and it has no history to revert to. Ask whether her admin panel had either."},
+
+{s:"Localisation · Both JDs",t:"stretch",
+ q:"A content record has 20 fields, six of which need translating into a second language.",
+ o:["Duplicate the entire record per language","Locale-scoped values for the six translated fields, with the remaining fields stored once against a shared record","Translate on render through a translation service","A separate database per language"],
+ a:1,
+ e:"Both platforms are bilingual. Duplicated records fork the relationship graph and double every future change."},
+
+/* ===== Bank JD ===== */
+{s:"Retrieval · Bank JD",t:"stretch",
+ q:"A document corpus totals roughly 500,000 tokens. Why retrieve selected passages rather than send it all to a model?",
+ o:["Retrieval improves the fluency of generated text","The corpus far exceeds the model context window, so only relevant passages can physically be sent","Provider licensing restricts bulk content","It removes the need for a database"],
+ a:1,
+ e:"Nothing on her resume touches retrieval or language models beyond using Copilot and Cursor as tools. The hard constraint the banking platform is built around."},
+
+{s:"Traceability · Bank JD",t:"stretch",
+ q:"Every generated statement must be auditable to its exact source, and sources are revised over time.",
+ o:["Store a confidence score against each statement","Citation records pointing at a specific document version and location, so a later revision cannot invalidate an approved statement","Write the full prompt and response to a log file","Keep a snapshot of the corpus alongside each output"],
+ a:1,
+ e:"The version is the crux — a citation pointing at a document rather than a version breaks silently when that document changes. The hardest question here."},
+
+{s:"Audit · Bank JD",t:"stretch",
+ q:"An auditor may later ask who approved a document and when. How should approval state be stored?",
+ o:["A boolean approved column on the record","An explicit current state plus append-only transition rows recording actor, timestamp and previous state","A status column updated in place at each stage","Created and last-modified timestamps"],
+ a:1,
+ e:"An overwritten status column destroys the evidence an audit needs. Her data migration experience gives her a head start on thinking about history and lineage."},
+
+{s:"Environment · Bank JD",t:"stretch",
+ q:"Development happens on client machines with no access to public package registries.",
+ o:["Request a temporary firewall exception for the build","Use the internal artifact proxy and its whitelisting process, submitting the full dependency list for approval before day one","Commit the installed dependency directory into the repository","Development is not practical under that constraint"],
+ a:1,
+ e:"Dependency approval is the most common first-sprint blocker in bank estates, with lead times in weeks. Her resume shows no cloud, Docker or CI/CD work, so a locked-down estate would be new on several fronts at once."},
+
+{s:"Environment · Bank JD",t:"stretch",
+ q:"No client data may leave the client environment. What does that rule out?",
+ o:["Nothing, provided all traffic is encrypted in transit","Any hosted third-party service processing client content — external model and embedding APIs, error reporting that captures payloads, analytics","Only email and file sharing","Only bulk data exports"],
+ a:1,
+ e:"The subtle cases are the dangerous ones. She integrated third-party APIs and webhooks, so ask which of her integrations would be disallowed inside a client tenant."},
+
+{s:"Python · Bank JD",t:"stretch",
+ q:"How does FastAPI validate incoming request bodies?",
+ o:["Manual checks inside each route handler","From Python type hints and Pydantic models, validated at runtime, with an OpenAPI schema generated automatically","Through decorators evaluated at import time","By loading JSON Schema files from disk"],
+ a:1,
+ e:"She has no Python on her resume. Conceptually this mirrors TypeScript interfaces plus runtime validation, so connecting the two shows real transfer."}
+];
+
+/* Randomise option order so the correct answer is not always in one position. */
+(function shuffleOptions(){
+  QUESTIONS.forEach(q => {
+    const correct = q.o[q.a];
+    for (let i = q.o.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [q.o[i], q.o[j]] = [q.o[j], q.o[i]];
+    }
+    q.a = q.o.indexOf(correct);
+  });
+})();
+
+const TOTAL = QUESTIONS.length;
+const answers = new Array(TOTAL).fill(null);
+let cur = 0, graded = false, secondsLeft = 60 * 60;
+
+const stage = document.getElementById('stage');
+const grid  = document.getElementById('grid');
+const bar   = document.getElementById('bar');
+const LETTERS = ['A','B','C','D'];
+
+document.getElementById('qcount').textContent = TOTAL;
+document.getElementById('answered').textContent = '0 / ' + TOTAL;
+
+const clock = document.getElementById('clock');
+const timer = setInterval(() => {
+  if (graded) { clearInterval(timer); return; }
+  secondsLeft--;
+  const m = Math.floor(Math.max(secondsLeft,0)/60), s = Math.max(secondsLeft,0)%60;
+  clock.textContent = m + ':' + String(s).padStart(2,'0');
+  if (secondsLeft <= 300) clock.classList.add('warn');
+  if (secondsLeft <= 0) { clearInterval(timer); grade(); }
+}, 1000);
+
+function render() {
+  const q = QUESTIONS[cur];
+  const badge = q.t === 'core'
+    ? '<span class="badge core">Evidenced</span>'
+    : '<span class="badge stretch">Absent</span>';
+
+  let html = '<section class="card">'
+    + '<div class="qhead"><span class="qnum">' + String(cur+1).padStart(2,'0') + ' / ' + TOTAL + '</span>'
+    + badge + '<span class="section-name">' + q.s + '</span></div>'
+    + '<p class="qtext">' + q.q + '</p><ul class="opts">';
+
+  q.o.forEach((opt, i) => {
+    let cls = 'opt', mark = '';
+    if (answers[cur] === i) cls += ' sel';
+    if (graded) {
+      if (i === q.a) { cls += ' correct'; mark = '<span class="mark ok">Correct</span>'; }
+      else if (answers[cur] === i) { cls += ' wrong'; mark = '<span class="mark no">Chosen</span>'; }
+    }
+    html += '<li><button class="' + cls + '" data-i="' + i + '"' + (graded ? ' disabled' : '') + '>'
+          + '<span class="letter">' + LETTERS[i] + '</span><span>' + opt + '</span>' + mark + '</button></li>';
+  });
+
+  html += '</ul>';
+  if (graded) html += '<div class="rationale"><div class="rlabel">Interviewer note</div><p>' + q.e + '</p></div>';
+  html += '</section>';
+  stage.innerHTML = html;
+
+  if (!graded) {
+    stage.querySelectorAll('.opt').forEach(b => {
+      b.addEventListener('click', () => {
+        answers[cur] = Number(b.dataset.i);
+        render(); paint();
+        if (cur < TOTAL - 1) setTimeout(() => { cur++; render(); paint(); }, 160);
+      });
+    });
+  }
+
+  document.getElementById('prev').disabled = cur === 0;
+  document.getElementById('next').disabled = cur === TOTAL - 1;
+  document.getElementById('navnote').textContent = graded ? 'Review mode' : (answers[cur] === null ? 'Not answered' : 'Answered');
+}
+
+function paint() {
+  const done = answers.filter(a => a !== null).length;
+  document.getElementById('answered').textContent = done + ' / ' + TOTAL;
+  bar.style.width = (done / TOTAL * 100) + '%';
+  grid.innerHTML = QUESTIONS.map((q, i) => {
+    let c = 'gcell';
+    if (answers[i] !== null) c += ' answered';
+    if (i === cur) c += ' here';
+    if (q.t === 'stretch') c += ' st';
+    return '<button class="' + c + '" data-i="' + i + '">' + (i+1) + '</button>';
+  }).join('');
+  grid.querySelectorAll('.gcell').forEach(b => {
+    b.addEventListener('click', () => { cur = Number(b.dataset.i); render(); paint(); });
+  });
+}
+
+document.getElementById('prev').addEventListener('click', () => { if (cur > 0) { cur--; render(); paint(); } });
+document.getElementById('next').addEventListener('click', () => { if (cur < TOTAL-1) { cur++; render(); paint(); } });
+document.getElementById('submit').addEventListener('click', () => {
+  const done = answers.filter(a => a !== null).length;
+  if (!graded && done < TOTAL && !confirm((TOTAL - done) + ' question(s) are unanswered. Score anyway?')) return;
+  grade();
+});
+
+function grade() {
+  if (graded) { window.scrollTo({top:0,behavior:'smooth'}); return; }
+  graded = true; clearInterval(timer);
+
+  const bySection = {};
+  let coreC = 0, coreT = 0, strC = 0, strT = 0;
+  QUESTIONS.forEach((q, i) => {
+    const ok = answers[i] === q.a;
+    if (!bySection[q.s]) bySection[q.s] = {c:0, t:0, track:q.t};
+    bySection[q.s].t++; if (ok) bySection[q.s].c++;
+    if (q.t === 'core') { coreT++; if (ok) coreC++; } else { strT++; if (ok) strC++; }
+  });
+
+  const corePct = Math.round(coreC/coreT*100);
+  const strPct  = Math.round(strC/strT*100);
+
+  let vTitle, vBody;
+  if (corePct >= 80 && strPct >= 40) {
+    vTitle = "Advance \u2014 a backend-leaning full stack hire with real transfer";
+    vBody = "Angular, Node, webhooks and MySQL migrations hold up at L2 depth, and she reasons into Postgres, tenancy and content modelling she has not worked in. Her primary frontend is Angular rather than React, so place her where the backend and data layer carry most of the weight and give her a deliberate React and Next.js ramp. Resolve the five-month gap and the access-control question in the final conversation.";
+  } else if (corePct >= 80) {
+    vTitle = "Strong on what she has done, the new stack is a genuine ramp";
+    vBody = "The claimed Angular, Node and MySQL work survives L2 questioning, which matters given how specific her migration claim is. Next.js, Postgres specifics, access control and everything the banking platform needs are new. Viable for a backend-leaning seat with senior review of schema and auth decisions for the first quarter; not viable for the client-site engagement without a long ramp.";
+  } else if (corePct >= 65) {
+    vTitle = "Borderline \u2014 identify which claimed area came back thin";
+    vBody = "Misses inside MySQL, Node or Angular matter more than the absent track, because those are what her resume presents as her work. A resume with no invented figures is easy to over-trust, so find the weak area and probe it live with a real code or schema exercise before deciding.";
+  } else {
+    vTitle = "Below the L2 bar";
+    vBody = "Under sixty-five percent on skills she claims across more than three years. Combined with a five-month gap and a primary frontend that does not match either JD, there is no seat on these two programmes this fits.";
+  }
+
+  const rows = Object.keys(bySection).map(k => {
+    const b = bySection[k];
+    return '<tr class="' + (b.track === 'core' ? 'core-row' : 'stretch-row') + '">'
+      + '<td>' + k + '</td><td class="num">' + b.c + ' / ' + b.t + '</td>'
+      + '<td class="num">' + Math.round(b.c/b.t*100) + '%</td></tr>';
+  }).join('');
+
+  stage.innerHTML =
+    '<section class="result">'
+    + '<h2>Assessment complete</h2>'
+    + '<p class="rsub">Manali Tomar \u00B7 ' + (coreC + strC) + ' of ' + TOTAL + ' overall. L2 round, scored against both JDs; section labels show which one each requirement serves.</p>'
+    + '<div class="readout">'
+      + '<div class="pane"><div class="plabel"><span class="dot core"></span>Evidenced \u2014 L2 depth</div>'
+        + '<div class="pscore">' + corePct + '%</div><div class="pof">' + coreC + ' of ' + coreT + ' correct</div>'
+        + '<div class="meter"><i class="core" style="width:' + corePct + '%"></i></div></div>'
+      + '<div class="pane"><div class="plabel"><span class="dot stretch"></span>Required by the JDs, absent</div>'
+        + '<div class="pscore">' + strPct + '%</div><div class="pof">' + strC + ' of ' + strT + ' correct</div>'
+        + '<div class="meter"><i class="stretch" style="width:' + strPct + '%"></i></div></div>'
+    + '</div>'
+    + '<table class="bd"><thead><tr><th>Section</th><th class="num">Score</th><th class="num">%</th></tr></thead><tbody>' + rows + '</tbody></table>'
+    + '<div class="verdict"><div class="vlabel">Hiring signal</div><h3>' + vTitle + '</h3><p>' + vBody + '</p></div>'
+    + '<div class="gapbox"><div class="vlabel">Read the resume alongside the score</div><ul>'
+      + '<li><strong>Her primary frontend is Angular, not React.</strong> Two and a half years of Angular at Samosys, and one year of React at Dollop. Both JDs are React and Next.js, so the realistic seat is backend-leaning full stack, with the frontend as a ramp.</li>'
+      + '<li><strong>The strongest line is relational and migration work.</strong> MySQL optimisation and leading data migration projects across SQL databases. Probe the scale, how correctness was verified and how cutover was rehearsed. It is the closest anyone in the junior-to-mid band comes to a Postgres migration story.</li>'
+      + '<li><strong>The super admin panel is the nearest thing to content management in her background.</strong> Ask how the shape of the content was defined, who could change it, and whether drafts or version history existed.</li>'
+      + '<li><strong>Authentication, JWT and RBAC appear nowhere on the resume</strong>, despite a super admin panel. Ask directly how access was enforced and whether any of it was server-side. It is a requirement on both JDs.</li>'
+      + '<li><strong>No cloud, Docker, CI/CD, Redis or automated testing in about three and a half years.</strong> For a locked-down client estate on a fixed ten-week sprint, the delivery baseline is thin.</li>'
+      + '<li><strong>Her last role ended April 2026,</strong> roughly five months ago. Ask neutrally and early; there is likely an ordinary explanation, and it should not hang over the interview.</li>'
+      + '<li><strong>Credit the restraint.</strong> No invented percentages anywhere, and the experience claim of 3.6+ years matches the dates. That is more honest than most of this shortlist.</li>'
+      + '<li><strong>The verbs run slightly above the title.</strong> She led data migration projects as a MEAN Stack Developer. Ask who she led, who made the design decisions, and what she personally owned end to end.</li>'
+      + '<li><strong>No computer science qualification is listed</strong> \u2014 an MA in Political Science and a BSc. That points to a career change in 2022, which is entirely legitimate and often produces strong engineers; ask how she learned, because the answer is informative about learning habit.</li>'
+      + '<li><strong>There is no AI work beyond using Copilot and Cursor as tools.</strong> Retrieval, embeddings and traceability are entirely new for the banking platform.</li>'
+    + '</ul></div>'
+    + '<p class="rsub" style="margin:0">Use Previous and Next, or the number grid, to review each question with the correct answer and interviewer note.</p>'
+    + '</section>';
+
+  bar.style.width = '100%';
+  document.getElementById('submit').textContent = 'Scored';
+  document.getElementById('submit').disabled = true;
+  paint();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+render(); paint();
+</script>
+</body>
+</html>
