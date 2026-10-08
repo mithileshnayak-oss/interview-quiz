@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Full Stack Assessment — Bhavna Chhalotre</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#12161C;--ink-2:#454E5C;--ink-3:#7A8494;--paper:#EDF0F4;--surface:#FFFFFF;--line:#D3DAE3;--core:#1F4E79;--stretch:#9A5B08;--pass:#0E6B5E;--fail:#9E2B25;
+--sans:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;--mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace}
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px 80px}
+.masthead{border-bottom:2px solid var(--ink);padding:34px 0 18px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin:0 0 10px}
+.masthead h1{font-size:clamp(26px,4.4vw,36px);line-height:1.1;font-weight:700;letter-spacing:-.02em;margin:0 0 6px}
+.masthead .sub{color:var(--ink-2);margin:0;font-size:15px}
+.strip{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--line);background:var(--surface)}
+.strip .cell{flex:1 1 150px;padding:12px 16px;border-right:1px solid var(--line)}.strip .cell:last-child{border-right:0}
+.strip .k{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:block}
+.strip .v{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--ink)}
+#clock.warn{color:var(--fail)}
+.tracks{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
+.track{background:var(--surface);padding:14px 16px}
+.track .tlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}.dot.core{background:var(--core)}.dot.stretch{background:var(--stretch)}
+.track .tdesc{font-size:13px;color:var(--ink-2);line-height:1.45}
+.progress{height:4px;background:var(--line);position:sticky;top:0;z-index:20}.progress .bar{height:100%;width:0;background:var(--ink);transition:width .25s ease}
+.card{background:var(--surface);border:1px solid var(--line);border-top:0;padding:26px 26px 22px}
+.qhead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.qnum{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink-3)}
+.badge{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border:1px solid;border-radius:2px}
+.badge.core{color:var(--core);border-color:var(--core)}.badge.stretch{color:var(--stretch);border-color:var(--stretch)}
+.section-name{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.qtext{font-size:18px;line-height:1.45;font-weight:500;margin:12px 0 18px}
+.opts{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.opt{display:flex;gap:12px;align-items:center;border:1px solid var(--line);background:var(--surface);padding:13px 15px;cursor:pointer;text-align:left;font:inherit;color:inherit;border-radius:3px;transition:border-color .12s,background .12s;width:100%}
+.opt:hover:not([disabled]){border-color:var(--ink-3)}.opt:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.opt .letter{font-family:var(--mono);font-weight:600;font-size:13px;color:var(--ink-3);flex:none}
+.opt.sel{border-color:var(--ink);background:#F6F8FA;box-shadow:inset 0 0 0 1px var(--ink)}.opt.sel .letter{color:var(--ink)}
+.opt[disabled]{cursor:default}
+.opt.correct{border-color:var(--pass);background:#F0F7F5}.opt.correct .letter{color:var(--pass)}
+.opt.wrong{border-color:var(--fail);background:#FCF2F1}.opt.wrong .letter{color:var(--fail)}
+.mark{margin-left:auto;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;flex:none}
+.mark.ok{color:var(--pass)}.mark.no{color:var(--fail)}
+.rationale{margin-top:16px;border:1px dashed var(--line);padding:13px 15px;background:var(--paper)}
+.rationale .rlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:5px}
+.rationale p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.5}
+.nav{display:flex;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-top:0;padding:16px 26px;flex-wrap:wrap}
+button.btn{font-family:var(--sans);font-size:14px;font-weight:600;padding:10px 18px;border-radius:3px;cursor:pointer;border:1px solid var(--ink);background:var(--surface);color:var(--ink);transition:background .12s,color .12s}
+button.btn:hover:not(:disabled){background:var(--ink);color:var(--surface)}button.btn.primary{background:var(--ink);color:var(--surface)}
+button.btn:disabled{opacity:.35;cursor:not-allowed}button.btn:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.nav .spacer{margin-left:auto}.navnote{font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+.grid{display:flex;flex-wrap:wrap;gap:5px;background:var(--surface);border:1px solid var(--line);border-top:0;padding:16px 26px 20px}
+.gcell{width:32px;height:32px;font-family:var(--mono);font-size:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink-3);cursor:pointer;border-radius:2px;padding:0}
+.gcell:hover{border-color:var(--ink-3)}.gcell.answered{background:#E6EBF1;color:var(--ink);font-weight:600;border-color:#B6C1CF}
+.gcell.here{border-color:var(--ink);border-width:2px;color:var(--ink);font-weight:600}
+.result{background:var(--surface);border:1px solid var(--line);border-top:0;padding:28px 26px}
+.result h2{font-size:24px;margin:0 0 4px;letter-spacing:-.01em}.result .rsub{color:var(--ink-2);font-size:14px;margin:0 0 24px}
+.readout{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:22px}
+.readout .pane{background:var(--surface);padding:18px}
+.readout .plabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.readout .pscore{font-family:var(--mono);font-size:34px;font-weight:600;line-height:1;letter-spacing:-.02em}
+.readout .pof{font-family:var(--mono);font-size:13px;color:var(--ink-3);margin-top:5px}
+.meter{height:6px;background:var(--line);margin-top:12px;border-radius:3px;overflow:hidden}.meter i{display:block;height:100%;width:0;transition:width .5s ease}
+.meter i.core{background:var(--core)}.meter i.stretch{background:var(--stretch)}
+table.bd{width:100%;border-collapse:collapse;margin-bottom:22px;font-size:14px}
+table.bd th,table.bd td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+table.bd th{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);border-bottom:1px solid var(--ink)}
+table.bd td.num{font-family:var(--mono);text-align:right;white-space:nowrap}
+table.bd tr.stretch-row td:first-child{border-left:3px solid var(--stretch);padding-left:10px}
+table.bd tr.core-row td:first-child{border-left:3px solid var(--core);padding-left:10px}
+details.notes{border:1px solid var(--ink);padding:14px 18px;margin-bottom:18px;background:var(--paper)}
+details.notes summary{cursor:pointer;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+details.notes .body{margin-top:12px;font-size:14px;color:var(--ink-2);line-height:1.55}
+details.notes h3{margin:0 0 6px;font-size:16px;color:var(--ink)}
+details.notes ul{margin:8px 0 0;padding-left:18px}details.notes li{margin-bottom:5px}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap}
+.footer{font-family:var(--mono);font-size:11px;color:var(--ink-3);padding:18px 0 0;text-align:center;letter-spacing:.04em}
+@media (max-width:640px){.tracks,.readout{grid-template-columns:1fr}.card,.nav,.grid,.result{padding-left:18px;padding-right:18px}.strip .cell{flex:1 1 50%;border-bottom:1px solid var(--line)}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style></head>
+<body>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="wrap">
+  <header class="masthead">
+    <p class="eyebrow">Aavya · Technical Screening</p>
+    <h1>Full Stack Developer Assessment</h1>
+    <p class="sub">Candidate: Bhavna Chhalotre · 40 questions · short one-line answers</p>
+  </header>
+  <div class="strip">
+    <div class="cell"><span class="k">Questions</span><span class="v" id="qcount">40</span></div>
+    <div class="cell"><span class="k">Time</span><span class="v" id="clock">40:00</span></div>
+    <div class="cell"><span class="k">Answered</span><span class="v" id="answered">0 / 40</span></div>
+    <div class="cell"><span class="k">Format</span><span class="v">One answer each</span></div>
+  </div>
+  <div class="tracks">
+    <div class="track"><div class="tlabel"><span class="dot core"></span>Backend and data</div><div class="tdesc">Services, databases, messaging, caching, authentication and testing.</div></div>
+    <div class="track"><div class="tlabel"><span class="dot stretch"></span>Full stack</div><div class="tdesc">Frontend, web security, content and platform topics across the browser, server and database.</div></div>
+  </div>
+  <main id="stage"></main>
+  <div class="nav">
+    <button class="btn" id="prev">Previous</button><button class="btn" id="next">Next</button>
+    <span class="spacer"></span><span class="navnote" id="navnote"></span>
+    <button class="btn primary" id="submit">Submit and score</button>
+  </div>
+  <div class="grid" id="grid"></div>
+  <p class="footer">Pick an answer, then use Next. You can change answers until you submit. Nothing is transmitted — this file runs in the browser.</p>
+</div>
+<script>
+const QUESTIONS = [{"s": "Spring · Transactions", "t": "core", "q": "A @Transactional method calls another @Transactional method on the same bean. Why is the inner one ignored?", "o": ["The call bypasses the Spring proxy", "Nested transactions are unsupported", "Only the outer annotation is read", "It needs REQUIRES_NEW to work"], "a": 0, "e": "Spring applies transactions through a proxy, and a call from inside the same object never goes through it. Fix it by moving the method to another bean or injecting a self-reference."}, {"s": "Spring · JPA", "t": "core", "q": "A page loads 100 tickets and issues 101 queries for their comments. What is the standard fix?", "o": ["JOIN FETCH or an entity graph", "Add a second-level cache", "Make every relation EAGER", "Add an index on the foreign key"], "a": 0, "e": "This is the N+1 problem: one query for the list plus one per row. Fetching the relation in the same query removes it, while eager loading everywhere often makes it worse."}, {"s": "MySQL · Indexing", "t": "core", "q": "A query filters on status =, assigned_to = and created_at >. Which index fits best?", "o": ["(assigned_to, status, created_at)", "(created_at, status, assigned_to)", "Three separate single-column indexes", "One index on status only"], "a": 0, "e": "Equality columns go first and the range column last, so one index serves the whole filter. Putting the range column first stops the later columns from narrowing the search."}, {"s": "SQL · Joins", "t": "core", "q": "Counting children with LEFT JOIN and COUNT(*) returns 1 for parents with none. What is the fix?", "o": ["Count a column from the child table", "Switch to an INNER JOIN", "Add DISTINCT to the query", "Add a HAVING clause"], "a": 0, "e": "COUNT(*) counts the null-padded row that LEFT JOIN produces. Counting a child column ignores nulls and gives 0, whereas an INNER JOIN would drop those parents altogether."}, {"s": "SQL · Modelling", "t": "core", "q": "Articles have many tags and each tag belongs to many articles. How do you model it?", "o": ["A join table with both foreign keys", "A comma-separated tags column", "A JSON array of tag names", "One table per tag"], "a": 0, "e": "A join table keeps integrity, lets you rename a tag in one place, and makes queries by tag simple."}, {"s": "Kafka · Ordering", "t": "core", "q": "How do you keep all events for one ticket in order in Kafka?", "o": ["Use the ticket id as the message key", "Send each event with a random key", "Run more consumers than partitions", "Set a longer retention period"], "a": 0, "e": "Kafka orders messages only within a partition, and the key decides the partition. The same key means the same partition, so order is preserved."}, {"s": "Kafka · Reliability", "t": "core", "q": "When should a consumer commit its offset after sending an email?", "o": ["After the send succeeds", "Before processing starts", "On a timer, whatever the outcome", "Only when the topic is empty"], "a": 0, "e": "Committing before the work succeeds loses the event if the email fails. Commit after success, and make the work safe to repeat."}, {"s": "Kafka · Failures", "t": "core", "q": "A malformed message keeps failing after retries and blocks its partition. What do you do?", "o": ["Dead-letter it and continue", "Keep retrying it indefinitely", "Stop the whole consumer group", "Skip it and keep no record"], "a": 0, "e": "A dead-letter topic keeps the message for inspection while the partition moves on. Alert on it and fix the cause."}, {"s": "Microservices · Consistency", "t": "core", "q": "How do you update a ticket and publish an event atomically, without two-phase commit?", "o": ["Write an outbox row in the same transaction", "Publish first, then update the ticket afterwards", "Call the other service inside a retry loop", "Run both services in the same JVM process"], "a": 0, "e": "The outbox row commits together with the data change, and a relay publishes it afterwards. Nothing is lost and no distributed transaction is needed."}, {"s": "JWT · Integrity", "t": "core", "q": "A client edits the role claim inside a signed JWT. What happens on the server?", "o": ["Signature verification fails", "The new role is accepted", "The server re-reads the role itself", "The payload is encrypted, so it cannot be edited"], "a": 0, "e": "The payload is only encoded, not encrypted, but it is covered by the signature. Any edit changes the signed content, so verification fails."}, {"s": "JWT · Revocation", "t": "core", "q": "How do you revoke one stolen JWT before it expires?", "o": ["Denylist its jti until it expires", "Wait for it to expire", "Rotate the signing key for everyone", "Delete the cookie in the browser"], "a": 0, "e": "A denylist keyed on the token id revokes exactly one token. Rotating the key ends every session, and deleting a client cookie does nothing to a stolen copy."}, {"s": "Redis · Caching", "t": "core", "q": "A cached ticket still shows OPEN after it is resolved in the database. What is the right fix?", "o": ["Evict the cache entry on update", "Raise the TTL to 24 hours", "Refresh every entry every 30 seconds", "Stop caching tickets"], "a": 0, "e": "Invalidate when the data changes rather than on a guess. A longer TTL makes stale data last longer, and polling still leaves a stale window."}, {"s": "Resilience · Patterns", "t": "core", "q": "A failing email service is exhausting your threads. Which pattern helps most?", "o": ["A circuit breaker", "A larger thread pool", "A longer request timeout", "More automatic retries"], "a": 0, "e": "A circuit breaker stops calling a dependency that is failing and fails fast, so threads are released. The alternatives make the pile-up worse."}, {"s": "Testing · Coverage", "t": "core", "q": "High line coverage does NOT prove which of these?", "o": ["The assertions are meaningful", "Some code ran during tests", "Which lines were never executed", "The tests ran at all"], "a": 0, "e": "Coverage records which lines executed, not whether the tests check anything. A test with no assertions still counts toward it."}, {"s": "REST · Pagination", "t": "core", "q": "Rows repeat and get skipped while users page through a changing list. What fixes it?", "o": ["Cursor (keyset) pagination", "Bigger page sizes", "Offset pagination", "Sorting on the client"], "a": 0, "e": "Offsets shift when rows are inserted before the current page. A cursor anchored on a stable sort key does not."}, {"s": "REST · Retries", "t": "core", "q": "A client retries a POST after a timeout. What prevents a duplicate record?", "o": ["An idempotency key", "A longer timeout", "Switching to GET", "Disabling the button"], "a": 0, "e": "The server stores the key with the result and returns the same response on a repeat. Disabling a button does not protect against network retries."}, {"s": "JavaScript · Both JDs", "t": "stretch", "q": "What is the difference between == and === ?", "o": ["=== does not coerce types", "=== is always faster", "== compares object references", "They behave identically"], "a": 0, "e": "=== compares without type conversion, while == converts the operands first, which gives surprising results such as 0 == \"0\"."}, {"s": "JavaScript · Both JDs", "t": "stretch", "q": "What does await do inside an async function?", "o": ["Pauses that function until it settles", "Blocks every other function until done", "Starts a new thread for the call", "Cancels the promise if it is too slow"], "a": 0, "e": "await suspends only the async function it is in, and the rest of the program keeps running. It is syntax over promises, not a thread."}, {"s": "JavaScript · Both JDs", "t": "stretch", "q": "What is a closure?", "o": ["A function that remembers its scope", "A function that takes no parameters", "A private method on a class", "A function that has finished running"], "a": 0, "e": "A closure keeps access to the variables around where it was defined, even after that scope has returned. It is the mechanism behind most React hook behaviour."}, {"s": "TypeScript · Both JDs", "t": "stretch", "q": "What happens to TypeScript types at runtime?", "o": ["They are erased before running", "They validate API responses at runtime", "They throw an error on a mismatch", "They are cached by the browser"], "a": 0, "e": "Types exist only at compile time. Data arriving from an API still needs runtime validation."}, {"s": "TypeScript · Both JDs", "t": "stretch", "q": "How do you get real type safety on JSON from an API?", "o": ["Validate it with a runtime schema", "Cast it with the as keyword", "Declare an interface and trust it", "Type it as any"], "a": 0, "e": "A cast only silences the compiler. A schema checks the actual data, and the TypeScript type can be inferred from it."}, {"s": "React · Both JDs", "t": "stretch", "q": "Why does each item in a rendered list need a key?", "o": ["React uses it to match items across renders", "It sets the CSS class", "It sorts the list", "It improves screen reader output"], "a": 0, "e": "Stable keys let React update the right element when the list changes. Array indexes break when items are reordered."}, {"s": "React · Both JDs", "t": "stretch", "q": "Why must you not change React state directly?", "o": ["React compares references", "Direct changes make reads slower", "Hooks throw an error on mutation", "It clears the rendered DOM nodes"], "a": 0, "e": "If an object is mutated in place its reference is unchanged, so React may skip the re-render."}, {"s": "React · Both JDs", "t": "stretch", "q": "When does useEffect with an empty dependency array run?", "o": ["Once, after mounting", "After every single render", "Only when the props change", "Only when it unmounts"], "a": 0, "e": "An empty array means no dependencies, so the effect runs once on mount and its cleanup runs on unmount."}, {"s": "React · Both JDs", "t": "stretch", "q": "An effect keeps re-running in an endless loop. What is the usual cause?", "o": ["A dependency is recreated every render", "The dependency array is empty", "A key prop is missing", "The effect returns a value"], "a": 0, "e": "Object, array and function literals are new on each render, so the dependency looks changed every time."}, {"s": "Next.js · CMS JD", "t": "stretch", "q": "Why server-render a content page?", "o": ["HTML is ready for indexing", "It needs no JavaScript at all", "It removes the need for a database", "It always costs less to host"], "a": 0, "e": "Crawlers and users receive complete HTML on the first response, whereas client-only rendering ships an empty shell first."}, {"s": "Next.js · CMS JD", "t": "stretch", "q": "What does the \"use client\" directive do?", "o": ["Marks where client components begin", "Runs the file only in the browser", "Turns off server rendering", "Gives the file database access"], "a": 0, "e": "It sets the boundary between server and client components. Client components still render on the server for the first HTML."}, {"s": "Next.js · CMS JD", "t": "stretch", "q": "A published page must update within a minute without a redeploy. What fits?", "o": ["Timed or on-publish revalidation", "Redeploy the site on every edit", "Poll the server from every browser", "Turn all caching off"], "a": 0, "e": "Revalidation refreshes the cached page in the background. Disabling caching gives up the reason for using the framework."}, {"s": "Web security · Both JDs", "t": "stretch", "q": "What is CORS?", "o": ["A browser cross-origin rule", "A server-side firewall setting", "A way to encrypt requests", "A cookie storage format"], "a": 0, "e": "The browser blocks cross-origin calls unless the server's response headers allow the origin. It is not a server-side access control."}, {"s": "Web security · Both JDs", "t": "stretch", "q": "Where is the safest place for a browser session token?", "o": ["An httpOnly cookie", "localStorage", "A URL parameter", "A global JavaScript variable"], "a": 0, "e": "Scripts on the page cannot read an httpOnly cookie, so cross-site scripting cannot steal it."}, {"s": "Web security · Both JDs", "t": "stretch", "q": "An admin page hides buttons the user may not use. Is that access control?", "o": ["No, the server must enforce it", "Yes, if the routes are guarded", "Yes, when behind a VPN", "Yes, for read-only pages"], "a": 0, "e": "The interface reflects permissions but cannot grant or deny them. Every request must be authorised on the server."}, {"s": "PostgreSQL · Both JDs", "t": "stretch", "q": "A migration script fails halfway. How do PostgreSQL and MySQL differ?", "o": ["PostgreSQL rolls schema changes back", "MySQL rolls schema changes back instead", "Both roll everything back automatically", "Neither can roll anything back at all"], "a": 0, "e": "PostgreSQL supports transactional DDL, so a failed script leaves the schema unchanged. MySQL commits each DDL statement as it runs."}, {"s": "PostgreSQL · Both JDs", "t": "stretch", "q": "An index on email is ignored by a query on lower(email). What fixes it?", "o": ["An expression index on lower(email)", "Rebuilding the existing index", "Adding LIMIT to the query", "Running VACUUM on the table"], "a": 0, "e": "A function on the column hides it from a plain index. An index on the same expression makes it usable."}, {"s": "Python · Bank JD", "t": "stretch", "q": "How does FastAPI validate request bodies?", "o": ["Type hints with Pydantic models", "Manual checks written in every route", "Schema files read from disk", "Decorators run at import time"], "a": 0, "e": "Pydantic validates the body at runtime, and FastAPI generates the OpenAPI schema from the same types."}, {"s": "Content modelling · CMS JD", "t": "stretch", "q": "A page has ordered sections of different types, and a type can repeat. How do you model it?", "o": ["A blocks table with type and position", "A nullable column per section type", "The finished page stored as HTML", "A separate table per layout"], "a": 0, "e": "A blocks table with a type and a position handles any order and any repeats, with type-specific fields stored beside it."}, {"s": "Content modelling · CMS JD", "t": "stretch", "q": "Editors must work on changes without the public seeing them. What fits?", "o": ["Separate draft and published versions", "A published boolean", "Locking the record", "Copying it, then deleting the original"], "a": 0, "e": "A boolean cannot hold two states at once and has no history to revert to. Versions also give rollback and scheduling."}, {"s": "Retrieval · Bank JD", "t": "stretch", "q": "Why retrieve passages instead of sending a 500,000-token corpus to a model?", "o": ["It exceeds the model's context window", "It improves the writing style", "Licensing forbids it", "It removes the need for a database"], "a": 0, "e": "The context window is a hard limit, so only the relevant passages can be sent."}, {"s": "Traceability · Bank JD", "t": "stretch", "q": "Citations must stay valid when source documents are revised. What should they point at?", "o": ["A specific document version", "The latest version of the document", "The original file name only", "A snapshot of the whole corpus"], "a": 0, "e": "A citation to a document silently breaks when it changes. A citation to a version keeps pointing at what was actually used."}, {"s": "Environment · Bank JD", "t": "stretch", "q": "No client data may leave the client network. What does that rule out?", "o": ["Hosted third-party model APIs", "Databases inside the client network", "Logging inside the client network", "DNS inside the client network"], "a": 0, "e": "Any external service that receives client content is out, including model APIs and error reporters that capture request bodies."}, {"s": "Environment · Bank JD", "t": "stretch", "q": "Developer machines cannot reach public package registries. What is the plan?", "o": ["Submit the dependency list early", "Bypass the proxy with a VPN", "Commit the installed packages to Git", "Skip the build step entirely"], "a": 0, "e": "Dependency approval can take weeks, so submit the full list up front through the internal proxy process."}];
+(function shuffleOptions(){
+  QUESTIONS.forEach(q => {
+    const correct = q.o[q.a];
+    for (let i = q.o.length - 1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [q.o[i],q.o[j]] = [q.o[j],q.o[i]]; }
+    q.a = q.o.indexOf(correct);
+  });
+})();
+const TOTAL = QUESTIONS.length, LIMIT = 40 * 60, LETTERS = ['A','B','C','D'];
+const answers = new Array(TOTAL).fill(null);
+let cur = 0, graded = false, started = false, secondsLeft = LIMIT, timer = null;
+const $ = id => document.getElementById(id);
+const stage = $('stage'), grid = $('grid'), bar = $('bar');
+$('qcount').textContent = TOTAL; $('answered').textContent = '0 / ' + TOTAL;
+const fmt = t => String(Math.floor(t/60)) + ':' + String(t%60).padStart(2,'0');
+
+function startTimer(){
+  if (started || graded) return; started = true;
+  timer = setInterval(() => {
+    secondsLeft--; $('clock').textContent = fmt(Math.max(secondsLeft,0));
+    if (secondsLeft <= 300) $('clock').classList.add('warn');
+    if (secondsLeft <= 0) { clearInterval(timer); grade(true); }
+  }, 1000);
+}
+
+function render(){
+  const q = QUESTIONS[cur];
+  const badge = q.t === 'core' ? '<span class="badge core">Backend</span>' : '<span class="badge stretch">Full stack</span>';
+  let html = '<section class="card"><div class="qhead"><span class="qnum">' + String(cur+1).padStart(2,'0') + ' / ' + TOTAL + '</span>'
+    + badge + '<span class="section-name">' + q.s + '</span></div><p class="qtext">' + q.q + '</p><ul class="opts">';
+  q.o.forEach((opt,i) => {
+    let cls = 'opt', mark = '';
+    if (!graded && answers[cur] === i) cls += ' sel';
+    if (graded) {
+      if (i === q.a) { cls += ' correct'; mark = '<span class="mark ok">Correct</span>'; }
+      else if (answers[cur] === i) { cls += ' wrong'; mark = '<span class="mark no">Chosen</span>'; }
+    }
+    html += '<li><button class="' + cls + '" data-i="' + i + '"' + (graded ? ' disabled' : '') + '><span class="letter">' + LETTERS[i] + '</span><span>' + opt + '</span>' + mark + '</button></li>';
+  });
+  html += '</ul>';
+  if (graded) html += '<div class="rationale"><div class="rlabel">Interviewer note</div><p>' + q.e + '</p></div>';
+  html += '</section>';
+  stage.innerHTML = html;
+  if (!graded) stage.querySelectorAll('.opt').forEach(b => b.addEventListener('click', () => {
+    startTimer(); answers[cur] = Number(b.dataset.i); render(); paint();
+  }));
+  $('prev').disabled = cur === 0; $('next').disabled = cur === TOTAL - 1;
+  $('navnote').textContent = graded ? 'Review mode' : (answers[cur] === null ? 'Not answered' : 'Answered');
+}
+
+function paint(){
+  const done = answers.filter(a => a !== null).length;
+  $('answered').textContent = done + ' / ' + TOTAL; bar.style.width = (done/TOTAL*100) + '%';
+  grid.innerHTML = QUESTIONS.map((q,i) => '<button class="gcell' + (answers[i] !== null ? ' answered' : '') + (i === cur ? ' here' : '') + '" data-i="' + i + '">' + (i+1) + '</button>').join('');
+  grid.querySelectorAll('.gcell').forEach(b => b.addEventListener('click', () => { cur = Number(b.dataset.i); render(); paint(); }));
+}
+
+$('prev').addEventListener('click', () => { if (cur > 0) { cur--; render(); paint(); } });
+$('next').addEventListener('click', () => { if (cur < TOTAL-1) { cur++; render(); paint(); } });
+$('submit').addEventListener('click', () => grade(false));
+
+function grade(auto){
+  if (graded) return;
+  const left = answers.filter(a => a === null).length;
+  if (!auto && left > 0 && typeof confirm === 'function' && !confirm(left + ' question(s) are unanswered. Submit anyway?')) return;
+  graded = true; if (timer) clearInterval(timer);
+  const used = started ? LIMIT - Math.max(secondsLeft,0) : 0;
+  const by = {}; let bc=0, bt=0, fc=0, ft=0;
+  QUESTIONS.forEach((q,i) => {
+    const ok = answers[i] === q.a;
+    if (!by[q.s]) by[q.s] = {c:0,t:0,track:q.t};
+    by[q.s].t++; if (ok) by[q.s].c++;
+    if (q.t === 'core') { bt++; if (ok) bc++; } else { ft++; if (ok) fc++; }
+  });
+  const bp = Math.round(bc/bt*100), fp = Math.round(fc/ft*100);
+  let band;
+  if (bp >= 80 && fp >= 60) band = 'Full stack capable. Her resume undersells her; confirm with a live build exercise.';
+  else if (bp >= 80 && fp >= 35) band = 'Strong backend with working web literacy. Viable as full stack with a ramp of roughly three to six months on React and TypeScript.';
+  else if (bp >= 80) band = 'Strong backend specialist. The full stack score is near chance level (25 percent), so treat the frontend as not yet learned and consider a backend seat.';
+  else if (bp >= 65) band = 'The backend claims hold only partly. Probe the weaker sections live before deciding.';
+  else band = 'The backend claims do not hold at this depth. Verify with a live exercise before drawing conclusions.';
+  const rows = Object.keys(by).map(k => {
+    const b = by[k];
+    return '<tr class="' + (b.track === 'core' ? 'core-row' : 'stretch-row') + '"><td>' + k + '</td><td class="num">' + b.c + ' / ' + b.t + '</td><td class="num">' + Math.round(b.c/b.t*100) + '%</td></tr>';
+  }).join('');
+  const notes = `<details class="notes"><summary>Interviewer notes \u2014 close this before sharing your screen</summary><div class="body">
+    <h3>${band}</h3>
+    <ul>
+      <li>Chance level on four options is 25 percent. A full stack score near that means no working knowledge of that area, not partial knowledge.</li>
+      <li>Her resume shows Java, Spring Boot, Kafka, MySQL, Redis, JWT and JUnit. It shows no JavaScript, TypeScript, React, Next.js, PostgreSQL, Python or cloud, so a low full stack score is expected and is the finding, not a fault.</li>
+      <li>Judge full stack by transfer, not by this score alone. Ask whether she has ever built a user interface, how she would learn React, and run the live exercise below.</li>
+      <li>Live exercise: give her a small page that lists tickets from an API. Watch whether she handles loading, empty and error states, and where she puts the authorisation check.</li>
+    </ul></div></details>`;
+  stage.innerHTML = `<section class="result"><h2>Assessment complete</h2>
+    <p class="rsub">${TOTAL - left} of ${TOTAL} answered \u00B7 time used ${fmt(used)} \u00B7 the two areas measure different things and should not be averaged.</p>
+    <div class="readout">
+      <div class="pane"><div class="plabel"><span class="dot core"></span>Backend and data</div><div class="pscore">${bp}%</div><div class="pof">${bc} of ${bt} correct</div><div class="meter"><i class="core" style="width:${bp}%"></i></div></div>
+      <div class="pane"><div class="plabel"><span class="dot stretch"></span>Full stack</div><div class="pscore">${fp}%</div><div class="pof">${fc} of ${ft} correct</div><div class="meter"><i class="stretch" style="width:${fp}%"></i></div></div>
+    </div>
+    <table class="bd"><thead><tr><th>Section</th><th class="num">Score</th><th class="num">%</th></tr></thead><tbody>${rows}</tbody></table>
+    ${notes}
+    <div class="btn-row"><button class="btn" id="review">Review answers</button></div></section>`;
+  const rv = $('review'); if (rv) rv.addEventListener('click', () => { cur = 0; render(); paint(); window.scrollTo({top:0,behavior:'smooth'}); });
+  $('submit').textContent = 'Submitted'; $('submit').disabled = true;
+  $('answered').textContent = (TOTAL - left) + ' / ' + TOTAL; bar.style.width = '100%';
+  paint(); window.scrollTo({top:0,behavior:'smooth'});
+}
+render(); paint();
+</script>
+</body></html>
