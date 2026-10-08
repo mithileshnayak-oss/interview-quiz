@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Full Stack Assessment — Rahul Badwaya</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#12161C;--ink-2:#454E5C;--ink-3:#7A8494;--paper:#EDF0F4;--surface:#FFFFFF;--line:#D3DAE3;--core:#1F4E79;--stretch:#9A5B08;--pass:#0E6B5E;--fail:#9E2B25;
+--sans:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;--mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace}
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px 80px}
+.masthead{border-bottom:2px solid var(--ink);padding:34px 0 18px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin:0 0 10px}
+.masthead h1{font-size:clamp(26px,4.4vw,36px);line-height:1.1;font-weight:700;letter-spacing:-.02em;margin:0 0 6px}
+.masthead .sub{color:var(--ink-2);margin:0;font-size:15px}
+.strip{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--line);background:var(--surface)}
+.strip .cell{flex:1 1 150px;padding:12px 16px;border-right:1px solid var(--line)}.strip .cell:last-child{border-right:0}
+.strip .k{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:block}
+.strip .v{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--ink)}
+#clock.warn{color:var(--fail)}
+.tracks{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
+.track{background:var(--surface);padding:14px 16px}
+.track .tlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}.dot.core{background:var(--core)}.dot.stretch{background:var(--stretch)}
+.track .tdesc{font-size:13px;color:var(--ink-2);line-height:1.45}
+.progress{height:4px;background:var(--line);position:sticky;top:0;z-index:20}.progress .bar{height:100%;width:0;background:var(--ink);transition:width .25s ease}
+.card{background:var(--surface);border:1px solid var(--line);border-top:0;padding:26px 26px 22px}
+.qhead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.qnum{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink-3)}
+.badge{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border:1px solid;border-radius:2px}
+.badge.core{color:var(--core);border-color:var(--core)}.badge.stretch{color:var(--stretch);border-color:var(--stretch)}
+.section-name{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.qtext{font-size:18px;line-height:1.45;font-weight:500;margin:12px 0 18px}
+.opts{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.opt{display:flex;gap:12px;align-items:center;border:1px solid var(--line);background:var(--surface);padding:13px 15px;cursor:pointer;text-align:left;font:inherit;color:inherit;border-radius:3px;transition:border-color .12s,background .12s;width:100%}
+.opt:hover:not([disabled]){border-color:var(--ink-3)}.opt:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.opt .letter{font-family:var(--mono);font-weight:600;font-size:13px;color:var(--ink-3);flex:none}
+.opt.sel{border-color:var(--ink);background:#F6F8FA;box-shadow:inset 0 0 0 1px var(--ink)}.opt.sel .letter{color:var(--ink)}
+.opt[disabled]{cursor:default}
+.opt.correct{border-color:var(--pass);background:#F0F7F5}.opt.correct .letter{color:var(--pass)}
+.opt.wrong{border-color:var(--fail);background:#FCF2F1}.opt.wrong .letter{color:var(--fail)}
+.mark{margin-left:auto;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;flex:none}
+.mark.ok{color:var(--pass)}.mark.no{color:var(--fail)}
+.rationale{margin-top:16px;border:1px dashed var(--line);padding:13px 15px;background:var(--paper)}
+.rationale .rlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:5px}
+.rationale p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.5}
+.nav{display:flex;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-top:0;padding:16px 26px;flex-wrap:wrap}
+button.btn{font-family:var(--sans);font-size:14px;font-weight:600;padding:10px 18px;border-radius:3px;cursor:pointer;border:1px solid var(--ink);background:var(--surface);color:var(--ink);transition:background .12s,color .12s}
+button.btn:hover:not(:disabled){background:var(--ink);color:var(--surface)}button.btn.primary{background:var(--ink);color:var(--surface)}
+button.btn:disabled{opacity:.35;cursor:not-allowed}button.btn:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.nav .spacer{margin-left:auto}.navnote{font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+.grid{display:flex;flex-wrap:wrap;gap:5px;background:var(--surface);border:1px solid var(--line);border-top:0;padding:16px 26px 20px}
+.gcell{width:32px;height:32px;font-family:var(--mono);font-size:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink-3);cursor:pointer;border-radius:2px;padding:0}
+.gcell:hover{border-color:var(--ink-3)}.gcell.answered{background:#E6EBF1;color:var(--ink);font-weight:600;border-color:#B6C1CF}
+.gcell.here{border-color:var(--ink);border-width:2px;color:var(--ink);font-weight:600}
+.result{background:var(--surface);border:1px solid var(--line);border-top:0;padding:28px 26px}
+.result h2{font-size:24px;margin:0 0 4px;letter-spacing:-.01em}.result .rsub{color:var(--ink-2);font-size:14px;margin:0 0 24px}
+.readout{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:22px}
+.readout .pane{background:var(--surface);padding:18px}
+.readout .plabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.readout .pscore{font-family:var(--mono);font-size:34px;font-weight:600;line-height:1;letter-spacing:-.02em}
+.readout .pof{font-family:var(--mono);font-size:13px;color:var(--ink-3);margin-top:5px}
+.meter{height:6px;background:var(--line);margin-top:12px;border-radius:3px;overflow:hidden}.meter i{display:block;height:100%;width:0;transition:width .5s ease}
+.meter i.core{background:var(--core)}.meter i.stretch{background:var(--stretch)}
+table.bd{width:100%;border-collapse:collapse;margin-bottom:22px;font-size:14px}
+table.bd th,table.bd td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+table.bd th{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);border-bottom:1px solid var(--ink)}
+table.bd td.num{font-family:var(--mono);text-align:right;white-space:nowrap}
+table.bd tr.stretch-row td:first-child{border-left:3px solid var(--stretch);padding-left:10px}
+table.bd tr.core-row td:first-child{border-left:3px solid var(--core);padding-left:10px}
+details.notes{border:1px solid var(--ink);padding:14px 18px;margin-bottom:18px;background:var(--paper)}
+details.notes summary{cursor:pointer;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+details.notes .body{margin-top:12px;font-size:14px;color:var(--ink-2);line-height:1.55}
+details.notes h3{margin:0 0 6px;font-size:16px;color:var(--ink)}
+details.notes ul{margin:8px 0 0;padding-left:18px}details.notes li{margin-bottom:5px}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap}
+.footer{font-family:var(--mono);font-size:11px;color:var(--ink-3);padding:18px 0 0;text-align:center;letter-spacing:.04em}
+@media (max-width:640px){.tracks,.readout{grid-template-columns:1fr}.card,.nav,.grid,.result{padding-left:18px;padding-right:18px}.strip .cell{flex:1 1 50%;border-bottom:1px solid var(--line)}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style></head>
+<body>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="wrap">
+  <header class="masthead">
+    <p class="eyebrow">Aavya · Technical Screening</p>
+    <h1>Full Stack Developer Assessment</h1>
+    <p class="sub">Candidate: Rahul Badwaya · 40 questions · short one-line answers</p>
+  </header>
+  <div class="strip">
+    <div class="cell"><span class="k">Questions</span><span class="v" id="qcount">40</span></div>
+    <div class="cell"><span class="k">Time</span><span class="v" id="clock">40:00</span></div>
+    <div class="cell"><span class="k">Answered</span><span class="v" id="answered">0 / 40</span></div>
+    <div class="cell"><span class="k">Format</span><span class="v">One answer each</span></div>
+  </div>
+  <div class="tracks">
+    <div class="track"><div class="tlabel"><span class="dot core"></span>Angular and services</div><div class="tdesc">Angular, RxJS, NgRx, TypeScript, micro frontends, testing, and the Node, Spring and database work behind them.</div></div>
+    <div class="track"><div class="tlabel"><span class="dot stretch"></span>React and platform</div><div class="tdesc">React, Next.js, web security, PostgreSQL, Python, content modelling and platform topics across the browser, server and database.</div></div>
+  </div>
+  <main id="stage"></main>
+  <div class="nav">
+    <button class="btn" id="prev">Previous</button><button class="btn" id="next">Next</button>
+    <span class="spacer"></span><span class="navnote" id="navnote"></span>
+    <button class="btn primary" id="submit">Submit and score</button>
+  </div>
+  <div class="grid" id="grid"></div>
+  <p class="footer">Pick an answer, then use Next. You can change answers until you submit. Nothing is transmitted — this file runs in the browser.</p>
+</div>
+<script>
+const QUESTIONS = [{"s": "Angular · Change detection", "t": "core", "q": "A child uses OnPush and the parent mutates a property inside the object it passes down. What happens?", "o": ["The child is not re-checked", "It re-renders immediately", "Angular throws an error", "It updates after the next HTTP call"], "a": 0, "e": "OnPush compares input references, so mutating an object in place leaves the reference unchanged. Replace the object with an immutable update, or call markForCheck."}, {"s": "Angular · RxJS", "t": "core", "q": "Which operator cancels the previous request when a new search term arrives?", "o": ["switchMap", "mergeMap", "concatMap", "exhaustMap"], "a": 0, "e": "switchMap unsubscribes from the earlier inner request when a new value arrives, which is what a typeahead needs. exhaustMap would silently drop the newest keystrokes."}, {"s": "Angular · Subscriptions", "t": "core", "q": "A component subscribes to a long-lived stream and never unsubscribes. What happens after it is destroyed?", "o": ["The callback keeps running and leaks memory", "Angular unsubscribes automatically", "The stream completes on its own", "Only an error is logged"], "a": 0, "e": "A long-lived observable keeps the callback, and the destroyed component, alive. Use the async pipe, takeUntilDestroyed or an explicit unsubscribe."}, {"s": "Angular · Dependency injection", "t": "core", "q": "A service is providedIn root and also listed in a component's providers. What does that component get?", "o": ["Its own separate instance", "The shared root singleton", "A compile-time error", "A new instance on every check"], "a": 0, "e": "A component-level provider creates an instance scoped to that component and its children. Everything else keeps the root singleton."}, {"s": "Angular · Signals", "t": "core", "q": "What is a key difference between Angular signals and RxJS observables?", "o": ["Signals always hold a current value", "Signals are asynchronous streams over time", "Signals need a manual unsubscribe", "Signals cannot be derived from other signals"], "a": 0, "e": "A signal always has a value you can read synchronously, and computed signals derive from others with automatic dependency tracking. Observables are streams that may never have emitted."}, {"s": "Angular · Route guards", "t": "core", "q": "Does a canActivate guard on the admin route protect the admin data?", "o": ["No, the API must authorise every request", "Yes, if it checks the role", "Yes, when the route is lazy loaded", "Yes, for read-only data"], "a": 0, "e": "A guard only controls client-side navigation, and anyone can call the API directly. Every request must be authorised on the server."}, {"s": "Angular · Lazy loading", "t": "core", "q": "What does lazy loading a route do?", "o": ["Loads its code only when first needed", "Renders the route on the server", "Compresses the whole bundle", "Caches the API response"], "a": 0, "e": "The route's code is split into its own chunk and fetched on first navigation, which shrinks the initial download."}, {"s": "Angular · HTTP", "t": "core", "q": "Where do you attach an auth token to every outgoing request?", "o": ["In an HttpInterceptor", "In each component", "In the template", "In an APP_INITIALIZER"], "a": 0, "e": "An interceptor sees every request in one place, so the token, retry and error handling are added once instead of in every call."}, {"s": "NgRx · Effects", "t": "core", "q": "What are NgRx effects for?", "o": ["Handling side effects such as API calls", "Storing UI state", "Replacing reducers", "Running change detection"], "a": 0, "e": "Effects listen for actions, perform side effects like HTTP calls, and dispatch new actions. Reducers stay pure."}, {"s": "NgRx · Selectors", "t": "core", "q": "Why use memoised selectors?", "o": ["They recompute only when inputs change", "They persist state to storage", "They replace actions", "They make effects run faster"], "a": 0, "e": "A memoised selector returns the cached result while its inputs are unchanged, which avoids needless recalculation and re-renders."}, {"s": "RxJS · Errors", "t": "core", "q": "An HTTP error inside switchMap ends the outer stream. Where do you catch it to keep the outer stream alive?", "o": ["Inside the inner observable", "After the outer stream completes", "In a global error handler", "In the template itself"], "a": 0, "e": "Catching inside the inner observable replaces just that request's failure, so the outer stream continues. Catching after the outer stream lets the error terminate it first."}, {"s": "TypeScript · Both JDs", "t": "core", "q": "What happens to TypeScript types at runtime?", "o": ["They are erased before running", "They validate API responses at runtime", "They throw an error on a mismatch", "They are cached by the browser"], "a": 0, "e": "Types exist only at compile time. Data arriving from an API still needs runtime validation."}, {"s": "TypeScript · Both JDs", "t": "core", "q": "How do you get real type safety on JSON from an API?", "o": ["Validate it with a runtime schema", "Cast it with the as keyword", "Declare an interface and trust it", "Type it as any"], "a": 0, "e": "A cast only silences the compiler. A schema checks the actual data, and the TypeScript type can be inferred from it."}, {"s": "TypeScript · Both JDs", "t": "core", "q": "What does a discriminated union enable?", "o": ["Narrowing by a shared literal field", "Merging declarations across files", "Runtime validation of each variant", "Faster compilation of large unions"], "a": 0, "e": "A shared literal-typed field lets the compiler narrow the union in a switch or if, and check that every case is handled."}, {"s": "Micro frontends · Both JDs", "t": "core", "q": "Two micro frontends load different copies of Angular and break. What is the usual fix?", "o": ["Share Angular as a singleton dependency", "Bundle Angular inside every remote", "Pin each remote to a different version", "Load Angular from a CDN on each page"], "a": 0, "e": "With Module Federation, shared libraries such as Angular must be declared as singletons with compatible versions, or the host and remotes run separate copies."}, {"s": "Micro frontends · Both JDs", "t": "core", "q": "What is the main cost of micro frontends?", "o": ["More runtime complexity", "One large shared deployment", "No common styling is possible", "Slower TypeScript compilation only"], "a": 0, "e": "Independent deployment trades simplicity for version alignment, shared design, routing and error handling across the seams."}, {"s": "Testing · Both JDs", "t": "core", "q": "A unit test passes alone but fails in the full run. What is the likely cause?", "o": ["State shared between tests", "A slow CI machine", "A different Node version", "Low test coverage"], "a": 0, "e": "Tests that depend on leftover state, such as a mutated singleton or an unreset mock, pass in isolation and fail in sequence."}, {"s": "Node · Both JDs", "t": "core", "q": "What happens if a Node request handler does heavy synchronous work?", "o": ["It blocks every other request", "Node spawns a worker for it", "Only that request slows down", "The garbage collector absorbs it"], "a": 0, "e": "Node runs JavaScript on one thread, so synchronous work stalls every other request on that process. Offload it to a worker or a queue."}, {"s": "Spring · Transactions", "t": "core", "q": "A @Transactional method calls another @Transactional method on the same bean. Why is the inner one ignored?", "o": ["The call bypasses the Spring proxy", "Nested transactions are unsupported", "Only the outer annotation is read", "It needs REQUIRES_NEW to work"], "a": 0, "e": "Spring applies transactions through a proxy, and a call from inside the same object never goes through it. Move the method to another bean or inject a self-reference."}, {"s": "SQL · Joins", "t": "core", "q": "Counting children with LEFT JOIN and COUNT(*) returns 1 for parents with none. What is the fix?", "o": ["Count a child column", "Switch to an INNER JOIN", "Add DISTINCT to the query", "Add a HAVING clause on it"], "a": 0, "e": "COUNT(*) counts the null-padded row that LEFT JOIN produces. Counting a child column ignores nulls and gives 0."}, {"s": "MongoDB · Both JDs", "t": "core", "q": "When do you embed a related document in MongoDB?", "o": ["When it is read together and bounded", "Whenever many parents share it", "Always, to avoid joins", "Only for numeric data"], "a": 0, "e": "Embed data that is read with its parent and cannot grow without limit. Reference it when it is shared or unbounded."}, {"s": "React · Both JDs", "t": "stretch", "q": "Why does each item in a rendered list need a key?", "o": ["React matches items across renders", "It sets each item's CSS class", "It sorts the list by that value", "It improves screen reader output for lists"], "a": 0, "e": "Stable keys let React update the right element when the list changes. Array indexes break when items are reordered."}, {"s": "React · Both JDs", "t": "stretch", "q": "Why must you not change React state directly?", "o": ["React compares references", "Direct changes make reads slower", "Hooks throw an error on mutation", "It clears the rendered DOM nodes"], "a": 0, "e": "If an object is mutated in place its reference is unchanged, so React may skip the re-render. It is the same reason OnPush misses in-place changes."}, {"s": "React · Both JDs", "t": "stretch", "q": "When does useEffect with an empty dependency array run?", "o": ["Once, after mounting", "After every single render", "Only when the props change", "Only when it unmounts"], "a": 0, "e": "An empty array means no dependencies, so the effect runs once on mount and its cleanup runs on unmount."}, {"s": "React · Both JDs", "t": "stretch", "q": "An effect keeps re-running in an endless loop. What is the usual cause?", "o": ["A dependency changes every render", "The dependency array is left empty", "A key prop is missing on the list", "The effect returns a plain value"], "a": 0, "e": "Object, array and function literals are new on each render, so the dependency looks changed every time."}, {"s": "React · Both JDs", "t": "stretch", "q": "In React, how do you share state across distant components without prop drilling?", "o": ["Context or a state library", "Angular-style dependency injection", "Two-way binding on inputs", "A global window variable"], "a": 0, "e": "Context or a store such as Redux passes state down without threading props. React has no built-in dependency injection container."}, {"s": "Next.js · CMS JD", "t": "stretch", "q": "Why server-render a content page?", "o": ["HTML is ready for indexing", "It needs no JavaScript at all", "It removes the need for a database", "It always costs less to host"], "a": 0, "e": "Crawlers and users receive complete HTML on the first response, whereas client-only rendering ships an empty shell first."}, {"s": "Next.js · CMS JD", "t": "stretch", "q": "What does the \"use client\" directive do?", "o": ["Marks where client components begin", "Runs the file only inside the browser", "Turns off all server rendering", "Gives the file database access"], "a": 0, "e": "It sets the boundary between server and client components. Client components still render on the server for the first HTML."}, {"s": "Next.js · CMS JD", "t": "stretch", "q": "A published page must update within a minute without a redeploy. What fits?", "o": ["Timed or on-publish revalidation", "Redeploy the site on every edit", "Poll the server from every browser", "Turn all caching off"], "a": 0, "e": "Revalidation refreshes the cached page in the background. Disabling caching gives up the reason for using the framework."}, {"s": "Web security · Both JDs", "t": "stretch", "q": "What is CORS?", "o": ["A browser cross-origin rule", "A server-side firewall setting", "A way to encrypt requests", "A cookie storage format"], "a": 0, "e": "The browser blocks cross-origin calls unless the server's response headers allow the origin. It is not a server-side access control."}, {"s": "Web security · Both JDs", "t": "stretch", "q": "Where is the safest place for a browser session token?", "o": ["An httpOnly cookie", "localStorage", "A URL parameter", "A global JavaScript variable"], "a": 0, "e": "Scripts on the page cannot read an httpOnly cookie, so cross-site scripting cannot steal it."}, {"s": "PostgreSQL · Both JDs", "t": "stretch", "q": "A migration script fails halfway. How do PostgreSQL and MySQL differ?", "o": ["PostgreSQL rolls schema changes back", "MySQL rolls schema changes back instead", "Both roll everything back automatically", "Neither can roll anything back at all"], "a": 0, "e": "PostgreSQL supports transactional DDL, so a failed script leaves the schema unchanged. MySQL commits each DDL statement as it runs."}, {"s": "PostgreSQL · Both JDs", "t": "stretch", "q": "An index on email is ignored by a query on lower(email). What fixes it?", "o": ["An expression index on lower(email)", "Rebuilding the existing email index now", "Adding a LIMIT to the whole query", "Running VACUUM on the whole table"], "a": 0, "e": "A function on the column hides it from a plain index. An index on the same expression makes it usable."}, {"s": "Python · Bank JD", "t": "stretch", "q": "How does FastAPI validate request bodies?", "o": ["Type hints with Pydantic models", "Manual checks written in every route", "Schema files read from disk", "Decorators run at import time"], "a": 0, "e": "Pydantic validates the body at runtime, and FastAPI generates the OpenAPI schema from the same types."}, {"s": "Content modelling · CMS JD", "t": "stretch", "q": "A page has ordered sections of different types, and a type can repeat. How do you model it?", "o": ["A blocks table with type and position", "A nullable column for each section type", "The finished page stored as HTML", "A separate table per layout"], "a": 0, "e": "A blocks table with a type and a position handles any order and any repeats, with type-specific fields stored beside it."}, {"s": "Content modelling · CMS JD", "t": "stretch", "q": "Editors must work on changes without the public seeing them. What fits?", "o": ["Separate draft and published versions", "A published boolean", "Locking the record", "Copying it, then deleting the original"], "a": 0, "e": "A boolean cannot hold two states at once and has no history to revert to. Versions also give rollback and scheduling."}, {"s": "Content modelling · CMS JD", "t": "stretch", "q": "Admins must add product fields without a deploy. How do you store the definitions?", "o": ["As data, interpreted at runtime", "As columns added by a migration", "As code in each release", "As hard-coded form components"], "a": 0, "e": "Definitions stored as data let non-developers change the shape, at the cost of weaker database-level constraints and harder queries."}, {"s": "Retrieval · Bank JD", "t": "stretch", "q": "Why retrieve passages instead of sending a 500,000-token corpus to a model?", "o": ["It exceeds the model's context window", "It improves the style of the writing", "Licensing terms forbid sending it", "It removes the need for any database table"], "a": 0, "e": "The context window is a hard limit, so only the relevant passages can be sent."}, {"s": "Traceability · Bank JD", "t": "stretch", "q": "Citations must stay valid when source documents are revised. What should they point at?", "o": ["A specific document version", "The latest version of the document", "The original file name only", "A snapshot of the whole corpus"], "a": 0, "e": "A citation to a document silently breaks when it changes. A citation to a version keeps pointing at what was actually used."}, {"s": "Environment · Bank JD", "t": "stretch", "q": "No client data may leave the client network. What does that rule out?", "o": ["Hosted third-party model APIs", "Databases inside the client network", "Logging inside the client network", "DNS inside the client network"], "a": 0, "e": "Any external service that receives client content is out, including model APIs and error reporters that capture request bodies."}];
+(function shuffleOptions(){
+  QUESTIONS.forEach(q => {
+    const correct = q.o[q.a];
+    for (let i = q.o.length - 1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [q.o[i],q.o[j]] = [q.o[j],q.o[i]]; }
+    q.a = q.o.indexOf(correct);
+  });
+})();
+const TOTAL = QUESTIONS.length, LIMIT = 40 * 60, LETTERS = ['A','B','C','D'];
+const answers = new Array(TOTAL).fill(null);
+let cur = 0, graded = false, started = false, secondsLeft = LIMIT, timer = null;
+const $ = id => document.getElementById(id);
+const stage = $('stage'), grid = $('grid'), bar = $('bar');
+$('qcount').textContent = TOTAL; $('answered').textContent = '0 / ' + TOTAL;
+const fmt = t => String(Math.floor(t/60)) + ':' + String(t%60).padStart(2,'0');
+
+function startTimer(){
+  if (started || graded) return; started = true;
+  timer = setInterval(() => {
+    secondsLeft--; $('clock').textContent = fmt(Math.max(secondsLeft,0));
+    if (secondsLeft <= 300) $('clock').classList.add('warn');
+    if (secondsLeft <= 0) { clearInterval(timer); grade(true); }
+  }, 1000);
+}
+
+function render(){
+  const q = QUESTIONS[cur];
+  const badge = q.t === 'core' ? '<span class="badge core">Angular &amp; services</span>' : '<span class="badge stretch">React &amp; platform</span>';
+  let html = '<section class="card"><div class="qhead"><span class="qnum">' + String(cur+1).padStart(2,'0') + ' / ' + TOTAL + '</span>'
+    + badge + '<span class="section-name">' + q.s + '</span></div><p class="qtext">' + q.q + '</p><ul class="opts">';
+  q.o.forEach((opt,i) => {
+    let cls = 'opt', mark = '';
+    if (!graded && answers[cur] === i) cls += ' sel';
+    if (graded) {
+      if (i === q.a) { cls += ' correct'; mark = '<span class="mark ok">Correct</span>'; }
+      else if (answers[cur] === i) { cls += ' wrong'; mark = '<span class="mark no">Chosen</span>'; }
+    }
+    html += '<li><button class="' + cls + '" data-i="' + i + '"' + (graded ? ' disabled' : '') + '><span class="letter">' + LETTERS[i] + '</span><span>' + opt + '</span>' + mark + '</button></li>';
+  });
+  html += '</ul>';
+  if (graded) html += '<div class="rationale"><div class="rlabel">Interviewer note</div><p>' + q.e + '</p></div>';
+  html += '</section>';
+  stage.innerHTML = html;
+  if (!graded) stage.querySelectorAll('.opt').forEach(b => b.addEventListener('click', () => {
+    startTimer(); answers[cur] = Number(b.dataset.i); render(); paint();
+  }));
+  $('prev').disabled = cur === 0; $('next').disabled = cur === TOTAL - 1;
+  $('navnote').textContent = graded ? 'Review mode' : (answers[cur] === null ? 'Not answered' : 'Answered');
+}
+
+function paint(){
+  const done = answers.filter(a => a !== null).length;
+  $('answered').textContent = done + ' / ' + TOTAL; bar.style.width = (done/TOTAL*100) + '%';
+  grid.innerHTML = QUESTIONS.map((q,i) => '<button class="gcell' + (answers[i] !== null ? ' answered' : '') + (i === cur ? ' here' : '') + '" data-i="' + i + '">' + (i+1) + '</button>').join('');
+  grid.querySelectorAll('.gcell').forEach(b => b.addEventListener('click', () => { cur = Number(b.dataset.i); render(); paint(); }));
+}
+
+$('prev').addEventListener('click', () => { if (cur > 0) { cur--; render(); paint(); } });
+$('next').addEventListener('click', () => { if (cur < TOTAL-1) { cur++; render(); paint(); } });
+$('submit').addEventListener('click', () => grade(false));
+
+function grade(auto){
+  if (graded) return;
+  const left = answers.filter(a => a === null).length;
+  if (!auto && left > 0 && typeof confirm === 'function' && !confirm(left + ' question(s) are unanswered. Submit anyway?')) return;
+  graded = true; if (timer) clearInterval(timer);
+  const used = started ? LIMIT - Math.max(secondsLeft,0) : 0;
+  const by = {}; let bc=0, bt=0, fc=0, ft=0;
+  QUESTIONS.forEach((q,i) => {
+    const ok = answers[i] === q.a;
+    if (!by[q.s]) by[q.s] = {c:0,t:0,track:q.t};
+    by[q.s].t++; if (ok) by[q.s].c++;
+    if (q.t === 'core') { bt++; if (ok) bc++; } else { ft++; if (ok) fc++; }
+  });
+  const bp = Math.round(bc/bt*100), fp = Math.round(fc/ft*100);
+  let band;
+  if (bp >= 80 && fp >= 60) band = 'Strong on both sides. Angular depth plus working React and platform knowledge; confirm with a live build exercise.';
+  else if (bp >= 80 && fp >= 35) band = 'Strong Angular and services with working React and platform literacy. Viable with a ramp of roughly one to three months on React and Next.js.';
+  else if (bp >= 80) band = 'Strong Angular developer. The React and platform score is near chance level (25 percent), so treat React as unproven even though the resume lists it.';
+  else if (bp >= 65) band = 'The Angular and services claims hold only partly. Probe the weaker sections live before deciding.';
+  else band = 'The claims do not hold at this depth. Verify with a live exercise before drawing conclusions.';
+  const rows = Object.keys(by).map(k => {
+    const b = by[k];
+    return '<tr class="' + (b.track === 'core' ? 'core-row' : 'stretch-row') + '"><td>' + k + '</td><td class="num">' + b.c + ' / ' + b.t + '</td><td class="num">' + Math.round(b.c/b.t*100) + '%</td></tr>';
+  }).join('');
+  const notes = `<details class="notes"><summary>Interviewer notes \u2014 close this before sharing your screen</summary><div class="body">
+    <h3>${band}</h3>
+    <ul>
+      <li>Chance level on four options is 25 percent. A React and platform score near that means no working knowledge of that area, not partial knowledge.</li>
+      <li>His resume shows Angular 14 to 19 with RxJS, NgRx, Signals, Nx and micro frontends, plus Node, Spring Boot, MySQL and MongoDB. React and Redux appear only in the skills line, and neither listed project uses them. It shows no Next.js, PostgreSQL, Python, cloud or Docker.</li>
+      <li>Ask neutrally about the period between his 2018 graduation and his June 2022 start, and which parts of the Angular and Spring work he wrote himself.</li>
+      <li>Ask how the product configuration in the pricing project was stored, and how the micro frontends shared dependencies. Both go to depth quickly.</li>
+      <li>Live exercise: ask him to rebuild one Angular component he wrote as a React component, talking through where the state lives and how he would handle loading, empty and error states.</li>
+    </ul></div></details>`;
+  stage.innerHTML = `<section class="result"><h2>Assessment complete</h2>
+    <p class="rsub">${TOTAL - left} of ${TOTAL} answered \u00B7 time used ${fmt(used)} \u00B7 the two areas measure different things and should not be averaged.</p>
+    <div class="readout">
+      <div class="pane"><div class="plabel"><span class="dot core"></span>Angular and services</div><div class="pscore">${bp}%</div><div class="pof">${bc} of ${bt} correct</div><div class="meter"><i class="core" style="width:${bp}%"></i></div></div>
+      <div class="pane"><div class="plabel"><span class="dot stretch"></span>React and platform</div><div class="pscore">${fp}%</div><div class="pof">${fc} of ${ft} correct</div><div class="meter"><i class="stretch" style="width:${fp}%"></i></div></div>
+    </div>
+    <table class="bd"><thead><tr><th>Section</th><th class="num">Score</th><th class="num">%</th></tr></thead><tbody>${rows}</tbody></table>
+    ${notes}
+    <div class="btn-row"><button class="btn" id="review">Review answers</button></div></section>`;
+  const rv = $('review'); if (rv) rv.addEventListener('click', () => { cur = 0; render(); paint(); window.scrollTo({top:0,behavior:'smooth'}); });
+  $('submit').textContent = 'Submitted'; $('submit').disabled = true;
+  $('answered').textContent = (TOTAL - left) + ' / ' + TOTAL; bar.style.width = '100%';
+  paint(); window.scrollTo({top:0,behavior:'smooth'});
+}
+render(); paint();
+</script>
+</body></html>
