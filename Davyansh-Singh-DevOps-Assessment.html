@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DevOps Assessment — Davyansh Singh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#12161C;--ink-2:#454E5C;--ink-3:#7A8494;--paper:#EDF0F4;--surface:#FFFFFF;--line:#D3DAE3;--core:#1F4E79;--stretch:#9A5B08;--pass:#0E6B5E;--fail:#9E2B25;
+--sans:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;--mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace}
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px 80px}
+.masthead{border-bottom:2px solid var(--ink);padding:34px 0 18px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin:0 0 10px}
+.masthead h1{font-size:clamp(26px,4.4vw,36px);line-height:1.1;font-weight:700;letter-spacing:-.02em;margin:0 0 6px}
+.masthead .sub{color:var(--ink-2);margin:0;font-size:15px}
+.strip{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--line);background:var(--surface)}
+.strip .cell{flex:1 1 150px;padding:12px 16px;border-right:1px solid var(--line)}.strip .cell:last-child{border-right:0}
+.strip .k{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:block}
+.strip .v{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--ink)}
+#clock.warn{color:var(--fail)}
+.tracks{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
+.track{background:var(--surface);padding:14px 16px}
+.track .tlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}.dot.core{background:var(--core)}.dot.stretch{background:var(--stretch)}
+.track .tdesc{font-size:13px;color:var(--ink-2);line-height:1.45}
+.progress{height:4px;background:var(--line);position:sticky;top:0;z-index:20}.progress .bar{height:100%;width:0;background:var(--ink);transition:width .25s ease}
+.card{background:var(--surface);border:1px solid var(--line);border-top:0;padding:26px 26px 22px}
+.qhead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.qnum{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink-3)}
+.badge{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border:1px solid;border-radius:2px}
+.badge.core{color:var(--core);border-color:var(--core)}.badge.stretch{color:var(--stretch);border-color:var(--stretch)}
+.section-name{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.qtext{font-size:18px;line-height:1.45;font-weight:500;margin:12px 0 18px}
+.opts{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.opt{display:flex;gap:12px;align-items:center;border:1px solid var(--line);background:var(--surface);padding:13px 15px;cursor:pointer;text-align:left;font:inherit;color:inherit;border-radius:3px;transition:border-color .12s,background .12s;width:100%}
+.opt:hover:not([disabled]){border-color:var(--ink-3)}.opt:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.opt .letter{font-family:var(--mono);font-weight:600;font-size:13px;color:var(--ink-3);flex:none}
+.opt.sel{border-color:var(--ink);background:#F6F8FA;box-shadow:inset 0 0 0 1px var(--ink)}.opt.sel .letter{color:var(--ink)}
+.opt[disabled]{cursor:default}
+.opt.correct{border-color:var(--pass);background:#F0F7F5}.opt.correct .letter{color:var(--pass)}
+.opt.wrong{border-color:var(--fail);background:#FCF2F1}.opt.wrong .letter{color:var(--fail)}
+.mark{margin-left:auto;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;flex:none}
+.mark.ok{color:var(--pass)}.mark.no{color:var(--fail)}
+.rationale{margin-top:16px;border:1px dashed var(--line);padding:13px 15px;background:var(--paper)}
+.rationale .rlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:5px}
+.rationale p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.5}
+.nav{display:flex;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-top:0;padding:16px 26px;flex-wrap:wrap}
+button.btn{font-family:var(--sans);font-size:14px;font-weight:600;padding:10px 18px;border-radius:3px;cursor:pointer;border:1px solid var(--ink);background:var(--surface);color:var(--ink);transition:background .12s,color .12s}
+button.btn:hover:not(:disabled){background:var(--ink);color:var(--surface)}button.btn.primary{background:var(--ink);color:var(--surface)}
+button.btn:disabled{opacity:.35;cursor:not-allowed}button.btn:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.nav .spacer{margin-left:auto}.navnote{font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+.grid{display:flex;flex-wrap:wrap;gap:5px;background:var(--surface);border:1px solid var(--line);border-top:0;padding:16px 26px 20px}
+.gcell{width:32px;height:32px;font-family:var(--mono);font-size:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink-3);cursor:pointer;border-radius:2px;padding:0}
+.gcell:hover{border-color:var(--ink-3)}.gcell.answered{background:#E6EBF1;color:var(--ink);font-weight:600;border-color:#B6C1CF}
+.gcell.here{border-color:var(--ink);border-width:2px;color:var(--ink);font-weight:600}
+.result{background:var(--surface);border:1px solid var(--line);border-top:0;padding:28px 26px}
+.result h2{font-size:24px;margin:0 0 4px;letter-spacing:-.01em}.result .rsub{color:var(--ink-2);font-size:14px;margin:0 0 24px}
+.readout{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:22px}
+.readout .pane{background:var(--surface);padding:18px}
+.readout .plabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.readout .pscore{font-family:var(--mono);font-size:34px;font-weight:600;line-height:1;letter-spacing:-.02em}
+.readout .pof{font-family:var(--mono);font-size:13px;color:var(--ink-3);margin-top:5px}
+.meter{height:6px;background:var(--line);margin-top:12px;border-radius:3px;overflow:hidden}.meter i{display:block;height:100%;width:0;transition:width .5s ease}
+.meter i.core{background:var(--core)}.meter i.stretch{background:var(--stretch)}
+table.bd{width:100%;border-collapse:collapse;margin-bottom:22px;font-size:14px}
+table.bd th,table.bd td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+table.bd th{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);border-bottom:1px solid var(--ink)}
+table.bd td.num{font-family:var(--mono);text-align:right;white-space:nowrap}
+table.bd tr.stretch-row td:first-child{border-left:3px solid var(--stretch);padding-left:10px}
+table.bd tr.core-row td:first-child{border-left:3px solid var(--core);padding-left:10px}
+details.notes{border:1px solid var(--ink);padding:14px 18px;margin-bottom:18px;background:var(--paper)}
+details.notes summary{cursor:pointer;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+details.notes .body{margin-top:12px;font-size:14px;color:var(--ink-2);line-height:1.55}
+details.notes h3{margin:0 0 6px;font-size:16px;color:var(--ink)}
+details.notes ul{margin:8px 0 0;padding-left:18px}details.notes li{margin-bottom:5px}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap}
+.footer{font-family:var(--mono);font-size:11px;color:var(--ink-3);padding:18px 0 0;text-align:center;letter-spacing:.04em}
+@media (max-width:640px){.tracks,.readout{grid-template-columns:1fr}.card,.nav,.grid,.result{padding-left:18px;padding-right:18px}.strip .cell{flex:1 1 50%;border-bottom:1px solid var(--line)}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style></head>
+<body>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="wrap">
+  <header class="masthead">
+    <p class="eyebrow">Aavya · Technical Screening</p>
+    <h1>DevOps Engineer Assessment</h1>
+    <p class="sub">Candidate: Davyansh Singh · 40 questions · short one-line answers</p>
+  </header>
+  <div class="strip">
+    <div class="cell"><span class="k">Questions</span><span class="v" id="qcount">40</span></div>
+    <div class="cell"><span class="k">Time</span><span class="v" id="clock">40:00</span></div>
+    <div class="cell"><span class="k">Answered</span><span class="v" id="answered">0 / 40</span></div>
+    <div class="cell"><span class="k">Format</span><span class="v">One answer each</span></div>
+  </div>
+  <div class="tracks">
+    <div class="track"><div class="tlabel"><span class="dot core"></span>Cloud and delivery</div><div class="tdesc">GCP and GKE, Terraform, GitLab CI, observability, networking, Linux, disaster recovery and cost.</div></div>
+    <div class="track"><div class="tlabel"><span class="dot stretch"></span>OpenShift and platform</div><div class="tdesc">OpenShift operations, disconnected environments, GitOps, Helm and Kustomize, Ansible, secrets and cluster security.</div></div>
+  </div>
+  <main id="stage"></main>
+  <div class="nav">
+    <button class="btn" id="prev">Previous</button><button class="btn" id="next">Next</button>
+    <span class="spacer"></span><span class="navnote" id="navnote"></span>
+    <button class="btn primary" id="submit">Submit and score</button>
+  </div>
+  <div class="grid" id="grid"></div>
+  <p class="footer">Pick an answer, then use Next. You can change answers until you submit. Nothing is transmitted — this file runs in the browser.</p>
+</div>
+<script>
+const QUESTIONS = [{"s": "GCP · Identity", "t": "core", "q": "A pod's KSA is annotated for Workload Identity but calls return 403. What is usually missing?", "o": ["The workloadIdentityUser IAM binding", "A larger node machine type for the pool", "A firewall rule allowing port 443 out", "A service account key stored in a Secret"], "a": 0, "e": "The annotation only names the Google service account. An IAM binding must also let the Kubernetes service account impersonate it, or token requests are denied."}, {"s": "GCP · Private clusters", "t": "core", "q": "Private GKE nodes need Google APIs and public registries. What provides that?", "o": ["Private Google Access plus Cloud NAT", "A public IP on one gateway node", "VPC peering straight to Google APIs", "A bastion proxy running for every pod"], "a": 0, "e": "Private Google Access reaches Google APIs without public addresses, and Cloud NAT handles other outbound traffic."}, {"s": "GCP · Cloud SQL", "t": "core", "q": "What does Cloud SQL high availability protect against?", "o": ["A zone outage of the primary", "An accidental DROP TABLE", "A bad schema migration", "A full region outage"], "a": 0, "e": "HA keeps a standby in another zone and fails over automatically. It does not protect against human error or a regional failure, which need backups and a cross-region replica."}, {"s": "GCP · IAM", "t": "core", "q": "How does GCP IAM behave down the organisation, folder and project hierarchy?", "o": ["Inherited downward and additive", "A project role overrides the folder role", "Lower levels can silently remove access", "Each project starts with no inheritance"], "a": 0, "e": "Access granted higher up applies below, and a lower level cannot take it away without an explicit deny. Restrictions come from deny policies and organisation constraints."}, {"s": "Terraform · State", "t": "core", "q": "You remove the first item of a list used with count. What happens?", "o": ["Later resources are recreated", "Only that resource is destroyed", "The plan fails", "Nothing changes"], "a": 0, "e": "count keys by position, so removing an early item shifts every index after it. for_each keys by a stable string and avoids this."}, {"s": "Terraform · Locking", "t": "core", "q": "A crashed apply leaves a stale state lock. What is the safe response?", "o": ["Confirm nothing runs, then force-unlock", "Delete the state file and start again", "Re-run apply with state locking turned off", "Edit the state file by hand"], "a": 0, "e": "Check that no apply is genuinely in progress, then release the lock. Skipping the check risks two writers corrupting state."}, {"s": "Terraform · Refactoring", "t": "core", "q": "How do you rename a resource without recreating it?", "o": ["A moved block", "Taint it first", "Destroy and apply again", "Import it under the old name"], "a": 0, "e": "A moved block, or terraform state mv, updates the address in state so the real resource is kept."}, {"s": "GitLab CI · Rules", "t": "core", "q": "A job must run only on merge requests targeting main. What fits?", "o": ["rules with an MR target check", "only and except keywords", "when: manual on the job", "A separate pipeline file for MRs"], "a": 0, "e": "rules replaced only and except, and can test the pipeline source and the merge request target branch."}, {"s": "GitLab CI · Artifacts", "t": "core", "q": "A deploy job needs the output of an earlier build job. What do you use?", "o": ["Artifacts", "Cache", "The runner's local disk", "A shared volume"], "a": 0, "e": "Artifacts are passed between jobs reliably. Cache is a best-effort speed-up and can be missing."}, {"s": "GitLab CI · Secrets", "t": "core", "q": "Who can read a protected CI/CD variable?", "o": ["Only pipelines on protected refs", "Every pipeline in the project", "Anyone with the Developer role in the UI", "All forks of the project"], "a": 0, "e": "A protected variable is exposed only to pipelines running on protected refs, which keeps production credentials out of feature branches."}, {"s": "GitLab CI · Cloud access", "t": "core", "q": "What is the best way for a GitLab job to authenticate to GCP?", "o": ["OIDC via Workload Identity Federation", "A service account key in a masked variable", "A shared admin password", "A key committed to the repo"], "a": 0, "e": "Federation exchanges a short-lived job token for temporary credentials, so there is no stored key to leak or rotate."}, {"s": "Observability · Alerting", "t": "core", "q": "CPU reaches 80 percent nightly with no user impact. What do you do?", "o": ["Alert on user-facing symptoms instead", "Raise the threshold to 95 percent", "Route the alert to email", "Delete the alert"], "a": 0, "e": "Saturation is a cause, not a symptom. Page on error rate or SLO burn, and keep CPU on a dashboard."}, {"s": "Observability · Prometheus", "t": "core", "q": "A label holding request IDs is added and Prometheus memory climbs. Why?", "o": ["Every value creates a new series", "Strings are stored inefficiently", "Scrapes are too frequent", "Grafana caches data in it"], "a": 0, "e": "Each distinct label value is a separate time series, so an unbounded label multiplies memory use. This is cardinality."}, {"s": "Observability · SLOs", "t": "core", "q": "Why alert on error budget burn instead of a static threshold?", "o": ["It catches fast and slow burns", "It is cheaper for the backend to compute", "It removes the need for all paging", "It needs no dashboards to be useful"], "a": 0, "e": "Burn-rate alerts page quickly on severe incidents and still catch slow leaks, while ignoring blips that use almost no budget."}, {"s": "Networking · TLS", "t": "core", "q": "Pods get x509 unknown authority errors calling an internal HTTPS service. Why?", "o": ["The internal CA is not in the trust store", "The server certificate has expired", "DNS is returning an old address", "The load balancer has run out of connections"], "a": 0, "e": "Containers ship with public roots only. An internal CA must be added to the image or mounted as a bundle."}, {"s": "Networking · Proxies", "t": "core", "q": "How does a backend see the real client IP behind an L7 proxy?", "o": ["A trusted X-Forwarded-For header", "The TCP source address", "The Host header", "A reverse DNS lookup"], "a": 0, "e": "The proxy terminates the connection, so the source address is the proxy's. It passes the client address in a header the backend must only trust from known proxies."}, {"s": "Linux · Performance", "t": "core", "q": "Load average is high but CPU is mostly idle. What is likely?", "o": ["Processes blocked on I/O", "A kernel panic that is in progress", "Too many CPU cores on the host", "A swap partition that has filled up"], "a": 0, "e": "Load counts runnable and uninterruptible tasks, so processes stuck waiting on I/O raise it without using CPU."}, {"s": "DR · Targets", "t": "core", "q": "What do RPO and RTO each measure?", "o": ["Acceptable data loss and downtime", "Backup size and restore cost", "Recovery speed and replication lag", "Uptime and error rate"], "a": 0, "e": "RPO is how much data you can afford to lose, and RTO is how long you can afford to be down. Backup frequency and replication set RPO, and runbooks and automation set RTO."}, {"s": "Cost · Clusters", "t": "core", "q": "What is the safest first step to cut cluster cost?", "o": ["Right-size requests from usage", "Remove every pod limit cluster-wide", "Disable the horizontal autoscalers", "Move everything to bigger nodes"], "a": 0, "e": "Most waste sits in requests set far above actual use. Measure first, then lower requests, and check for regressions through the error budget."}, {"s": "Kubernetes · Scaling", "t": "core", "q": "An HPA targets 70 percent CPU but the pods have no CPU requests. What happens?", "o": ["Utilisation is undefined, so no scaling", "It falls back to scaling on memory use", "It scales on the request count instead", "It scales straight to the maximum replicas"], "a": 0, "e": "CPU utilisation is measured against requests, so without them the metric is undefined and the autoscaler takes no action."}, {"s": "OpenShift · SCC", "t": "stretch", "q": "A container that runs on GKE cannot write to its data directory on OpenShift. Why?", "o": ["A random UID from the restricted SCC", "OpenShift blocks non-Red Hat images", "It needs privileged: true", "Routes block file writes"], "a": 0, "e": "The restricted SCC assigns an arbitrary UID from the project's range. The image must write to group-writable paths rather than assume root."}, {"s": "OpenShift · Nodes", "t": "stretch", "q": "How do you set a kernel argument on every worker node?", "o": ["A MachineConfig on the worker pool", "SSH to each node and edit the files", "A privileged DaemonSet on every node", "Rebuild every node image by hand"], "a": 0, "e": "RHCOS is managed declaratively, so manual edits are lost. The Machine Config Operator applies the change and reboots nodes in a controlled order."}, {"s": "OpenShift · Operators", "t": "stretch", "q": "How are operators installed and upgraded on OpenShift?", "o": ["A Subscription managed by OLM", "helm install from a chart repo", "Apply raw manifests by hand", "oc adm operator install"], "a": 0, "e": "Operator Lifecycle Manager resolves dependencies and applies upgrades through install plans. This is also why the catalog must be mirrored in disconnected clusters."}, {"s": "OpenShift · Certificates", "t": "stretch", "q": "A cluster is powered off for three months and nodes return NotReady. Why?", "o": ["Kubelet certificates have expired", "The etcd data was lost", "The load balancer changed address", "DNS caches have expired"], "a": 0, "e": "Certificate rotation needs a working control plane. After a long outage, pending certificate signing requests have to be approved before the nodes recover."}, {"s": "OpenShift · Upgrades", "t": "stretch", "q": "A cluster upgrade stalls on one MachineConfigPool. What is usually blocking it?", "o": ["A node drain blocked by a budget", "The API server is too busy", "The release channel is closed", "The image registry is full"], "a": 0, "e": "A disruption budget or a pod with no controller stops the drain, and the pool cannot move on. The fix is usually on the workload side."}, {"s": "OpenShift · etcd", "t": "stretch", "q": "What must you back up on a self-managed control plane to recover from quorum loss?", "o": ["etcd", "Worker node disks", "All container images", "Route definitions only"], "a": 0, "e": "etcd holds the cluster state, and a recent snapshot is the recovery path. Git restores manifests but not certificates or cluster identity."}, {"s": "OpenShift · Routes", "t": "stretch", "q": "Which Route termination keeps client certificates intact end to end?", "o": ["Passthrough", "Edge termination", "Re-encrypt termination", "Plain HTTP only"], "a": 0, "e": "Passthrough hands the TLS session straight to the pod. Edge and re-encrypt decrypt at the router, so the client certificate is lost."}, {"s": "Disconnected · Operators", "t": "stretch", "q": "An air-gapped cluster needs a newer operator. What is the path?", "o": ["Mirror the catalog and images", "Open a temporary firewall exception", "docker load on each node", "It cannot be updated"], "a": 0, "e": "Mirror the operator catalog and images to an internal registry and point the catalog source at it. Loading images node by node bypasses the registry and breaks on scale-out."}, {"s": "Disconnected · Upgrades", "t": "stretch", "q": "How does the cluster itself upgrade with no internet access?", "o": ["Mirror the release, upgrade by digest", "oc adm upgrade works unchanged", "Patch nodes with the package manager", "Rebuild the cluster at the new version"], "a": 0, "e": "The update graph is an external service, so a disconnected cluster targets a mirrored release by digest or hosts the graph internally. Nodes are updated through the cluster, not patched alone."}, {"s": "Disconnected · Registries", "t": "stretch", "q": "What makes nodes pull from a mirror registry instead of the public one?", "o": ["Mirror rules such as an ImageDigestMirrorSet", "A public DNS entry for the registry", "Docker Hub credentials on each node", "A VPN tunnel to the internet"], "a": 0, "e": "Mirror rules rewrite image pulls to the internal registry, so nodes never need to reach the public one."}, {"s": "GitOps · ArgoCD", "t": "stretch", "q": "Someone edits a live Deployment with kubectl under ArgoCD. What happens?", "o": ["ArgoCD flags drift and can revert it", "The edit becomes permanent", "ArgoCD commits it to Git", "ArgoCD ignores live changes"], "a": 0, "e": "Git is the desired state, so a manual edit is drift. With self-heal on, ArgoCD reverts it, and the change has to go through Git to survive."}, {"s": "GitOps · Ordering", "t": "stretch", "q": "A sync fails because a custom resource is applied before its CRD. What fixes it?", "o": ["Sync waves", "Retry until it works", "Apply the CRD by hand first", "Split it into two repositories"], "a": 0, "e": "Sync waves order resources so the CRD is established before anything that uses it. Retrying sometimes works by luck."}, {"s": "Helm · Recovery", "t": "stretch", "q": "A Helm upgrade fails and the release is stuck pending. What is the safe recovery?", "o": ["Roll back to the last revision", "Delete the whole namespace first", "Delete the release secret by hand", "Reinstall under a new release name"], "a": 0, "e": "Rolling back uses the stored release history. Deleting the release secret orphans live resources from any history."}, {"s": "Kustomize · JD", "t": "stretch", "q": "How does Kustomize differ from Helm?", "o": ["Patches plain manifests, no release state", "It templates with Go syntax and values", "It needs a server inside the cluster", "It stores each release as a cluster secret"], "a": 0, "e": "Kustomize overlays patches onto plain YAML, while Helm templates charts and tracks revisions. That decides whether rollback is a tool feature or a Git operation."}, {"s": "Ansible · Idempotence", "t": "stretch", "q": "A task appends a config line with the shell module. What is wrong?", "o": ["It repeats the append every run", "The shell module is deprecated now", "It cannot use become at all", "It always reports the task as ok"], "a": 0, "e": "The task is not idempotent, so each run adds the line again. A line or template module makes the change safe to repeat."}, {"s": "Ansible · Handlers", "t": "stretch", "q": "A service must restart only when its config file changed. What do you use?", "o": ["A handler notified by the template task", "A restart task at the end", "A cron job that restarts it", "A sleep followed by a restart"], "a": 0, "e": "A handler runs once, and only if a notifying task reported a change, so unchanged configs cause no restart."}, {"s": "Security · Network", "t": "stretch", "q": "What does a default-deny NetworkPolicy do?", "o": ["Blocks all non-allowed traffic", "Blocks only outbound traffic", "Allows same-namespace traffic only", "Encrypts pod traffic"], "a": 0, "e": "A policy selecting all pods with no allow rules denies everything, and each flow is then opened deliberately."}, {"s": "Security · Vault", "t": "stretch", "q": "How does a pod authenticate to Vault without a stored token?", "o": ["Kubernetes auth with its pod token", "A root token kept in a ConfigMap", "A shared password baked in the image", "The node's SSH key from the host"], "a": 0, "e": "Vault's Kubernetes auth method validates the pod's service account token against the cluster, so no long-lived secret is stored."}, {"s": "Security · RBAC", "t": "stretch", "q": "A pipeline may deploy to one namespace only. What do you grant?", "o": ["A RoleBinding in that namespace", "A ClusterRoleBinding to cluster-admin", "A shared kubeconfig", "A node-level credential"], "a": 0, "e": "A namespaced RoleBinding gives exactly the access needed. Cluster-wide bindings and shared kubeconfigs break least privilege."}, {"s": "Security · Trivy", "t": "stretch", "q": "How do you fail a pipeline only on serious Trivy findings?", "o": ["A severity filter and a non-zero exit code", "Parse the report with a regex", "Run it nightly instead", "Ignore every finding in the base image"], "a": 0, "e": "Setting a severity such as HIGH and CRITICAL together with a non-zero exit code makes the scan a real gate rather than a report."}];
+(function shuffleOptions(){
+  QUESTIONS.forEach(q => {
+    const correct = q.o[q.a];
+    for (let i = q.o.length - 1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [q.o[i],q.o[j]] = [q.o[j],q.o[i]]; }
+    q.a = q.o.indexOf(correct);
+  });
+})();
+const TOTAL = QUESTIONS.length, LIMIT = 40 * 60, LETTERS = ['A','B','C','D'];
+const answers = new Array(TOTAL).fill(null);
+let cur = 0, graded = false, started = false, secondsLeft = LIMIT, timer = null;
+const $ = id => document.getElementById(id);
+const stage = $('stage'), grid = $('grid'), bar = $('bar');
+$('qcount').textContent = TOTAL; $('answered').textContent = '0 / ' + TOTAL;
+const fmt = t => String(Math.floor(t/60)) + ':' + String(t%60).padStart(2,'0');
+
+function startTimer(){
+  if (started || graded) return; started = true;
+  timer = setInterval(() => {
+    secondsLeft--; $('clock').textContent = fmt(Math.max(secondsLeft,0));
+    if (secondsLeft <= 300) $('clock').classList.add('warn');
+    if (secondsLeft <= 0) { clearInterval(timer); grade(true); }
+  }, 1000);
+}
+
+function render(){
+  const q = QUESTIONS[cur];
+  const badge = q.t === 'core' ? '<span class="badge core">Cloud &amp; delivery</span>' : '<span class="badge stretch">OpenShift &amp; platform</span>';
+  let html = '<section class="card"><div class="qhead"><span class="qnum">' + String(cur+1).padStart(2,'0') + ' / ' + TOTAL + '</span>'
+    + badge + '<span class="section-name">' + q.s + '</span></div><p class="qtext">' + q.q + '</p><ul class="opts">';
+  q.o.forEach((opt,i) => {
+    let cls = 'opt', mark = '';
+    if (!graded && answers[cur] === i) cls += ' sel';
+    if (graded) {
+      if (i === q.a) { cls += ' correct'; mark = '<span class="mark ok">Correct</span>'; }
+      else if (answers[cur] === i) { cls += ' wrong'; mark = '<span class="mark no">Chosen</span>'; }
+    }
+    html += '<li><button class="' + cls + '" data-i="' + i + '"' + (graded ? ' disabled' : '') + '><span class="letter">' + LETTERS[i] + '</span><span>' + opt + '</span>' + mark + '</button></li>';
+  });
+  html += '</ul>';
+  if (graded) html += '<div class="rationale"><div class="rlabel">Interviewer note</div><p>' + q.e + '</p></div>';
+  html += '</section>';
+  stage.innerHTML = html;
+  if (!graded) stage.querySelectorAll('.opt').forEach(b => b.addEventListener('click', () => {
+    startTimer(); answers[cur] = Number(b.dataset.i); render(); paint();
+  }));
+  $('prev').disabled = cur === 0; $('next').disabled = cur === TOTAL - 1;
+  $('navnote').textContent = graded ? 'Review mode' : (answers[cur] === null ? 'Not answered' : 'Answered');
+}
+
+function paint(){
+  const done = answers.filter(a => a !== null).length;
+  $('answered').textContent = done + ' / ' + TOTAL; bar.style.width = (done/TOTAL*100) + '%';
+  grid.innerHTML = QUESTIONS.map((q,i) => '<button class="gcell' + (answers[i] !== null ? ' answered' : '') + (i === cur ? ' here' : '') + '" data-i="' + i + '">' + (i+1) + '</button>').join('');
+  grid.querySelectorAll('.gcell').forEach(b => b.addEventListener('click', () => { cur = Number(b.dataset.i); render(); paint(); }));
+}
+
+$('prev').addEventListener('click', () => { if (cur > 0) { cur--; render(); paint(); } });
+$('next').addEventListener('click', () => { if (cur < TOTAL-1) { cur++; render(); paint(); } });
+$('submit').addEventListener('click', () => grade(false));
+
+function grade(auto){
+  if (graded) return;
+  const left = answers.filter(a => a === null).length;
+  if (!auto && left > 0 && typeof confirm === 'function' && !confirm(left + ' question(s) are unanswered. Submit anyway?')) return;
+  graded = true; if (timer) clearInterval(timer);
+  const used = started ? LIMIT - Math.max(secondsLeft,0) : 0;
+  const by = {}; let bc=0, bt=0, fc=0, ft=0;
+  QUESTIONS.forEach((q,i) => {
+    const ok = answers[i] === q.a;
+    if (!by[q.s]) by[q.s] = {c:0,t:0,track:q.t};
+    by[q.s].t++; if (ok) by[q.s].c++;
+    if (q.t === 'core') { bt++; if (ok) bc++; } else { ft++; if (ok) fc++; }
+  });
+  const bp = Math.round(bc/bt*100), fp = Math.round(fc/ft*100);
+  let band;
+  if (bp >= 80 && fp >= 70) band = 'Strong on both sides, which is what the resume claims. His resume mirrors the role description closely, so still verify scale and ownership live.';
+  else if (bp >= 80 && fp >= 45) band = 'Cloud and delivery hold up and OpenShift and platform is partly there. Probe the OpenShift claims live: version, node count, who installed it, and which upgrade he personally ran.';
+  else if (bp >= 80) band = 'Cloud and delivery hold up, but the OpenShift and platform claims do not. Those claims sit in a nine-month role, so treat them as unverified.';
+  else if (bp >= 65) band = 'Mixed. The cloud and delivery claims hold only partly, even though they come from the longer role. Probe the weaker sections live before deciding.';
+  else band = 'The claims do not hold at this depth, including those from the two-and-a-half-year role. Verify with a live troubleshooting exercise before drawing conclusions.';
+  const rows = Object.keys(by).map(k => {
+    const b = by[k];
+    return '<tr class="' + (b.track === 'core' ? 'core-row' : 'stretch-row') + '"><td>' + k + '</td><td class="num">' + b.c + ' / ' + b.t + '</td><td class="num">' + Math.round(b.c/b.t*100) + '%</td></tr>';
+  }).join('');
+  const notes = `<details class="notes"><summary>Interviewer notes \u2014 close this before sharing your screen</summary><div class="body">
+    <h3>${band}</h3>
+    <ul>
+      <li>Chance level on four options is 25 percent. An OpenShift and platform score near that means no working knowledge of that area, not partial knowledge.</li>
+      <li>His summary and bullets track the role description almost point for point: GitLab CI with security scanning, Terraform and Ansible, Helm and ArgoCD, air-gapped registries and SLO alerting. That is not a fault by itself, but it means vocabulary will not separate him from the role, so these questions test failure modes instead.</li>
+      <li>Four role-description items are missing from his resume: Kustomize, MachineConfig, SCCs and offline operator catalogs. The OpenShift questions on those are the likeliest misses.</li>
+      <li>All his OpenShift, ArgoCD, Helm, Ansible and Vault work sits in the role since January 2026 (about nine months) and three projects. His two-and-a-half-year role is GCP, GKE, Terraform, GitLab CI, monitoring and databases. Read the two scores against each other.</li>
+      <li>Ask the basics of the OpenShift claim: which version, how many nodes, bare metal or virtual, who installed it, and which upgrade he ran himself. Ask whether the air-gapped environment was genuinely disconnected.</li>
+      <li>Four figures appear (40, 50, 30 and over 30 percent). Pick one and ask for the baseline and how it was measured.</li>
+      <li>His certifications are relevant (Google Cloud Professional DevOps Engineer and AWS Solutions Architect Associate), so expect SRE and SLO answers at that level. There is no Red Hat certification despite OpenShift in production. His earlier title was Management Associate (DevOps), so ask about team and scope.</li>
+      <li>Live exercise: give him a pod that cannot write on OpenShift, a stalled node drain during an upgrade, and a failing ArgoCD sync. Watch whether he reads events and security context first.</li>
+    </ul></div></details>`;
+  stage.innerHTML = `<section class="result"><h2>Assessment complete</h2>
+    <p class="rsub">${TOTAL - left} of ${TOTAL} answered \u00B7 time used ${fmt(used)} \u00B7 the two areas measure different things and should not be averaged.</p>
+    <div class="readout">
+      <div class="pane"><div class="plabel"><span class="dot core"></span>Cloud and delivery</div><div class="pscore">${bp}%</div><div class="pof">${bc} of ${bt} correct</div><div class="meter"><i class="core" style="width:${bp}%"></i></div></div>
+      <div class="pane"><div class="plabel"><span class="dot stretch"></span>OpenShift and platform</div><div class="pscore">${fp}%</div><div class="pof">${fc} of ${ft} correct</div><div class="meter"><i class="stretch" style="width:${fp}%"></i></div></div>
+    </div>
+    <table class="bd"><thead><tr><th>Section</th><th class="num">Score</th><th class="num">%</th></tr></thead><tbody>${rows}</tbody></table>
+    ${notes}
+    <div class="btn-row"><button class="btn" id="review">Review answers</button></div></section>`;
+  const rv = $('review'); if (rv) rv.addEventListener('click', () => { cur = 0; render(); paint(); window.scrollTo({top:0,behavior:'smooth'}); });
+  $('submit').textContent = 'Submitted'; $('submit').disabled = true;
+  $('answered').textContent = (TOTAL - left) + ' / ' + TOTAL; bar.style.width = '100%';
+  paint(); window.scrollTo({top:0,behavior:'smooth'});
+}
+render(); paint();
+</script>
+</body></html>
