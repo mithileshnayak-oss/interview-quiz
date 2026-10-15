@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DevOps Assessment — Harsh Chandel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#12161C;--ink-2:#454E5C;--ink-3:#7A8494;--paper:#EDF0F4;--surface:#FFFFFF;--line:#D3DAE3;--core:#1F4E79;--stretch:#9A5B08;--pass:#0E6B5E;--fail:#9E2B25;
+--sans:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;--mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace}
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px 80px}
+.masthead{border-bottom:2px solid var(--ink);padding:34px 0 18px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin:0 0 10px}
+.masthead h1{font-size:clamp(26px,4.4vw,36px);line-height:1.1;font-weight:700;letter-spacing:-.02em;margin:0 0 6px}
+.masthead .sub{color:var(--ink-2);margin:0;font-size:15px}
+.strip{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--line);background:var(--surface)}
+.strip .cell{flex:1 1 150px;padding:12px 16px;border-right:1px solid var(--line)}.strip .cell:last-child{border-right:0}
+.strip .k{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:block}
+.strip .v{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--ink)}
+#clock.warn{color:var(--fail)}
+.tracks{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
+.track{background:var(--surface);padding:14px 16px}
+.track .tlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}.dot.core{background:var(--core)}.dot.stretch{background:var(--stretch)}
+.track .tdesc{font-size:13px;color:var(--ink-2);line-height:1.45}
+.progress{height:4px;background:var(--line);position:sticky;top:0;z-index:20}.progress .bar{height:100%;width:0;background:var(--ink);transition:width .25s ease}
+.card{background:var(--surface);border:1px solid var(--line);border-top:0;padding:26px 26px 22px}
+.qhead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.qnum{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink-3)}
+.badge{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border:1px solid;border-radius:2px}
+.badge.core{color:var(--core);border-color:var(--core)}.badge.stretch{color:var(--stretch);border-color:var(--stretch)}
+.section-name{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.qtext{font-size:18px;line-height:1.45;font-weight:500;margin:12px 0 18px}
+.opts{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.opt{display:flex;gap:12px;align-items:center;border:1px solid var(--line);background:var(--surface);padding:13px 15px;cursor:pointer;text-align:left;font:inherit;color:inherit;border-radius:3px;transition:border-color .12s,background .12s;width:100%}
+.opt:hover:not([disabled]){border-color:var(--ink-3)}.opt:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.opt .letter{font-family:var(--mono);font-weight:600;font-size:13px;color:var(--ink-3);flex:none}
+.opt.sel{border-color:var(--ink);background:#F6F8FA;box-shadow:inset 0 0 0 1px var(--ink)}.opt.sel .letter{color:var(--ink)}
+.opt[disabled]{cursor:default}
+.opt.correct{border-color:var(--pass);background:#F0F7F5}.opt.correct .letter{color:var(--pass)}
+.opt.wrong{border-color:var(--fail);background:#FCF2F1}.opt.wrong .letter{color:var(--fail)}
+.mark{margin-left:auto;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;flex:none}
+.mark.ok{color:var(--pass)}.mark.no{color:var(--fail)}
+.rationale{margin-top:16px;border:1px dashed var(--line);padding:13px 15px;background:var(--paper)}
+.rationale .rlabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:5px}
+.rationale p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.5}
+.nav{display:flex;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-top:0;padding:16px 26px;flex-wrap:wrap}
+button.btn{font-family:var(--sans);font-size:14px;font-weight:600;padding:10px 18px;border-radius:3px;cursor:pointer;border:1px solid var(--ink);background:var(--surface);color:var(--ink);transition:background .12s,color .12s}
+button.btn:hover:not(:disabled){background:var(--ink);color:var(--surface)}button.btn.primary{background:var(--ink);color:var(--surface)}
+button.btn:disabled{opacity:.35;cursor:not-allowed}button.btn:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.nav .spacer{margin-left:auto}.navnote{font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+.grid{display:flex;flex-wrap:wrap;gap:5px;background:var(--surface);border:1px solid var(--line);border-top:0;padding:16px 26px 20px}
+.gcell{width:32px;height:32px;font-family:var(--mono);font-size:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink-3);cursor:pointer;border-radius:2px;padding:0}
+.gcell:hover{border-color:var(--ink-3)}.gcell.answered{background:#E6EBF1;color:var(--ink);font-weight:600;border-color:#B6C1CF}
+.gcell.here{border-color:var(--ink);border-width:2px;color:var(--ink);font-weight:600}
+.result{background:var(--surface);border:1px solid var(--line);border-top:0;padding:28px 26px}
+.result h2{font-size:24px;margin:0 0 4px;letter-spacing:-.01em}.result .rsub{color:var(--ink-2);font-size:14px;margin:0 0 24px}
+.readout{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:22px}
+.readout .pane{background:var(--surface);padding:18px}
+.readout .plabel{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.readout .pscore{font-family:var(--mono);font-size:34px;font-weight:600;line-height:1;letter-spacing:-.02em}
+.readout .pof{font-family:var(--mono);font-size:13px;color:var(--ink-3);margin-top:5px}
+.meter{height:6px;background:var(--line);margin-top:12px;border-radius:3px;overflow:hidden}.meter i{display:block;height:100%;width:0;transition:width .5s ease}
+.meter i.core{background:var(--core)}.meter i.stretch{background:var(--stretch)}
+table.bd{width:100%;border-collapse:collapse;margin-bottom:22px;font-size:14px}
+table.bd th,table.bd td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+table.bd th{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);border-bottom:1px solid var(--ink)}
+table.bd td.num{font-family:var(--mono);text-align:right;white-space:nowrap}
+table.bd tr.stretch-row td:first-child{border-left:3px solid var(--stretch);padding-left:10px}
+table.bd tr.core-row td:first-child{border-left:3px solid var(--core);padding-left:10px}
+details.notes{border:1px solid var(--ink);padding:14px 18px;margin-bottom:18px;background:var(--paper)}
+details.notes summary{cursor:pointer;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+details.notes .body{margin-top:12px;font-size:14px;color:var(--ink-2);line-height:1.55}
+details.notes h3{margin:0 0 6px;font-size:16px;color:var(--ink)}
+details.notes ul{margin:8px 0 0;padding-left:18px}details.notes li{margin-bottom:5px}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap}
+.footer{font-family:var(--mono);font-size:11px;color:var(--ink-3);padding:18px 0 0;text-align:center;letter-spacing:.04em}
+@media (max-width:640px){.tracks,.readout{grid-template-columns:1fr}.card,.nav,.grid,.result{padding-left:18px;padding-right:18px}.strip .cell{flex:1 1 50%;border-bottom:1px solid var(--line)}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style></head>
+<body>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="wrap">
+  <header class="masthead">
+    <p class="eyebrow">Aavya · Technical Screening</p>
+    <h1>DevOps Engineer Assessment</h1>
+    <p class="sub">Candidate: Harsh Chandel · 40 questions · short one-line answers</p>
+  </header>
+  <div class="strip">
+    <div class="cell"><span class="k">Questions</span><span class="v" id="qcount">40</span></div>
+    <div class="cell"><span class="k">Time</span><span class="v" id="clock">40:00</span></div>
+    <div class="cell"><span class="k">Answered</span><span class="v" id="answered">0 / 40</span></div>
+    <div class="cell"><span class="k">Format</span><span class="v">One answer each</span></div>
+  </div>
+  <div class="tracks">
+    <div class="track"><div class="tlabel"><span class="dot core"></span>AWS and delivery</div><div class="tdesc">Linux and servers, Nginx and TLS, Docker, CI/CD, AWS identity and networking, Terraform and Ansible, databases and monitoring.</div></div>
+    <div class="track"><div class="tlabel"><span class="dot stretch"></span>Kubernetes and platform</div><div class="tdesc">Kubernetes fundamentals, GCP, OpenShift, GitOps, GitLab CI, disconnected environments, observability and cluster security.</div></div>
+  </div>
+  <main id="stage"></main>
+  <div class="nav">
+    <button class="btn" id="prev">Previous</button><button class="btn" id="next">Next</button>
+    <span class="spacer"></span><span class="navnote" id="navnote"></span>
+    <button class="btn primary" id="submit">Submit and score</button>
+  </div>
+  <div class="grid" id="grid"></div>
+  <p class="footer">Pick an answer, then use Next. You can change answers until you submit. Nothing is transmitted — this file runs in the browser.</p>
+</div>
+<script>
+const QUESTIONS = [{"s": "Linux · Disks", "t": "core", "q": "The disk shows free space but writes fail. Why?", "o": ["The inodes are exhausted", "The swap file has completely filled", "The kernel has run out of memory", "A cron job is holding a file lock"], "a": 0, "e": "A filesystem can run out of inodes while blocks are still free, for example from millions of tiny files. df -i shows it."}, {"s": "Nginx · Proxying", "t": "core", "q": "What does a reverse proxy do for an app server?", "o": ["Fronts the app, can terminate TLS", "Compiles and bundles the application code", "Replaces the application database layer", "Encrypts the disk that the app runs on"], "a": 0, "e": "The proxy sits in front, handling TLS, buffering and routing, and passes requests to the app on a private port."}, {"s": "TLS · Certificates", "t": "core", "q": "Automated Let's Encrypt renewal starts failing. What is a common cause?", "o": ["Port 80 is blocked or redirected", "The domain name is too long for the CA", "The server clock is set to UTC time", "Nginx has too many worker processes"], "a": 0, "e": "The HTTP-01 challenge needs the validation path reachable on port 80. A new firewall rule or redirect often breaks it silently."}, {"s": "SSH · Hardening", "t": "core", "q": "Which SSH change most reduces brute-force risk?", "o": ["Key-only login with passwords off", "Changing the port number alone", "Choosing a longer password", "Turning the firewall off"], "a": 0, "e": "Keys cannot be guessed by repeated attempts. A new port only hides the service, and does not stop a determined scan."}, {"s": "Docker · Volumes", "t": "core", "q": "A container's database data vanishes when it is recreated. What is the fix?", "o": ["Mount a named volume", "Use a bigger base image", "Set the restart policy to always", "Publish the database port"], "a": 0, "e": "Container filesystems are disposable. A volume keeps data outside the container's lifecycle."}, {"s": "Docker · Compose", "t": "core", "q": "How do Compose services reach each other?", "o": ["By service name on the network", "Through localhost inside the container", "By the host IP address only", "Through the host machine's DNS"], "a": 0, "e": "Compose creates a network with DNS entries for each service name. localhost inside a container is the container itself."}, {"s": "Docker · Images", "t": "core", "q": "What does a multi-stage build do?", "o": ["Builds in one stage, copies the result", "Runs two containers at the same time", "Compresses the image whenever it is pushed", "Caches every layer forever in the registry"], "a": 0, "e": "Build tools stay in an early stage and only the artefact is copied into a small final image."}, {"s": "CI/CD · Credentials", "t": "core", "q": "How should a GitHub Actions workflow authenticate to AWS?", "o": ["OIDC federation to an IAM role", "A long-lived access key in secrets", "A shared admin password", "A key committed to the repo"], "a": 0, "e": "Federation exchanges a short-lived workflow token for temporary credentials, so there is no stored key to leak or rotate."}, {"s": "CI/CD · Secrets", "t": "core", "q": "Why are secrets withheld from fork pull requests?", "o": ["Untrusted code could read them", "Secrets expire on forks", "Forks cannot run workflows", "Secrets work on the default branch only"], "a": 0, "e": "Passing secrets to code from a fork would let anyone exfiltrate them with a pull request, so the platform withholds them."}, {"s": "CI/CD · Rollback", "t": "core", "q": "What makes a production rollback fast?", "o": ["A versioned artefact ready to redeploy", "Rebuilding everything from source again", "Editing the files directly on the server", "Restoring last night's database backup"], "a": 0, "e": "If every release is an immutable, versioned artefact, rollback is just redeploying the earlier one."}, {"s": "Jenkins · Pipelines", "t": "core", "q": "Why keep a Jenkinsfile in the repository?", "o": ["It is versioned and reviewable", "It runs faster than UI jobs", "It needs no agent", "It skips the credentials store"], "a": 0, "e": "Pipeline as code lives with the application, so changes are reviewed, tracked and reproducible."}, {"s": "AWS · Identity", "t": "core", "q": "How should an app on EC2 call S3?", "o": ["An instance profile with an IAM role", "Access keys inside the code", "A shared IAM user for the team", "The root account key"], "a": 0, "e": "An instance role gives the app short-lived credentials from the metadata service, so nothing is stored."}, {"s": "AWS · Networking", "t": "core", "q": "Are security groups stateful?", "o": ["Yes, return traffic is allowed", "No, each return rule must be added", "Only for UDP traffic", "Only for outbound traffic"], "a": 0, "e": "If a request is allowed in, the reply is allowed out without a separate rule. Network ACLs are the stateless ones."}, {"s": "RDS · Recovery", "t": "core", "q": "A backup exists. What proves it works?", "o": ["Restoring it and checking the data", "The backup job shows green", "Its file size looks right", "Its timestamp is recent"], "a": 0, "e": "A backup is only trusted once a restore has been done and the data verified. Job status says nothing about restorability."}, {"s": "DNS · Caching", "t": "core", "q": "A DNS change seems ignored for an hour. Why?", "o": ["Resolvers cache it until the TTL ends", "The registrar blocks changes for an hour", "Route 53 delays every update it gets", "The browser disables DNS lookups"], "a": 0, "e": "Records are cached for their time to live. Lowering the TTL before a planned change shortens the wait."}, {"s": "Terraform · Locking", "t": "core", "q": "Two engineers apply at once. What prevents state corruption?", "o": ["A remote backend with state locking", "Terraform workspaces", "Automatic state merging", "Saved plan files"], "a": 0, "e": "The backend takes a lock while state is written, so a second apply waits or fails."}, {"s": "Terraform · State", "t": "core", "q": "You remove the first item of a list used with count. What happens?", "o": ["Later resources are recreated", "Only that resource is destroyed", "The plan fails", "Nothing changes"], "a": 0, "e": "count keys by position, so removing an early item shifts every index after it. for_each keys by a stable string and avoids this."}, {"s": "Ansible · Idempotence", "t": "core", "q": "A task appends a config line with the shell module. What is wrong?", "o": ["It repeats the append every run", "The shell module is deprecated now", "It cannot use become at all", "It always reports the task as ok"], "a": 0, "e": "The task is not idempotent, so each run adds the line again. A line or template module makes the change safe to repeat."}, {"s": "Databases · Migrations", "t": "core", "q": "A migration fails halfway in production. What should exist beforehand?", "o": ["A tested backup and a rollback", "A longer scheduled maintenance window", "The schema stored only in Git", "A faster database server"], "a": 0, "e": "You need a way back before you start: a verified restore point and a migration you can undo."}, {"s": "Observability · Alerting", "t": "core", "q": "A CPU alarm fires nightly with no user impact. What do you do?", "o": ["Alert on user-facing symptoms instead", "Raise the threshold to 95 percent", "Route the alarm to email", "Delete the alarm"], "a": 0, "e": "Saturation is a cause, not a symptom. Page on error rate or latency, and keep CPU on a dashboard."}, {"s": "Kubernetes · Pods", "t": "stretch", "q": "A pod is in CrashLoopBackOff. What is the first thing to check?", "o": ["Previous logs and pod events", "Delete the node and reschedule", "Scale the deployment down to zero", "Restart the kubelet service"], "a": 0, "e": "The previous container's logs and the events from describe usually show why it exits, such as a bad config, a failed probe or an OOM kill."}, {"s": "Kubernetes · Scheduling", "t": "stretch", "q": "A pod stays Pending. Where do you look first?", "o": ["The Events in describe pod", "The container logs of the pod", "The node kernel logs on the host", "The ingress rules in the namespace"], "a": 0, "e": "A Pending pod has no running container, so there are no logs. The scheduler's reason appears in the pod events."}, {"s": "Kubernetes · Probes", "t": "stretch", "q": "Which probe stops traffic to a starting pod without restarting it?", "o": ["Readiness probe", "Liveness probe", "Startup probe", "Resource limit"], "a": 0, "e": "A failing readiness probe removes the pod from service endpoints. A failing liveness probe restarts the container."}, {"s": "Kubernetes · Resources", "t": "stretch", "q": "A container exceeds its memory limit. What happens?", "o": ["It is OOMKilled", "It is throttled", "Nothing, limits are advisory", "The pod moves to another node"], "a": 0, "e": "CPU is compressible and gets throttled, but memory is not, so the kernel kills the container."}, {"s": "Kubernetes · Services", "t": "stretch", "q": "Where is a ClusterIP Service reachable from?", "o": ["Only inside the cluster", "From the public internet", "From any cloud VPC", "From the node's SSH port only"], "a": 0, "e": "ClusterIP gives an internal virtual address. Reaching it from outside needs a NodePort, a load balancer or an ingress."}, {"s": "Kubernetes · Scaling", "t": "stretch", "q": "An HPA targets 70 percent CPU but the pods have no CPU requests. What happens?", "o": ["Utilisation is undefined, no scaling", "It falls back to scaling on memory", "It scales on the request count instead", "It scales straight to the maximum"], "a": 0, "e": "CPU utilisation is measured against requests, so without them the metric is undefined and the autoscaler takes no action."}, {"s": "GCP · Identity", "t": "stretch", "q": "How does a GKE pod call Google APIs without a stored key?", "o": ["Workload Identity", "A key stored in a Secret", "The node's service account", "A key baked into the image"], "a": 0, "e": "Workload Identity gives the pod short-lived credentials bound to its own service account. The node account would grant that access to every pod on the node."}, {"s": "GCP · IAM", "t": "stretch", "q": "How does GCP IAM behave down the organisation, folder and project hierarchy?", "o": ["Inherited downward and additive", "A project role overrides the folder role", "Lower levels can silently remove access", "Each project starts with no inheritance"], "a": 0, "e": "Access granted higher up applies below, and a lower level cannot take it away without an explicit deny."}, {"s": "GCP · Networking", "t": "stretch", "q": "How does a GCP VPC differ from an AWS VPC?", "o": ["A GCP VPC is global; its subnets are regional", "A GCP VPC is regional; its subnets are zonal", "A GCP VPC spans regions only when peered", "Subnets are global; the VPC is regional"], "a": 0, "e": "An AWS VPC lives in one region, but a GCP VPC network is global with regional subnets. That changes how you design multi-region connectivity."}, {"s": "OpenShift · SCC", "t": "stretch", "q": "A container that runs on plain Kubernetes cannot write to its data directory on OpenShift. Why?", "o": ["A random UID from the restricted SCC", "OpenShift blocks all non-Red Hat images", "It needs privileged: true to write", "Routes block file writes to disk"], "a": 0, "e": "The restricted SCC assigns an arbitrary UID from the project's range. The image must write to group-writable paths rather than assume root."}, {"s": "OpenShift · Nodes", "t": "stretch", "q": "How do you set a kernel argument on every worker node?", "o": ["A MachineConfig on the worker pool", "SSH to each node and edit the files", "A privileged DaemonSet on every node", "Rebuild every node image by hand"], "a": 0, "e": "RHCOS is managed declaratively, so manual edits are lost. The Machine Config Operator applies the change and reboots nodes in a controlled order."}, {"s": "OpenShift · Operators", "t": "stretch", "q": "How are operators installed and upgraded on OpenShift?", "o": ["A Subscription managed by OLM", "helm install from a chart repo", "Apply raw manifests by hand", "oc adm operator install"], "a": 0, "e": "Operator Lifecycle Manager resolves dependencies and applies upgrades through install plans."}, {"s": "GitOps · ArgoCD", "t": "stretch", "q": "Someone edits a live Deployment with kubectl under ArgoCD. What happens?", "o": ["ArgoCD flags drift and can revert it", "The edit becomes permanent", "ArgoCD commits it to Git", "ArgoCD ignores live changes"], "a": 0, "e": "Git is the desired state, so a manual edit is drift. With self-heal on, ArgoCD reverts it, and the change has to go through Git to survive."}, {"s": "Helm · JD", "t": "stretch", "q": "How does Kustomize differ from Helm?", "o": ["Patches plain manifests, no release state", "It templates with Go syntax and values", "It needs a server inside the cluster", "It stores each release as a cluster secret"], "a": 0, "e": "Kustomize overlays patches onto plain YAML, while Helm templates charts and tracks revisions."}, {"s": "GitLab CI · JD", "t": "stretch", "q": "A job must run only on merge requests targeting main. What fits?", "o": ["rules with an MR target check", "only and except keywords", "when: manual on the job", "A separate pipeline file for MRs"], "a": 0, "e": "rules replaced only and except, and can test the pipeline source and the merge request target branch."}, {"s": "Disconnected · Operators", "t": "stretch", "q": "An air-gapped cluster needs a newer operator. What is the path?", "o": ["Mirror the catalog and images", "Open a temporary firewall exception", "docker load on each node", "It cannot be updated"], "a": 0, "e": "Mirror the operator catalog and images to an internal registry and point the catalog source at it. Loading images node by node breaks on scale-out."}, {"s": "Security · Network", "t": "stretch", "q": "What does a default-deny NetworkPolicy do?", "o": ["Blocks all non-allowed traffic", "Blocks only outbound traffic", "Allows same-namespace traffic only", "Encrypts pod traffic"], "a": 0, "e": "A policy selecting all pods with no allow rules denies everything, and each flow is then opened deliberately."}, {"s": "Security · RBAC", "t": "stretch", "q": "A pipeline may deploy to one namespace only. What do you grant?", "o": ["A RoleBinding in that namespace", "A ClusterRoleBinding to cluster-admin", "A shared kubeconfig", "A node-level credential"], "a": 0, "e": "A namespaced RoleBinding gives exactly the access needed. Cluster-wide bindings and shared kubeconfigs break least privilege."}, {"s": "Security · Secrets", "t": "stretch", "q": "Where should application secrets live on-prem?", "o": ["A vault or secrets operator", "In the Git repository with the code", "In a ConfigMap next to the app", "In the container image layers"], "a": 0, "e": "Secrets belong in a managed store with access control and rotation. Git, ConfigMaps and images all spread them to people who should not hold them."}, {"s": "Observability · Prometheus", "t": "stretch", "q": "How does Prometheus collect metrics?", "o": ["It scrapes targets over HTTP", "Agents push to it continuously", "It reads log files from disk", "It queries each database directly"], "a": 0, "e": "Prometheus pulls metrics from endpoints on a schedule, which makes missing targets easy to detect."}];
+(function shuffleOptions(){
+  QUESTIONS.forEach(q => {
+    const correct = q.o[q.a];
+    for (let i = q.o.length - 1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [q.o[i],q.o[j]] = [q.o[j],q.o[i]]; }
+    q.a = q.o.indexOf(correct);
+  });
+})();
+const TOTAL = QUESTIONS.length, LIMIT = 40 * 60, LETTERS = ['A','B','C','D'];
+const answers = new Array(TOTAL).fill(null);
+let cur = 0, graded = false, started = false, secondsLeft = LIMIT, timer = null;
+const $ = id => document.getElementById(id);
+const stage = $('stage'), grid = $('grid'), bar = $('bar');
+$('qcount').textContent = TOTAL; $('answered').textContent = '0 / ' + TOTAL;
+const fmt = t => String(Math.floor(t/60)) + ':' + String(t%60).padStart(2,'0');
+
+function startTimer(){
+  if (started || graded) return; started = true;
+  timer = setInterval(() => {
+    secondsLeft--; $('clock').textContent = fmt(Math.max(secondsLeft,0));
+    if (secondsLeft <= 300) $('clock').classList.add('warn');
+    if (secondsLeft <= 0) { clearInterval(timer); grade(true); }
+  }, 1000);
+}
+
+function render(){
+  const q = QUESTIONS[cur];
+  const badge = q.t === 'core' ? '<span class="badge core">AWS &amp; delivery</span>' : '<span class="badge stretch">Kubernetes &amp; platform</span>';
+  let html = '<section class="card"><div class="qhead"><span class="qnum">' + String(cur+1).padStart(2,'0') + ' / ' + TOTAL + '</span>'
+    + badge + '<span class="section-name">' + q.s + '</span></div><p class="qtext">' + q.q + '</p><ul class="opts">';
+  q.o.forEach((opt,i) => {
+    let cls = 'opt', mark = '';
+    if (!graded && answers[cur] === i) cls += ' sel';
+    if (graded) {
+      if (i === q.a) { cls += ' correct'; mark = '<span class="mark ok">Correct</span>'; }
+      else if (answers[cur] === i) { cls += ' wrong'; mark = '<span class="mark no">Chosen</span>'; }
+    }
+    html += '<li><button class="' + cls + '" data-i="' + i + '"' + (graded ? ' disabled' : '') + '><span class="letter">' + LETTERS[i] + '</span><span>' + opt + '</span>' + mark + '</button></li>';
+  });
+  html += '</ul>';
+  if (graded) html += '<div class="rationale"><div class="rlabel">Interviewer note</div><p>' + q.e + '</p></div>';
+  html += '</section>';
+  stage.innerHTML = html;
+  if (!graded) stage.querySelectorAll('.opt').forEach(b => b.addEventListener('click', () => {
+    startTimer(); answers[cur] = Number(b.dataset.i); render(); paint();
+  }));
+  $('prev').disabled = cur === 0; $('next').disabled = cur === TOTAL - 1;
+  $('navnote').textContent = graded ? 'Review mode' : (answers[cur] === null ? 'Not answered' : 'Answered');
+}
+
+function paint(){
+  const done = answers.filter(a => a !== null).length;
+  $('answered').textContent = done + ' / ' + TOTAL; bar.style.width = (done/TOTAL*100) + '%';
+  grid.innerHTML = QUESTIONS.map((q,i) => '<button class="gcell' + (answers[i] !== null ? ' answered' : '') + (i === cur ? ' here' : '') + '" data-i="' + i + '">' + (i+1) + '</button>').join('');
+  grid.querySelectorAll('.gcell').forEach(b => b.addEventListener('click', () => { cur = Number(b.dataset.i); render(); paint(); }));
+}
+
+$('prev').addEventListener('click', () => { if (cur > 0) { cur--; render(); paint(); } });
+$('next').addEventListener('click', () => { if (cur < TOTAL-1) { cur++; render(); paint(); } });
+$('submit').addEventListener('click', () => grade(false));
+
+function grade(auto){
+  if (graded) return;
+  const left = answers.filter(a => a === null).length;
+  if (!auto && left > 0 && typeof confirm === 'function' && !confirm(left + ' question(s) are unanswered. Submit anyway?')) return;
+  graded = true; if (timer) clearInterval(timer);
+  const used = started ? LIMIT - Math.max(secondsLeft,0) : 0;
+  const by = {}; let bc=0, bt=0, fc=0, ft=0;
+  QUESTIONS.forEach((q,i) => {
+    const ok = answers[i] === q.a;
+    if (!by[q.s]) by[q.s] = {c:0,t:0,track:q.t};
+    by[q.s].t++; if (ok) by[q.s].c++;
+    if (q.t === 'core') { bt++; if (ok) bc++; } else { ft++; if (ok) fc++; }
+  });
+  const bp = Math.round(bc/bt*100), fp = Math.round(fc/ft*100);
+  let band;
+  if (bp >= 80 && fp >= 60) band = 'Strong for his experience on both sides. A promising junior; move to a trainee-level discussion and confirm with a live troubleshooting exercise.';
+  else if (bp >= 80 && fp >= 35) band = 'Solid AWS and delivery fundamentals with some Kubernetes and platform reasoning. A credible junior hire if a named mentor is available.';
+  else if (bp >= 80) band = 'Solid AWS and delivery fundamentals. The Kubernetes and platform score is near chance level (25 percent), so Kubernetes is a skills-line claim only; a trainee seat at most.';
+  else if (bp >= 65) band = 'Mixed. The AWS and delivery claims hold only partly, even though they are his whole experience. Probe the weaker sections live before deciding.';
+  else band = 'The claims do not hold at this depth, including those from his only role. Verify with a live troubleshooting exercise before drawing conclusions.';
+  const rows = Object.keys(by).map(k => {
+    const b = by[k];
+    return '<tr class="' + (b.track === 'core' ? 'core-row' : 'stretch-row') + '"><td>' + k + '</td><td class="num">' + b.c + ' / ' + b.t + '</td><td class="num">' + Math.round(b.c/b.t*100) + '%</td></tr>';
+  }).join('');
+  const notes = `<details class="notes"><summary>Interviewer notes \u2014 close this before sharing your screen</summary><div class="body">
+    <h3>${band}</h3>
+    <ul>
+      <li>Chance level on four options is 25 percent. A Kubernetes and platform score near that means no working knowledge of that area, not partial knowledge.</li>
+      <li>His experience is about fifteen months at one employer, on AWS only. Docker Compose is how he runs containers. Kubernetes appears only on his skills line, with no bullet or project behind it.</li>
+      <li>Not on his resume: GCP, OpenShift, GitLab CI, Helm, ArgoCD, Prometheus and Grafana, SLOs, SCCs and disconnected environments. The second track tests fundamentals so a result is informative at his level.</li>
+      <li>His Oracle Cloud DevOps Professional certificate has no OCI work behind it, since all his experience is on AWS. Ask what he did on OCI. The IIT Roorkee and IBM items are short courses.</li>
+      <li>Ask what he owned behind &#8220;led production rollout&#8221; and &#8220;trained backend developers&#8221;. Ask for the baseline behind the one figure, a 40 percent cut in release cycles.</li>
+      <li>Open his GitHub before the call and look for real Terraform and Ansible repositories. They tell you more than the bullets.</li>
+      <li>Live exercise: hand him a Nginx 502 on a Compose stack, or a pod in CrashLoopBackOff. Watch whether he reads logs and events first, and whether he restarts things before looking.</li>
+    </ul></div></details>`;
+  stage.innerHTML = `<section class="result"><h2>Assessment complete</h2>
+    <p class="rsub">${TOTAL - left} of ${TOTAL} answered \u00B7 time used ${fmt(used)} \u00B7 the two areas measure different things and should not be averaged.</p>
+    <div class="readout">
+      <div class="pane"><div class="plabel"><span class="dot core"></span>AWS and delivery</div><div class="pscore">${bp}%</div><div class="pof">${bc} of ${bt} correct</div><div class="meter"><i class="core" style="width:${bp}%"></i></div></div>
+      <div class="pane"><div class="plabel"><span class="dot stretch"></span>Kubernetes and platform</div><div class="pscore">${fp}%</div><div class="pof">${fc} of ${ft} correct</div><div class="meter"><i class="stretch" style="width:${fp}%"></i></div></div>
+    </div>
+    <table class="bd"><thead><tr><th>Section</th><th class="num">Score</th><th class="num">%</th></tr></thead><tbody>${rows}</tbody></table>
+    ${notes}
+    <div class="btn-row"><button class="btn" id="review">Review answers</button></div></section>`;
+  const rv = $('review'); if (rv) rv.addEventListener('click', () => { cur = 0; render(); paint(); window.scrollTo({top:0,behavior:'smooth'}); });
+  $('submit').textContent = 'Submitted'; $('submit').disabled = true;
+  $('answered').textContent = (TOTAL - left) + ' / ' + TOTAL; bar.style.width = '100%';
+  paint(); window.scrollTo({top:0,behavior:'smooth'});
+}
+render(); paint();
+</script>
+</body></html>
